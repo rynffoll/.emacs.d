@@ -1,0 +1,11 @@
+.cache/
+auto-save-list/
+elpa/
+persp-confs/
+projectile-bookmarks.eld
+projectile.cache
+recentf
+url/
+eshell/
+history
+places
