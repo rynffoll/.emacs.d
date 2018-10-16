@@ -418,7 +418,7 @@
   (feebleline-mode 1))
 
 (use-package minions
-  ;; :disabled
+  :disabled
   :custom
   (minions-mode-line-lighter "[+]")
   :config
@@ -431,6 +431,46 @@
   :config
   (moody-replace-mode-line-buffer-identification)
   (moody-replace-vc-mode))
+
+(use-package powerline
+  :custom
+  (powerline-default-separator nil))
+
+(use-package spaceline
+  :custom
+  (spaceline-highlight-face-func 'spaceline-highlight-face-evil-state))
+
+(use-package spaceline-segments
+  :ensure nil
+  :custom
+  (spaceline-minor-modes-p nil)
+  (spaceline-hud-p nil)
+  (spaceline-purpose-p nil)
+  (spaceline-buffer-position-p nil)
+  (spaceline-buffer-modified-p nil)
+  (spaceline-buffer-encoding-abbrev-p nil)
+  (spaceline-buffer-size-p nil)
+  (spaceline-input-method-p t)
+  (spaceline-org-clock-p t)
+  (spaceline-org-pomodoro-p t))
+
+(use-package spaceline-config
+  :ensure nil
+  :preface
+  (defun spaceline-custom-theme (&rest additional-segments)
+    "My custom spaceline theme."
+    (apply 'spaceline--theme
+           '((((persp-name
+                workspace-number
+                window-number) :separator "|"))
+             :fallback evil-state
+             :face highlight-face
+             :priority 100)
+           '((buffer-modified buffer-size buffer-id remote-host)
+             :priority 98)
+           additional-segments))
+  :config
+  (spaceline-custom-theme))
 
 (use-package solarized-theme
   :custom
