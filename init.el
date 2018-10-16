@@ -50,66 +50,70 @@
    :prefix my-leader
    :non-normal-prefix my-non-normal-leader
    "" '(nil :which-key "Leader")
-    "." 'counsel-find-file
+   "." 'counsel-find-file
 
-    "o" '(:ignore t :which-key "Open")
-    "od" 'docker
-    "ol" 'counsel-find-library
-    "op" 'package-list-packages
+   "o" '(:ignore t :which-key "Open")
+   "od" 'docker
+   "ol" 'counsel-find-library
+   "op" 'package-list-packages
 
-    "b" '(:ignore t :which-key "Buffers")
-    "bB" 'ibuffer
-    "bN" 'evil-buffer-new
-    "bb" 'ivy-switch-buffer
-    "bk" 'kill-this-buffer
-    "b]" 'evil-next-buffer
-    "b[" 'evil-prev-buffer
-    "bR" 'crux-rename-buffer-and-file
-    "bD" 'crux-delete-buffer-and-file
+   "b" '(:ignore t :which-key "Buffers")
+   "bB" 'ibuffer
+   "bN" 'evil-buffer-new
+   "bb" 'ivy-switch-buffer
+   "bk" 'kill-this-buffer
+   "b]" 'evil-next-buffer
+   "b[" 'evil-prev-buffer
+   "bR" 'crux-rename-buffer-and-file
+   "bD" 'crux-delete-buffer-and-file
+   "bp" 'counsel-projectile
 
-    "f" '(:ignore t :which-key "Files")
-    "fd" 'counsel-dired-jump
-    "ff" 'counsel-find-file
-    "fr" 'counsel-recentf
-    "fR" 'crux-rename-file-and-buffer
-    "fD" 'crux-delete-file-and-buffer
+   "f" '(:ignore t :which-key "Files")
+   "fd" 'counsel-dired-jump
+   "ff" 'counsel-find-file
+   "fr" 'counsel-recentf
+   "fR" 'crux-rename-file-and-buffer
+   "fD" 'crux-delete-file-and-buffer
+   "fp" 'projectile-find-file
 
-    "e" '(:ignore t :which-key "Emacs")
-    "ed" 'iqa-find-user-init-directory
-    "ee" 'iqa-find-user-init-file
-    "er" 'iqa-reload-user-init-file
+   "e" '(:ignore t :which-key "Emacs")
+   "ed" 'iqa-find-user-init-directory
+   "ee" 'iqa-find-user-init-file
+   "er" 'iqa-reload-user-init-file
 
-    "g" '(:ignore t :which-key "Git")
-    "gg" 'magit-status
-    "gt" 'git-timemachine
+   "g" '(:ignore t :which-key "Git")
+   "gg" 'magit-status
+   "gt" 'git-timemachine
+   "gl" 'magit-list-repositories
 
-    "p" '(:ignore t :which-key "Projectile")
-    "pb" 'counsel-projectile
-    "pp" 'projectile-switch-project
+   "p" '(:ignore t :which-key "Projectile")
+   "pb" 'counsel-projectile
+   "pp" 'projectile-switch-project
+   "pf" 'projectile-find-file
 
-    "/" '(:ignore t :which-key "Search")
-    "//" 'swiper
-    "/i" 'imenu
-    "/p" 'counsel-projectile-rg
+   "/" '(:ignore t :which-key "Search")
+   "//" 'swiper
+   "/i" 'imenu
+   "/p" 'counsel-projectile-rg
 
-    "h" '(:ignore t :which-key "Help")
-    "h." 'helpful-at-point
-    "hC" 'helpful-command
-    "hF" 'counsel-describe-face
-    "hT" 'google-translate-at-point-reverse
-    "hc" 'helpful-callable
-    "hf" 'helpful-function
-    "hk" 'helpful-key
-    "hm" 'helpful-macro
-    "ht" 'google-translate-at-point
-    "hv" 'helpful-variable
+   "h" '(:ignore t :which-key "Help")
+   "h." 'helpful-at-point
+   "hC" 'helpful-command
+   "hF" 'counsel-describe-face
+   "hT" 'google-translate-at-point-reverse
+   "hc" 'helpful-callable
+   "hf" 'helpful-function
+   "hk" 'helpful-key
+   "hm" 'helpful-macro
+   "ht" 'google-translate-at-point
+   "hv" 'helpful-variable
 
-    "t" '(:ignore t :which-key "Toggle")
-    "to" 'olivetti-mode
+   "t" '(:ignore t :which-key "Toggle")
+   "to" 'olivetti-mode
 
-    "q" '(:ignore t :which-key "Quit")
-    "qq" 'kill-emacs
-    "qr" 'restart-emacs)
+   "q" '(:ignore t :which-key "Quit")
+   "qq" 'kill-emacs
+   "qr" 'restart-emacs)
   (general-define-key
    :states '(normal visual insert emacs motion)
    :keymaps 'override
@@ -131,6 +135,7 @@
   :after evil
   :custom
   (evil-collection-setup-minibuffer nil)
+  (evil-collection-company-use-tng nil)
   :config
   (evil-collection-init))
 
@@ -166,8 +171,8 @@
 (use-package emacs
   :ensure nil
   :custom
-  (defalias 'yes-or-no-p 'y-or-n-p)
   (inhibit-startup-screen t)
+  (initial-major-mode 'text-mode)
   (use-dialog-box nil)
   (enable-recursive-minibuffers t)
   (indent-tabs-mode nil)
@@ -180,7 +185,9 @@
   (scroll-preserve-screen-position t)
   (scroll-margin 0)
   (scroll-conservatively 101)
-  (ring-bell-function 'ignore))
+  (ring-bell-function 'ignore)
+  :config
+  (defalias 'yes-or-no-p 'y-or-n-p))
 
 (use-package files
   :ensure nil
@@ -189,6 +196,11 @@
   (make-backup-files nil)
   (enable-local-variables :all)
   (enable-local-eval t))
+
+(use-package uniquify
+  :ensure nil
+  :custom
+  (uniquify-buffer-name-style 'forward))
 
 (use-package delsel
   :ensure nil
@@ -223,6 +235,28 @@
   :custom
   (calendar-week-start-day 1))
 
+(use-package ibuffer
+  :ensure nil
+  :general
+  ([remap list-buffers] 'ibuffer))
+
+(use-package savehist
+  :ensure nil
+  :config
+  (savehist-mode))
+
+(use-package saveplace
+  :ensure nil
+  :config
+  (save-place-mode))
+
+(use-package tramp
+  :defer t
+  :ensure nil
+  :custom
+  (tramp-default-method "ssh")
+  (tramp-default-proxies-alist nil))
+
 (use-package helpful
   :defer t
   :commands
@@ -239,11 +273,6 @@
   :config
   (which-key-setup-side-window-bottom)
   (which-key-mode +1))
-
-(use-package ibuffer
-  :ensure nil
-  :general
-  ([remap list-buffers] 'ibuffer))
 
 (use-package restart-emacs
   :defer t
@@ -268,7 +297,7 @@
   (iqa-user-init-file (concat user-emacs-directory "config.org")))
 
 (use-package exec-path-from-shell
-  :defer t
+  :defer 0.1
   :config
   (exec-path-from-shell-initialize))
 
@@ -290,22 +319,11 @@
   :config
   (global-auto-revert-mode))
 
-(use-package savehist
+(use-package epa
   :ensure nil
-  :config
-  (savehist-mode))
-
-(use-package saveplace
-  :ensure nil
-  :config
-  (save-place-mode))
-
-(use-package tramp
   :defer t
-  :ensure nil
   :custom
-  (tramp-default-method "ssh")
-  (tramp-default-proxies-alist nil))
+  (epa-pinentry-mode 'loopback))
 
 (use-package dired
   :ensure nil
@@ -393,14 +411,14 @@
 	))
 
 (use-package feebleline
-  ;; :disabled
+  :disabled
   :custom
   (feebleline-show-git-branch t)
   :config
   (feebleline-mode 1))
 
 (use-package minions
-  :disabled
+  ;; :disabled
   :custom
   (minions-mode-line-lighter "[+]")
   :config
@@ -436,6 +454,7 @@
   (solaire-mode-swap-bg))
 
 (use-package ivy
+  :defer 2
   :general
   ([remap switch-to-buffer] 'ivy-switch-buffer)
   (:keymaps 'ivy-mode-map
@@ -455,10 +474,13 @@
 
 (use-package ivy-rich
   :after ivy
+  :defer 2
   :config
   (ivy-rich-mode 1))
 
 (use-package counsel
+  :after ivy
+  :defer 2
   :commands counsel-describe-face
   :general
   ([remap apropos]                  'counsel-apropos)
@@ -480,6 +502,7 @@
   (counsel-describe-variable-function 'helpful-variable))
 
 (use-package flx
+  :defer 2
   :custom
   (ivy-re-builders-alist '((counsel-ag . ivy--regex-plus)
 			   (counsel-grep . ivy--regex-plus)
@@ -487,6 +510,7 @@
 			   (t . ivy--regex-fuzzy))))
 
 (use-package counsel-projectile
+  :defer 2
   :after projectile
   :general
   ([remap projectile-find-file]        'counsel-projectile-find-file)
@@ -534,36 +558,36 @@
   (global-hl-line-mode 1))
 
 (use-package company
-  :defer t
-  :general
-  (:keymaps 'company-active-map :states 'insert
-            "C-j"     'company-select-next
-            "C-k"     'company-select-previous
-            "C-d"     'company-show-doc-buffer)
-  (:keymaps 'company-quickhelp-mode-map :states 'insert
-            "C-k"     'company-select-previous)
   :hook
   (after-init . global-company-mode)
+  :general
+  ("C-@" 'company-complete)
   :custom
+  (company-minimum-prefix-length 1)
+  (company-require-match 'never)
+  (company-selection-wrap-around t)
+  (company-tooltip-minimum-width 30)
+  (company-tooltip-margin 2)
   (company-tooltip-align-annotations t)
-  (company-minimum-prefix-length 2)
-  (company-require-match nil)
+  (company-tooltip-flip-when-above t)
+  (company-dabbrev-code-other-buffers t)
   (company-dabbrev-ignore-case nil)
   (company-dabbrev-downcase nil))
 
-(use-package company-quickhelp
-  :after company
-  :defer t
-  :custom
-  (company-quickhelp-delay 3)
-  :config
-  (company-quickhelp-mode 1))
-
 (use-package company-shell
   :after company
-  :defer t
   :config
   (add-to-list 'company-backends 'company-shell))
+
+(use-package company-flx
+  :after company
+  :config
+  (company-flx-mode +1))
+
+(use-package company-statistics
+  :after company
+  :config
+  (company-statistics-mode))
 
 (use-package flycheck
   :defer t
@@ -614,7 +638,9 @@
 (use-package magit
   :defer t
   :custom
-  (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
+  (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
+  (magit-repository-directories `((,user-emacs-directory . 0)
+                                  ("~/Projects" . 1))))
 
 (use-package magit-todos
   :after magit
@@ -628,6 +654,7 @@
   :commands git-timemachine)
 
 (use-package git-gutter-fringe
+  :disabled
   :config
   (use-package fringe-helper)
   (fringe-helper-define 'git-gutter-fr:added '(center repeated)
@@ -641,8 +668,20 @@
     "XXX.....")
   (global-git-gutter-mode t))
 
+(use-package gitignore-mode
+  :mode ("^.gitignore$" . gitignore-mode))
+
+(use-package diff-hl
+  :hook
+  (magit-post-refresh . diff-hl-magit-post-refresh)
+  (prog-mode . diff-hl-mode)
+  (conf-mode . diff-hl-mode)
+  (org-mode . diff-hl-mode)
+  (dired-mode . diff-hl-dired-mode))
+
 (use-package org
   :ensure org-plus-contrib
+  :defer 1
   :custom
   (org-startup-indented t)
   (org-tags-column 0)
@@ -668,6 +707,7 @@
 
 (use-package org-bullets
   :after org
+  :defer 1
   :custom
   ;; ♥ ● ◇ ✚ ✜ ☯ ◆ ♠ ♣ ♦ ☢ ❀ ◆ ◖ ▶
   ;; ► • ★ ▸
@@ -718,6 +758,11 @@
 (use-package jinja2-mode
   :mode "\\.j2\\'")
 
+(use-package company-ansible
+  :after company
+  :config
+  (add-to-list 'company-backends 'company-ansible))
+
 (use-package restclient
   :defer t
   :mode
@@ -738,8 +783,8 @@
   (add-to-list 'company-backends 'company-restclient))
 
 (use-package google-translate
-  :commands google-translate-at-point google-translate-at-point-reverse
   :defer t
+  :commands google-translate-at-point google-translate-at-point-reverse
   :custom
   (google-translate-default-target-language "ru")
   (google-translate-default-source-language "en")
@@ -747,11 +792,12 @@
   (google-translate-pop-up-buffer-set-focus t))
 
 (use-package olivetti
-  :commands olivetti-mode
   :defer t
+  :commands olivetti-mode
   :custom (olivetti-body-width 100))
 
-(use-package crux)
+(use-package crux
+  :defer t)
 
 (use-package browse-url
   :ensure nil
