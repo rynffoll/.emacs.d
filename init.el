@@ -1,3 +1,14 @@
+(setq debug-on-error t)
+(setq debug-on-quit t)
+
+(setq load-prefer-newer t)
+(setq message-log-max t) ;; we don't want to lose any startup log info
+
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq debug-on-error nil)
+            (setq debug-on-quit nil)))
+
 (require 'package)
 (setq package-archives
       `(,@package-archives
@@ -23,6 +34,7 @@
 (use-package quelpa
   :defer t
   :custom
+  (quelpa-use-package-inhibit-loading-quelpa t "Improve startup performance")
   (quelpa-update-melpa-p nil))
 
 (use-package quelpa-use-package
@@ -75,6 +87,7 @@
    "fR" 'crux-rename-file-and-buffer
    "fD" 'crux-delete-file-and-buffer
    "fp" 'projectile-find-file
+   "ft" 'treemacs
 
    "e" '(:ignore t :which-key "Emacs")
    "ed" 'iqa-find-user-init-directory
@@ -90,6 +103,7 @@
    "pb" 'counsel-projectile
    "pp" 'projectile-switch-project
    "pf" 'projectile-find-file
+   "pt" 'treemacs-projectile
 
    "/" '(:ignore t :which-key "Search")
    "//" 'swiper
@@ -269,7 +283,6 @@
   helpful-variable)
 
 (use-package which-key
-  :defer t
   :config
   (which-key-setup-side-window-bottom)
   (which-key-mode +1))
@@ -361,6 +374,14 @@
   :hook
   (eshell-mode . eshell-fringe-status-mode))
 
+(use-package auto-compile
+  :config
+  (auto-compile-on-load-mode 1)
+  (auto-compile-on-save-mode 1)
+  :custom
+  (auto-compile-display-buffer nil)
+  (auto-compile-mode-line-counter t))
+
 (use-package faces
   :ensure nil
   :custom-face
@@ -433,15 +454,18 @@
   (moody-replace-vc-mode))
 
 (use-package powerline
+  :defer t
   :custom
   (powerline-default-separator nil))
 
 (use-package spaceline
+  :defer t
   :custom
   (spaceline-highlight-face-func 'spaceline-highlight-face-evil-state))
 
 (use-package spaceline-segments
   :ensure nil
+  :defer t
   :custom
   (spaceline-minor-modes-p nil)
   (spaceline-hud-p nil)
@@ -471,6 +495,10 @@
            additional-segments))
   :config
   (spaceline-custom-theme))
+
+(use-package hide-mode-line
+  :hook
+  (treemacs-mode . hide-mode-line-mode))
 
 (use-package solarized-theme
   :custom
@@ -628,6 +656,24 @@
   :after company
   :config
   (company-statistics-mode))
+
+(use-package treemacs
+  :defer t
+  :commands treemacs
+  :custom
+  (treemacs-collapse-dirs (if (executable-find "python") 3 0))
+  :config
+  (treemacs-follow-mode t)
+  (treemacs-filewatch-mode t)
+  (treemacs-fringe-indicator-mode t)
+  (treemacs-git-mode 'deferred))
+
+(use-package treemacs-evil
+  :after treemacs evil)
+
+(use-package treemacs-projectile
+  :after treemacs projectile
+  :commands treemacs-projectile)
 
 (use-package flycheck
   :defer t
