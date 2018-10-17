@@ -51,10 +51,10 @@
 
 (use-package general
   :init
-  (defvar my-leader "SPC")
-  (defvar my-local-leader "SPC m")
-  (defvar my-non-normal-leader "M-m")
-  (defvar my-non-normal-local-leader "M-m m")
+  (defconst my-leader "SPC")
+  (defconst my-local-leader "SPC m")
+  (defconst my-non-normal-leader "M-m")
+  (defconst my-non-normal-local-leader "M-m m")
   :config
   (general-define-key
    :states '(normal visual insert emacs motion)
@@ -124,6 +124,7 @@
 
    "t" '(:ignore t :which-key "Toggle")
    "to" 'olivetti-mode
+   "tT" 'counsel-load-theme
 
    "q" '(:ignore t :which-key "Quit")
    "qq" 'kill-emacs
@@ -283,8 +284,9 @@
   helpful-variable)
 
 (use-package which-key
+  :custom
+  (which-key-idle-delay 0.5)
   :config
-  (which-key-setup-side-window-bottom)
   (which-key-mode +1))
 
 (use-package restart-emacs
@@ -512,6 +514,13 @@
   (solarized-height-plus-4 1.0)
   :config
   (load-theme 'solarized-light t))
+
+(use-package tao-theme
+  :disabled
+  :custom
+  (tao-theme-use-boxes nil)
+  :config
+  (load-theme 'tao-yang t))
 
 (use-package solaire-mode
   :disabled t
@@ -822,27 +831,27 @@
 (use-package dockerfile-mode)
 
 (use-package yaml-mode
-  :mode "Procfile\\'")
+  :mode "Procfile\\'"
+  :hook (yaml-mode . ansible))
 
 (use-package ansible
   :commands ansible::auto-decrypt-encrypt
   :init
   (put 'ansible::vault-password-file 'safe-local-variable #'stringp)
   :hook
-  (ansible . yaml-mode)
   (ansible . ansible::auto-decrypt-encrypt)
   :general
   (:keymaps 'ansible::key-map :states '(normal visual insert emacs motion) :prefix my-local-leader
-	    "d" 'ansible::decrypt-buffer
-	    "e" 'ansible::encrypt-buffer
-	    "h" 'ansible-doc)
+            "d" 'ansible::decrypt-buffer
+            "e" 'ansible::encrypt-buffer
+            "h" 'ansible-doc)
   :custom-face
   (ansible::section-face ((t (:inherit 'font-lock-variable-name-face))))
   (ansible::task-label-face ((t (:inherit 'font-lock-doc-face)))))
 
 (use-package ansible-doc
   :hook
-  (ansible . ansible-doc)
+  (ansible . ansible-doc-mode)
   :config
   (evil-set-initial-state 'ansible-doc-module-mode 'emacs))
 
