@@ -801,6 +801,11 @@
   :hook
   (org-mode . org-bullets-mode))
 
+(use-package toc-org
+  :after org
+  :hook
+  (org-mode . toc-org-enable))
+
 (use-package docker
   :commands docker
   :defer t

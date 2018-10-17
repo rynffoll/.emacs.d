@@ -1,4 +1,39 @@
+#+TITLE: Emacs config
 #+PROPERTY: header-args:emacs-lisp :tangle "init.el"
+* Table of Contents :TOC:
+- [[#initialization][Initialization]]
+- [[#bindings][Bindings]]
+  - [[#general][general]]
+  - [[#evil][evil]]
+- [[#common][Common]]
+  - [[#better-defaults][better defaults]]
+  - [[#encryption][encryption]]
+  - [[#dired][dired]]
+  - [[#eshell][eshell]]
+  - [[#misc][misc]]
+- [[#ui][UI]]
+  - [[#common-1][common]]
+  - [[#mode-line][mode-line]]
+  - [[#theme][theme]]
+  - [[#misc-1][misc]]
+- [[#ivy][Ivy]]
+- [[#editor][Editor]]
+  - [[#common-2][common]]
+  - [[#completion][completion]]
+  - [[#file-tree][file tree]]
+  - [[#syntax-checking][syntax checking]]
+  - [[#jump-to-definition][jump to definition]]
+  - [[#clojure][clojure]]
+- [[#projects][Projects]]
+- [[#git][Git]]
+- [[#org][Org]]
+- [[#tools][Tools]]
+  - [[#docker][docker]]
+  - [[#ansible][ansible]]
+  - [[#restclient][restclient]]
+- [[#misc-2][Misc]]
+- [[#the-end][The end]]
+
 * Initialization
 #+BEGIN_SRC emacs-lisp
 (setq debug-on-error t)
@@ -869,7 +904,10 @@ Modern package manager
   (org-directory "~/Dropbox/Org")
   (org-agenda-files `(,(concat org-directory "/todo.org")))
   (org-archive-location (concat org-directory "/old/archive.org" "::* From %s")))
+#+END_SRC
 
+Show org-mode bullets as UTF-8 characters
+#+BEGIN_SRC emacs-lisp
 (use-package org-bullets
   :after org
   :defer 1
@@ -879,6 +917,14 @@ Modern package manager
   (org-bullets-bullet-list '("◆"))
   :hook
   (org-mode . org-bullets-mode))
+#+END_SRC
+
+Table of Contents
+#+BEGIN_SRC emacs-lisp
+(use-package toc-org
+  :after org
+  :hook
+  (org-mode . toc-org-enable))
 #+END_SRC
 
 * Tools
