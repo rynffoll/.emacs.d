@@ -66,7 +66,8 @@
 
    "o" '(:ignore t :which-key "Open")
    "od" 'docker
-   "ol" 'counsel-find-library
+   "ol" 'link-hint-open-link
+   "oL" 'counsel-find-library
    "op" 'package-list-packages
 
    "b" '(:ignore t :which-key "Buffers")
@@ -125,6 +126,7 @@
    "t" '(:ignore t :which-key "Toggle")
    "to" 'olivetti-mode
    "tT" 'counsel-load-theme
+   "tr" 'rainbow-mode
 
    "q" '(:ignore t :which-key "Quit")
    "qq" 'kill-emacs
@@ -515,13 +517,6 @@
   :config
   (load-theme 'solarized-light t))
 
-(use-package tao-theme
-  :disabled
-  :custom
-  (tao-theme-use-boxes nil)
-  :config
-  (load-theme 'tao-yang t))
-
 (use-package solaire-mode
   :disabled t
   :hook
@@ -548,6 +543,13 @@
   (ivy-use-selectable-prompt t)
   :config
   (ivy-mode +1))
+
+(use-package hydra
+  :defer 2)
+
+(use-package ivy-hydra
+  :after ivy hydra
+  :defer 2)
 
 (use-package ivy-rich
   :after ivy
@@ -602,14 +604,18 @@
   :hook
   ((prog-mode conf-mode) . highlight-numbers-mode))
 
-;; (use-package highlight-escape-sequences
-;;   :hook
-;;   ((prog-mode conf-mode) . highlight-escape-sequences-mode))
+(use-package highlight-escape-sequences
+  :defer t
+  :hook
+  ((prog-mode conf-mode) . highlight-escape-sequences-mode))
 
 (use-package rainbow-delimiters
   :defer t
-  :hook
-  ((prog-mode conf-mode) . rainbow-delimiters-mode))
+  :hook ((prog-mode conf-mode) . rainbow-delimiters-mode))
+
+(use-package rainbow-mode
+  :defer t
+  :hook css-mode-hook)
 
 (use-package smartparens
   :defer t
@@ -769,9 +775,7 @@
 (use-package diff-hl
   :hook
   (magit-post-refresh . diff-hl-magit-post-refresh)
-  (prog-mode . diff-hl-mode)
-  (conf-mode . diff-hl-mode)
-  (org-mode . diff-hl-mode)
+  ((prog-mode conf-mode org-mode) . diff-hl-mode)
   (dired-mode . diff-hl-dired-mode))
 
 (use-package org
@@ -882,6 +886,9 @@
   :config
   (add-to-list 'company-backends 'company-restclient))
 
+(use-package password-generator
+  :defer t)
+
 (use-package google-translate
   :defer t
   :commands google-translate-at-point google-translate-at-point-reverse
@@ -898,6 +905,9 @@
 
 (use-package crux
   :defer t)
+
+(use-package link-hint
+  :commands link-hint-open-link)
 
 (use-package browse-url
   :ensure nil

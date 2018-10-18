@@ -31,6 +31,7 @@
   - [[#docker][docker]]
   - [[#ansible][ansible]]
   - [[#restclient][restclient]]
+  - [[#password-generator][password-generator]]
 - [[#misc-2][Misc]]
 - [[#the-end][The end]]
 
@@ -117,7 +118,8 @@ Modern package manager
 
    "o" '(:ignore t :which-key "Open")
    "od" 'docker
-   "ol" 'counsel-find-library
+   "ol" 'link-hint-open-link
+   "oL" 'counsel-find-library
    "op" 'package-list-packages
 
    "b" '(:ignore t :which-key "Buffers")
@@ -176,6 +178,7 @@ Modern package manager
    "t" '(:ignore t :which-key "Toggle")
    "to" 'olivetti-mode
    "tT" 'counsel-load-theme
+   "tr" 'rainbow-mode
 
    "q" '(:ignore t :which-key "Quit")
    "qq" 'kill-emacs
@@ -628,6 +631,13 @@ Modern package manager
   :config
   (ivy-mode +1))
 
+(use-package hydra
+  :defer 2)
+
+(use-package ivy-hydra
+  :after ivy hydra
+  :defer 2)
+
 (use-package ivy-rich
   :after ivy
   :defer 2
@@ -685,14 +695,18 @@ Modern package manager
   :hook
   ((prog-mode conf-mode) . highlight-numbers-mode))
 
-;; (use-package highlight-escape-sequences
-;;   :hook
-;;   ((prog-mode conf-mode) . highlight-escape-sequences-mode))
+(use-package highlight-escape-sequences
+  :defer t
+  :hook
+  ((prog-mode conf-mode) . highlight-escape-sequences-mode))
 
 (use-package rainbow-delimiters
   :defer t
-  :hook
-  ((prog-mode conf-mode) . rainbow-delimiters-mode))
+  :hook ((prog-mode conf-mode) . rainbow-delimiters-mode))
+
+(use-package rainbow-mode
+  :defer t
+  :hook css-mode-hook)
 
 (use-package smartparens
   :defer t
@@ -873,9 +887,7 @@ Modern package manager
 (use-package diff-hl
   :hook
   (magit-post-refresh . diff-hl-magit-post-refresh)
-  (prog-mode . diff-hl-mode)
-  (conf-mode . diff-hl-mode)
-  (org-mode . diff-hl-mode)
+  ((prog-mode conf-mode org-mode) . diff-hl-mode)
   (dired-mode . diff-hl-dired-mode))
 #+END_SRC
 
@@ -1006,6 +1018,12 @@ Table of Contents
   (add-to-list 'company-backends 'company-restclient))
 #+END_SRC
 
+** password-generator
+#+BEGIN_SRC emacs-lisp
+(use-package password-generator
+  :defer t)
+#+END_SRC
+
 * Misc
 #+BEGIN_SRC emacs-lisp
 (use-package google-translate
@@ -1024,6 +1042,9 @@ Table of Contents
 
 (use-package crux
   :defer t)
+
+(use-package link-hint
+  :commands link-hint-open-link)
 #+END_SRC
 
 WSL tweaks ([[https://adam.kruszewski.name/2017/09/emacs-in-wsl-and-opening-links/][source]])
