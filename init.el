@@ -6,14 +6,26 @@
 
 (add-hook 'emacs-startup-hook
           (lambda ()
-            (setq debug-on-error nil)
-            (setq debug-on-quit nil)))
+            (message "Emacs ready in %s with %d garbage collections."
+                     (format "%.2f seconds"
+                             (float-time
+                              (time-subtract after-init-time before-init-time)))
+                     gcs-done)))
+
+(setq gc-cons-threshold most-positive-fixnum)
+(add-hook 'after-init-hook #'(lambda ()
+                               (setq gc-cons-threshold 800000)))
 
 (require 'package)
 (setq package-archives
-      `(,@package-archives
-        ("melpa" . "https://melpa.org/packages/")
-        ("org" . "https://orgmode.org/elpa/")))
+      '(("gnu"          . "https://elpa.gnu.org/packages/")
+        ("melpa-stable" . "https://stable.melpa.org/packages/")
+        ("melpa"        . "https://melpa.org/packages/")
+        ("org"          . "https://orgmode.org/elpa/")))
+(setq package-archive-priorities
+      '(("melpa-stable" . 5)
+        ("gnu"          . 5)
+        ("melpa"        . 10)))
 (package-initialize)
 
 (setq package-enable-at-startup nil
@@ -26,7 +38,6 @@
 (eval-when-compile
   (require 'use-package))
 
-(put 'use-package 'lisp-indent-function 1)
 (setq use-package-always-ensure t)
 (setq use-package-verbose t)
 (setq use-package-minimum-reported-time 0.01)
@@ -41,111 +52,132 @@
   :custom
   (quelpa-use-package-inhibit-loading-quelpa t "Improve startup performance"))
 
-(use-package paradox
-  :defer 1
-  :custom
-  (paradox-execute-asynchronously t)
-  (paradox-github-token t "Don't ask github token") 
+(use-package auto-compile
   :config
-  (paradox-enable))
+  (auto-compile-on-load-mode 1)
+  (auto-compile-on-save-mode 1)
+  :custom
+  (auto-compile-display-buffer nil)
+  (auto-compile-mode-line-counter t))
 
 (use-package general
+  :preface
+  (defun my-switch-to-scratch ()
+    (interactive)
+    (switch-to-buffer "*scratch*"))
+  (defun my-switch-to-messages ()
+    (interactive)
+    (switch-to-buffer "*Messages*"))
   :init
   (defconst my-leader "SPC")
   (defconst my-local-leader "SPC m")
   (defconst my-non-normal-leader "M-m")
   (defconst my-non-normal-local-leader "M-m m")
   :config
-  (general-define-key
-   :states '(normal visual insert emacs motion)
-   :keymaps 'override
-   :prefix my-leader
-   :non-normal-prefix my-non-normal-leader
-   "" '(nil :which-key "Leader")
-   "." 'counsel-find-file
+  (general-create-definer my-leader-def
+    :states '(normal visual insert emacs motion)
+    :keymaps 'override
+    :prefix my-leader
+    :non-normal-prefix my-non-normal-leader)
+  (general-create-definer my-local-leader-def
+    :states '(normal visual insert emacs motion)
+    :keymaps 'override
+    :prefix my-local-leader
+    :non-normal-prefix my-non-normal-local-leader)
+  (my-leader-def
+    "" '(nil :which-key "Leader")
 
-   "o" '(:ignore t :which-key "Open")
-   "od" 'docker
-   "ol" 'link-hint-open-link
-   "oL" 'counsel-find-library
-   "op" 'package-list-packages
+    "o" '(:ignore t :which-key "Open")
+    "od" 'docker
+    "ol" 'link-hint-open-link
+    "oL" 'counsel-find-library
+    "op" 'package-list-packages
+    "ot" 'shell-pop
+    "oc" 'customize-group
 
-   "b" '(:ignore t :which-key "Buffers")
-   "bB" 'ibuffer
-   "bN" 'evil-buffer-new
-   "bb" 'ivy-switch-buffer
-   "bk" 'kill-this-buffer
-   "b]" 'evil-next-buffer
-   "b[" 'evil-prev-buffer
-   "bR" 'crux-rename-buffer-and-file
-   "bD" 'crux-delete-buffer-and-file
-   "bp" 'counsel-projectile
+    "b" '(:ignore t :which-key "Buffers")
+    "b TAB" 'evil-switch-to-windows-last-buffer
+    "bB" 'ibuffer
+    "bN" 'evil-buffer-new
+    "bb" 'ivy-switch-buffer
+    "bk" 'kill-this-buffer
+    "b]" 'evil-next-buffer
+    "b[" 'evil-prev-buffer
+    "bR" 'crux-rename-buffer-and-file
+    "bD" 'crux-delete-buffer-and-file
+    "bp" 'counsel-projectile
+    "bm" 'my-switch-to-messages
+    "bs" 'my-switch-to-scratch
 
-   "f" '(:ignore t :which-key "Files")
-   "fd" 'counsel-dired-jump
-   "ff" 'counsel-find-file
-   "fr" 'counsel-recentf
-   "fR" 'crux-rename-file-and-buffer
-   "fD" 'crux-delete-file-and-buffer
-   "fp" 'projectile-find-file
-   "ft" 'treemacs
+    "f" '(:ignore t :which-key "Files")
+    "fd" 'counsel-dired-jump
+    "ff" 'counsel-find-file
+    "fr" 'counsel-recentf
+    "fR" 'crux-rename-file-and-buffer
+    "fD" 'crux-delete-file-and-buffer
+    "fp" 'projectile-find-file
+    "ft" 'treemacs-select-window
 
-   "e" '(:ignore t :which-key "Emacs")
-   "ed" 'iqa-find-user-init-directory
-   "ee" 'iqa-find-user-init-file
-   "er" 'iqa-reload-user-init-file
+    "e" '(:ignore t :which-key "Emacs")
+    "ed" 'iqa-find-user-init-directory
+    "ee" 'iqa-find-user-init-file
+    "er" 'iqa-reload-user-init-file
 
-   "g" '(:ignore t :which-key "Git")
-   "gg" 'magit-status
-   "gt" 'git-timemachine
-   "gl" 'magit-list-repositories
+    "g" '(:ignore t :which-key "Git")
+    "gg" 'magit-status
+    "gt" 'git-timemachine
+    "gl" 'magit-list-repositories
+    "gi" 'gitignore-templates-new-file
 
-   "p" '(:ignore t :which-key "Projectile")
-   "pb" 'counsel-projectile
-   "pp" 'projectile-switch-project
-   "pf" 'projectile-find-file
-   "pt" 'treemacs-projectile
+    "/" '(:ignore t :which-key "Search")
+    "//" 'swiper
+    "/p" 'counsel-projectile-rg
 
-   "/" '(:ignore t :which-key "Search")
-   "//" 'swiper
-   "/i" 'imenu
-   "/p" 'counsel-projectile-rg
+    "j" '(:ignore t :which-key "Jump")
+    "ji" 'imenu
+    "jj" 'dumb-jump-hydra/body
 
-   "h" '(:ignore t :which-key "Help")
-   "h." 'helpful-at-point
-   "hC" 'helpful-command
-   "hF" 'counsel-describe-face
-   "hT" 'google-translate-at-point-reverse
-   "hc" 'helpful-callable
-   "hf" 'helpful-function
-   "hk" 'helpful-key
-   "hm" 'helpful-macro
-   "ht" 'google-translate-at-point
-   "hv" 'helpful-variable
+    "h" '(:ignore t :which-key "Help")
+    "h." 'helpful-at-point
+    "hC" 'helpful-command
+    "hF" 'counsel-describe-face
+    "hT" 'google-translate-at-point-reverse
+    "hc" 'helpful-callable
+    "hf" 'helpful-function
+    "hk" 'helpful-key
+    "hm" 'helpful-macro
+    "ht" 'google-translate-at-point
+    "hv" 'helpful-variable
 
-   "t" '(:ignore t :which-key "Toggle")
-   "to" 'olivetti-mode
-   "tT" 'counsel-load-theme
-   "tr" 'rainbow-mode
+    "t" '(:ignore t :which-key "Toggle")
+    "to" 'olivetti-mode
+    "tT" 'counsel-load-theme
+    "tr" 'rainbow-mode
+    "tw" 'whitespace-mode
+    "tm" 'toggle-frame-maximized
+    "tn" 'display-line-numbers-mode
+    "tt" 'toggle-truncate-lines
+    "ti" 'highlight-indent-guides-mode
+    "te" 'toggle-indicate-empty-lines
 
-   "q" '(:ignore t :which-key "Quit")
-   "qq" 'kill-emacs
-   "qr" 'restart-emacs)
-  (general-define-key
-   :states '(normal visual insert emacs motion)
-   :keymaps 'override
-   :prefix my-local-leader
-   :non-normal-prefix my-non-normal-local-leader
-   "" '(nil :which-key "Local")))
+    "q" '(:ignore t :which-key "Quit")
+    "qq" 'kill-emacs
+    "qr" 'restart-emacs)
+  (my-local-leader-def
+    "" '(nil :which-key "Local")))
 
 (use-package evil
   :custom
   (evil-want-keybinding nil)
   (evil-split-window-below t)
   (evil-vsplit-window-right t)
-  (evil-emacs-state-cursor '(box (face-foreground 'warning)))
+  (evil-emacs-state-cursor 'hbar)
   (evil-mode-line-format nil)
   :config
+  ;; TODO move to :general section
+  (general-define-key :keymaps 'evil-window-map
+                      "u" 'winner-undo
+                      "U" 'winner-redo)
   (evil-mode 1))
 
 (use-package evil-collection
@@ -179,22 +211,21 @@
 
 (use-package evil-org
   :after org evil
-  :hook
-  (org-mode . evil-org-mode)
   :custom
   (evil-org-special-o/O '(item table-row))
-  (evil-org-key-theme '(todo textobjects insert navigation heading)))
+  (evil-org-key-theme '(todo textobjects insert navigation heading))
+  :hook
+  (org-mode . evil-org-mode))
 
 (use-package emacs
   :ensure nil
   :custom
   (inhibit-startup-screen t)
-  (initial-major-mode 'text-mode)
+  (initial-scratch-message nil)
   (use-dialog-box nil)
   (enable-recursive-minibuffers t)
-  (indent-tabs-mode nil)
-  (create-lockfiles nil)
-  (debug-on-quit nil)
+  (indent-tabs-mode nil "Don't use tabs")
+  (create-lockfiles nil "Stop creating .# files")
   (frame-resize-pixelwise t)
   (window-resize-pixelwise t)
   (inhibit-compacting-font-caches t)
@@ -203,6 +234,8 @@
   (scroll-margin 0)
   (scroll-conservatively 101)
   (ring-bell-function 'ignore)
+  :hook
+  (focus-out-hook . garbage-collect)
   :config
   (defalias 'yes-or-no-p 'y-or-n-p))
 
@@ -210,52 +243,17 @@
   :ensure nil
   :custom
   (require-final-newline t)
-  (make-backup-files nil)
+  (make-backup-files nil "Stop creating backup~ files")
+  (auto-save-default nil "Stop creating #autosave# files")
   (enable-local-variables :all)
   (enable-local-eval t))
 
-(use-package uniquify
-  :ensure nil
+(use-package autorevert
   :custom
-  (uniquify-buffer-name-style 'forward))
-
-(use-package delsel
-  :ensure nil
+  (auto-revert-verbose nil)
+  (global-auto-revert-non-file-buffers t)
   :config
-  (delete-selection-mode 1))
-
-(use-package ns-win
-  :ensure nil
-  :custom
-  (mac-command-modifier 'meta))
-
-(use-package paren
-  :ensure nil
-  :config
-  (show-paren-mode t))
-
-(use-package simple
-  :ensure nil
-  :custom
-  (backward-delete-char-untabify-method 'untabify)
-  :config
-  (column-number-mode 1))
-
-(use-package cus-edit
-  :ensure nil
-  :custom
-  ;; alternatively, one can use `(make-temp-file "emacs-custom")'
-  (custom-file null-device "Don't store customizations"))
-
-(use-package calendar
-  :ensure nil
-  :custom
-  (calendar-week-start-day 1))
-
-(use-package ibuffer
-  :ensure nil
-  :general
-  ([remap list-buffers] 'ibuffer))
+  (global-auto-revert-mode))
 
 (use-package savehist
   :ensure nil
@@ -267,12 +265,49 @@
   :config
   (save-place-mode))
 
-(use-package tramp
-  :defer t
+(use-package super-save
+  :config
+  (super-save-mode +1))
+
+(use-package ibuffer
+  :ensure nil
+  :general ([remap list-buffers] 'ibuffer))
+
+(use-package uniquify
   :ensure nil
   :custom
-  (tramp-default-method "ssh")
-  (tramp-default-proxies-alist nil))
+  (uniquify-buffer-name-style 'forward))
+
+(use-package winner
+  :ensure nil
+  :config
+  (winner-mode 1))
+
+(use-package winum
+  :demand
+  :general
+  (:keymaps 'evil-window-map
+            "'" 'winum-select-window-by-number
+            "0" 'winum-select-window-0-or-10
+            "1" 'winum-select-window-1
+            "2" 'winum-select-window-2
+            "3" 'winum-select-window-3
+            "4" 'winum-select-window-4
+            "5" 'winum-select-window-5
+            "6" 'winum-select-window-6
+            "7" 'winum-select-window-7
+            "8" 'winum-select-window-8
+            "9" 'winum-select-window-9)
+  :custom
+  (winum-auto-setup-mode-line nil "For spaceline")
+  (winum-scope 'frame-local)
+  :config
+  (winum-mode))
+
+(use-package cus-edit
+  :ensure nil
+  :custom
+  (custom-file null-device "Don't store customizations"))
 
 (use-package helpful
   :defer t
@@ -288,8 +323,180 @@
 (use-package which-key
   :custom
   (which-key-idle-delay 0.5)
+  (which-key-sort-uppercase-first nil)
   :config
   (which-key-mode +1))
+
+(use-package undo-tree
+  :defer t
+  :custom
+  (undo-tree-auto-save-history t)
+  ;; undo-in-region is known to cause undo history corruption, which can
+  ;; be very destructive! Disabling it deters the error, but does not fix
+  ;; it entirely!
+  (undo-tree-enable-undo-in-region nil)
+  (undo-tree-history-directory-alist `(("." . ,(concat user-emacs-directory "/.cache/undo-tree"))))
+  :config
+  (global-undo-tree-mode t))
+
+(use-package paradox
+  :defer 5
+  :custom
+  (paradox-execute-asynchronously t)
+  (paradox-github-token t "Don't ask github token")
+  :config
+  (paradox-enable))
+
+(use-package calendar
+  :ensure nil
+  :custom
+  (calendar-date-style 'iso)
+  (calendar-week-start-day 1))
+
+(use-package tramp
+  :ensure nil
+  :defer t
+  :custom
+  (tramp-default-method "ssh")
+  (tramp-default-proxies-alist nil))
+
+(use-package epa
+  :ensure nil
+  :defer t
+  :custom
+  (epa-pinentry-mode 'loopback))
+
+(use-package dired
+  :ensure nil
+  :custom
+  (dired-auto-revert-buffer t)
+  (dired-dwim-target t)
+  (dired-hide-details-hide-symlink-targets nil)
+  :hook
+  (dired-mode . dired-hide-details-mode))
+
+(use-package dired-hide-dotfiles
+  :after dired
+  :general (dired-mode-map "." 'dired-hide-dotfiles-mode)
+  :hook (dired-mode . dired-hide-dotfiles-mode))
+
+(use-package async
+  :after dired
+  :config (dired-async-mode t))
+
+(use-package eshell
+  :ensure nil
+  :defer t)
+
+(use-package em-smart
+  :ensure nil
+  :after eshell
+  :config (eshell-smart-initialize))
+
+(use-package esh-autosuggest
+  :after eshell
+  :hook (eshell-mode . esh-autosuggest-mode))
+
+(use-package eshell-fringe-status
+  :after eshell
+  :hook (eshell-mode . eshell-fringe-status-mode))
+
+(use-package ediff
+  :ensure nil
+  :defer t
+  :custom
+  (ediff-window-setup-function 'ediff-setup-windows-plain)
+  (ediff-split-window-function 'split-window-horizontally)
+  (ediff-merge-split-window-function 'split-window-horizontally)
+  :hook
+  (ediff-prepare-buffer . show-all)
+  (ediff-quit . winner-undo))
+
+(use-package ivy
+  :defer 0.5
+  :general
+  ([remap switch-to-buffer] 'ivy-switch-buffer)
+  (ivy-mode-map
+   "C-j" 'ivy-next-line
+   "C-k" 'ivy-previous-line)
+  :custom
+  (ivy-wrap t)
+  (ivy-fixed-height-minibuffer t)
+  (ivy-initial-inputs-alist nil "Don't use ^ as initial input")
+  (ivy-format-function 'ivy-format-function-line "highlight til EOL")
+  (ivy-use-virtual-buffers nil "don't show recent files in switch-buffer")
+  (ivy-virtual-abbreviate 'full)
+  (ivy-on-del-error-function nil)
+  (ivy-use-selectable-prompt t)
+  :config
+  (ivy-mode +1))
+
+(use-package hydra
+  :defer 0.5)
+
+(use-package ivy-hydra
+  :after ivy hydra)
+
+(use-package ivy-rich
+  :after ivy
+  :config
+  (ivy-rich-mode 1))
+
+(use-package counsel
+  :after ivy
+  :commands counsel-describe-face
+  :general
+  ([remap apropos]                  'counsel-apropos)
+  ([remap bookmark-jump]            'counsel-bookmark)
+  ([remap describe-face]            'counsel-describe-face)
+  ([remap describe-function]        'counsel-describe-function)
+  ([remap describe-variable]        'counsel-describe-variable)
+  ([remap execute-extended-command] 'counsel-M-x)
+  ([remap find-file]                'counsel-find-file)
+  ([remap find-library]             'counsel-find-library)
+
+  ([remap info-lookup-symbol]       'counsel-info-lookup-symbol)
+  ([remap imenu]                    'counsel-imenu)
+  ([remap recentf-open-files]       'counsel-recentf)
+  ([remap org-capture]              'counsel-org-capture)
+  ([remap swiper]                   'counsel-grep-or-swiper)
+  :custom
+  (counsel-describe-function-function 'helpful-callable)
+  (counsel-describe-variable-function 'helpful-variable))
+
+(use-package flx
+  :after ivy
+  :custom
+  (ivy-re-builders-alist '((counsel-ag . ivy--regex-plus)
+                           (counsel-grep . ivy--regex-plus)
+                           (swiper . ivy--regex-plus)
+                           (t . ivy--regex-fuzzy))))
+
+(use-package counsel-projectile
+  :after projectile counsel
+  :general
+  ([remap projectile-find-file]        'counsel-projectile-find-file)
+  ([remap projectile-find-dir]         'counsel-projectile-find-dir)
+  ([remap projectile-switch-to-buffer] 'counsel-projectile-switch-to-buffer)
+  ([remap projectile-grep]             'counsel-projectile-grep)
+  ([remap projectile-ag]               'counsel-projectile-ag)
+  ([remap projectile-switch-project]   'counsel-projectile-switch-project))
+
+(use-package ns-win
+  :if (memq window-system '(mac ns))
+  :ensure nil
+  :custom
+  (mac-command-modifier 'meta))
+
+(use-package browse-url
+  :ensure nil
+  :config
+  (let ((cmd-exe "/mnt/c/Windows/System32/cmd.exe")
+        (cmd-args '("/c" "start")))
+    (when (file-exists-p cmd-exe)
+      (setq browse-url-generic-program  cmd-exe
+            browse-url-generic-args     cmd-args
+            browse-url-browser-function 'browse-url-generic))))
 
 (use-package restart-emacs
   :defer t
@@ -313,85 +520,29 @@
   :custom
   (iqa-user-init-file (concat user-emacs-directory "config.org")))
 
+(use-package shell-pop
+  :defer t
+  :commands shell-pop
+  :general ("M-`" 'shell-pop)
+  :custom
+  (shell-pop-full-span t "Spans full width of a window")
+  (shell-pop-shell-type '("eshell" "*eshell-pop*" (lambda () (eshell)))))
+
 (use-package exec-path-from-shell
   :defer 0.1
   :config
   (exec-path-from-shell-initialize))
 
-(use-package undo-tree
+(use-package which-key
   :defer t
   :custom
-  (undo-tree-auto-save-history t)
-  ;; undo-in-region is known to cause undo history corruption, which can
-  ;; be very destructive! Disabling it deters the error, but does not fix
-  ;; it entirely!
-  (undo-tree-enable-undo-in-region nil)
-  (undo-tree-history-directory-alist `(("." . ,(concat user-emacs-directory "/.cache/undo-tree"))))
+  (which-key-idle-delay 0.5)
+  (which-key-sort-uppercase-first nil)
   :config
-  (global-undo-tree-mode t))
-
-(use-package autorevert
-  :custom
-  (auto-revert-verbose nil)
-  :config
-  (global-auto-revert-mode))
-
-(use-package epa
-  :ensure nil
-  :defer t
-  :custom
-  (epa-pinentry-mode 'loopback))
-
-(use-package dired
-  :ensure nil
-  :custom
-  (dired-dwim-target t)
-  (dired-hide-details-hide-symlink-targets nil)
-  :hook
-  (dired-mode . dired-hide-details-mode))
-
-;; (use-package dired-hide-dotfiles
-;;   :general
-;;   (:keymaps 'dired-mode-map :states '(normal emacs)
-;; 	    "." 'dired-hide-dotfiles-mode)
-;;   :hook
-;;   (dired-mode . dired-hide-dotfiles-mode))
-
-(use-package async
-  :after dired
-  :config
-  (dired-async-mode t))
-
-(use-package eshell
-  :ensure nil)
-
-(use-package em-smart
-  :ensure nil
-  :config
-  (eshell-smart-initialize))
-
-(use-package esh-autosuggest
-  :hook
-  (eshell-mode . esh-autosuggest-mode))
-
-(use-package eshell-fringe-status
-  :hook
-  (eshell-mode . eshell-fringe-status-mode))
-
-(use-package auto-compile
-  :config
-  (auto-compile-on-load-mode 1)
-  (auto-compile-on-save-mode 1)
-  :custom
-  (auto-compile-display-buffer nil)
-  (auto-compile-mode-line-counter t))
+  (which-key-mode +1))
 
 (use-package faces
   :ensure nil
-  :custom-face
-  (mode-line ((t :inherit mode-line :box nil :underline nil :overline nil)))
-  (mode-line-inactive ((t (:inherit mode-line-inactive :box nil :underline nil :overline nil))))
-  (org-tag ((t (:inherit shadow))))
   :config
   (set-face-attribute 'default nil :font "Fira Mono 14"))
 
@@ -435,6 +586,12 @@
 	;; '(left-curly-arrow right-curly-arrow) ;; default
 	))
 
+(use-package faces
+  :ensure nil
+  :custom-face
+  (mode-line ((t :inherit mode-line :box nil :underline nil :overline nil)))
+  (mode-line-inactive ((t (:inherit mode-line-inactive :box nil :underline nil :overline nil)))))
+
 (use-package feebleline
   :disabled
   :custom
@@ -468,7 +625,7 @@
   (spaceline-highlight-face-func 'spaceline-highlight-face-evil-state))
 
 (use-package spaceline-segments
-  :ensure nil
+  :ensure spaceline
   :defer t
   :custom
   (spaceline-minor-modes-p nil)
@@ -483,7 +640,7 @@
   (spaceline-org-pomodoro-p t))
 
 (use-package spaceline-config
-  :ensure nil
+  :ensure spaceline
   :preface
   (defun spaceline-custom-theme (&rest additional-segments)
     "My custom spaceline theme."
@@ -501,14 +658,19 @@
   (spaceline-custom-theme))
 
 (use-package hide-mode-line
-  :hook
-  (treemacs-mode . hide-mode-line-mode))
+  :defer t
+  :hook (treemacs-mode . hide-mode-line-mode))
 
 (use-package solarized-theme
   :custom
-  (solarized-use-variable-pitch nil)
-  (solarized-scale-outline-headlines nil)
-  (solarized-scale-org-headlines nil)
+  ;; (solarized-distinct-fringe-background t "Make the fringe stand out from the background")
+  (solarized-use-variable-pitch nil "Don't change the font for some headings and titles")
+  ;; (solarized-high-contrast-mode-line t "Make the modeline high contrast")
+  ;; (solarized-use-less-bold t "Use less bolding")
+  (solarized-use-more-italic t "Use more italics")
+  (solarized-emphasize-indicators nil "Use less colors for indicators such as git:gutter, flycheck and similar")
+  (solarized-scale-org-headlines nil "Don't change size of org-mode headlines (but keep other size-changes)")
+  ;; Avoid all font-size changes
   (solarized-height-minus-1 1.0)
   (solarized-height-plus-1 1.0)
   (solarized-height-plus-2 1.0)
@@ -517,105 +679,30 @@
   :config
   (load-theme 'solarized-light t))
 
-(use-package solaire-mode
-  :disabled t
-  :hook
-  ((change-major-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
-  (minibuffer-setup-hook . solaire-mode-in-minibuffer)
+(use-package delsel
+  :ensure nil
   :config
-  (solaire-mode-swap-bg))
+  (delete-selection-mode 1))
 
-(use-package ivy
-  :defer 2
-  :general
-  ([remap switch-to-buffer] 'ivy-switch-buffer)
-  (:keymaps 'ivy-mode-map
-	    "C-j" 'ivy-next-line
-	    "C-k" 'ivy-previous-line)
+(use-package simple
+  :ensure nil
   :custom
-  (ivy-wrap t)
-  (ivy-fixed-height-minibuffer t)
-  (ivy-initial-inputs-alist nil "Don't use ^ as initial input")
-  (ivy-format-function 'ivy-format-function-line "highlight til EOL")
-  (ivy-use-virtual-buffers nil "don't show recent files in switch-buffer")
-  (ivy-virtual-abbreviate 'full)
-  (ivy-on-del-error-function nil)
-  (ivy-use-selectable-prompt t)
+  (backward-delete-char-untabify-method 'untabify)
   :config
-  (ivy-mode +1))
+  (column-number-mode 1))
 
-(use-package hydra
-  :defer 2)
-
-(use-package ivy-hydra
-  :after ivy hydra
-  :defer 2)
-
-(use-package ivy-rich
-  :after ivy
-  :defer 2
-  :config
-  (ivy-rich-mode 1))
-
-(use-package counsel
-  :after ivy
-  :defer 2
-  :commands counsel-describe-face
-  :general
-  ([remap apropos]                  'counsel-apropos)
-  ([remap bookmark-jump]            'counsel-bookmark)
-  ([remap describe-face]            'counsel-describe-face)
-  ([remap describe-function]        'counsel-describe-function)
-  ([remap describe-variable]        'counsel-describe-variable)
-  ([remap execute-extended-command] 'counsel-M-x)
-  ([remap find-file]                'counsel-find-file)
-  ([remap find-library]             'counsel-find-library)
-
-  ([remap info-lookup-symbol]       'counsel-info-lookup-symbol)
-  ([remap imenu]                    'counsel-imenu)
-  ([remap recentf-open-files]       'counsel-recentf)
-  ([remap org-capture]              'counsel-org-capture)
-  ([remap swiper]                   'counsel-grep-or-swiper)
-  :custom
-  (counsel-describe-function-function 'helpful-callable)
-  (counsel-describe-variable-function 'helpful-variable))
-
-(use-package flx
-  :defer 2
-  :custom
-  (ivy-re-builders-alist '((counsel-ag . ivy--regex-plus)
-			   (counsel-grep . ivy--regex-plus)
-			   (swiper . ivy--regex-plus)
-			   (t . ivy--regex-fuzzy))))
-
-(use-package counsel-projectile
-  :defer 2
-  :after projectile
-  :general
-  ([remap projectile-find-file]        'counsel-projectile-find-file)
-  ([remap projectile-find-dir]         'counsel-projectile-find-dir)
-  ([remap projectile-switch-to-buffer] 'counsel-projectile-switch-to-buffer)
-  ([remap projectile-grep]             'counsel-projectile-grep)
-  ([remap projectile-ag]               'counsel-projectile-ag)
-  ([remap projectile-switch-project]   'counsel-projectile-switch-project))
-
-(use-package highlight-numbers
+(use-package rainbow-mode
   :defer t
-  :hook
-  ((prog-mode conf-mode) . highlight-numbers-mode))
+  :hook css-mode)
 
-(use-package highlight-escape-sequences
-  :defer t
-  :hook
-  ((prog-mode conf-mode) . highlight-escape-sequences-mode))
+(use-package paren
+  :ensure nil
+  :config
+  (show-paren-mode t))
 
 (use-package rainbow-delimiters
   :defer t
   :hook ((prog-mode conf-mode) . rainbow-delimiters-mode))
-
-(use-package rainbow-mode
-  :defer t
-  :hook css-mode-hook)
 
 (use-package smartparens
   :defer t
@@ -640,11 +727,28 @@
   :config
   (global-hl-line-mode 1))
 
+(use-package hl-todo
+  :defer t
+  :hook ((prog-mode conf-mode) . hl-todo-mode))
+
+(use-package highlight-indent-guides
+  :defer t
+  :commands highlight-indent-guides-mode)
+
+(use-package editorconfig
+  :defer t
+  :hook ((prog-mode conf-mode) . editorconfig-mode))
+
+(use-package display-line-numbers
+  :ensure nil
+  :defer t
+  :custom
+  (display-line-numbers-width-start 1))
+
 (use-package company
-  :hook
-  (after-init . global-company-mode)
+  :defer t
   :general
-  ("C-@" 'company-complete)
+  ("C-;" 'company-complete)
   :custom
   (company-minimum-prefix-length 1)
   (company-require-match 'never)
@@ -655,7 +759,9 @@
   (company-tooltip-flip-when-above t)
   (company-dabbrev-code-other-buffers t)
   (company-dabbrev-ignore-case nil)
-  (company-dabbrev-downcase nil))
+  (company-dabbrev-downcase nil)
+  :hook
+  (after-init . global-company-mode))
 
 (use-package company-shell
   :after company
@@ -672,9 +778,14 @@
   :config
   (company-statistics-mode))
 
+(use-package hideshow
+  :ensure nil
+  :defer t
+  :hook (prog-mode . hs-minor-mode))
+
 (use-package treemacs
   :defer t
-  :commands treemacs
+  :commands treemacs-select-window
   :custom
   (treemacs-collapse-dirs (if (executable-find "python") 3 0))
   :config
@@ -699,37 +810,89 @@
   :config
   (use-package fringe-helper)
   (fringe-helper-define 'flycheck-fringe-bitmap-double-arrow 'center
-    "........"
-    "..XX..XX"
-    ".XX..XX."
-    "XX..XX.."
-    ".XX..XX."
-    "..XX..XX"
-    "........"))
+    ".....X.."
+    "....XX.."
+    "...XXX.."
+    "..XXXX.."
+    "...XXX.."
+    "....XX.."
+    ".....X.."))
 
 (use-package dumb-jump
   :defer t
+  :preface
+  (defhydra dumb-jump-hydra (:color blue :columns 3)
+    "Dumb Jump"
+    ("j" dumb-jump-go "Go")
+    ("o" dumb-jump-go-other-window "Other window")
+    ("e" dumb-jump-go-prefer-external "Go external")
+    ("x" dumb-jump-go-prefer-external-other-window "Go external other window")
+    ("i" dumb-jump-go-prompt "Prompt")
+    ("l" dumb-jump-quick-look "Quick look")
+    ("b" dumb-jump-back "Back"))
   :custom
   (dumb-jump-selector 'ivy))
+
+(use-package lisp
+  :ensure nil
+  :hook
+  (after-save . check-parens))
+
+(use-package highlight-defined
+  :defer t
+  :hook
+  (emacs-lisp-mode . highlight-defined-mode))
+
+(use-package highlight-quoted
+  :defer t
+  :hook
+  (emacs-lisp-mode . highlight-quoted-mode))
+
+(use-package eros
+  :defer t
+  :hook
+  (emacs-lisp-mode . eros-mode))
 
 (use-package clojure-mode
   :defer t)
 
-(use-package clojure-mode-extra-font-locking)
+(use-package clojure-mode-extra-font-locking
+  :defer t)
 
 (use-package clojure-snippets
   :defer t)
 
 (use-package cider
-  :defer t)
+  :defer t
+  :general
+  (my-local-leader-def :keymaps 'clojure-mode-map
+    "'" 'cider-jack-in)
+  :custom
+  (cider-repl-use-pretty-printing t)
+  (cider-repl-pop-to-buffer-on-connect 'display-only)
+  (cider-repl-history-display-style 'one-line)
+  (cider-repl-history-highlight-current-entry t)
+  (cider-repl-history-highlight-inserted-item t))
 
 (use-package clj-refactor
   :after clojure-mode
   :defer t
+  :general
+  (my-local-leader-def :keymaps 'clojure-mode-map
+    "r" 'hydra-cljr-help-menu/body)
   :hook
   (clojure-mode . clj-refactor-mode))
 
+(use-package eldoc
+  :ensure nil
+  :hook
+  ((clojure-mode cider-repl-mode) . eldoc-mode))
+
 (use-package projectile
+  :defer t
+  :general
+  (my-leader-def
+    "p" '(:keymap projectile-command-map :which-key "Projects"))
   :custom
   (projectile-enable-caching t)
   (projectile-completion-system 'ivy)
@@ -738,6 +901,7 @@
 
 (use-package magit
   :defer t
+  :commands magit-status
   :custom
   (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
   (magit-repository-directories `((,user-emacs-directory . 0)
@@ -745,8 +909,6 @@
 
 (use-package magit-todos
   :after magit
-  :defer t
-  :commands magit-status
   :config
   (magit-todos-mode))
 
@@ -754,33 +916,33 @@
   :defer t
   :commands git-timemachine)
 
-(use-package git-gutter-fringe
-  :disabled
-  :config
-  (use-package fringe-helper)
-  (fringe-helper-define 'git-gutter-fr:added '(center repeated)
-    "XXX.....")
-  (fringe-helper-define 'git-gutter-fr:deleted 'bottom
-    "X......."
-    "XX......"
-    "XXX....."
-    "XXXX....")
-  (fringe-helper-define 'git-gutter-fr:modified '(center repeated)
-    "XXX.....")
-  (global-git-gutter-mode t))
-
 (use-package gitignore-mode
-  :mode ("^.gitignore$" . gitignore-mode))
+  :defer t)
+
+(use-package gitignore-templates
+  :defer t
+  :commands
+  gitignore-templates-insert
+  gitignore-templates-new-file
+  :general
+  (my-local-leader-def :keymaps 'gitignore-mode-map
+    "i" 'gitignore-templates-insert))
 
 (use-package diff-hl
+  :defer t
+  :custom
+  (diff-hl-draw-borders nil)
   :hook
-  (magit-post-refresh . diff-hl-magit-post-refresh)
   ((prog-mode conf-mode org-mode) . diff-hl-mode)
-  (dired-mode . diff-hl-dired-mode))
+  (diff-hl-mode . diff-hl-flydiff-mode)
+  (dired-mode . diff-hl-dired-mode)
+  (magit-post-refresh . diff-hl-magit-post-refresh))
 
 (use-package org
   :ensure org-plus-contrib
-  :defer 1
+  :defer t
+  :custom-face
+  (org-tag ((t (:inherit shadow))))
   :custom
   (org-startup-indented t)
   (org-tags-column 0)
@@ -788,8 +950,6 @@
   ;; (org-ellipsis " ▼ ")
   (org-ellipsis "  ")
   (org-pretty-entities t)
-
-  (org-use-speed-commands t)
 
   (org-src-fontify-natively t)
   (org-src-tab-acts-natively t)
@@ -806,7 +966,6 @@
 
 (use-package org-bullets
   :after org
-  :defer 1
   :custom
   ;; ♥ ● ◇ ✚ ✜ ☯ ◆ ♠ ♣ ♦ ☢ ❀ ◆ ◖ ▶
   ;; ► • ★ ▸
@@ -820,8 +979,8 @@
   (org-mode . toc-org-enable))
 
 (use-package docker
-  :commands docker
   :defer t
+  :commands docker
   :config
   (with-eval-after-load 'evil
     (evil-set-initial-state 'docker-container-mode 'emacs)
@@ -830,36 +989,54 @@
     (evil-set-initial-state 'docker-volume-mode 'emacs)
     (evil-set-initial-state 'docker-machine-mode 'emacs)))
 
-(use-package docker-tramp)
+(use-package docker-tramp
+  :defer t)
 
-(use-package dockerfile-mode)
+(use-package dockerfile-mode
+  :defer t
+  :general
+  (my-local-leader-def :keymaps 'dockerfile-mode-map
+    "b" 'dockerfile-build-buffer
+    "B" 'dockerfile-build-no-cache-buffer))
+
+(use-package docker-compose-mode
+  :defer t
+  :general
+  (my-local-leader-def :keymaps 'docker-compose-mode-map
+    "m" 'docker-compose))
 
 (use-package yaml-mode
-  :mode "Procfile\\'"
-  :hook (yaml-mode . ansible))
+  :defer t
+  :mode "Procfile\\'")
 
 (use-package ansible
+  :defer t
   :commands ansible::auto-decrypt-encrypt
+  :mode
+  ".*\\(main\\|site\\|encrypted\\)\.yml" ;; single files
+  ".*\\(roles/.+\.yml\\|inventories/.+\\|group_vars/.+\\|host_vars/.+\\)" ;; inside directories
+  :general
+  (my-local-leader-def :keymaps 'ansible::key-map
+    "d" 'ansible::decrypt-buffer
+    "e" 'ansible::encrypt-buffer
+    "h" 'ansible-doc)
   :init
   (put 'ansible::vault-password-file 'safe-local-variable #'stringp)
-  :hook
-  (ansible . ansible::auto-decrypt-encrypt)
-  :general
-  (:keymaps 'ansible::key-map :states '(normal visual insert emacs motion) :prefix my-local-leader
-            "d" 'ansible::decrypt-buffer
-            "e" 'ansible::encrypt-buffer
-            "h" 'ansible-doc)
   :custom-face
   (ansible::section-face ((t (:inherit 'font-lock-variable-name-face))))
-  (ansible::task-label-face ((t (:inherit 'font-lock-doc-face)))))
+  (ansible::task-label-face ((t (:inherit 'font-lock-doc-face))))
+  :hook
+  (ansible . ansible::auto-decrypt-encrypt))
 
 (use-package ansible-doc
+  :after ansible
   :hook
   (ansible . ansible-doc-mode)
   :config
   (evil-set-initial-state 'ansible-doc-module-mode 'emacs))
 
 (use-package jinja2-mode
+  :defer t
   :mode "\\.j2\\'")
 
 (use-package company-ansible
@@ -874,7 +1051,6 @@
 
 (use-package ob-restclient
   :after org restclient
-  :defer t
   :init
   (org-babel-do-load-languages
    'org-babel-load-languages
@@ -882,7 +1058,6 @@
 
 (use-package company-restclient
   :after company restclient
-  :defer t
   :config
   (add-to-list 'company-backends 'company-restclient))
 
@@ -904,22 +1079,16 @@
   :custom (olivetti-body-width 100))
 
 (use-package crux
-  :defer t)
+  :defer t
+  :commands
+  crux-rename-buffer-and-file
+  crux-delete-buffer-and-file
+  crux-rename-file-and-buffer
+  crux-delete-file-and-buffer)
 
 (use-package link-hint
+  :defer t
   :commands link-hint-open-link)
 
-(use-package browse-url
-  :ensure nil
-  :config
-  (when (file-directory-p "/mnt/c/Windows/System32/cmd.exe")
-    (let ((cmd-exe "/mnt/c/Windows/System32/cmd.exe")
-          (cmd-args '("/c" "start")))
-      (when (file-exists-p cmd-exe)
-        (setq browse-url-generic-program  cmd-exe
-              browse-url-generic-args     cmd-args
-              browse-url-browser-function 'browse-url-generic)))))
-
-;; Local Variables:
-;; eval: (add-hook 'after-save-hook (lambda () (org-babel-tangle)) nil t)
-;; End:
+(setq debug-on-error nil)
+(setq debug-on-quit nil)
