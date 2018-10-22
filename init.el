@@ -234,6 +234,7 @@
   (scroll-margin 0)
   (scroll-conservatively 101)
   (ring-bell-function 'ignore)
+  (delete-by-moving-to-trash t)
   :hook
   (focus-out-hook . garbage-collect)
   :config
@@ -397,16 +398,20 @@
 (use-package dired
   :ensure nil
   :custom
+  (dired-listing-switches "-aBhl --group-directories-first")
   (dired-auto-revert-buffer t)
   (dired-dwim-target t)
+  (dired-recursive-copies 'always "Never prompt for recursive copies of a directory")
+  (dired-recursive-deletes 'always "Never prompt for recursive deletes of a directory")
   (dired-hide-details-hide-symlink-targets nil)
   :hook
   (dired-mode . dired-hide-details-mode))
 
 (use-package dired-hide-dotfiles
   :after dired
-  :general (dired-mode-map "." 'dired-hide-dotfiles-mode)
-  :hook (dired-mode . dired-hide-dotfiles-mode))
+  :general
+  (:keymaps 'dired-mode-map :states 'normal
+            "." 'dired-hide-dotfiles-mode))
 
 (use-package async
   :after dired
@@ -515,6 +520,12 @@
   :ensure nil
   :custom
   (mac-command-modifier 'meta))
+
+(use-package files
+  :ensure nil
+  :if (memq window-system '(mac ns))
+  :custom
+  (insert-directory-program "gls"))
 
 (use-package browse-url
   :ensure nil
