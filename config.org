@@ -1281,37 +1281,50 @@ Table of Contents
 (use-package ansible
   :defer t
   :commands ansible::auto-decrypt-encrypt
-  :mode
-  ".*\\(main\\|site\\|encrypted\\)\.yml" ;; single files
-  ".*\\(roles/.+\.yml\\|inventories/.+\\|group_vars/.+\\|host_vars/.+\\)" ;; inside directories
+  :preface
+  ;; http://docs.ansible.com/playbooks_best_practices.html#directory-layout
+  (defconst my/ansible-filename-re
+    ".*\\(main\\|site\\|encrypted\\)\.yml")
+  (defconst my/ansible-filename-in-dir-re
+    ".*\\(ansible/\\|roles/\\|inventories/.+\\|group_vars/.+\\|host_vars/.+\\).+\.yml")
+  (defun my/ansible-enable? ()
+    (and (stringp buffer-file-name)
+         (or (string-match-p my/ansible-filename-re  buffer-file-name)
+             (string-match-p my/ansible-filename-in-dir-re buffer-file-name))))
+  (defun my/ansible-maybe-enable ()
+    (when (my/ansible-enable?)
+      (ansible 1)))
   :general
   (my-local-leader-def :keymaps 'ansible::key-map
     "d" 'ansible::decrypt-buffer
-    "e" 'ansible::encrypt-buffer
-    "h" 'ansible-doc)
+    "e" 'ansible::encrypt-buffer)
   :init
   (put 'ansible::vault-password-file 'safe-local-variable #'stringp)
   :custom-face
   (ansible::section-face ((t (:inherit 'font-lock-variable-name-face))))
   (ansible::task-label-face ((t (:inherit 'font-lock-doc-face))))
   :hook
+  (yaml-mode . my/ansible-maybe-enable)
   (ansible . ansible::auto-decrypt-encrypt))
 
 (use-package ansible-doc
   :after ansible
+  :general
+  (my-local-leader-def :keymaps 'ansible::key-map
+    "h" 'ansible-doc)
   :hook
   (ansible . ansible-doc-mode)
   :config
   (evil-set-initial-state 'ansible-doc-module-mode 'emacs))
 
-(use-package jinja2-mode
-  :defer t
-  :mode "\\.j2\\'")
+  (use-package jinja2-mode
+    :defer t
+    :mode "\\.j2\\'")
 
-(use-package company-ansible
-  :after company
-  :config
-  (add-to-list 'company-backends 'company-ansible))
+  (use-package company-ansible
+    :after company ansible
+    :config
+    (add-to-list 'company-backends 'company-ansible))
 #+END_SRC
 
 ** REST Client
