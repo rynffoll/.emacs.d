@@ -62,30 +62,26 @@
 
 (use-package general
   :preface
-  (defun my-switch-to-scratch ()
+  (defun my/switch-to-scratch ()
     (interactive)
     (switch-to-buffer "*scratch*"))
-  (defun my-switch-to-messages ()
+  (defun my/switch-to-messages ()
     (interactive)
     (switch-to-buffer "*Messages*"))
-  :init
-  (defconst my-leader "SPC")
-  (defconst my-local-leader "SPC m")
-  (defconst my-non-normal-leader "M-m")
-  (defconst my-non-normal-local-leader "M-m m")
   :config
-  (general-create-definer my-leader-def
+  (general-create-definer my/leader-def
     :states '(normal visual insert emacs motion)
     :keymaps 'override
-    :prefix my-leader
-    :non-normal-prefix my-non-normal-leader)
-  (general-create-definer my-local-leader-def
+    :prefix "SPC"
+    :non-normal-prefix "M-m")
+  (general-create-definer my/local-leader-def
     :states '(normal visual insert emacs motion)
     :keymaps 'override
-    :prefix my-local-leader
-    :non-normal-prefix my-non-normal-local-leader)
-  (my-leader-def
+    :prefix "SPC m"
+    :non-normal-prefix "M-m m")
+  (my/leader-def
     "" '(nil :which-key "Leader")
+    "." 'counsel-find-file
 
     "o" '(:ignore t :which-key "Open")
     "od" 'docker
@@ -106,8 +102,8 @@
     "bR" 'crux-rename-buffer-and-file
     "bD" 'crux-delete-buffer-and-file
     "bp" 'counsel-projectile
-    "bm" 'my-switch-to-messages
-    "bs" 'my-switch-to-scratch
+    "bm" 'my/switch-to-messages
+    "bs" 'my/switch-to-scratch
 
     "f" '(:ignore t :which-key "Files")
     "fd" 'counsel-dired-jump
@@ -140,7 +136,6 @@
     "h" '(:ignore t :which-key "Help")
     "h." 'helpful-at-point
     "hC" 'helpful-command
-    "hF" 'counsel-describe-face
     "hT" 'google-translate-at-point-reverse
     "hc" 'helpful-callable
     "hf" 'helpful-function
@@ -163,8 +158,8 @@
     "q" '(:ignore t :which-key "Quit")
     "qq" 'kill-emacs
     "qr" 'restart-emacs)
-  (my-local-leader-def
-    "" '(nil :which-key "Local")))
+  (my/local-leader-def
+    "" '(nil :which-key "Local Leader")))
 
 (use-package evil
   :custom
@@ -299,6 +294,18 @@
             "7" 'winum-select-window-7
             "8" 'winum-select-window-8
             "9" 'winum-select-window-9)
+  (my/leader-def
+    "'" 'winum-select-window-by-number
+    "0" 'winum-select-window-0-or-10
+    "1" 'winum-select-window-1
+    "2" 'winum-select-window-2
+    "3" 'winum-select-window-3
+    "4" 'winum-select-window-4
+    "5" 'winum-select-window-5
+    "6" 'winum-select-window-6
+    "7" 'winum-select-window-7
+    "8" 'winum-select-window-8
+    "9" 'winum-select-window-9)
   :custom
   (winum-auto-setup-mode-line nil "For spaceline")
   (winum-scope 'frame-local)
@@ -308,7 +315,7 @@
 (use-package eyebrowse
   :defer 1
   :general
-  (my-leader-def
+  (my/leader-def
     "w" '(:ignore t :which-key "Workspaces")
     "wk" 'eyebrowse-close-window-config
     "w TAB" 'eyebrowse-last-window-config
@@ -477,7 +484,6 @@
 
 (use-package counsel
   :after ivy
-  :commands counsel-describe-face
   :general
   ([remap apropos]                  'counsel-apropos)
   ([remap bookmark-jump]            'counsel-bookmark)
@@ -513,6 +519,7 @@
   ([remap projectile-switch-to-buffer] 'counsel-projectile-switch-to-buffer)
   ([remap projectile-grep]             'counsel-projectile-grep)
   ([remap projectile-ag]               'counsel-projectile-ag)
+  ([remap projectile-ripgrep]          'counsel-projectile-rg)
   ([remap projectile-switch-project]   'counsel-projectile-switch-project))
 
 (use-package ns-win
@@ -887,6 +894,12 @@
   :hook
   (emacs-lisp-mode . highlight-quoted-mode))
 
+(use-package erefactor
+  :defer t
+  :general
+  (my/local-leader-def :keymaps 'emacs-lisp-mode-map
+    "r" '(:keymap erefactor-map)))
+
 (use-package eros
   :defer t
   :hook
@@ -904,7 +917,7 @@
 (use-package cider
   :defer t
   :general
-  (my-local-leader-def :keymaps 'clojure-mode-map
+  (my/local-leader-def :keymaps 'clojure-mode-map
     "'" 'cider-jack-in)
   :custom
   (cider-repl-use-pretty-printing t)
@@ -917,7 +930,7 @@
   :after clojure-mode
   :defer t
   :general
-  (my-local-leader-def :keymaps 'clojure-mode-map
+  (my/local-leader-def :keymaps 'clojure-mode-map
     "r" 'hydra-cljr-help-menu/body)
   :hook
   (clojure-mode . clj-refactor-mode))
@@ -930,7 +943,7 @@
 (use-package projectile
   :defer t
   :general
-  (my-leader-def
+  (my/leader-def
     "p" '(:keymap projectile-command-map :which-key "Projects"))
   :custom
   (projectile-enable-caching t)
@@ -964,7 +977,7 @@
   gitignore-templates-insert
   gitignore-templates-new-file
   :general
-  (my-local-leader-def :keymaps 'gitignore-mode-map
+  (my/local-leader-def :keymaps 'gitignore-mode-map
     "i" 'gitignore-templates-insert))
 
 (use-package diff-hl
@@ -1034,14 +1047,14 @@
 (use-package dockerfile-mode
   :defer t
   :general
-  (my-local-leader-def :keymaps 'dockerfile-mode-map
+  (my/local-leader-def :keymaps 'dockerfile-mode-map
     "b" 'dockerfile-build-buffer
     "B" 'dockerfile-build-no-cache-buffer))
 
 (use-package docker-compose-mode
   :defer t
   :general
-  (my-local-leader-def :keymaps 'docker-compose-mode-map
+  (my/local-leader-def :keymaps 'docker-compose-mode-map
     "m" 'docker-compose))
 
 (use-package yaml-mode
@@ -1065,7 +1078,7 @@
     (when (my/ansible-enable?)
       (ansible 1)))
   :general
-  (my-local-leader-def :keymaps 'ansible::key-map
+  (my/local-leader-def :keymaps 'ansible::key-map
     "d" 'ansible::decrypt-buffer
     "e" 'ansible::encrypt-buffer)
   :init
@@ -1080,7 +1093,7 @@
 (use-package ansible-doc
   :after ansible
   :general
-  (my-local-leader-def :keymaps 'ansible::key-map
+  (my/local-leader-def :keymaps 'ansible::key-map
     "h" 'ansible-doc)
   :hook
   (ansible . ansible-doc-mode)
