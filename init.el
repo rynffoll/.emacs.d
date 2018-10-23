@@ -112,7 +112,6 @@
     "fR" 'crux-rename-file-and-buffer
     "fD" 'crux-delete-file-and-buffer
     "fp" 'projectile-find-file
-    "ft" 'treemacs-select-window
 
     "e" '(:ignore t :which-key "Emacs")
     "ed" 'iqa-find-user-init-directory
@@ -414,15 +413,56 @@
   :hook
   (dired-mode . dired-hide-details-mode))
 
+(use-package async
+  :after dired
+  :config
+  (dired-async-mode t))
+
 (use-package dired-hide-dotfiles
   :after dired
   :general
   (:keymaps 'dired-mode-map :states 'normal
-            "." 'dired-hide-dotfiles-mode))
+            "M-." 'dired-hide-dotfiles-mode))
 
-(use-package async
-  :after dired
-  :config (dired-async-mode t))
+(use-package dired-subtree
+  :defer t
+  :general
+  (:keymaps 'dired-mode-map :states 'normal
+            "TAB" 'dired-subtree-toggle)
+  :custom
+  (dired-subtree-use-backgrounds nil))
+
+(use-package dired-collapse
+  :defer t
+  :general
+  (:keymaps 'dired-mode-map :states 'normal
+            "M-c" 'dired-collapse-mode)
+  :hook
+  (dired-mode . dired-collapse-mode))
+
+(use-package dired-narrow
+  :defer t
+  :general
+  (:keymaps 'dired-mode-map :states 'normal
+            "M-n n" 'dired-narrow
+            "M-n f" 'ired-narrow-fuzzy
+            "M-n r" 'dired-narrow-regexp))
+
+(use-package vscode-icon
+  :defer t)
+
+(use-package dired-sidebar
+  :defer t
+  :general
+  ("M-f" 'dired-sidebar-toggle-sidebar)
+  :custom
+  (dired-sidebar-theme 'vscode)
+  (dired-sidebar-should-follow-file t)
+  (dired-sidebar-follow-file-idle-delay 0.5)
+  (dired-sidebar-toggle-hidden-commands '(balance-windows
+                                          evil-window-delete))
+  :config
+  (use-package vscode-icon))
 
 (use-package eshell
   :ensure nil
@@ -828,24 +868,6 @@
   :ensure nil
   :defer t
   :hook (prog-mode . hs-minor-mode))
-
-(use-package treemacs
-  :defer t
-  :commands treemacs-select-window
-  :custom
-  (treemacs-collapse-dirs (if (executable-find "python") 3 0))
-  :config
-  (treemacs-follow-mode t)
-  (treemacs-filewatch-mode t)
-  (treemacs-fringe-indicator-mode t)
-  (treemacs-git-mode 'deferred))
-
-(use-package treemacs-evil
-  :after treemacs evil)
-
-(use-package treemacs-projectile
-  :after treemacs projectile
-  :commands treemacs-projectile)
 
 (use-package flycheck
   :defer t
