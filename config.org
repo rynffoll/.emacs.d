@@ -1315,53 +1315,37 @@ Table of Contents
   :defer t
   :mode "Procfile\\'")
 
-(use-package ansible
+(use-package ansible-mode
+  :ensure nil
+  :quelpa (ansible-mode :fetcher github :repo "rynffoll/ansible-mode")
   :defer t
-  :commands ansible::auto-decrypt-encrypt
-  :preface
-  ;; http://docs.ansible.com/playbooks_best_practices.html#directory-layout
-  (defconst my/ansible-filename-re
-    ".*\\(main\\|site\\|encrypted\\)\.yml")
-  (defconst my/ansible-filename-in-dir-re
-    ".*\\(ansible/\\|roles/\\|inventories/.+\\|group_vars/.+\\|host_vars/.+\\).+\.yml")
-  (defun my/ansible-enable? ()
-    (and (stringp buffer-file-name)
-         (or (string-match-p my/ansible-filename-re  buffer-file-name)
-             (string-match-p my/ansible-filename-in-dir-re buffer-file-name))))
-  (defun my/ansible-maybe-enable ()
-    (when (my/ansible-enable?)
-      (ansible 1)))
   :general
-  (my/local-leader-def :keymaps 'ansible::key-map
-    "d" 'ansible::decrypt-buffer
-    "e" 'ansible::encrypt-buffer)
-  :init
-  (put 'ansible::vault-password-file 'safe-local-variable #'stringp)
-  :custom-face
-  (ansible::section-face ((t (:inherit 'font-lock-variable-name-face))))
-  (ansible::task-label-face ((t (:inherit 'font-lock-doc-face))))
+  (my/local-leader-def :keymaps 'ansible-mode-map
+    "d" 'ansible-mode-decrypt-buffer
+    "e" 'ansible-mode-encrypt-buffer)
+  :custom
+  (ansible-mode-enable-auto-decrypt-encrypt t)
   :hook
-  (yaml-mode . my/ansible-maybe-enable)
-  (ansible . ansible::auto-decrypt-encrypt))
+  (yaml-mode . ansible-mode-maybe-enable))
 
 (use-package ansible-doc
-  :after ansible
+  :after ansible-mode
   :general
-  (my/local-leader-def :keymaps 'ansible::key-map
+  (my/local-leader-def :keymaps 'ansible-mode-map
     "h" 'ansible-doc)
   :hook
-  (ansible . ansible-doc-mode)
+  (ansible-mode . ansible-doc-mode)
   :config
   (evil-set-initial-state 'ansible-doc-module-mode 'emacs))
 
-  (use-package jinja2-mode
-    :defer t
-    :mode "\\.j2\\'")
+(use-package jinja2-mode
+  :defer t
+  :mode "\\.j2\\'")
 
-  (use-package company-ansible
-    :after company ansible
-    :config
-    (add-to-list 'company-backends 'company-ansible))
+(use-package company-ansible
+  :after company ansible-mode
+  :config
+  (add-to-list 'company-backends 'company-ansible))
 #+END_SRC
 
 ** REST Client
