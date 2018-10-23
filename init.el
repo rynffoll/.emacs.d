@@ -481,6 +481,12 @@
   :after eshell
   :hook (eshell-mode . eshell-fringe-status-mode))
 
+(use-package eshell-prompt-extras
+  :after eshell
+  :custom
+  (eshell-highlight-prompt nil)
+  (eshell-prompt-function 'epe-theme-lambda))
+
 (use-package ediff
   :ensure nil
   :defer t
