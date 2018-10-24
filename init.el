@@ -137,11 +137,11 @@
     "hC" 'helpful-command
     "hT" 'google-translate-at-point-reverse
     "hc" 'helpful-callable
-    "hf" 'helpful-function
+    "hf" 'describe-function
     "hk" 'helpful-key
     "hm" 'helpful-macro
     "ht" 'google-translate-at-point
-    "hv" 'helpful-variable
+    "hv" 'describe-variable
 
     "t" '(:ignore t :which-key "Toggle")
     "to" 'olivetti-mode
@@ -448,9 +448,6 @@
             "M-n f" 'ired-narrow-fuzzy
             "M-n r" 'dired-narrow-regexp))
 
-(use-package vscode-icon
-  :defer t)
-
 (use-package dired-sidebar
   :defer t
   :general
@@ -460,9 +457,7 @@
   (dired-sidebar-should-follow-file t)
   (dired-sidebar-follow-file-idle-delay 0.5)
   (dired-sidebar-toggle-hidden-commands '(balance-windows
-                                          evil-window-delete))
-  :config
-  (use-package vscode-icon))
+                                          evil-window-delete)))
 
 (use-package eshell
   :ensure nil
@@ -499,7 +494,6 @@
   (ediff-quit . winner-undo))
 
 (use-package ivy
-  :defer 0.5
   :general
   ([remap switch-to-buffer] 'ivy-switch-buffer)
   (ivy-mode-map
@@ -514,22 +508,17 @@
   (ivy-virtual-abbreviate 'full)
   (ivy-on-del-error-function nil)
   (ivy-use-selectable-prompt t)
+  (ivy-re-builders-alist '((counsel-ag . ivy--regex-plus)
+                           (counsel-grep . ivy--regex-plus)
+                           (swiper . ivy--regex-plus)
+                           (t . ivy--regex-fuzzy)))
   :config
   (ivy-mode +1))
 
-(use-package hydra
-  :defer 0.5)
-
-(use-package ivy-hydra
-  :after ivy hydra)
-
-(use-package ivy-rich
-  :after ivy
-  :config
-  (ivy-rich-mode 1))
+(use-package swiper)
 
 (use-package counsel
-  :after ivy
+  :after swiper
   :general
   ([remap apropos]                  'counsel-apropos)
   ([remap bookmark-jump]            'counsel-bookmark)
@@ -549,16 +538,18 @@
   (counsel-describe-function-function 'helpful-callable)
   (counsel-describe-variable-function 'helpful-variable))
 
-(use-package flx
+(use-package hydra)
+
+(use-package ivy-hydra
+  :after ivy hydra)
+
+(use-package ivy-rich
   :after ivy
-  :custom
-  (ivy-re-builders-alist '((counsel-ag . ivy--regex-plus)
-                           (counsel-grep . ivy--regex-plus)
-                           (swiper . ivy--regex-plus)
-                           (t . ivy--regex-fuzzy))))
+  :config
+  (ivy-rich-mode 1))
 
 (use-package counsel-projectile
-  :after projectile counsel
+  :after counsel projectile
   :general
   ([remap projectile-find-file]        'counsel-projectile-find-file)
   ([remap projectile-find-dir]         'counsel-projectile-find-dir)
@@ -770,6 +761,9 @@
   (solarized-height-plus-4 1.0)
   :config
   (load-theme 'solarized-light t))
+
+(use-package vscode-icon
+  :defer t)
 
 (use-package delsel
   :ensure nil
