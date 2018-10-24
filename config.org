@@ -911,12 +911,9 @@ Quick access to shell
 ** Theme
 #+BEGIN_SRC emacs-lisp
 (use-package solarized-theme
+  :disabled
   :custom
-  ;; (solarized-distinct-fringe-background t "Make the fringe stand out from the background")
   (solarized-use-variable-pitch nil "Don't change the font for some headings and titles")
-  ;; (solarized-high-contrast-mode-line t "Make the modeline high contrast")
-  ;; (solarized-use-less-bold t "Use less bolding")
-  (solarized-use-more-italic t "Use more italics")
   (solarized-emphasize-indicators nil "Use less colors for indicators such as git:gutter, flycheck and similar")
   (solarized-scale-org-headlines nil "Don't change size of org-mode headlines (but keep other size-changes)")
   ;; Avoid all font-size changes
@@ -927,6 +924,16 @@ Quick access to shell
   (solarized-height-plus-4 1.0)
   :config
   (load-theme 'solarized-light t))
+
+(use-package spacemacs-common
+  :ensure spacemacs-theme
+  :custom
+  (spacemacs-theme-org-agenda-height nil)
+  (spacemacs-theme-org-bold t)
+  (spacemacs-theme-org-height nil)
+  (spacemacs-theme-org-highlight t)
+  :config
+  (load-theme 'spacemacs-light t))
 #+END_SRC
 
 ** Icons
