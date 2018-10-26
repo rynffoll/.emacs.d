@@ -88,8 +88,13 @@
     "ol" 'link-hint-open-link
     "oL" 'counsel-find-library
     "op" 'package-list-packages
-    "ot" 'shell-pop
     "oc" 'customize-group
+    "oo" '(:ignore t :which-key "Org")
+    "ooa" 'org-agenda
+    "oo." 'my/open-org-directory
+    "ooi" 'my/open-org-inbox-file
+    "oot" 'my/open-org-todo-file
+    "oon" 'my/open-org-notes-file
 
     "b" '(:ignore t :which-key "Buffers")
     "b TAB" 'evil-switch-to-windows-last-buffer
@@ -142,17 +147,19 @@
     "hm" 'helpful-macro
     "ht" 'google-translate-at-point
     "hv" 'describe-variable
+    "hF" 'counsel-faces
 
     "t" '(:ignore t :which-key "Toggle")
     "to" 'olivetti-mode
-    "tT" 'counsel-load-theme
+    "tt" 'counsel-load-theme
     "tr" 'rainbow-mode
     "tw" 'whitespace-mode
     "tm" 'toggle-frame-maximized
     "tn" 'display-line-numbers-mode
-    "tt" 'toggle-truncate-lines
+    "tT" 'toggle-truncate-lines
     "ti" 'highlight-indent-guides-mode
     "te" 'toggle-indicate-empty-lines
+    "tl" 'global-hl-line-mode
 
     "q" '(:ignore t :which-key "Quit")
     "qq" 'kill-emacs
@@ -316,7 +323,7 @@
   :general
   (my/leader-def
     "w" '(:ignore t :which-key "Workspaces")
-    "wk" 'eyebrowse-close-window-config
+    "wc" 'eyebrowse-close-window-config
     "w TAB" 'eyebrowse-last-window-config
     "wR" 'eyebrowse-rename-window-config
     "ww" 'eyebrowse-switch-to-window-config
@@ -413,6 +420,11 @@
   :hook
   (dired-mode . dired-hide-details-mode))
 
+(use-package dired-x
+  :ensure nil
+  :custom
+  (dired-bind-jump nil))
+
 (use-package async
   :after dired
   :config
@@ -432,14 +444,6 @@
   :custom
   (dired-subtree-use-backgrounds nil))
 
-(use-package dired-collapse
-  :defer t
-  :general
-  (:keymaps 'dired-mode-map :states 'normal
-            "M-c" 'dired-collapse-mode)
-  :hook
-  (dired-mode . dired-collapse-mode))
-
 (use-package dired-narrow
   :defer t
   :general
@@ -453,9 +457,7 @@
   :general
   ("M-f" 'dired-sidebar-toggle-sidebar)
   :custom
-  (dired-sidebar-theme 'vscode)
-  (dired-sidebar-should-follow-file t)
-  (dired-sidebar-follow-file-idle-delay 0.5)
+  (dired-sidebar-theme 'none)
   (dired-sidebar-toggle-hidden-commands '(balance-windows
                                           evil-window-delete)))
 
@@ -516,6 +518,8 @@
   (ivy-mode +1))
 
 (use-package swiper)
+
+(use-package smex)
 
 (use-package counsel
   :after swiper
@@ -669,48 +673,25 @@
 	;; '(left-curly-arrow right-curly-arrow) ;; default
 	))
 
+(use-package font-lock+
+  :ensure nil
+  :quelpa
+  (font-lock+ :repo "emacsmirror/font-lock-plus" :fetcher github))
+
 (use-package faces
   :ensure nil
   :custom-face
   (mode-line ((t :inherit mode-line :box nil :underline nil :overline nil)))
   (mode-line-inactive ((t (:inherit mode-line-inactive :box nil :underline nil :overline nil)))))
 
-(use-package feebleline
-  :disabled
-  :custom
-  (feebleline-show-git-branch t)
-  :config
-  (feebleline-mode 1))
-
-(use-package minions
-  :disabled
-  :custom
-  (minions-mode-line-lighter "[+]")
-  :config
-  (minions-mode))
-
-(use-package moody
-  :disabled
-  :custom
-  (x-underline-at-descent-line t)
-  :config
-  (moody-replace-mode-line-buffer-identification)
-  (moody-replace-vc-mode))
-
-(use-package powerline
+(use-package hide-mode-line
   :defer t
-  :custom
-  (powerline-default-separator nil))
+  :hook (treemacs-mode . hide-mode-line-mode))
 
 (use-package spaceline
-  :defer t
   :custom
-  (spaceline-highlight-face-func 'spaceline-highlight-face-evil-state))
-
-(use-package spaceline-segments
-  :ensure spaceline
-  :defer t
-  :custom
+  (powerline-default-separator nil)
+  (spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
   (spaceline-minor-modes-p nil)
   (spaceline-hud-p nil)
   (spaceline-purpose-p nil)
@@ -740,12 +721,7 @@
   :config
   (spaceline-custom-theme))
 
-(use-package hide-mode-line
-  :defer t
-  :hook (treemacs-mode . hide-mode-line-mode))
-
 (use-package solarized-theme
-  :disabled
   :custom
   (solarized-use-variable-pitch nil "Don't change the font for some headings and titles")
   (solarized-emphasize-indicators nil "Use less colors for indicators such as git:gutter, flycheck and similar")
@@ -760,6 +736,7 @@
   (load-theme 'solarized-light t))
 
 (use-package spacemacs-common
+  :disabled
   :ensure spacemacs-theme
   :custom
   (spacemacs-theme-org-agenda-height nil)
@@ -768,9 +745,6 @@
   (spacemacs-theme-org-highlight t)
   :config
   (load-theme 'spacemacs-light t))
-
-(use-package vscode-icon
-  :defer t)
 
 (use-package delsel
   :ensure nil
@@ -828,6 +802,10 @@
   :defer t
   :commands highlight-indent-guides-mode)
 
+(use-package highlight-numbers
+  :defer t
+  :hook ((prog-mode conf-mode) . highlight-numbers-mode))
+
 (use-package editorconfig
   :defer t
   :hook ((prog-mode conf-mode) . editorconfig-mode))
@@ -843,7 +821,7 @@
   :general
   ("C-;" 'company-complete)
   :custom
-  (company-minimum-prefix-length 1)
+  (company-minimum-prefix-length 2)
   (company-require-match 'never)
   (company-selection-wrap-around t)
   (company-tooltip-minimum-width 30)
@@ -870,6 +848,15 @@
   :after company
   :config
   (company-statistics-mode))
+
+(use-package anzu
+  :custom
+  (anzu-cons-mode-line-p nil)
+  :config
+  (global-anzu-mode +1))
+
+(use-package evil-anzu
+  :after evil anzu)
 
 (use-package hideshow
   :ensure nil
@@ -993,6 +980,13 @@
   :config
   (magit-todos-mode))
 
+(use-package magithub
+  :after magit
+  :custom
+  (magithub-clone-default-directory "~/Projects")
+  :config
+  (magithub-feature-autoinject t))
+
 (use-package git-timemachine
   :defer t
   :commands git-timemachine)
@@ -1022,13 +1016,27 @@
 (use-package org
   :ensure org-plus-contrib
   :defer t
+  :commands org-agenda
+  :preface
+  (defun my/open-org-directory ()
+    (interactive)
+    (find-file org-directory))
+  (defun my/open-org-inbox-file ()
+    (interactive)
+    (find-file my/org-inbox-file))
+  (defun my/open-org-todo-file ()
+    (interactive)
+    (find-file my/org-todo-file))
+  (defun my/open-org-notes-file ()
+    (interactive)
+    (find-file my/org-notes-file))
   :custom-face
   (org-tag ((t (:inherit shadow))))
   :custom
+  (org-modules '(org-expiry))
+
   (org-startup-indented t)
   (org-tags-column 0)
-  ;; (org-ellipsis "…")
-  ;; (org-ellipsis " ▼ ")
   (org-ellipsis "  ")
   (org-pretty-entities t)
 
@@ -1041,8 +1049,15 @@
   (org-fontify-done-headline t)
   (org-fontify-quote-and-verse-blocks t)
 
-  (org-directory "~/Dropbox/Org")
-  (org-agenda-files `(,(concat org-directory "/todo.org")))
+  (org-todo-keywords '((sequence "TODO(t)" "|" "DONE(d!/@)" "CANCELLED(c@/!)")))
+  (org-log-into-drawer t)
+  (org-expiry-inactive-timestamps t)
+
+  (org-directory "~/Org")
+  (my/org-inbox-file (concat org-directory "/inbox.org"))
+  (my/org-todo-file (concat org-directory "/todo.org"))
+  (my/org-notes-file (concat org-directory "/notes.org"))
+  (org-agenda-files `(,my/org-inbox-file ,my/org-todo-file))
   (org-archive-location (concat org-directory "/old/archive.org" "::* From %s")))
 
 (use-package org-bullets
