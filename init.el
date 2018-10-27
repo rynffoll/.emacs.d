@@ -98,7 +98,7 @@
 
     "b" '(:ignore t :which-key "Buffers")
     "b TAB" 'evil-switch-to-windows-last-buffer
-    "bB" 'ibuffer
+    "bI" 'ibuffer
     "bN" 'evil-buffer-new
     "bb" 'ivy-switch-buffer
     "bk" 'kill-this-buffer
@@ -279,6 +279,14 @@
   :ensure nil
   :custom
   (uniquify-buffer-name-style 'forward))
+
+(use-package ibuffer-vc
+  :after ibuffer
+  :hook
+  (ibuffer . (lambda ()
+               (ibuffer-vc-set-filter-groups-by-vc-root)
+               (unless (eq ibuffer-sorting-mode 'alphabetic)
+                 (ibuffer-do-sort-by-alphabetic)))))
 
 (use-package winner
   :ensure nil
