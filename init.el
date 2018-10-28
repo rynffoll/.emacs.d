@@ -636,11 +636,6 @@
   :config
   (which-key-mode +1))
 
-(use-package faces
-  :ensure nil
-  :config
-  (set-face-attribute 'default nil :font "Fira Mono 14"))
-
 (use-package tool-bar
   :ensure nil
   :config
@@ -688,6 +683,16 @@
 
 (use-package faces
   :ensure nil
+  :config
+  (set-face-attribute 'default nil :font "Fira Mono 14"))
+
+(use-package unicode-fonts
+  :defer 1
+  :config
+  (unicode-fonts-setup))
+
+(use-package faces
+  :ensure nil
   :custom-face
   (mode-line ((t :inherit mode-line :box nil :underline nil :overline nil)))
   (mode-line-inactive ((t (:inherit mode-line-inactive :box nil :underline nil :overline nil)))))
@@ -731,6 +736,7 @@
 
 (use-package solarized-theme
   :custom
+  (solarized-distinct-doc-face t "Emphasize docstrings")
   (solarized-use-variable-pitch nil "Don't change the font for some headings and titles")
   (solarized-emphasize-indicators nil "Use less colors for indicators such as git:gutter, flycheck and similar")
   (solarized-scale-org-headlines nil "Don't change size of org-mode headlines (but keep other size-changes)")

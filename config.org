@@ -31,6 +31,7 @@
   - [[#misc][Misc]]
 - [[#ui][UI]]
   - [[#common-1][Common]]
+  - [[#fonts][Fonts]]
   - [[#mode-line][Mode-line]]
   - [[#theme][Theme]]
 - [[#editor][Editor]]
@@ -795,12 +796,7 @@ Quick access to shell
 
 * UI
 ** Common
-#+BEGIN_SRC  emacs-lisp
-(use-package faces
-  :ensure nil
-  :config
-  (set-face-attribute 'default nil :font "Fira Mono 14"))
-
+#+BEGIN_SRC emacs-lisp
 (use-package tool-bar
   :ensure nil
   :config
@@ -845,6 +841,19 @@ Quick access to shell
   :ensure nil
   :quelpa
   (font-lock+ :repo "emacsmirror/font-lock-plus" :fetcher github))
+#+END_SRC
+
+** Fonts
+#+BEGIN_SRC  emacs-lisp
+(use-package faces
+  :ensure nil
+  :config
+  (set-face-attribute 'default nil :font "Fira Mono 14"))
+
+(use-package unicode-fonts
+  :defer 1
+  :config
+  (unicode-fonts-setup))
 #+END_SRC
 
 ** Mode-line
@@ -897,6 +906,7 @@ Quick access to shell
 #+BEGIN_SRC emacs-lisp
 (use-package solarized-theme
   :custom
+  (solarized-distinct-doc-face t "Emphasize docstrings")
   (solarized-use-variable-pitch nil "Don't change the font for some headings and titles")
   (solarized-emphasize-indicators nil "Use less colors for indicators such as git:gutter, flycheck and similar")
   (solarized-scale-org-headlines nil "Don't change size of org-mode headlines (but keep other size-changes)")
