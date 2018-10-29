@@ -686,11 +686,6 @@
   :config
   (set-face-attribute 'default nil :font "Fira Mono 14"))
 
-(use-package unicode-fonts
-  :defer 1
-  :config
-  (unicode-fonts-setup))
-
 (use-package faces
   :ensure nil
   :custom-face
