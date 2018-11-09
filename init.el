@@ -99,7 +99,7 @@
     "b" '(:ignore t :which-key "Buffers")
     "b TAB" 'evil-switch-to-windows-last-buffer
     "bI" 'ibuffer
-    "bN" 'evil-buffer-new
+    "bn" 'evil-buffer-new
     "bb" 'ivy-switch-buffer
     "bk" 'kill-this-buffer
     "b]" 'evil-next-buffer
@@ -211,12 +211,18 @@
   (global-evil-matchit-mode 1))
 
 (use-package evil-org
-  :after org evil
+  :after evil org
   :custom
   (evil-org-special-o/O '(item table-row))
   (evil-org-key-theme '(todo textobjects insert navigation heading))
   :hook
   (org-mode . evil-org-mode))
+
+(use-package evil-org-agenda
+  :ensure evil-org
+  :after evil org-agenda
+  :config
+  (evil-org-agenda-set-keys))
 
 (use-package emacs
   :ensure nil
@@ -717,8 +723,7 @@
   (defun spaceline-custom-theme (&rest additional-segments)
     "My custom spaceline theme."
     (apply 'spaceline--theme
-           '((((persp-name
-                workspace-number
+           '(((((persp-name :fallback workspace-number)
                 window-number) :separator "|"))
              :fallback evil-state
              :face highlight-face
@@ -871,6 +876,24 @@
   :ensure nil
   :defer t
   :hook (prog-mode . hs-minor-mode))
+
+(use-package yasnippet
+  :hook
+  (prog-mode . yas-minor-mode))
+
+(use-package yasnippet-snippets)
+
+(use-package company-yasnippet
+  :ensure company
+  :after company yasnippet
+  :preface
+  (defun my/add-snippets-to-company-backend (backend)
+    (if (and (listp backend) (member 'company-yasnippet backend))
+        backend
+      (append (if (consp backend) backend (list backend))
+              '(:with company-yasnippet))))
+  :custom
+  (company-backends (mapcar #'my/add-snippets-to-company-backend company-backends)))
 
 (use-package flycheck
   :defer t
@@ -1043,11 +1066,13 @@
   (org-tag ((t (:inherit shadow))))
   :custom
   (org-modules '(org-expiry))
+  (org-insert-heading-respect-content t "Insert new headings after current subtree rather than inside it")
 
   (org-startup-indented t)
   (org-tags-column 0)
   (org-ellipsis "  ")
   (org-pretty-entities t)
+  (org-use-sub-superscripts '{} "Require {} for sub/super scripts")
 
   (org-src-fontify-natively t)
   (org-src-tab-acts-natively t)
