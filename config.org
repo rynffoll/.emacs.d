@@ -430,6 +430,29 @@
 #+BEGIN_SRC emacs-lisp
 (use-package eyebrowse
   :defer 1
+  :preface
+  (defun my/new-workspace ()
+    (interactive)
+    (eyebrowse-create-window-config)
+    (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) nil))
+  (defun my/new-project-workspace ()
+    (interactive)
+    (eyebrowse-create-window-config)
+    (let* ((inhibit-quit t)
+           (project-name (with-local-quit (projectile-switch-project))))
+      (if (> (length project-name) 0)
+          (eyebrowse-rename-window-config
+           (eyebrowse--get 'current-slot)
+           (file-name-nondirectory (directory-file-name project-name)))
+        (progn
+          (eyebrowse-close-window-config)
+          (setq quit-flag nil)))))
+  (defun my/delete-other-workspaces ()
+    (interactive)
+    (mapcar #'eyebrowse--delete-window-config
+            (mapcar #'car
+                    (assq-delete-all (eyebrowse--get 'current-slot)
+                                     (eyebrowse--get 'window-configs)))))
   :general
   (my/leader-def
     "w" '(:ignore t :which-key "Workspaces")
@@ -449,7 +472,9 @@
     "w9" 'eyebrowse-switch-to-window-config-9
     "w[" 'eyebrowse-prev-window-config
     "w]" 'eyebrowse-next-window-config
-    "wn" 'eyebrowse-create-window-config)
+    "wn" 'my/new-workspace
+    "wp" 'my/new-project-workspace
+    "wC" 'my/delete-other-workspaces)
   :custom
   (eyebrowse-new-workspace t "Clean up and display the scratch buffer")
   (eyebrowse-wrap-around t)
