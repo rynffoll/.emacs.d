@@ -201,10 +201,17 @@
     "er" 'iqa-reload-user-init-file
 
     "g" '(:ignore t :which-key "Git")
+    "g." 'magit-dispatch-popup
     "gg" 'magit-status
+    "gb" 'magit-blame
+    "gI" 'magit-init
+    "gc" 'magit-clone
+    "gl" 'magit-log-buffer-file
     "gt" 'git-timemachine
-    "gl" 'magit-list-repositories
     "gi" 'gitignore-templates-new-file
+    "gh" '(:ignore t :which-key "GitHub")
+    "gh." 'magithub-dispatch-popup
+    "ghc" 'magithub-clone
 
     "/" '(:ignore t :which-key "Search")
     "//" 'swiper
@@ -426,6 +433,21 @@
   (winum-mode))
 #+END_SRC
 
+Pop-ups
+#+BEGIN_SRC emacs-lisp
+(use-package shackle
+  :custom
+  (shackle-default-alignment 'below)
+  (shackle-default-size 0.4)
+  (shackle-rules '((help-mode :align below :select t)
+                   (helpful-mode :align below)
+                   (flycheck-error-list-mode :align below :size 0.25)
+                   (cider-repl-mode :align below :size 0.3)
+                   (ansible-doc-module-mode :align below)))
+  :config
+  (shackle-mode 1))
+#+END_SRC
+
 ** Workspaces
 #+BEGIN_SRC emacs-lisp
 (use-package eyebrowse
@@ -493,15 +515,7 @@
 ** Better help
 #+BEGIN_SRC emacs-lisp
 (use-package helpful
-  :defer t
-  :commands
-  helpful-at-point
-  helpful-command
-  helpful-callable
-  helpful-function
-  helpful-key
-  helpful-macro
-  helpful-variable)
+  :defer t)
 
 (use-package which-key
   :custom
@@ -764,8 +778,7 @@ MacOS tweaks
 ** Misc
 #+BEGIN_SRC emacs-lisp
 (use-package restart-emacs
-  :defer t
-  :commands restart-emacs)
+  :defer t)
 #+END_SRC
 
 Tweaks for non-english keyboard layout
@@ -784,10 +797,6 @@ Quick access to init files
 #+BEGIN_SRC emacs-lisp
 (use-package iqa
   :defer t
-  :commands
-  iqa-find-user-init-directory
-  iqa-find-user-init-file
-  iqa-reload-user-init-file
   :custom
   (iqa-user-init-file (concat user-emacs-directory "config.org")))
 #+END_SRC
@@ -796,7 +805,6 @@ Quick access to shell
 #+BEGIN_SRC emacs-lisp
 (use-package shell-pop
   :defer t
-  :commands shell-pop
   :general ("M-`" 'shell-pop)
   :custom
   (shell-pop-full-span t "Spans full width of a window")
@@ -963,7 +971,7 @@ Quick access to shell
 (use-package simple
   :ensure nil
   :custom
-  (backward-delete-char-untabify-method 'untabify)
+  (backward-delete-char-untabify-method 'hungry)
   :config
   (column-number-mode 1))
 #+END_SRC
@@ -1017,8 +1025,7 @@ Highlighting
   :hook ((prog-mode conf-mode) . hl-todo-mode))
 
 (use-package highlight-indent-guides
-  :defer t
-  :commands highlight-indent-guides-mode)
+  :defer t)
 
 (use-package highlight-numbers
   :defer t
@@ -1241,7 +1248,7 @@ Highlighting
 #+BEGIN_SRC emacs-lisp
 (use-package magit
   :defer t
-  :commands magit-status
+  :commands magit-blame
   :custom
   (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
   (magit-repository-directories `((,user-emacs-directory . 0)
@@ -1254,23 +1261,20 @@ Highlighting
 
 (use-package magithub
   :after magit
+  :commands magithub-clone
   :custom
   (magithub-clone-default-directory "~/Projects")
   :config
   (magithub-feature-autoinject t))
 
 (use-package git-timemachine
-  :defer t
-  :commands git-timemachine)
+  :defer t)
 
 (use-package gitignore-mode
   :defer t)
 
 (use-package gitignore-templates
   :defer t
-  :commands
-  gitignore-templates-insert
-  gitignore-templates-new-file
   :general
   (my/local-leader-def :keymaps 'gitignore-mode-map
     "i" 'gitignore-templates-insert))
@@ -1292,7 +1296,6 @@ Common
 (use-package org
   :ensure org-plus-contrib
   :defer t
-  :commands org-agenda
   :preface
   (defun my/open-org-directory ()
     (interactive)
@@ -1364,7 +1367,6 @@ Table of Contents
 #+BEGIN_SRC emacs-lisp
 (use-package docker
   :defer t
-  :commands docker
   :config
   (with-eval-after-load 'evil
     (evil-set-initial-state 'docker-container-mode 'emacs)
@@ -1417,7 +1419,7 @@ Table of Contents
   :hook
   (ansible-mode . ansible-doc-mode)
   :config
-  (evil-set-initial-state 'ansible-doc-module-mode 'emacs))
+  (evil-set-initial-state 'ansible-doc-module-mode 'motion))
 
 (use-package jinja2-mode
   :defer t
@@ -1459,7 +1461,6 @@ Table of Contents
 #+BEGIN_SRC emacs-lisp
 (use-package google-translate
   :defer t
-  :commands google-translate-at-point google-translate-at-point-reverse
   :custom
   (google-translate-default-target-language "ru")
   (google-translate-default-source-language "en")
@@ -1468,20 +1469,13 @@ Table of Contents
 
 (use-package olivetti
   :defer t
-  :commands olivetti-mode
   :custom (olivetti-body-width 100))
 
 (use-package crux
-  :defer t
-  :commands
-  crux-rename-buffer-and-file
-  crux-delete-buffer-and-file
-  crux-rename-file-and-buffer
-  crux-delete-file-and-buffer)
+  :defer t)
 
 (use-package link-hint
-  :defer t
-  :commands link-hint-open-link)
+  :defer t)
 #+END_SRC
 
 * The end

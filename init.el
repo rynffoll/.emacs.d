@@ -124,10 +124,17 @@
     "er" 'iqa-reload-user-init-file
 
     "g" '(:ignore t :which-key "Git")
+    "g." 'magit-dispatch-popup
     "gg" 'magit-status
+    "gb" 'magit-blame
+    "gI" 'magit-init
+    "gc" 'magit-clone
+    "gl" 'magit-log-buffer-file
     "gt" 'git-timemachine
-    "gl" 'magit-list-repositories
     "gi" 'gitignore-templates-new-file
+    "gh" '(:ignore t :which-key "GitHub")
+    "gh." 'magithub-dispatch-popup
+    "ghc" 'magithub-clone
 
     "/" '(:ignore t :which-key "Search")
     "//" 'swiper
@@ -332,6 +339,18 @@
   :config
   (winum-mode))
 
+(use-package shackle
+  :custom
+  (shackle-default-alignment 'below)
+  (shackle-default-size 0.4)
+  (shackle-rules '((help-mode :align below :select t)
+                   (helpful-mode :align below)
+                   (flycheck-error-list-mode :align below :size 0.25)
+                   (cider-repl-mode :align below :size 0.3)
+                   (ansible-doc-module-mode :align below)))
+  :config
+  (shackle-mode 1))
+
 (use-package eyebrowse
   :defer 1
   :preface
@@ -391,15 +410,7 @@
   (custom-file null-device "Don't store customizations"))
 
 (use-package helpful
-  :defer t
-  :commands
-  helpful-at-point
-  helpful-command
-  helpful-callable
-  helpful-function
-  helpful-key
-  helpful-macro
-  helpful-variable)
+  :defer t)
 
 (use-package which-key
   :custom
@@ -625,8 +636,7 @@
             browse-url-browser-function 'browse-url-generic))))
 
 (use-package restart-emacs
-  :defer t
-  :commands restart-emacs)
+  :defer t)
 
 (use-package reverse-im
   :config
@@ -639,16 +649,11 @@
 
 (use-package iqa
   :defer t
-  :commands
-  iqa-find-user-init-directory
-  iqa-find-user-init-file
-  iqa-reload-user-init-file
   :custom
   (iqa-user-init-file (concat user-emacs-directory "config.org")))
 
 (use-package shell-pop
   :defer t
-  :commands shell-pop
   :general ("M-`" 'shell-pop)
   :custom
   (shell-pop-full-span t "Spans full width of a window")
@@ -793,7 +798,7 @@
 (use-package simple
   :ensure nil
   :custom
-  (backward-delete-char-untabify-method 'untabify)
+  (backward-delete-char-untabify-method 'hungry)
   :config
   (column-number-mode 1))
 
@@ -838,8 +843,7 @@
   :hook ((prog-mode conf-mode) . hl-todo-mode))
 
 (use-package highlight-indent-guides
-  :defer t
-  :commands highlight-indent-guides-mode)
+  :defer t)
 
 (use-package highlight-numbers
   :defer t
@@ -1026,7 +1030,7 @@
 
 (use-package magit
   :defer t
-  :commands magit-status
+  :commands magit-blame
   :custom
   (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
   (magit-repository-directories `((,user-emacs-directory . 0)
@@ -1039,23 +1043,20 @@
 
 (use-package magithub
   :after magit
+  :commands magithub-clone
   :custom
   (magithub-clone-default-directory "~/Projects")
   :config
   (magithub-feature-autoinject t))
 
 (use-package git-timemachine
-  :defer t
-  :commands git-timemachine)
+  :defer t)
 
 (use-package gitignore-mode
   :defer t)
 
 (use-package gitignore-templates
   :defer t
-  :commands
-  gitignore-templates-insert
-  gitignore-templates-new-file
   :general
   (my/local-leader-def :keymaps 'gitignore-mode-map
     "i" 'gitignore-templates-insert))
@@ -1073,7 +1074,6 @@
 (use-package org
   :ensure org-plus-contrib
   :defer t
-  :commands org-agenda
   :preface
   (defun my/open-org-directory ()
     (interactive)
@@ -1135,7 +1135,6 @@
 
 (use-package docker
   :defer t
-  :commands docker
   :config
   (with-eval-after-load 'evil
     (evil-set-initial-state 'docker-container-mode 'emacs)
@@ -1185,7 +1184,7 @@
   :hook
   (ansible-mode . ansible-doc-mode)
   :config
-  (evil-set-initial-state 'ansible-doc-module-mode 'emacs))
+  (evil-set-initial-state 'ansible-doc-module-mode 'motion))
 
 (use-package jinja2-mode
   :defer t
@@ -1218,7 +1217,6 @@
 
 (use-package google-translate
   :defer t
-  :commands google-translate-at-point google-translate-at-point-reverse
   :custom
   (google-translate-default-target-language "ru")
   (google-translate-default-source-language "en")
@@ -1227,20 +1225,13 @@
 
 (use-package olivetti
   :defer t
-  :commands olivetti-mode
   :custom (olivetti-body-width 100))
 
 (use-package crux
-  :defer t
-  :commands
-  crux-rename-buffer-and-file
-  crux-delete-buffer-and-file
-  crux-rename-file-and-buffer
-  crux-delete-file-and-buffer)
+  :defer t)
 
 (use-package link-hint
-  :defer t
-  :commands link-hint-open-link)
+  :defer t)
 
 (setq debug-on-error nil)
 (setq debug-on-quit nil)
