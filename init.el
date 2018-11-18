@@ -508,6 +508,7 @@
   ("M-f" 'dired-sidebar-toggle-sidebar)
   :custom
   (dired-sidebar-theme 'none)
+  (dired-sidebar-no-delete-other-windows t)
   (dired-sidebar-toggle-hidden-commands '(balance-windows
                                           evil-window-delete)))
 
