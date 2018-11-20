@@ -731,7 +731,7 @@
 
 (use-package hide-mode-line
   :defer t
-  :hook (treemacs-mode . hide-mode-line-mode))
+  :hook (dired-sidebar-mode . hide-mode-line-mode))
 
 (use-package spaceline
   :custom
