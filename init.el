@@ -281,6 +281,7 @@
   (save-place-mode))
 
 (use-package super-save
+  :disabled
   :config
   (super-save-mode +1))
 
@@ -499,7 +500,7 @@
   :general
   (:keymaps 'dired-mode-map :states 'normal
             "M-n n" 'dired-narrow
-            "M-n f" 'ired-narrow-fuzzy
+            "M-n f" 'dired-narrow-fuzzy
             "M-n r" 'dired-narrow-regexp))
 
 (use-package dired-sidebar
@@ -507,7 +508,7 @@
   :general
   ("M-f" 'dired-sidebar-toggle-sidebar)
   :custom
-  (dired-sidebar-theme 'none)
+  ;; (dired-sidebar-theme 'none)
   (dired-sidebar-no-delete-other-windows t)
   (dired-sidebar-toggle-hidden-commands '(balance-windows
                                           evil-window-delete)))
@@ -723,6 +724,12 @@
   :config
   (set-face-attribute 'default nil :font "Fira Mono 14"))
 
+(use-package all-the-icons
+  :defer t)
+
+(use-package all-the-icons-dired
+  :defer t)
+
 (use-package faces
   :ensure nil
   :custom-face
@@ -733,7 +740,16 @@
   :defer t
   :hook (dired-sidebar-mode . hide-mode-line-mode))
 
-(use-package spaceline
+(use-package doom-modeline
+  :defer t
+  :custom
+  (doom-modeline-buffer-file-name-style 'buffer-name)
+  :hook
+  (after-init . doom-modeline-init))
+
+(use-package spaceline-config
+  :disabled
+  :ensure spaceline
   :custom
   (powerline-default-separator nil)
   (spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
@@ -746,10 +762,7 @@
   (spaceline-buffer-size-p nil)
   (spaceline-input-method-p t)
   (spaceline-org-clock-p t)
-  (spaceline-org-pomodoro-p t))
-
-(use-package spaceline-config
-  :ensure spaceline
+  (spaceline-org-pomodoro-p t)
   :preface
   (defun spaceline-custom-theme (&rest additional-segments)
     "My custom spaceline theme."
@@ -766,6 +779,7 @@
   (spaceline-custom-theme))
 
 (use-package solarized-theme
+  :disabled
   :custom
   (solarized-distinct-doc-face t "Emphasize docstrings")
   (solarized-use-variable-pitch nil "Don't change the font for some headings and titles")
@@ -778,7 +792,7 @@
   (solarized-height-plus-3 1.0)
   (solarized-height-plus-4 1.0)
   :config
-  (load-theme 'solarized-light t))
+  (load-theme 'solarized-dark t))
 
 (use-package spacemacs-common
   :disabled
@@ -790,6 +804,11 @@
   (spacemacs-theme-org-highlight t)
   :config
   (load-theme 'spacemacs-light t))
+
+(use-package doom-themes
+  :config
+  (load-theme 'doom-one t)
+  (doom-themes-org-config))
 
 (use-package delsel
   :ensure nil
