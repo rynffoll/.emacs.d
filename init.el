@@ -779,18 +779,18 @@
   (spaceline-custom-theme))
 
 (use-package solarized-theme
-  :disabled
+  ;; :disabled
   :custom
   (solarized-distinct-doc-face t "Emphasize docstrings")
   (solarized-use-variable-pitch nil "Don't change the font for some headings and titles")
   (solarized-emphasize-indicators nil "Use less colors for indicators such as git:gutter, flycheck and similar")
   (solarized-scale-org-headlines nil "Don't change size of org-mode headlines (but keep other size-changes)")
   ;; Avoid all font-size changes
-  (solarized-height-minus-1 1.0)
-  (solarized-height-plus-1 1.0)
-  (solarized-height-plus-2 1.0)
-  (solarized-height-plus-3 1.0)
-  (solarized-height-plus-4 1.0)
+  ;; (solarized-height-minus-1 1.0)
+  ;; (solarized-height-plus-1 1.0)
+  ;; (solarized-height-plus-2 1.0)
+  ;; (solarized-height-plus-3 1.0)
+  ;; (solarized-height-plus-4 1.0)
   :config
   (load-theme 'solarized-dark t))
 
@@ -806,6 +806,7 @@
   (load-theme 'spacemacs-light t))
 
 (use-package doom-themes
+  :disabled
   :config
   (load-theme 'doom-one t)
   (doom-themes-org-config))
