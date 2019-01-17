@@ -125,16 +125,14 @@
 
     "g" '(:ignore t :which-key "Git")
     "g." 'magit-dispatch-popup
-    "gg" 'magit-status
-    "gb" 'magit-blame
     "gI" 'magit-init
+    "gb" 'magit-blame
     "gc" 'magit-clone
+    "gg" 'magit-status
+    "gi" 'gitignore-templates-new-file
     "gl" 'magit-log-buffer-file
     "gt" 'git-timemachine
-    "gi" 'gitignore-templates-new-file
-    "gh" '(:ignore t :which-key "GitHub")
-    "gh." 'magithub-dispatch-popup
-    "ghc" 'magithub-clone
+    "gL" 'magit-list-repositories
 
     "/" '(:ignore t :which-key "Search")
     "//" 'swiper
@@ -348,7 +346,8 @@
                    (helpful-mode :align below)
                    (flycheck-error-list-mode :align below :size 0.25)
                    (cider-repl-mode :align below :size 0.3)
-                   (ansible-doc-module-mode :align below)))
+                   (ansible-doc-module-mode :align below)
+                   ("*Pack*" :align below :size 0.2)))
   :config
   (shackle-mode 1))
 
@@ -513,6 +512,14 @@
   (dired-sidebar-toggle-hidden-commands '(balance-windows
                                           evil-window-delete)))
 
+(use-package pack
+  :defer t
+  :general
+  (:keymaps 'dired-mode-map :states 'normal
+            "P" 'pack-dired-dwim)
+  :custom
+  (pack-dired-default-extension ".zip"))
+
 (use-package eshell
   :ensure nil
   :defer t)
@@ -674,6 +681,18 @@
   :config
   (which-key-mode +1))
 
+(use-package ssh-config-mode
+  :init
+  (autoload 'ssh-config-mode "ssh-config-mode" t))
+
+(use-package frame
+  :ensure nil
+  :custom
+  (default-frame-alist '((left . 0.5) (top . 0.5)
+                         (width . 0.7) (height . 0.9)))
+  :config
+  (blink-cursor-mode -1))
+
 (use-package tool-bar
   :ensure nil
   :config
@@ -694,25 +713,15 @@
   :config
   (menu-bar-mode -1))
 
-(use-package frame
-  :ensure nil
-  :config
-  (blink-cursor-mode -1)
-  (when window-system
-    (setq frame-parameters '((left . 0.5) (top . 0.5)
-			     (width . 0.7) (height . 0.9)))
-    (dolist (fp frame-parameters)
-      (add-to-list 'default-frame-alist fp))))
-
 (use-package fringe
   :ensure nil
   :init
   (setf (cdr (assq 'continuation fringe-indicator-alist))
-	;; '(nil nil) ;; no continuation indicators
-	'(nil right-curly-arrow) ;; right indicator only
-	;; '(left-curly-arrow nil) ;; left indicator only
-	;; '(left-curly-arrow right-curly-arrow) ;; default
-	))
+        ;; '(nil nil) ;; no continuation indicators
+        '(nil right-curly-arrow) ;; right indicator only
+        ;; '(left-curly-arrow nil) ;; left indicator only
+        ;; '(left-curly-arrow right-curly-arrow) ;; default
+        ))
 
 (use-package font-lock+
   :ensure nil
@@ -740,10 +749,15 @@
   :defer t
   :hook (dired-sidebar-mode . hide-mode-line-mode))
 
+(use-package minions
+  :config
+  (minions-mode))
+
 (use-package doom-modeline
   :defer t
   :custom
   (doom-modeline-buffer-file-name-style 'buffer-name)
+  (doom-modeline-minor-modes t)
   :hook
   (after-init . doom-modeline-init))
 
@@ -1050,27 +1064,29 @@
   (projectile-mode t))
 
 (use-package magit
-  :defer t
+  :defer 1
   :commands magit-blame
   :custom
+  (magit-clone-default-directory "~/Projects")
   (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
   (magit-repository-directories `((,user-emacs-directory . 0)
-                                  ("~/Projects" . 1))))
+                                  (,magit-clone-default-directory . 1))))
 
 (use-package magit-todos
   :after magit
   :config
   (magit-todos-mode))
 
-(use-package magithub
-  :after magit
-  :commands magithub-clone
-  :custom
-  (magithub-clone-default-directory "~/Projects")
-  :config
-  (magithub-feature-autoinject t))
+(use-package forge
+  :after magit)
 
 (use-package git-timemachine
+  :defer t)
+
+(use-package gitattributes-mode
+  :defer t)
+
+(use-package gitconfig-mode
   :defer t)
 
 (use-package gitignore-mode
@@ -1091,6 +1107,48 @@
   (diff-hl-mode . diff-hl-flydiff-mode)
   (dired-mode . diff-hl-dired-mode)
   (magit-post-refresh . diff-hl-magit-post-refresh))
+
+(use-package smerge-mode
+  :after hydra
+  :config
+  (defhydra unpackaged/smerge-hydra
+    (:color pink :hint nil :post (smerge-auto-leave))
+    "
+^Move^       ^Keep^               ^Diff^                 ^Other^
+^^-----------^^-------------------^^---------------------^^-------
+_n_: next    _b_: base            _<_: upper/base        _C_: combine
+_p_: prev    _u_: upper           _=_: upper/lower       _r_: resolve
+_J_: next    _l_: lower           _>_: base/lower        _k_: kill current
+_K_: prev    _a_: all             _R_: refine
+^^           _RET_: current       _E_: ediff
+"
+    ("n" smerge-next)
+    ("p" smerge-prev)
+    ("J" smerge-next)
+    ("K" smerge-prev)
+    ("b" smerge-keep-base)
+    ("u" smerge-keep-upper)
+    ("l" smerge-keep-lower)
+    ("a" smerge-keep-all)
+    ("RET" smerge-keep-current)
+    ("\C-m" smerge-keep-current)
+    ("<" smerge-diff-base-upper)
+    ("=" smerge-diff-upper-lower)
+    (">" smerge-diff-base-lower)
+    ("R" smerge-refine)
+    ("E" smerge-ediff)
+    ("C" smerge-combine-with-next)
+    ("r" smerge-resolve)
+    ("k" smerge-kill-current)
+    ("ZZ" (lambda ()
+            (interactive)
+            (save-buffer)
+            (bury-buffer))
+     "Save and bury buffer" :color blue)
+    ("q" nil "cancel" :color blue))
+  :hook (magit-diff-visit-file . (lambda ()
+                                   (when smerge-mode
+                                     (unpackaged/smerge-hydra/body)))))
 
 (use-package org
   :ensure org-plus-contrib
