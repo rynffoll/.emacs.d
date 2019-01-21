@@ -510,7 +510,8 @@
   ;; (dired-sidebar-theme 'none)
   (dired-sidebar-no-delete-other-windows t)
   (dired-sidebar-toggle-hidden-commands '(balance-windows
-                                          evil-window-delete)))
+                                          evil-window-delete
+                                          delete-other-windows)))
 
 (use-package pack
   :defer t
@@ -759,7 +760,7 @@
   (doom-modeline-buffer-file-name-style 'buffer-name)
   (doom-modeline-minor-modes t)
   :hook
-  (after-init . doom-modeline-init))
+  (after-init . doom-modeline-mode))
 
 (use-package spaceline-config
   :disabled
@@ -992,6 +993,7 @@
   (dumb-jump-selector 'ivy))
 
 (use-package lisp
+  :disabled
   :ensure nil
   :hook
   (after-save . check-parens))
