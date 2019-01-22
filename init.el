@@ -42,6 +42,8 @@
 (setq use-package-verbose t)
 (setq use-package-minimum-reported-time 0.01)
 
+(use-package bind-key)
+
 (use-package quelpa
   :defer t
   :custom
@@ -59,175 +61,6 @@
   :custom
   (auto-compile-display-buffer nil)
   (auto-compile-mode-line-counter t))
-
-(use-package general
-  :preface
-  (defun my/switch-to-scratch ()
-    (interactive)
-    (switch-to-buffer "*scratch*"))
-  (defun my/switch-to-messages ()
-    (interactive)
-    (switch-to-buffer "*Messages*"))
-  :config
-  (general-create-definer my/leader-def
-    :states '(normal visual insert emacs motion)
-    :keymaps 'override
-    :prefix "SPC"
-    :non-normal-prefix "M-m")
-  (general-create-definer my/local-leader-def
-    :states '(normal visual insert emacs motion)
-    :keymaps 'override
-    :prefix "SPC m"
-    :non-normal-prefix "M-m m")
-  (my/leader-def
-    "" '(nil :which-key "Leader")
-    "." 'counsel-find-file
-
-    "o" '(:ignore t :which-key "Open")
-    "od" 'docker
-    "ol" 'link-hint-open-link
-    "oL" 'counsel-find-library
-    "op" 'package-list-packages
-    "oc" 'customize-group
-    "oo" '(:ignore t :which-key "Org")
-    "ooa" 'org-agenda
-    "oo." 'my/open-org-directory
-    "ooi" 'my/open-org-inbox-file
-    "oot" 'my/open-org-todo-file
-    "oon" 'my/open-org-notes-file
-
-    "b" '(:ignore t :which-key "Buffers")
-    "b TAB" 'evil-switch-to-windows-last-buffer
-    "bI" 'ibuffer
-    "bn" 'evil-buffer-new
-    "bb" 'ivy-switch-buffer
-    "bk" 'kill-this-buffer
-    "b]" 'evil-next-buffer
-    "b[" 'evil-prev-buffer
-    "bR" 'crux-rename-buffer-and-file
-    "bD" 'crux-delete-buffer-and-file
-    "bp" 'counsel-projectile
-    "bm" 'my/switch-to-messages
-    "bs" 'my/switch-to-scratch
-
-    "f" '(:ignore t :which-key "Files")
-    "fd" 'counsel-dired-jump
-    "ff" 'counsel-find-file
-    "fr" 'counsel-recentf
-    "fR" 'crux-rename-file-and-buffer
-    "fD" 'crux-delete-file-and-buffer
-    "fp" 'projectile-find-file
-
-    "e" '(:ignore t :which-key "Emacs")
-    "ed" 'iqa-find-user-init-directory
-    "ee" 'iqa-find-user-init-file
-    "er" 'iqa-reload-user-init-file
-
-    "g" '(:ignore t :which-key "Git")
-    "g." 'magit-dispatch-popup
-    "gI" 'magit-init
-    "gb" 'magit-blame
-    "gc" 'magit-clone
-    "gg" 'magit-status
-    "gi" 'gitignore-templates-new-file
-    "gl" 'magit-log-buffer-file
-    "gt" 'git-timemachine
-    "gL" 'magit-list-repositories
-
-    "/" '(:ignore t :which-key "Search")
-    "//" 'swiper
-    "/p" 'counsel-projectile-rg
-
-    "j" '(:ignore t :which-key "Jump")
-    "ji" 'imenu
-    "jj" 'dumb-jump-hydra/body
-
-    "h" '(:ignore t :which-key "Help")
-    "h." 'helpful-at-point
-    "hC" 'helpful-command
-    "hT" 'google-translate-at-point-reverse
-    "hc" 'helpful-callable
-    "hf" 'describe-function
-    "hk" 'helpful-key
-    "hm" 'helpful-macro
-    "ht" 'google-translate-at-point
-    "hv" 'describe-variable
-    "hF" 'counsel-faces
-
-    "t" '(:ignore t :which-key "Toggle")
-    "to" 'olivetti-mode
-    "tt" 'counsel-load-theme
-    "tr" 'rainbow-mode
-    "tw" 'whitespace-mode
-    "tm" 'toggle-frame-maximized
-    "tn" 'display-line-numbers-mode
-    "tT" 'toggle-truncate-lines
-    "ti" 'highlight-indent-guides-mode
-    "te" 'toggle-indicate-empty-lines
-    "tl" 'global-hl-line-mode
-
-    "q" '(:ignore t :which-key "Quit")
-    "qq" 'kill-emacs
-    "qr" 'restart-emacs)
-  (my/local-leader-def
-    "" '(nil :which-key "Local Leader")))
-
-(use-package evil
-  :custom
-  (evil-want-keybinding nil)
-  (evil-split-window-below t)
-  (evil-vsplit-window-right t)
-  (evil-emacs-state-cursor 'hbar)
-  (evil-mode-line-format nil)
-  :config
-  ;; TODO move to :general section
-  (general-define-key :keymaps 'evil-window-map
-                      "u" 'winner-undo
-                      "U" 'winner-redo)
-  (evil-mode 1))
-
-(use-package evil-collection
-  :after evil
-  :custom
-  (evil-collection-setup-minibuffer nil)
-  (evil-collection-company-use-tng nil)
-  :config
-  (evil-collection-init))
-
-(use-package evil-commentary
-  :after evil
-  :config
-  (evil-commentary-mode))
-
-(use-package evil-magit
-  :after magit evil
-  :custom
-  (evil-magit-want-horizontal-movement t)
-  (evil-magit-use-z-for-folds t))
-
-(use-package evil-surround
-  :after evil
-  :config
-  (global-evil-surround-mode 1))
-
-(use-package evil-matchit
-  :after evil
-  :config
-  (global-evil-matchit-mode 1))
-
-(use-package evil-org
-  :after evil org
-  :custom
-  (evil-org-special-o/O '(item table-row))
-  (evil-org-key-theme '(todo textobjects insert navigation heading))
-  :hook
-  (org-mode . evil-org-mode))
-
-(use-package evil-org-agenda
-  :ensure evil-org
-  :after evil org-agenda
-  :config
-  (evil-org-agenda-set-keys))
 
 (use-package emacs
   :ensure nil
@@ -285,7 +118,7 @@
 
 (use-package ibuffer
   :ensure nil
-  :general ([remap list-buffers] 'ibuffer))
+  :bind ([remap list-buffers] . ibuffer))
 
 (use-package uniquify
   :ensure nil
@@ -307,31 +140,6 @@
 
 (use-package winum
   :demand
-  :general
-  (:keymaps 'evil-window-map
-            "'" 'winum-select-window-by-number
-            "0" 'winum-select-window-0-or-10
-            "1" 'winum-select-window-1
-            "2" 'winum-select-window-2
-            "3" 'winum-select-window-3
-            "4" 'winum-select-window-4
-            "5" 'winum-select-window-5
-            "6" 'winum-select-window-6
-            "7" 'winum-select-window-7
-            "8" 'winum-select-window-8
-            "9" 'winum-select-window-9)
-  (my/leader-def
-    "'" 'winum-select-window-by-number
-    "0" 'winum-select-window-0-or-10
-    "1" 'winum-select-window-1
-    "2" 'winum-select-window-2
-    "3" 'winum-select-window-3
-    "4" 'winum-select-window-4
-    "5" 'winum-select-window-5
-    "6" 'winum-select-window-6
-    "7" 'winum-select-window-7
-    "8" 'winum-select-window-8
-    "9" 'winum-select-window-9)
   :custom
   (winum-auto-setup-mode-line nil "For spaceline")
   (winum-scope 'frame-local)
@@ -353,51 +161,6 @@
 
 (use-package eyebrowse
   :defer 1
-  :preface
-  (defun my/new-workspace ()
-    (interactive)
-    (eyebrowse-create-window-config)
-    (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) nil))
-  (defun my/new-project-workspace ()
-    (interactive)
-    (eyebrowse-create-window-config)
-    (let* ((inhibit-quit t)
-           (project-name (with-local-quit (projectile-switch-project))))
-      (if (> (length project-name) 0)
-          (eyebrowse-rename-window-config
-           (eyebrowse--get 'current-slot)
-           (file-name-nondirectory (directory-file-name project-name)))
-        (progn
-          (eyebrowse-close-window-config)
-          (setq quit-flag nil)))))
-  (defun my/delete-other-workspaces ()
-    (interactive)
-    (mapcar #'eyebrowse--delete-window-config
-            (mapcar #'car
-                    (assq-delete-all (eyebrowse--get 'current-slot)
-                                     (eyebrowse--get 'window-configs)))))
-  :general
-  (my/leader-def
-    "w" '(:ignore t :which-key "Workspaces")
-    "wc" 'eyebrowse-close-window-config
-    "w TAB" 'eyebrowse-last-window-config
-    "wR" 'eyebrowse-rename-window-config
-    "ww" 'eyebrowse-switch-to-window-config
-    "w0" 'eyebrowse-switch-to-window-config-0
-    "w1" 'eyebrowse-switch-to-window-config-1
-    "w2" 'eyebrowse-switch-to-window-config-2
-    "w3" 'eyebrowse-switch-to-window-config-3
-    "w4" 'eyebrowse-switch-to-window-config-4
-    "w5" 'eyebrowse-switch-to-window-config-5
-    "w6" 'eyebrowse-switch-to-window-config-6
-    "w7" 'eyebrowse-switch-to-window-config-7
-    "w8" 'eyebrowse-switch-to-window-config-8
-    "w9" 'eyebrowse-switch-to-window-config-9
-    "w[" 'eyebrowse-prev-window-config
-    "w]" 'eyebrowse-next-window-config
-    "wn" 'my/new-workspace
-    "wp" 'my/new-project-workspace
-    "wC" 'my/delete-other-workspaces)
   :custom
   (eyebrowse-new-workspace t "Clean up and display the scratch buffer")
   (eyebrowse-wrap-around t)
@@ -420,7 +183,6 @@
   (which-key-mode +1))
 
 (use-package undo-tree
-  :defer t
   :custom
   (undo-tree-auto-save-history t)
   ;; undo-in-region is known to cause undo history corruption, which can
@@ -482,42 +244,34 @@
 
 (use-package dired-hide-dotfiles
   :after dired
-  :general
-  (:keymaps 'dired-mode-map :states 'normal
-            "M-." 'dired-hide-dotfiles-mode))
+  :bind
+  (:map dired-mode-map
+  ("M-." . dired-hide-dotfiles-mode)))
 
 (use-package dired-subtree
   :defer t
-  :general
-  (:keymaps 'dired-mode-map :states 'normal
-            "TAB" 'dired-subtree-toggle)
+  :bind
+  (:map dired-mode-map
+            ("TAB" . dired-subtree-toggle))
   :custom
   (dired-subtree-use-backgrounds nil))
 
-(use-package dired-narrow
-  :defer t
-  :general
-  (:keymaps 'dired-mode-map :states 'normal
-            "M-n n" 'dired-narrow
-            "M-n f" 'dired-narrow-fuzzy
-            "M-n r" 'dired-narrow-regexp))
-
 (use-package dired-sidebar
   :defer t
-  :general
-  ("M-f" 'dired-sidebar-toggle-sidebar)
+  :bind
+  (:map ctrl-x-map ("M-t" . dired-sidebar-toggle-sidebar))
   :custom
   ;; (dired-sidebar-theme 'none)
   (dired-sidebar-no-delete-other-windows t)
   (dired-sidebar-toggle-hidden-commands '(balance-windows
-                                          evil-window-delete
+                                          delete-window
                                           delete-other-windows)))
 
 (use-package pack
   :defer t
-  :general
-  (:keymaps 'dired-mode-map :states 'normal
-            "P" 'pack-dired-dwim)
+  :bind
+  (:map dired-mode-map
+        ("P" . pack-dired-dwim))
   :custom
   (pack-dired-default-extension ".zip"))
 
@@ -556,11 +310,11 @@
   (ediff-quit . winner-undo))
 
 (use-package ivy
-  :general
-  ([remap switch-to-buffer] 'ivy-switch-buffer)
-  (ivy-mode-map
-   "C-j" 'ivy-next-line
-   "C-k" 'ivy-previous-line)
+  :bind
+  ([remap switch-to-buffer] . ivy-switch-buffer)
+  ;; (ivy-mode-map
+  ;;  "C-j" 'ivy-next-line
+  ;;  "C-k" 'ivy-previous-line)
   :custom
   (ivy-wrap t)
   (ivy-fixed-height-minibuffer t)
@@ -583,21 +337,21 @@
 
 (use-package counsel
   :after swiper
-  :general
-  ([remap apropos]                  'counsel-apropos)
-  ([remap bookmark-jump]            'counsel-bookmark)
-  ([remap describe-face]            'counsel-describe-face)
-  ([remap describe-function]        'counsel-describe-function)
-  ([remap describe-variable]        'counsel-describe-variable)
-  ([remap execute-extended-command] 'counsel-M-x)
-  ([remap find-file]                'counsel-find-file)
-  ([remap find-library]             'counsel-find-library)
+  :bind
+  ([remap apropos]                  . counsel-apropos)
+  ([remap bookmark-jump]            . counsel-bookmark)
+  ([remap describe-face]            . counsel-describe-face)
+  ([remap describe-function]        . counsel-describe-function)
+  ([remap describe-variable]        . counsel-describe-variable)
+  ([remap execute-extended-command] . counsel-M-x)
+  ([remap find-file]                . counsel-find-file)
+  ([remap find-library]             . counsel-find-library)
 
-  ([remap info-lookup-symbol]       'counsel-info-lookup-symbol)
-  ([remap imenu]                    'counsel-imenu)
-  ([remap recentf-open-files]       'counsel-recentf)
-  ([remap org-capture]              'counsel-org-capture)
-  ([remap swiper]                   'counsel-grep-or-swiper)
+  ([remap info-lookup-symbol]       . counsel-info-lookup-symbol)
+  ([remap imenu]                    . counsel-imenu)
+  ([remap recentf-open-files]       . counsel-recentf)
+  ([remap org-capture]              . counsel-org-capture)
+  ([remap swiper]                   . counsel-grep-or-swiper)
   :custom
   (counsel-describe-function-function 'helpful-callable)
   (counsel-describe-variable-function 'helpful-variable))
@@ -614,14 +368,14 @@
 
 (use-package counsel-projectile
   :after counsel projectile
-  :general
-  ([remap projectile-find-file]        'counsel-projectile-find-file)
-  ([remap projectile-find-dir]         'counsel-projectile-find-dir)
-  ([remap projectile-switch-to-buffer] 'counsel-projectile-switch-to-buffer)
-  ([remap projectile-grep]             'counsel-projectile-grep)
-  ([remap projectile-ag]               'counsel-projectile-ag)
-  ([remap projectile-ripgrep]          'counsel-projectile-rg)
-  ([remap projectile-switch-project]   'counsel-projectile-switch-project))
+  :bind
+  ([remap projectile-find-file]        . counsel-projectile-find-file)
+  ([remap projectile-find-dir]         . counsel-projectile-find-dir)
+  ([remap projectile-switch-to-buffer] . counsel-projectile-switch-to-buffer)
+  ([remap projectile-grep]             . counsel-projectile-grep)
+  ([remap projectile-ag]               . counsel-projectile-ag)
+  ([remap projectile-ripgrep]          . counsel-projectile-rg)
+  ([remap projectile-switch-project]   . counsel-projectile-switch-project))
 
 (use-package ns-win
   :if (memq window-system '(mac ns))
@@ -650,21 +404,17 @@
 
 (use-package reverse-im
   :config
-  (reverse-im-activate "russian-computer")
-  (with-eval-after-load 'evil
-    ;; cyrillic tweaks
-    (define-key evil-normal-state-map (kbd "C-х") #'evil-force-normal-state)
-    (define-key evil-insert-state-map (kbd "C-х") #'evil-normal-state)
-    (define-key evil-visual-state-map (kbd "C-х") #'evil-exit-visual-state)))
+  (reverse-im-activate "russian-computer"))
 
 (use-package iqa
-  :defer t
   :custom
-  (iqa-user-init-file (concat user-emacs-directory "config.org")))
+  (iqa-user-init-file (concat user-emacs-directory "config.org"))
+  :config
+  (iqa-setup-default))
 
 (use-package shell-pop
   :defer t
-  :general ("M-`" 'shell-pop)
+  :bind ("M-`" . shell-pop)
   :custom
   (shell-pop-full-span t "Spans full width of a window")
   (shell-pop-shell-type '("eshell" "*eshell-pop*" (lambda () (eshell)))))
@@ -762,37 +512,6 @@
   :hook
   (after-init . doom-modeline-mode))
 
-(use-package spaceline-config
-  :disabled
-  :ensure spaceline
-  :custom
-  (powerline-default-separator nil)
-  (spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
-  (spaceline-minor-modes-p nil)
-  (spaceline-hud-p nil)
-  (spaceline-purpose-p nil)
-  (spaceline-buffer-position-p nil)
-  (spaceline-buffer-modified-p nil)
-  (spaceline-buffer-encoding-abbrev-p nil)
-  (spaceline-buffer-size-p nil)
-  (spaceline-input-method-p t)
-  (spaceline-org-clock-p t)
-  (spaceline-org-pomodoro-p t)
-  :preface
-  (defun spaceline-custom-theme (&rest additional-segments)
-    "My custom spaceline theme."
-    (apply 'spaceline--theme
-           '(((((persp-name :fallback workspace-number)
-                window-number) :separator "|"))
-             :fallback evil-state
-             :face highlight-face
-             :priority 100)
-           '((buffer-modified buffer-size buffer-id remote-host)
-             :priority 98)
-           additional-segments))
-  :config
-  (spaceline-custom-theme))
-
 (use-package solarized-theme
   ;; :disabled
   :custom
@@ -861,12 +580,6 @@
   (sp-cancel-autoskip-on-backward-movement nil)
   :config
   (use-package smartparens-config :ensure nil)
-
-  ;; smartparens breaks evil-mode's replace state
-  (with-eval-after-load 'evil
-    (add-hook 'evil-replace-state-entry-hook #'turn-off-smartparens-mode)
-    (add-hook 'evil-replace-state-exit-hook  #'turn-on-smartparens-mode))
-
   (smartparens-global-mode t))
 
 (use-package hl-line
@@ -897,8 +610,6 @@
 
 (use-package company
   :defer t
-  :general
-  ("C-;" 'company-complete)
   :custom
   (company-minimum-prefix-length 2)
   (company-require-match 'never)
@@ -933,9 +644,6 @@
   (anzu-cons-mode-line-p nil)
   :config
   (global-anzu-mode +1))
-
-(use-package evil-anzu
-  :after evil anzu)
 
 (use-package hideshow
   :ensure nil
@@ -1009,10 +717,7 @@
   (emacs-lisp-mode . highlight-quoted-mode))
 
 (use-package erefactor
-  :defer t
-  :general
-  (my/local-leader-def :keymaps 'emacs-lisp-mode-map
-    "r" '(:keymap erefactor-map)))
+  :defer t)
 
 (use-package eros
   :defer t
@@ -1030,9 +735,6 @@
 
 (use-package cider
   :defer t
-  :general
-  (my/local-leader-def :keymaps 'clojure-mode-map
-    "'" 'cider-jack-in)
   :custom
   (cider-repl-use-pretty-printing t)
   (cider-repl-pop-to-buffer-on-connect 'display-only)
@@ -1043,9 +745,6 @@
 (use-package clj-refactor
   :after clojure-mode
   :defer t
-  :general
-  (my/local-leader-def :keymaps 'clojure-mode-map
-    "r" 'hydra-cljr-help-menu/body)
   :hook
   (clojure-mode . clj-refactor-mode))
 
@@ -1056,9 +755,6 @@
 
 (use-package projectile
   :defer t
-  :general
-  (my/leader-def
-    "p" '(:keymap projectile-command-map :which-key "Projects"))
   :custom
   (projectile-enable-caching t)
   (projectile-completion-system 'ivy)
@@ -1066,7 +762,6 @@
   (projectile-mode t))
 
 (use-package magit
-  :defer 1
   :commands magit-blame
   :custom
   (magit-clone-default-directory "~/Projects")
@@ -1095,10 +790,7 @@
   :defer t)
 
 (use-package gitignore-templates
-  :defer t
-  :general
-  (my/local-leader-def :keymaps 'gitignore-mode-map
-    "i" 'gitignore-templates-insert))
+  :defer t)
 
 (use-package diff-hl
   :defer t
@@ -1215,30 +907,16 @@ _K_: prev    _a_: all             _R_: refine
   (org-mode . toc-org-enable))
 
 (use-package docker
-  :defer t
-  :config
-  (with-eval-after-load 'evil
-    (evil-set-initial-state 'docker-container-mode 'emacs)
-    (evil-set-initial-state 'docker-image-mode 'emacs)
-    (evil-set-initial-state 'docker-network-mode 'emacs)
-    (evil-set-initial-state 'docker-volume-mode 'emacs)
-    (evil-set-initial-state 'docker-machine-mode 'emacs)))
+  :defer t)
 
 (use-package docker-tramp
   :defer t)
 
 (use-package dockerfile-mode
-  :defer t
-  :general
-  (my/local-leader-def :keymaps 'dockerfile-mode-map
-    "b" 'dockerfile-build-buffer
-    "B" 'dockerfile-build-no-cache-buffer))
+  :defer t)
 
 (use-package docker-compose-mode
-  :defer t
-  :general
-  (my/local-leader-def :keymaps 'docker-compose-mode-map
-    "m" 'docker-compose))
+  :defer t)
 
 (use-package yaml-mode
   :defer t
@@ -1248,24 +926,18 @@ _K_: prev    _a_: all             _R_: refine
   :ensure nil
   :quelpa (ansible-mode :fetcher github :repo "rynffoll/ansible-mode")
   :defer t
-  :general
-  (my/local-leader-def :keymaps 'ansible-mode-map
-    "d" 'ansible-mode-decrypt-buffer
-    "e" 'ansible-mode-encrypt-buffer)
-  :custom
+    :custom
   (ansible-mode-enable-auto-decrypt-encrypt t)
   :hook
   (yaml-mode . ansible-mode-maybe-enable))
 
 (use-package ansible-doc
   :after ansible-mode
-  :general
-  (my/local-leader-def :keymaps 'ansible-mode-map
-    "h" 'ansible-doc)
   :hook
   (ansible-mode . ansible-doc-mode)
-  :config
-  (evil-set-initial-state 'ansible-doc-module-mode 'motion))
+  ;; :config
+  ;; (evil-set-initial-state 'ansible-doc-module-mode 'motion)
+)
 
 (use-package jinja2-mode
   :defer t
