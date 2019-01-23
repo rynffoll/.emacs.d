@@ -138,10 +138,15 @@
   :config
   (winner-mode 1))
 
+(use-package windmove
+  :ensure nil
+  :config
+  (windmove-default-keybindings))
+
 (use-package winum
   :demand
   :custom
-  (winum-auto-setup-mode-line nil "For spaceline")
+  ;; (winum-auto-setup-mode-line nil "For spaceline")
   (winum-scope 'frame-local)
   :config
   (winum-mode))
@@ -259,7 +264,7 @@
 (use-package dired-sidebar
   :defer t
   :bind
-  (:map ctrl-x-map ("M-t" . dired-sidebar-toggle-sidebar))
+  ("C-x M-t" . dired-sidebar-toggle-sidebar)
   :custom
   ;; (dired-sidebar-theme 'none)
   (dired-sidebar-no-delete-other-windows t)
@@ -310,11 +315,6 @@
   (ediff-quit . winner-undo))
 
 (use-package ivy
-  :bind
-  ([remap switch-to-buffer] . ivy-switch-buffer)
-  ;; (ivy-mode-map
-  ;;  "C-j" 'ivy-next-line
-  ;;  "C-k" 'ivy-previous-line)
   :custom
   (ivy-wrap t)
   (ivy-fixed-height-minibuffer t)
@@ -329,32 +329,55 @@
                            (swiper . ivy--regex-plus)
                            (t . ivy--regex-fuzzy)))
   :config
-  (ivy-mode +1))
+  (ivy-mode t))
+
+(use-package counsel
+  :bind
+  (([remap execute-extended-command] . counsel-M-x)
+   ([remap menu-bar-open]            . counsel-tmm)
+   ([remap insert-char]              . counsel-unicode-char)
+   ([remap isearch-forward]          . counsel-grep-or-swiper)
+   ([remap describe-function]        . counsel-describe-function)
+   ([remap describe-variable]        . counsel-describe-variable)
+   ([remap apropos-command]          . counsel-apropos)
+   :map mode-specific-map
+   :prefix-map counsel-prefix-map
+   :prefix "c"
+   ("a" . counsel-apropos)
+   ("b" . counsel-bookmark)
+   ("B" . counsel-bookmarked-directory)
+   ("c w" . counsel-colors-web)
+   ("c e" . counsel-colors-emacs)
+   ("d" . counsel-dired-jump)
+   ("f" . counsel-file-jump)
+   ("F" . counsel-faces)
+   ("g" . counsel-org-goto)
+   ("h" . counsel-command-history)
+   ("H" . counsel-minibuffer-history)
+   ("i" . counsel-imenu)
+   ("j" . counsel-find-symbol)
+   ("l" . counsel-locate)
+   ("L" . counsel-find-library)
+   ("m" . counsel-mark-ring)
+   ("o" . counsel-outline)
+   ("O" . counsel-find-file-extern)
+   ("p" . counsel-package)
+   ("r" . counsel-recentf)
+   ("s g" . counsel-grep)
+   ("s r" . counsel-rg)
+   ("s s" . counsel-ag)
+   ("t" . counsel-org-tag)
+   ("v" . counsel-set-variable)
+   ("w" . counsel-wmctrl)
+   :map help-map
+   ("F" . counsel-describe-face))
+  :custom
+  (counsel-describe-function-function 'helpful-callable)
+  (counsel-describe-variable-function 'helpful-variable))
 
 (use-package swiper)
 
 (use-package smex)
-
-(use-package counsel
-  :after swiper
-  :bind
-  ([remap apropos]                  . counsel-apropos)
-  ([remap bookmark-jump]            . counsel-bookmark)
-  ([remap describe-face]            . counsel-describe-face)
-  ([remap describe-function]        . counsel-describe-function)
-  ([remap describe-variable]        . counsel-describe-variable)
-  ([remap execute-extended-command] . counsel-M-x)
-  ([remap find-file]                . counsel-find-file)
-  ([remap find-library]             . counsel-find-library)
-
-  ([remap info-lookup-symbol]       . counsel-info-lookup-symbol)
-  ([remap imenu]                    . counsel-imenu)
-  ([remap recentf-open-files]       . counsel-recentf)
-  ([remap org-capture]              . counsel-org-capture)
-  ([remap swiper]                   . counsel-grep-or-swiper)
-  :custom
-  (counsel-describe-function-function 'helpful-callable)
-  (counsel-describe-variable-function 'helpful-variable))
 
 (use-package hydra)
 
@@ -381,7 +404,8 @@
   :if (memq window-system '(mac ns))
   :ensure nil
   :custom
-  (mac-command-modifier 'meta))
+  (mac-command-modifier 'meta)
+  (mac-option-modifier 'super))
 
 (use-package files
   :ensure nil
@@ -438,6 +462,8 @@
 
 (use-package frame
   :ensure nil
+  :bind
+  ("C-z" . nil)
   :custom
   (default-frame-alist '((left . 0.5) (top . 0.5)
                          (width . 0.7) (height . 0.9)))
@@ -547,6 +573,9 @@
 
 (use-package delsel
   :ensure nil
+  :bind
+  (:map mode-specific-map
+        ("C-g" . minibuffer-keyboard-quit))
   :config
   (delete-selection-mode 1))
 
@@ -754,16 +783,19 @@
   ((clojure-mode cider-repl-mode) . eldoc-mode))
 
 (use-package projectile
-  :defer t
+  :bind
+  (:map mode-specific-map ("p" . projectile-command-map))
   :custom
   (projectile-enable-caching t)
   (projectile-completion-system 'ivy)
   :config
-  (projectile-mode t))
+  (projectile-mode +1))
 
 (use-package magit
-  :commands magit-blame
+  :bind
+  ("C-x g" . magit)
   :custom
+  (magit-completing-read-function 'ivy-completing-read "Force Ivy usage.")
   (magit-clone-default-directory "~/Projects")
   (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
   (magit-repository-directories `((,user-emacs-directory . 0)
@@ -812,14 +844,12 @@
 ^^-----------^^-------------------^^---------------------^^-------
 _n_: next    _b_: base            _<_: upper/base        _C_: combine
 _p_: prev    _u_: upper           _=_: upper/lower       _r_: resolve
-_J_: next    _l_: lower           _>_: base/lower        _k_: kill current
-_K_: prev    _a_: all             _R_: refine
+             _l_: lower           _>_: base/lower        _k_: kill current
+             _a_: all             _R_: refine
 ^^           _RET_: current       _E_: ediff
 "
     ("n" smerge-next)
     ("p" smerge-prev)
-    ("J" smerge-next)
-    ("K" smerge-prev)
     ("b" smerge-keep-base)
     ("u" smerge-keep-upper)
     ("l" smerge-keep-lower)
@@ -907,7 +937,9 @@ _K_: prev    _a_: all             _R_: refine
   (org-mode . toc-org-enable))
 
 (use-package docker
-  :defer t)
+  :defer t
+  :bind
+  (:map mode-specific-map ("d" . docker)))
 
 (use-package docker-tramp
   :defer t)
@@ -934,10 +966,7 @@ _K_: prev    _a_: all             _R_: refine
 (use-package ansible-doc
   :after ansible-mode
   :hook
-  (ansible-mode . ansible-doc-mode)
-  ;; :config
-  ;; (evil-set-initial-state 'ansible-doc-module-mode 'motion)
-)
+  (ansible-mode . ansible-doc-mode))
 
 (use-package jinja2-mode
   :defer t
