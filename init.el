@@ -82,6 +82,7 @@
   (my/leader-def
     "" '(nil :which-key "Leader")
     "." 'counsel-find-file
+    "SPC" 'execute-extended-command
 
     "o" '(:ignore t :which-key "Open")
     "od" 'docker
@@ -89,12 +90,15 @@
     "oL" 'counsel-find-library
     "op" 'package-list-packages
     "oc" 'customize-group
-    "oo" '(:ignore t :which-key "Org")
-    "ooa" 'org-agenda
-    "oo." 'my/open-org-directory
-    "ooi" 'my/open-org-inbox-file
-    "oot" 'my/open-org-todo-file
-    "oon" 'my/open-org-notes-file
+
+    "O" '(:ignore t :which-key "Org")
+    "Oa" 'org-agenda
+    "O." 'my/open-org-directory
+    "Oi" 'my/open-org-inbox-file
+    "Ot" 'my/open-org-todo-file
+    "On" 'my/open-org-notes-file
+
+    "p" '(:keymap projectile-command-map :package projectile :which-key "Projects")
 
     "b" '(:ignore t :which-key "Buffers")
     "b TAB" 'evil-switch-to-windows-last-buffer
@@ -104,9 +108,7 @@
     "bk" 'kill-this-buffer
     "b]" 'evil-next-buffer
     "b[" 'evil-prev-buffer
-    "bR" 'crux-rename-buffer-and-file
-    "bD" 'crux-delete-buffer-and-file
-    "bp" 'counsel-projectile
+    "bR" 'rename-buffer
     "bm" 'my/switch-to-messages
     "bs" 'my/switch-to-scratch
 
@@ -116,7 +118,6 @@
     "fr" 'counsel-recentf
     "fR" 'crux-rename-file-and-buffer
     "fD" 'crux-delete-file-and-buffer
-    "fp" 'projectile-find-file
 
     "e" '(:ignore t :which-key "Emacs")
     "ed" 'iqa-find-user-init-directory
@@ -132,10 +133,10 @@
     "gi" 'gitignore-templates-new-file
     "gl" 'magit-log-buffer-file
     "gt" 'git-timemachine
-    "gL" 'magit-list-repositories
 
     "/" '(:ignore t :which-key "Search")
-    "//" 'swiper
+    "/b" 'swiper
+    "/d" 'counsel-rg
     "/p" 'counsel-projectile-rg
 
     "j" '(:ignore t :which-key "Jump")
@@ -160,6 +161,7 @@
     "tr" 'rainbow-mode
     "tw" 'whitespace-mode
     "tm" 'toggle-frame-maximized
+    "tf" 'toggle-frame-fullscreen
     "tn" 'display-line-numbers-mode
     "tT" 'toggle-truncate-lines
     "ti" 'highlight-indent-guides-mode
@@ -180,10 +182,6 @@
   (evil-emacs-state-cursor 'hbar)
   (evil-mode-line-format nil)
   :config
-  ;; TODO move to :general section
-  (general-define-key :keymaps 'evil-window-map
-                      "u" 'winner-undo
-                      "U" 'winner-redo)
   (evil-mode 1))
 
 (use-package evil-collection
@@ -302,24 +300,16 @@
 
 (use-package winner
   :ensure nil
+  :general
+  (evil-window-map
+   "u" 'winner-undo
+   "U" 'winner-redo)
   :config
   (winner-mode 1))
 
 (use-package winum
   :demand
   :general
-  (:keymaps 'evil-window-map
-            "'" 'winum-select-window-by-number
-            "0" 'winum-select-window-0-or-10
-            "1" 'winum-select-window-1
-            "2" 'winum-select-window-2
-            "3" 'winum-select-window-3
-            "4" 'winum-select-window-4
-            "5" 'winum-select-window-5
-            "6" 'winum-select-window-6
-            "7" 'winum-select-window-7
-            "8" 'winum-select-window-8
-            "9" 'winum-select-window-9)
   (my/leader-def
     "'" 'winum-select-window-by-number
     "0" 'winum-select-window-0-or-10
@@ -557,7 +547,6 @@
 
 (use-package ivy
   :general
-  ([remap switch-to-buffer] 'ivy-switch-buffer)
   (ivy-mode-map
    "C-j" 'ivy-next-line
    "C-k" 'ivy-previous-line)
@@ -570,10 +559,7 @@
   (ivy-virtual-abbreviate 'full)
   (ivy-on-del-error-function nil)
   (ivy-use-selectable-prompt t)
-  (ivy-re-builders-alist '((counsel-ag . ivy--regex-plus)
-                           (counsel-grep . ivy--regex-plus)
-                           (swiper . ivy--regex-plus)
-                           (t . ivy--regex-fuzzy)))
+  (ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
   :config
   (ivy-mode +1))
 
@@ -582,22 +568,14 @@
 (use-package smex)
 
 (use-package counsel
-  :after swiper
   :general
-  ([remap apropos]                  'counsel-apropos)
-  ([remap bookmark-jump]            'counsel-bookmark)
   ([remap describe-face]            'counsel-describe-face)
   ([remap describe-function]        'counsel-describe-function)
   ([remap describe-variable]        'counsel-describe-variable)
   ([remap execute-extended-command] 'counsel-M-x)
   ([remap find-file]                'counsel-find-file)
   ([remap find-library]             'counsel-find-library)
-
-  ([remap info-lookup-symbol]       'counsel-info-lookup-symbol)
   ([remap imenu]                    'counsel-imenu)
-  ([remap recentf-open-files]       'counsel-recentf)
-  ([remap org-capture]              'counsel-org-capture)
-  ([remap swiper]                   'counsel-grep-or-swiper)
   :custom
   (counsel-describe-function-function 'helpful-callable)
   (counsel-describe-variable-function 'helpful-variable))
@@ -613,25 +591,17 @@
   (ivy-rich-mode 1))
 
 (use-package counsel-projectile
-  :after counsel projectile
-  :general
-  ([remap projectile-find-file]        'counsel-projectile-find-file)
-  ([remap projectile-find-dir]         'counsel-projectile-find-dir)
-  ([remap projectile-switch-to-buffer] 'counsel-projectile-switch-to-buffer)
-  ([remap projectile-grep]             'counsel-projectile-grep)
-  ([remap projectile-ag]               'counsel-projectile-ag)
-  ([remap projectile-ripgrep]          'counsel-projectile-rg)
-  ([remap projectile-switch-project]   'counsel-projectile-switch-project))
+  :after counsel projectile)
 
 (use-package ns-win
   :if (memq window-system '(mac ns))
   :ensure nil
   :custom
-  (mac-command-modifier 'meta))
+  (mac-command-modifier nil))
 
 (use-package files
-  :ensure nil
   :if (memq window-system '(mac ns))
+  :ensure nil
   :custom
   (insert-directory-program "gls"))
 
@@ -710,6 +680,7 @@
   (scroll-bar-mode -1))
 
 (use-package menu-bar
+  :if (not (memq window-system '(mac ns)))
   :ensure nil
   :config
   (menu-bar-mode -1))
@@ -828,6 +799,8 @@
 
 (use-package delsel
   :ensure nil
+  :general
+  ("C-c C-g" 'minibuffer-keyboard-quit)
   :config
   (delete-selection-mode 1))
 
@@ -938,6 +911,7 @@
   :after evil anzu)
 
 (use-package hideshow
+  :disabled
   :ensure nil
   :defer t
   :hook (prog-mode . hs-minor-mode))
@@ -1056,9 +1030,6 @@
 
 (use-package projectile
   :defer t
-  :general
-  (my/leader-def
-    "p" '(:keymap projectile-command-map :which-key "Projects"))
   :custom
   (projectile-enable-caching t)
   (projectile-completion-system 'ivy)
@@ -1066,9 +1037,10 @@
   (projectile-mode t))
 
 (use-package magit
-  :defer 1
+  :defer t
   :commands magit-blame
   :custom
+  (magit-completing-read-function 'ivy-completing-read)
   (magit-clone-default-directory "~/Projects")
   (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
   (magit-repository-directories `((,user-emacs-directory . 0)
