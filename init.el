@@ -926,13 +926,15 @@
   :ensure company
   :after company yasnippet
   :preface
-  (defun my/add-snippets-to-company-backend (backend)
+  (defun my/company-with-yasnippet (backend)
     (if (and (listp backend) (member 'company-yasnippet backend))
         backend
       (append (if (consp backend) backend (list backend))
               '(:with company-yasnippet))))
+  (defun my/company-add-with-yasnippet (backend)
+    (push (my/company-with-yasnippet backend) company-backends))
   :custom
-  (company-backends (mapcar #'my/add-snippets-to-company-backend company-backends)))
+  (company-backends (mapcar #'my/company-with-yasnippet company-backends)))
 
 (use-package flycheck
   :defer t
@@ -1217,6 +1219,7 @@ _K_: prev    _a_: all             _R_: refine
   :mode "Procfile\\'")
 
 (use-package ansible-mode
+  :disabled
   :ensure nil
   :quelpa (ansible-mode :fetcher github :repo "rynffoll/ansible-mode")
   :defer t
@@ -1229,13 +1232,27 @@ _K_: prev    _a_: all             _R_: refine
   :hook
   (yaml-mode . ansible-mode-maybe-enable))
 
-(use-package ansible-doc
-  :after ansible-mode
+(use-package ansible-vault
+  :preface
+  (defun ansible-vault-mode-maybe ()
+    (when (ansible-vault--is-vault-file)
+      (ansible-vault-mode 1)))
   :general
-  (my/local-leader-def :keymaps 'ansible-mode-map
+  (my/local-leader-def :keymaps 'yaml-mode-map
+    "d" 'ansible-vault-decrypt-current-buffer
+    "e" 'ansible-vault-encrypt-current-buffer
+    "D" 'ansible-vault-decrypt-region
+    "E" 'ansible-vault-encrypt-region)
+  :hook
+  (yaml-mode . ansible-vault-mode-maybe))
+
+(use-package ansible-doc
+  :after yaml-mode
+  :general
+  (my/local-leader-def :keymaps 'yaml-mode-map
     "h" 'ansible-doc)
   :hook
-  (ansible-mode . ansible-doc-mode)
+  (yaml-mode . ansible-doc-mode)
   :config
   (evil-set-initial-state 'ansible-doc-module-mode 'motion))
 
@@ -1244,9 +1261,9 @@ _K_: prev    _a_: all             _R_: refine
   :mode "\\.j2\\'")
 
 (use-package company-ansible
-  :after company ansible-mode
+  :after company
   :config
-  (add-to-list 'company-backends 'company-ansible))
+  (my/company-add-with-yasnippet 'company-ansible))
 
 (use-package restclient
   :defer t
@@ -1263,7 +1280,7 @@ _K_: prev    _a_: all             _R_: refine
 (use-package company-restclient
   :after company restclient
   :config
-  (add-to-list 'company-backends 'company-restclient))
+  (my/company-add-with-yasnippet 'company-restclient))
 
 (use-package password-generator
   :defer t)
