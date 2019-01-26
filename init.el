@@ -38,27 +38,24 @@
 (eval-when-compile
   (require 'use-package))
 
+(setq use-package-compute-statistics t)
 (setq use-package-always-ensure t)
 (setq use-package-verbose t)
 (setq use-package-minimum-reported-time 0.01)
+(setq use-package-hook-name-suffix nil)
 
-(use-package quelpa
-  :defer t
-  :custom
-  (quelpa-use-package-inhibit-loading-quelpa t "Improve startup performance")
-  (quelpa-update-melpa-p nil))
+(use-package quelpa)
 
 (use-package quelpa-use-package
   :custom
   (quelpa-use-package-inhibit-loading-quelpa t "Improve startup performance"))
 
 (use-package auto-compile
-  :config
-  (auto-compile-on-load-mode 1)
-  (auto-compile-on-save-mode 1)
   :custom
   (auto-compile-display-buffer nil)
-  (auto-compile-mode-line-counter t))
+  :config
+  (auto-compile-on-load-mode 1)
+  (auto-compile-on-save-mode 1))
 
 (use-package general
   :preface
@@ -219,7 +216,7 @@
   (evil-org-special-o/O '(item table-row))
   (evil-org-key-theme '(todo textobjects insert navigation heading))
   :hook
-  (org-mode . evil-org-mode))
+  (org-mode-hook . evil-org-mode))
 
 (use-package evil-org-agenda
   :ensure evil-org
@@ -293,10 +290,10 @@
 (use-package ibuffer-vc
   :after ibuffer
   :hook
-  (ibuffer . (lambda ()
-               (ibuffer-vc-set-filter-groups-by-vc-root)
-               (unless (eq ibuffer-sorting-mode 'alphabetic)
-                 (ibuffer-do-sort-by-alphabetic)))))
+  (ibuffer-hook . (lambda ()
+                    (ibuffer-vc-set-filter-groups-by-vc-root)
+                    (unless (eq ibuffer-sorting-mode 'alphabetic)
+                      (ibuffer-do-sort-by-alphabetic)))))
 
 (use-package winner
   :ensure nil
@@ -458,7 +455,7 @@
   (dired-recursive-deletes 'always "Never prompt for recursive deletes of a directory")
   (dired-hide-details-hide-symlink-targets nil)
   :hook
-  (dired-mode . dired-hide-details-mode))
+  (dired-mode-hook . dired-hide-details-mode))
 
 (use-package dired-x
   :ensure nil
@@ -522,11 +519,11 @@
 
 (use-package esh-autosuggest
   :after eshell
-  :hook (eshell-mode . esh-autosuggest-mode))
+  :hook (eshell-mode-hook . esh-autosuggest-mode))
 
 (use-package eshell-fringe-status
   :after eshell
-  :hook (eshell-mode . eshell-fringe-status-mode))
+  :hook (eshell-mode-hook . eshell-fringe-status-mode))
 
 (use-package eshell-prompt-extras
   :after eshell
@@ -542,8 +539,8 @@
   (ediff-split-window-function 'split-window-horizontally)
   (ediff-merge-split-window-function 'split-window-horizontally)
   :hook
-  (ediff-prepare-buffer . show-all)
-  (ediff-quit . winner-undo))
+  (ediff-prepare-buffer-hook . show-all)
+  (ediff-quit-hook . winner-undo))
 
 (use-package ivy
   :general
@@ -718,20 +715,18 @@
   (mode-line-inactive ((t (:inherit mode-line-inactive :box nil :underline nil :overline nil)))))
 
 (use-package hide-mode-line
-  :defer t
-  :hook (dired-sidebar-mode . hide-mode-line-mode))
+  :hook (dired-sidebar-mode-hook . hide-mode-line-mode))
 
 (use-package minions
   :config
   (minions-mode))
 
 (use-package doom-modeline
-  :defer t
   :custom
   (doom-modeline-buffer-file-name-style 'buffer-name)
   (doom-modeline-minor-modes t)
   :hook
-  (after-init . doom-modeline-mode))
+  (after-init-hook . doom-modeline-mode))
 
 (use-package spaceline-config
   :disabled
@@ -813,7 +808,7 @@
 
 (use-package rainbow-mode
   :defer t
-  :hook css-mode)
+  :hook css-mode-hook)
 
 (use-package paren
   :ensure nil
@@ -822,7 +817,9 @@
 
 (use-package rainbow-delimiters
   :defer t
-  :hook ((prog-mode conf-mode) . rainbow-delimiters-mode))
+  :hook
+  (prog-mode-hook . rainbow-delimiters-mode)
+  (conf-mode-hook . rainbow-delimiters-mode))
 
 (use-package smartparens
   :defer t
@@ -849,18 +846,24 @@
 
 (use-package hl-todo
   :defer t
-  :hook ((prog-mode conf-mode) . hl-todo-mode))
+  :hook
+  (prog-mode-hook . hl-todo-mode)
+  (conf-mode-hook . hl-todo-mode))
 
 (use-package highlight-indent-guides
   :defer t)
 
 (use-package highlight-numbers
   :defer t
-  :hook ((prog-mode conf-mode) . highlight-numbers-mode))
+  :hook
+  (prog-mode-hook . highlight-numbers-mode)
+  (conf-mode-hook . highlight-numbers-mode))
 
 (use-package editorconfig
   :defer t
-  :hook ((prog-mode conf-mode) . editorconfig-mode))
+  :hook
+  (prog-mode-hook . editorconfig-mode)
+  (conf-mode-hook . editorconfig-mode))
 
 (use-package display-line-numbers
   :ensure nil
@@ -884,12 +887,12 @@
   (company-dabbrev-ignore-case nil)
   (company-dabbrev-downcase nil)
   :hook
-  (after-init . global-company-mode))
+  (after-init-hook . global-company-mode))
 
 (use-package company-shell
   :after company
   :config
-  (add-to-list 'company-backends 'company-shell))
+  (my/company-add-with-yasnippet 'company-shell))
 
 (use-package company-flx
   :after company
@@ -914,11 +917,12 @@
   :disabled
   :ensure nil
   :defer t
-  :hook (prog-mode . hs-minor-mode))
+  :hook
+  (prog-mode-hook . hs-minor-mode))
 
 (use-package yasnippet
   :hook
-  (prog-mode . yas-minor-mode))
+  (prog-mode-hook . yas-minor-mode))
 
 (use-package yasnippet-snippets)
 
@@ -939,7 +943,7 @@
 (use-package flycheck
   :defer t
   :hook
-  (prog-mode . flycheck-mode)
+  (prog-mode-hook . flycheck-mode)
   :custom
   (flycheck-indication-mode 'right-fringe)
   :config
@@ -972,17 +976,17 @@
   :disabled
   :ensure nil
   :hook
-  (after-save . check-parens))
+  (after-save-hook . check-parens))
 
 (use-package highlight-defined
   :defer t
   :hook
-  (emacs-lisp-mode . highlight-defined-mode))
+  (emacs-lisp-mode-hook . highlight-defined-mode))
 
 (use-package highlight-quoted
   :defer t
   :hook
-  (emacs-lisp-mode . highlight-quoted-mode))
+  (emacs-lisp-mode-hook . highlight-quoted-mode))
 
 (use-package erefactor
   :defer t
@@ -993,7 +997,7 @@
 (use-package eros
   :defer t
   :hook
-  (emacs-lisp-mode . eros-mode))
+  (emacs-lisp-mode-hook . eros-mode))
 
 (use-package clojure-mode
   :defer t)
@@ -1023,12 +1027,13 @@
   (my/local-leader-def :keymaps 'clojure-mode-map
     "r" 'hydra-cljr-help-menu/body)
   :hook
-  (clojure-mode . clj-refactor-mode))
+  (clojure-mode-hook . clj-refactor-mode))
 
 (use-package eldoc
   :ensure nil
   :hook
-  ((clojure-mode cider-repl-mode) . eldoc-mode))
+  (clojure-mode-hook . eldoc-mode)
+  (cider-repl-mode-hook . eldoc-mode))
 
 (use-package projectile
   :defer t
@@ -1079,7 +1084,9 @@
   :custom
   (diff-hl-draw-borders nil)
   :hook
-  ((prog-mode conf-mode org-mode) . diff-hl-mode)
+  (prog-mode-hook . diff-hl-mode)
+  (conf-mode-hook . diff-hl-mode)
+  (org-mode-hook . diff-hl-mode)
   (diff-hl-mode . diff-hl-flydiff-mode)
   (dired-mode . diff-hl-dired-mode)
   (magit-post-refresh . diff-hl-magit-post-refresh))
@@ -1122,9 +1129,10 @@ _K_: prev    _a_: all             _R_: refine
             (bury-buffer))
      "Save and bury buffer" :color blue)
     ("q" nil "cancel" :color blue))
-  :hook (magit-diff-visit-file . (lambda ()
-                                   (when smerge-mode
-                                     (unpackaged/smerge-hydra/body)))))
+  :hook
+  (magit-diff-visit-file-hook . (lambda ()
+                                  (when smerge-mode
+                                    (unpackaged/smerge-hydra/body)))))
 
 (use-package org
   :ensure org-plus-contrib
@@ -1181,12 +1189,12 @@ _K_: prev    _a_: all             _R_: refine
   ;; ► • ★ ▸
   (org-bullets-bullet-list '("◆"))
   :hook
-  (org-mode . org-bullets-mode))
+  (org-mode-hook . org-bullets-mode))
 
 (use-package toc-org
   :after org
   :hook
-  (org-mode . toc-org-enable))
+  (org-mode-hook . toc-org-enable))
 
 (use-package docker
   :defer t
@@ -1230,7 +1238,7 @@ _K_: prev    _a_: all             _R_: refine
   :custom
   (ansible-mode-enable-auto-decrypt-encrypt t)
   :hook
-  (yaml-mode . ansible-mode-maybe-enable))
+  (yaml-mode-hook . ansible-mode-maybe-enable))
 
 (use-package ansible-vault
   :preface
@@ -1244,7 +1252,7 @@ _K_: prev    _a_: all             _R_: refine
     "D" 'ansible-vault-decrypt-region
     "E" 'ansible-vault-encrypt-region)
   :hook
-  (yaml-mode . ansible-vault-mode-maybe))
+  (yaml-mode-hook . ansible-vault-mode-maybe))
 
 (use-package ansible-doc
   :after yaml-mode
@@ -1252,7 +1260,7 @@ _K_: prev    _a_: all             _R_: refine
   (my/local-leader-def :keymaps 'yaml-mode-map
     "h" 'ansible-doc)
   :hook
-  (yaml-mode . ansible-doc-mode)
+  (yaml-mode-hook . ansible-doc-mode)
   :config
   (evil-set-initial-state 'ansible-doc-module-mode 'motion))
 
