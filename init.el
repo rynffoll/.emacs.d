@@ -4,17 +4,21 @@
 (setq load-prefer-newer t)
 (setq message-log-max t) ;; we don't want to lose any startup log info
 
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (message "Emacs ready in %s with %d garbage collections."
-                     (format "%.2f seconds"
-                             (float-time
-                              (time-subtract after-init-time before-init-time)))
-                     gcs-done)))
+(setq gc-cons-threshold 402653184
+      gc-cons-percentage 0.6)
 
-(setq gc-cons-threshold most-positive-fixnum)
-(add-hook 'after-init-hook #'(lambda ()
-                               (setq gc-cons-threshold 800000)))
+(add-hook 'emacs-startup-hook
+          #'(lambda ()
+              (setq gc-cons-threshold 16777216
+                    gc-cons-percentage 0.1)))
+
+(add-hook 'emacs-startup-hook
+          #'(lambda ()
+              (message "Emacs ready in %s with %d garbage collections."
+                       (format "%.2f seconds"
+                               (float-time
+                                (time-subtract after-init-time before-init-time)))
+                       gcs-done)))
 
 (require 'package)
 (setq package-archives
@@ -44,13 +48,15 @@
 (setq use-package-minimum-reported-time 0.01)
 (setq use-package-hook-name-suffix nil)
 
-(use-package quelpa)
+(use-package quelpa
+  :defer t)
 
 (use-package quelpa-use-package
   :custom
   (quelpa-use-package-inhibit-loading-quelpa t "Improve startup performance"))
 
 (use-package auto-compile
+  :disabled
   :custom
   (auto-compile-display-buffer nil)
   :config
@@ -224,6 +230,11 @@
   :config
   (evil-org-agenda-set-keys))
 
+(use-package evil-mc
+  :after evil
+  :config
+  (global-evil-mc-mode t))
+
 (use-package emacs
   :ensure nil
   :custom
@@ -257,6 +268,7 @@
   (enable-local-eval t))
 
 (use-package autorevert
+  :ensure nil
   :custom
   (auto-revert-verbose nil)
   (global-auto-revert-non-file-buffers t)
@@ -272,11 +284,6 @@
   :ensure nil
   :config
   (save-place-mode))
-
-(use-package super-save
-  :disabled
-  :config
-  (super-save-mode +1))
 
 (use-package ibuffer
   :ensure nil
@@ -329,17 +336,20 @@
   :custom
   (shackle-default-alignment 'below)
   (shackle-default-size 0.4)
-  (shackle-rules '((help-mode :align below :select t)
+  (shackle-rules '((help-mode :align below :select t :size 0.3)
                    (helpful-mode :align below)
                    (flycheck-error-list-mode :align below :size 0.25)
                    (cider-repl-mode :align below :size 0.3)
                    (ansible-doc-module-mode :align below)
-                   ("*Pack*" :align below :size 0.2)))
+                   ("*Pack*" :align below :size 0.2)
+                   ("*Async Shell Command*" :ignore t)
+                   ("*Warnings*" :align below :size 0.3)
+                   ("*Compile-Log*" :align below :size 0.2)))
   :config
   (shackle-mode 1))
 
 (use-package eyebrowse
-  :defer 1
+  :defer t
   :preface
   (defun my/new-workspace ()
     (interactive)
@@ -428,6 +438,7 @@
 
 (use-package calendar
   :ensure nil
+  :defer t
   :custom
   (calendar-date-style 'iso)
   (calendar-week-start-day 1))
@@ -560,7 +571,8 @@
   :config
   (ivy-mode +1))
 
-(use-package swiper)
+(use-package swiper
+  :defer t)
 
 (use-package smex)
 
@@ -603,6 +615,7 @@
   (insert-directory-program "gls"))
 
 (use-package browse-url
+  :disabled
   :ensure nil
   :config
   (let ((cmd-exe "/mnt/c/Windows/System32/cmd.exe")
@@ -637,12 +650,10 @@
   (shell-pop-shell-type '("eshell" "*eshell-pop*" (lambda () (eshell)))))
 
 (use-package exec-path-from-shell
-  :defer 0.1
   :config
   (exec-path-from-shell-initialize))
 
 (use-package which-key
-  :defer t
   :custom
   (which-key-idle-delay 0.5)
   (which-key-sort-uppercase-first nil)
@@ -650,6 +661,7 @@
   (which-key-mode +1))
 
 (use-package ssh-config-mode
+  :defer t
   :init
   (autoload 'ssh-config-mode "ssh-config-mode" t))
 
@@ -677,7 +689,6 @@
   (scroll-bar-mode -1))
 
 (use-package menu-bar
-  :if (not (memq window-system '(mac ns)))
   :ensure nil
   :config
   (menu-bar-mode -1))
@@ -692,21 +703,22 @@
         ;; '(left-curly-arrow right-curly-arrow) ;; default
         ))
 
-(use-package font-lock+
-  :ensure nil
-  :quelpa
-  (font-lock+ :repo "emacsmirror/font-lock-plus" :fetcher github))
-
 (use-package faces
   :ensure nil
   :config
   (set-face-attribute 'default nil :font "Fira Mono 14"))
 
+(use-package font-lock+
+  :ensure nil
+  :quelpa
+  (font-lock+ :repo "emacsmirror/font-lock-plus" :fetcher github))
+
 (use-package all-the-icons
   :defer t)
 
 (use-package all-the-icons-dired
-  :defer t)
+  :hook
+  (dired-mode-hook . all-the-icons-dired-mode))
 
 (use-package faces
   :ensure nil
@@ -715,7 +727,8 @@
   (mode-line-inactive ((t (:inherit mode-line-inactive :box nil :underline nil :overline nil)))))
 
 (use-package hide-mode-line
-  :hook (dired-sidebar-mode-hook . hide-mode-line-mode))
+  :hook
+  (dired-sidebar-mode-hook . hide-mode-line-mode))
 
 (use-package minions
   :config
@@ -723,10 +736,14 @@
 
 (use-package doom-modeline
   :custom
+  (doom-modeline-height 25)
+  (doom-modeline-bar-width 3)
   (doom-modeline-buffer-file-name-style 'buffer-name)
   (doom-modeline-minor-modes t)
-  :hook
-  (after-init-hook . doom-modeline-mode))
+  ;; :hook
+  ;; (after-init-hook . doom-modeline-mode)
+  :config
+  (doom-modeline-mode t))
 
 (use-package spaceline-config
   :disabled
@@ -819,25 +836,12 @@
   :defer t
   :hook
   (prog-mode-hook . rainbow-delimiters-mode)
-  (conf-mode-hook . rainbow-delimiters-mode))
+  (cider-repl-mode-hook . rainbow-delimiters-mode))
 
-(use-package smartparens
-  :defer t
-  :custom
-  (sp-highlight-pair-overlay nil)
-  (sp-highlight-wrap-overlay nil)
-  (sp-highlight-wrap-tag-overlay nil)
-  (sp-show-pair-from-inside t)
-  (sp-cancel-autoskip-on-backward-movement nil)
+(use-package elec-pair
+  :ensure nil
   :config
-  (use-package smartparens-config :ensure nil)
-
-  ;; smartparens breaks evil-mode's replace state
-  (with-eval-after-load 'evil
-    (add-hook 'evil-replace-state-entry-hook #'turn-off-smartparens-mode)
-    (add-hook 'evil-replace-state-exit-hook  #'turn-on-smartparens-mode))
-
-  (smartparens-global-mode t))
+  (electric-pair-mode t))
 
 (use-package hl-line
   :ensure nil
@@ -845,49 +849,107 @@
   (global-hl-line-mode 1))
 
 (use-package hl-todo
-  :defer t
-  :hook
-  (prog-mode-hook . hl-todo-mode)
-  (conf-mode-hook . hl-todo-mode))
+  :custom
+  (hl-todo-highlight-punctuation ":")
+  :config
+  (global-hl-todo-mode))
 
 (use-package highlight-indent-guides
   :defer t)
 
 (use-package highlight-numbers
-  :defer t
   :hook
-  (prog-mode-hook . highlight-numbers-mode)
-  (conf-mode-hook . highlight-numbers-mode))
+  (prog-mode-hook . highlight-numbers-mode))
 
 (use-package editorconfig
-  :defer t
   :hook
   (prog-mode-hook . editorconfig-mode)
-  (conf-mode-hook . editorconfig-mode))
+  (text-mode-hook . editorconfig-mode))
 
 (use-package display-line-numbers
   :ensure nil
   :defer t
   :custom
-  (display-line-numbers-width-start 1))
+  (display-line-numbers-width-start t))
+
+(use-package yasnippet
+  :hook
+  (prog-mode-hook . yas-minor-mode))
+
+(use-package yasnippet-snippets)
 
 (use-package company
   :defer t
-  :general
-  ("C-;" 'company-complete)
   :custom
   (company-minimum-prefix-length 2)
   (company-require-match 'never)
   (company-selection-wrap-around t)
   (company-tooltip-minimum-width 30)
-  (company-tooltip-margin 2)
   (company-tooltip-align-annotations t)
-  (company-tooltip-flip-when-above t)
-  (company-dabbrev-code-other-buffers t)
   (company-dabbrev-ignore-case nil)
   (company-dabbrev-downcase nil)
   :hook
   (after-init-hook . global-company-mode))
+
+(use-package company-yasnippet
+  :ensure company
+  :after company yasnippet
+  :preface
+  (defun my/company-with-yasnippet (backend)
+    (if (and (listp backend) (member 'company-yasnippet backend))
+        backend
+      (append (if (consp backend) backend (list backend))
+              '(:with company-yasnippet))))
+  (defun my/company-add-with-yasnippet (backend)
+    (push (my/company-with-yasnippet backend) company-backends))
+  :custom
+  (company-backends (mapcar #'my/company-with-yasnippet company-backends)))
+
+(use-package company-box
+  :disabled
+  :after company all-the-icons
+  :custom-face
+  (company-box-candidate ((t :inherit company-tooltip-common)))
+  (company-box-scrollbar ((t :inherit company-scrollbar-fg)))
+  :custom
+  (company-box-show-single-candidate t)
+  (company-box-backends-colors nil)
+  (company-box-max-candidates 50)
+  (company-box-icons-yasnippet (all-the-icons-material "short_text" :height 0.8 :face 'all-the-icons-green))
+  (company-box-icons-unknown (all-the-icons-material "find_in_page" :height 0.8 :face 'all-the-icons-purple))
+  (company-box-icons-elisp
+   `(,(all-the-icons-material "functions"                  :height 0.8 :face 'all-the-icons-red)
+     ,(all-the-icons-material "check_circle"               :height 0.8 :face 'all-the-icons-blue)
+     ,(all-the-icons-material "stars"                      :height 0.8 :face 'all-the-icons-orange)
+     ,(all-the-icons-material "format_paint"               :height 0.8 :face 'all-the-icons-pink)))
+  (company-box-icons-lsp
+   `((1  . ,(all-the-icons-material "text_fields"              :height 0.8 :face 'all-the-icons-green)) ; text
+     (2  . ,(all-the-icons-material "functions"                :height 0.8 :face 'all-the-icons-red))   ; method
+     (3  . ,(all-the-icons-material "functions"                :height 0.8 :face 'all-the-icons-red))   ; function
+     (4  . ,(all-the-icons-material "functions"                :height 0.8 :face 'all-the-icons-red))   ; constructor
+     (5  . ,(all-the-icons-material "functions"                :height 0.8 :face 'all-the-icons-red))   ; field
+     (6  . ,(all-the-icons-material "adjust"                   :height 0.8 :face 'all-the-icons-blue))  ; variable
+     (7  . ,(all-the-icons-material "class"                    :height 0.8 :face 'all-the-icons-red))   ; class
+     (8  . ,(all-the-icons-material "settings_input_component" :height 0.8 :face 'all-the-icons-red))   ; interface
+     (9  . ,(all-the-icons-material "view_module"              :height 0.8 :face 'all-the-icons-red))   ; module
+     (10 . ,(all-the-icons-material "settings"                 :height 0.8 :face 'all-the-icons-red))   ; property
+     (11 . ,(all-the-icons-material "straighten"               :height 0.8 :face 'all-the-icons-red))   ; unit
+     (12 . ,(all-the-icons-material "filter_1"                 :height 0.8 :face 'all-the-icons-red))   ; value
+     (13 . ,(all-the-icons-material "plus_one"                 :height 0.8 :face 'all-the-icons-red))   ; enum
+     (14 . ,(all-the-icons-material "filter_center_focus"      :height 0.8 :face 'all-the-icons-red))   ; keyword
+     (15 . ,(all-the-icons-material "short_text"               :height 0.8 :face 'all-the-icons-red))   ; snippet
+     (16 . ,(all-the-icons-material "color_lens"               :height 0.8 :face 'all-the-icons-red))   ; color
+     (17 . ,(all-the-icons-material "insert_drive_file"        :height 0.8 :face 'all-the-icons-red))   ; file
+     (18 . ,(all-the-icons-material "collections_bookmark"     :height 0.8 :face 'all-the-icons-red))   ; reference
+     (19 . ,(all-the-icons-material "folder"                   :height 0.8 :face 'all-the-icons-red))   ; folder
+     (20 . ,(all-the-icons-material "people"                   :height 0.8 :face 'all-the-icons-red))   ; enumMember
+     (21 . ,(all-the-icons-material "pause_circle_filled"      :height 0.8 :face 'all-the-icons-red))   ; constant
+     (22 . ,(all-the-icons-material "streetview"               :height 0.8 :face 'all-the-icons-red))   ; struct
+     (23 . ,(all-the-icons-material "event"                    :height 0.8 :face 'all-the-icons-red))   ; event
+     (24 . ,(all-the-icons-material "control_point"            :height 0.8 :face 'all-the-icons-red))   ; operator
+     (25 . ,(all-the-icons-material "class"                    :height 0.8 :face 'all-the-icons-red))))
+  :hook
+  (company-mode-hook . company-box-mode))
 
 (use-package company-shell
   :after company
@@ -914,31 +976,10 @@
   :after evil anzu)
 
 (use-package hideshow
-  :disabled
   :ensure nil
   :defer t
   :hook
   (prog-mode-hook . hs-minor-mode))
-
-(use-package yasnippet
-  :hook
-  (prog-mode-hook . yas-minor-mode))
-
-(use-package yasnippet-snippets)
-
-(use-package company-yasnippet
-  :ensure company
-  :after company yasnippet
-  :preface
-  (defun my/company-with-yasnippet (backend)
-    (if (and (listp backend) (member 'company-yasnippet backend))
-        backend
-      (append (if (consp backend) backend (list backend))
-              '(:with company-yasnippet))))
-  (defun my/company-add-with-yasnippet (backend)
-    (push (my/company-with-yasnippet backend) company-backends))
-  :custom
-  (company-backends (mapcar #'my/company-with-yasnippet company-backends)))
 
 (use-package flycheck
   :defer t
@@ -957,6 +998,15 @@
     "....XX.."
     ".....X.."))
 
+(use-package flycheck-inline
+  :after flycheck
+  :custom-face
+  (flycheck-inline-error ((t (:inherit compilation-error :box t))))
+  (flycheck-inline-info ((t (:inherit compilation-info :box t))))
+  (flycheck-inline-warning ((t (:inherit compilation-warning :box t))))
+  :hook
+  (flycheck-mode-hook . flycheck-inline-mode))
+
 (use-package dumb-jump
   :defer t
   :preface
@@ -970,7 +1020,8 @@
     ("l" dumb-jump-quick-look "Quick look")
     ("b" dumb-jump-back "Back"))
   :custom
-  (dumb-jump-selector 'ivy))
+  (dumb-jump-selector 'ivy)
+  (dumb-jump-prefer-searcher 'rg))
 
 (use-package lisp
   :disabled
@@ -992,7 +1043,7 @@
   :defer t
   :general
   (my/local-leader-def :keymaps 'emacs-lisp-mode-map
-    "r" '(:keymap erefactor-map)))
+    "r" '(:keymap erefactor-map :wk "erefactor-map")))
 
 (use-package eros
   :defer t
@@ -1012,7 +1063,7 @@
   :defer t
   :general
   (my/local-leader-def :keymaps 'clojure-mode-map
-    "'" 'cider-jack-in)
+    "j" 'cider-jack-in)
   :custom
   (cider-repl-use-pretty-printing t)
   (cider-repl-pop-to-buffer-on-connect 'display-only)
@@ -1020,12 +1071,23 @@
   (cider-repl-history-highlight-current-entry t)
   (cider-repl-history-highlight-inserted-item t))
 
+(use-package cider-hydra
+  :after cider
+  :general
+  (my/local-leader-def :keymaps 'clojure-mode-map
+    "d" 'cider-hydra-doc/body
+    "e" 'cider-hydra-eval/body
+    "t" 'cider-hydra-test/body
+    "r" 'cider-hydra-repl/body)
+  :hook
+  (clojure-mode-hook . cider-hydra-mode))
+
 (use-package clj-refactor
   :after clojure-mode
   :defer t
   :general
   (my/local-leader-def :keymaps 'clojure-mode-map
-    "r" 'hydra-cljr-help-menu/body)
+    "R" 'hydra-cljr-help-menu/body)
   :hook
   (clojure-mode-hook . clj-refactor-mode))
 
@@ -1085,14 +1147,13 @@
   (diff-hl-draw-borders nil)
   :hook
   (prog-mode-hook . diff-hl-mode)
-  (conf-mode-hook . diff-hl-mode)
   (org-mode-hook . diff-hl-mode)
   (diff-hl-mode . diff-hl-flydiff-mode)
   (dired-mode . diff-hl-dired-mode)
   (magit-post-refresh . diff-hl-magit-post-refresh))
 
 (use-package smerge-mode
-  :after hydra
+  :defer t
   :config
   (defhydra unpackaged/smerge-hydra
     (:color pink :hint nil :post (smerge-auto-leave))
@@ -1161,6 +1222,9 @@ _K_: prev    _a_: all             _R_: refine
   (org-ellipsis "  ")
   (org-pretty-entities t)
   (org-use-sub-superscripts '{} "Require {} for sub/super scripts")
+  (org-return-follows-link t)
+
+  (org-startup-with-inline-images t)
 
   (org-src-fontify-natively t)
   (org-src-tab-acts-natively t)
@@ -1196,15 +1260,18 @@ _K_: prev    _a_: all             _R_: refine
   :hook
   (org-mode-hook . toc-org-enable))
 
+(use-package ob-async
+  :after org ob)
+
 (use-package docker
   :defer t
   :config
   (with-eval-after-load 'evil
-    (evil-set-initial-state 'docker-container-mode 'emacs)
-    (evil-set-initial-state 'docker-image-mode 'emacs)
-    (evil-set-initial-state 'docker-network-mode 'emacs)
-    (evil-set-initial-state 'docker-volume-mode 'emacs)
-    (evil-set-initial-state 'docker-machine-mode 'emacs)))
+    (evil-set-initial-state 'docker-container-mode 'motion)
+    (evil-set-initial-state 'docker-image-mode 'motion)
+    (evil-set-initial-state 'docker-network-mode 'motion)
+    (evil-set-initial-state 'docker-volume-mode 'motion)
+    (evil-set-initial-state 'docker-machine-mode 'motion)))
 
 (use-package docker-tramp
   :defer t)
@@ -1229,7 +1296,8 @@ _K_: prev    _a_: all             _R_: refine
 (use-package ansible-mode
   :disabled
   :ensure nil
-  :quelpa (ansible-mode :fetcher github :repo "rynffoll/ansible-mode")
+  :quelpa
+  (ansible-mode :fetcher github :repo "rynffoll/ansible-mode")
   :defer t
   :general
   (my/local-leader-def :keymaps 'ansible-mode-map
@@ -1241,6 +1309,7 @@ _K_: prev    _a_: all             _R_: refine
   (yaml-mode-hook . ansible-mode-maybe-enable))
 
 (use-package ansible-vault
+  :disabled
   :preface
   (defun ansible-vault-mode-maybe ()
     (when (ansible-vault--is-vault-file)
@@ -1273,17 +1342,23 @@ _K_: prev    _a_: all             _R_: refine
   :config
   (my/company-add-with-yasnippet 'company-ansible))
 
+(use-package ansible-vault-with-editor-mode
+  :ensure nil
+  :quelpa
+  (ansible-vault-with-editor-mode
+   :fetcher github
+   :repo "rynffoll/ansible-vault-with-editor-mode")
+  :general
+  (my/local-leader-def :keymaps 'yaml-mode-map
+    "e" 'ansible-vault-with-editor-on-buffer))
+
 (use-package restclient
   :defer t
   :mode
   ("\\.http\\'" . restclient-mode))
 
 (use-package ob-restclient
-  :after org restclient
-  :init
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((restclient . t))))
+  :after org restclient)
 
 (use-package company-restclient
   :after company restclient
@@ -1298,12 +1373,12 @@ _K_: prev    _a_: all             _R_: refine
   :custom
   (google-translate-default-target-language "ru")
   (google-translate-default-source-language "en")
-  (google-translate-output-destination nil)
   (google-translate-pop-up-buffer-set-focus t))
 
 (use-package olivetti
   :defer t
-  :custom (olivetti-body-width 100))
+  :custom
+  (olivetti-body-width 100))
 
 (use-package crux
   :defer t)
