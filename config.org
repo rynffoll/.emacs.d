@@ -27,6 +27,7 @@
   - [[#eshell][Eshell]]
   - [[#ediff][Ediff]]
   - [[#ivy][Ivy]]
+  - [[#with-editor][With Editor]]
   - [[#os-specific][OS-specific]]
   - [[#misc][Misc]]
 - [[#ui][UI]]
@@ -734,6 +735,21 @@ Pop-ups
 (use-package counsel-projectile
   :after counsel projectile)
 #+END_SRC
+
+** With Editor
+#+begin_src emacs-lisp
+(use-package with-editor
+  :defer t
+  :general
+  ([remap shell-command]       'with-editor-shell-command)
+  ([remap async-shell-command] 'with-editor-async-shell-command)
+  :custom
+  (with-editor-shell-command-use-emacsclient nil "For activating minor mode")
+  :hook
+  (shell-mode-hook  . with-editor-export-editor)
+  (term-exec-hook   . with-editor-export-editor)
+  (eshell-mode-hook . with-editor-export-editor))
+#+end_src
 
 ** OS-specific
 MacOS tweaks

@@ -602,6 +602,18 @@
 (use-package counsel-projectile
   :after counsel projectile)
 
+(use-package with-editor
+  :defer t
+  :general
+  ([remap shell-command]       'with-editor-shell-command)
+  ([remap async-shell-command] 'with-editor-async-shell-command)
+  :custom
+  (with-editor-shell-command-use-emacsclient nil "For activating minor mode")
+  :hook
+  (shell-mode-hook  . with-editor-export-editor)
+  (term-exec-hook   . with-editor-export-editor)
+  (eshell-mode-hook . with-editor-export-editor))
+
 (use-package ns-win
   :if (memq window-system '(mac ns))
   :ensure nil
