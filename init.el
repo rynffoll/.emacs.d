@@ -1359,15 +1359,17 @@ _K_: prev    _a_: all             _R_: refine
   :config
   (my/company-add-with-yasnippet 'company-ansible))
 
-(use-package ansible-vault-with-editor-mode
+(use-package ansible-vault-with-editor
   :ensure nil
   :quelpa
-  (ansible-vault-with-editor-mode
+  (ansible-vault-with-editor
    :fetcher github
-   :repo "rynffoll/ansible-vault-with-editor-mode")
+   :repo "rynffoll/ansible-vault-with-editor")
   :general
   (my/local-leader-def :keymaps 'yaml-mode-map
-    "e" 'ansible-vault-with-editor-on-buffer))
+    "e" 'ansible-vault-with-editor-edit
+    "E" 'ansible-vault-with-editor-encrypt
+    "D" 'ansible-vault-with-editor-decrypt))
 
 (use-package restclient
   :defer t
