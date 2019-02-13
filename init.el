@@ -342,7 +342,7 @@
                    (cider-repl-mode :align below :size 0.3)
                    (ansible-doc-module-mode :align below)
                    ("*Pack*" :align below :size 0.2)
-                   ("*Async Shell Command*" :ignore t)
+                   ("\\*Async Shell Command\\*.*" :regexp t :ignore t)
                    ("*Warnings*" :align below :size 0.3)
                    ("*Compile-Log*" :align below :size 0.2)))
   :config
@@ -607,12 +607,14 @@
   :general
   ([remap shell-command]       'with-editor-shell-command)
   ([remap async-shell-command] 'with-editor-async-shell-command)
-  :custom
-  (with-editor-shell-command-use-emacsclient nil "For activating minor mode")
+  ;; :custom
+  ;; for supporting edit multiple files
+  ;; (with-editor-shell-command-use-emacsclient nil "For activating minor mode")
   :hook
-  (shell-mode-hook  . with-editor-export-editor)
-  (term-exec-hook   . with-editor-export-editor)
-  (eshell-mode-hook . with-editor-export-editor))
+  (server-visit-hook . with-editor-mode)
+  (shell-mode-hook   . with-editor-export-editor)
+  (term-exec-hook    . with-editor-export-editor)
+  (eshell-mode-hook  . with-editor-export-editor))
 
 (use-package ns-win
   :if (memq window-system '(mac ns))
@@ -832,6 +834,7 @@
   :ensure nil
   :custom
   (backward-delete-char-untabify-method 'hungry)
+  (async-shell-command-buffer 'new-buffer)
   :config
   (column-number-mode 1))
 
@@ -1043,6 +1046,8 @@
 
 (use-package highlight-defined
   :defer t
+  :custom
+  (highlight-defined-face-use-itself t)
   :hook
   (emacs-lisp-mode-hook . highlight-defined-mode))
 
@@ -1368,6 +1373,10 @@ _K_: prev    _a_: all             _R_: refine
   :defer t
   :mode
   ("\\.http\\'" . restclient-mode))
+
+(use-package restclient-test
+  :hook
+  (restclient-mode-hook . restclient-test-mode))
 
 (use-package ob-restclient
   :after org restclient)
