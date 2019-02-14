@@ -519,6 +519,15 @@
   :custom
   (pack-dired-default-extension ".zip"))
 
+(use-package dired-git-info
+  :ensure nil
+  :quelpa
+  (dired-git-info :fetcher github :repo "clemera/dired-git-info")
+  :after dired
+  :general
+  (:keymaps 'dired-mode-map :states 'normal
+            ")" 'dired-git-info-mode))
+
 (use-package eshell
   :ensure nil
   :defer t)
