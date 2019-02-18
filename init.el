@@ -101,9 +101,9 @@
     "Ot" 'my/open-org-todo-file
     "On" 'my/open-org-notes-file
 
-    "p" '(:keymap projectile-command-map :package projectile :which-key "Projects")
+    "p" '(:keymap projectile-command-map :package projectile :which-key "Project")
 
-    "b" '(:ignore t :which-key "Buffers")
+    "b" '(:ignore t :which-key "Buffer")
     "b TAB" 'evil-switch-to-windows-last-buffer
     "bI" 'ibuffer
     "bn" 'evil-buffer-new
@@ -115,7 +115,7 @@
     "bm" 'my/switch-to-messages
     "bs" 'my/switch-to-scratch
 
-    "f" '(:ignore t :which-key "Files")
+    "f" '(:ignore t :which-key "File")
     "fd" 'counsel-dired-jump
     "ff" 'counsel-find-file
     "fr" 'counsel-recentf
@@ -128,7 +128,7 @@
     "er" 'iqa-reload-user-init-file
 
     "g" '(:ignore t :which-key "Git")
-    "g." 'magit-dispatch-popup
+    "g." 'magit-dispatch
     "gI" 'magit-init
     "gb" 'magit-blame
     "gc" 'magit-clone
@@ -157,6 +157,7 @@
     "ht" 'google-translate-at-point
     "hv" 'describe-variable
     "hF" 'counsel-faces
+    "hM" 'man
 
     "t" '(:ignore t :which-key "Toggle")
     "to" 'olivetti-mode
@@ -343,6 +344,8 @@
                    (ansible-doc-module-mode :align below)
                    ("*Pack*" :align below :size 0.2)
                    ("\\*Async Shell Command\\*.*" :regexp t :ignore t)
+                   (Man-mode :align below :select t)
+                   ("\\*Man.*\\*" :regexp t :align below :select t)
                    ("*Warnings*" :align below :size 0.3)
                    ("*Compile-Log*" :align below :size 0.2)))
   :config
@@ -375,7 +378,7 @@
                                      (eyebrowse--get 'window-configs)))))
   :general
   (my/leader-def
-    "w" '(:ignore t :which-key "Workspaces")
+    "w" '(:ignore t :which-key "Workspace")
     "wc" 'eyebrowse-close-window-config
     "w TAB" 'eyebrowse-last-window-config
     "wR" 'eyebrowse-rename-window-config
@@ -580,8 +583,7 @@
   :config
   (ivy-mode +1))
 
-(use-package swiper
-  :defer t)
+(use-package swiper)
 
 (use-package smex)
 
@@ -736,8 +738,7 @@
   :quelpa
   (font-lock+ :repo "emacsmirror/font-lock-plus" :fetcher github))
 
-(use-package all-the-icons
-  :defer t)
+(use-package all-the-icons)
 
 (use-package all-the-icons-dired
   :hook
@@ -763,6 +764,8 @@
   (doom-modeline-bar-width 3)
   (doom-modeline-buffer-file-name-style 'buffer-name)
   (doom-modeline-minor-modes t)
+  (doom-modeline-enable-word-count t)
+  (doom-modeline-major-mode-color-icon t)
   ;; :hook
   ;; (after-init-hook . doom-modeline-mode)
   :config
@@ -802,16 +805,16 @@
 (use-package solarized-theme
   ;; :disabled
   :custom
-  (solarized-distinct-doc-face t "Emphasize docstrings")
-  (solarized-use-variable-pitch nil "Don't change the font for some headings and titles")
-  (solarized-emphasize-indicators nil "Use less colors for indicators such as git:gutter, flycheck and similar")
-  (solarized-scale-org-headlines nil "Don't change size of org-mode headlines (but keep other size-changes)")
-  ;; Avoid all font-size changes
-  ;; (solarized-height-minus-1 1.0)
-  ;; (solarized-height-plus-1 1.0)
-  ;; (solarized-height-plus-2 1.0)
-  ;; (solarized-height-plus-3 1.0)
-  ;; (solarized-height-plus-4 1.0)
+  (solarized-distinct-doc-face t)
+  (solarized-use-variable-pitch nil)
+  (solarized-emphasize-indicators t)
+  (solarized-scale-org-headlines nil)
+  (solarized-scale-outline-headlines nil)
+  (solarized-height-minus-1 1.0)
+  (solarized-height-plus-1 1.0)
+  (solarized-height-plus-2 1.0)
+  (solarized-height-plus-3 1.0)
+  (solarized-height-plus-4 1.0)
   :config
   (load-theme 'solarized-dark t))
 
