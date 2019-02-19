@@ -83,27 +83,27 @@
     :prefix "SPC m"
     :non-normal-prefix "M-m m")
   (my/leader-def
-    "" '(nil :which-key "Leader")
+    "" '(nil :wk "Leader")
     "." 'counsel-find-file
     "SPC" 'execute-extended-command
 
-    "o" '(:ignore t :which-key "Open")
+    "o" '(:ignore t :wk "Open")
     "od" 'docker
     "ol" 'link-hint-open-link
     "oL" 'counsel-find-library
     "op" 'package-list-packages
     "oc" 'customize-group
 
-    "O" '(:ignore t :which-key "Org")
+    "O" '(:ignore t :wk "Org")
     "Oa" 'org-agenda
     "O." 'my/open-org-directory
     "Oi" 'my/open-org-inbox-file
     "Ot" 'my/open-org-todo-file
     "On" 'my/open-org-notes-file
 
-    "p" '(:keymap projectile-command-map :package projectile :which-key "Project")
+    "p" '(:keymap projectile-command-map :package projectile :wk "Project")
 
-    "b" '(:ignore t :which-key "Buffer")
+    "b" '(:ignore t :wk "Buffer")
     "b TAB" 'evil-switch-to-windows-last-buffer
     "bI" 'ibuffer
     "bn" 'evil-buffer-new
@@ -115,19 +115,19 @@
     "bm" 'my/switch-to-messages
     "bs" 'my/switch-to-scratch
 
-    "f" '(:ignore t :which-key "File")
+    "f" '(:ignore t :wk "File")
     "fd" 'counsel-dired-jump
     "ff" 'counsel-find-file
     "fr" 'counsel-recentf
     "fR" 'crux-rename-file-and-buffer
     "fD" 'crux-delete-file-and-buffer
 
-    "e" '(:ignore t :which-key "Emacs")
+    "e" '(:ignore t :wk "Emacs")
     "ed" 'iqa-find-user-init-directory
     "ee" 'iqa-find-user-init-file
     "er" 'iqa-reload-user-init-file
 
-    "g" '(:ignore t :which-key "Git")
+    "g" '(:ignore t :wk "Git")
     "g." 'magit-dispatch
     "gI" 'magit-init
     "gb" 'magit-blame
@@ -137,16 +137,16 @@
     "gl" 'magit-log-buffer-file
     "gt" 'git-timemachine
 
-    "/" '(:ignore t :which-key "Search")
+    "/" '(:ignore t :wk "Search")
     "/b" 'swiper
     "/d" 'counsel-rg
     "/p" 'counsel-projectile-rg
 
-    "j" '(:ignore t :which-key "Jump")
+    "j" '(:ignore t :wk "Jump")
     "ji" 'imenu
     "jj" 'dumb-jump-hydra/body
 
-    "h" '(:ignore t :which-key "Help")
+    "h" '(:ignore t :wk "Help")
     "h." 'helpful-at-point
     "hC" 'helpful-command
     "hT" 'google-translate-at-point-reverse
@@ -159,7 +159,7 @@
     "hF" 'counsel-faces
     "hM" 'man
 
-    "t" '(:ignore t :which-key "Toggle")
+    "t" '(:ignore t :wk "Toggle")
     "to" 'olivetti-mode
     "tt" 'counsel-load-theme
     "tr" 'rainbow-mode
@@ -172,11 +172,11 @@
     "te" 'toggle-indicate-empty-lines
     "tl" 'global-hl-line-mode
 
-    "q" '(:ignore t :which-key "Quit")
+    "q" '(:ignore t :wk "Quit")
     "qq" 'kill-emacs
     "qr" 'restart-emacs)
   (my/local-leader-def
-    "" '(nil :which-key "Local Leader")))
+    "" '(nil :wk "Local Leader")))
 
 (use-package evil
   :custom
@@ -378,7 +378,7 @@
                                      (eyebrowse--get 'window-configs)))))
   :general
   (my/leader-def
-    "w" '(:ignore t :which-key "Workspace")
+    "w" '(:ignore t :wk "Workspace")
     "wc" 'eyebrowse-close-window-config
     "w TAB" 'eyebrowse-last-window-config
     "wR" 'eyebrowse-rename-window-config
@@ -631,7 +631,7 @@
   :if (memq window-system '(mac ns))
   :ensure nil
   :custom
-  (mac-command-modifier nil))
+  (mac-command-modifier 'super))
 
 (use-package files
   :if (memq window-system '(mac ns))
@@ -1072,7 +1072,7 @@
   :defer t
   :general
   (my/local-leader-def :keymaps 'emacs-lisp-mode-map
-    "r" '(:keymap erefactor-map :wk "erefactor-map")))
+    "r" '(:keymap erefactor-map :wk "refactor")))
 
 (use-package eros
   :defer t
@@ -1101,22 +1101,19 @@
   (cider-repl-history-highlight-inserted-item t))
 
 (use-package cider-hydra
-  :after cider
   :general
   (my/local-leader-def :keymaps 'clojure-mode-map
-    "d" 'cider-hydra-doc/body
-    "e" 'cider-hydra-eval/body
-    "t" 'cider-hydra-test/body
-    "r" 'cider-hydra-repl/body)
+    "d" '(cider-hydra-doc/body :wk "doc")
+    "e" '(cider-hydra-eval/body :wk "eval")
+    "t" '(cider-hydra-test/body :wk "test")
+    "r" '(cider-hydra-repl/body :wk "repl"))
   :hook
   (clojure-mode-hook . cider-hydra-mode))
 
 (use-package clj-refactor
-  :after clojure-mode
-  :defer t
   :general
   (my/local-leader-def :keymaps 'clojure-mode-map
-    "R" 'hydra-cljr-help-menu/body)
+    "R" '(hydra-cljr-help-menu/body :wk "refactor"))
   :hook
   (clojure-mode-hook . clj-refactor-mode))
 
@@ -1356,7 +1353,7 @@ _K_: prev    _a_: all             _R_: refine
   :after yaml-mode
   :general
   (my/local-leader-def :keymaps 'yaml-mode-map
-    "h" 'ansible-doc)
+    "h" '(ansible-doc :wh "doc"))
   :hook
   (yaml-mode-hook . ansible-doc-mode)
   :config
@@ -1379,9 +1376,9 @@ _K_: prev    _a_: all             _R_: refine
    :repo "rynffoll/ansible-vault-with-editor")
   :general
   (my/local-leader-def :keymaps 'yaml-mode-map
-    "e" 'ansible-vault-with-editor-edit
-    "E" 'ansible-vault-with-editor-encrypt
-    "D" 'ansible-vault-with-editor-decrypt))
+    "e" '(ansible-vault-with-editor-edit :wk "edit")
+    "E" '(ansible-vault-with-editor-encrypt :wk "encrypt")
+    "D" '(ansible-vault-with-editor-decrypt :wk "decrypt")))
 
 (use-package restclient
   :defer t
@@ -1419,6 +1416,9 @@ _K_: prev    _a_: all             _R_: refine
   :defer t)
 
 (use-package link-hint
+  :defer t)
+
+(use-package try
   :defer t)
 
 (setq debug-on-error nil)
