@@ -44,9 +44,12 @@
   - [[#folding][Folding]]
   - [[#syntax-checking][Syntax checking]]
   - [[#jump-to-definition][Jump to definition]]
+  - [[#projects][Projects]]
+  - [[#lsp][LSP]]
+- [[#languages][Languages]]
   - [[#emacs-lisp][Emacs Lisp]]
   - [[#clojure][Clojure]]
-- [[#projects][Projects]]
+  - [[#java][Java]]
 - [[#git][Git]]
 - [[#org][Org]]
 - [[#tools][Tools]]
@@ -143,12 +146,8 @@
 #+BEGIN_SRC emacs-lisp
 (use-package general
   :preface
-  (defun my/switch-to-scratch ()
-    (interactive)
-    (switch-to-buffer "*scratch*"))
-  (defun my/switch-to-messages ()
-    (interactive)
-    (switch-to-buffer "*Messages*"))
+  (defun my/switch-to-scratch () (interactive) (switch-to-buffer "*scratch*"))
+  (defun my/switch-to-messages () (interactive) (switch-to-buffer "*Messages*"))
   :config
   (general-create-definer my/leader-def
     :states '(normal visual insert emacs motion)
@@ -444,7 +443,8 @@ Pop-ups
                    (Man-mode :align below :select t)
                    ("\\*Man.*\\*" :regexp t :align below :select t)
                    ("*Warnings*" :align below :size 0.3)
-                   ("*Compile-Log*" :align below :size 0.2)))
+                   ("*Compile-Log*" :align below :size 0.2)
+                   (compilation-mode :align below)))
   :config
   (shackle-mode 1))
 #+END_SRC
@@ -837,6 +837,12 @@ Quick access to shell
   (exec-path-from-shell-initialize))
 #+END_SRC
 
+Simplified and community-driven man pages
+#+begin_src emacs-lisp
+(use-package tldr
+  :defer t)
+#+end_src
+
 #+BEGIN_SRC emacs-lisp
 (use-package which-key
   :custom
@@ -939,41 +945,8 @@ Quick access to shell
   (doom-modeline-minor-modes t)
   (doom-modeline-enable-word-count t)
   (doom-modeline-major-mode-color-icon t)
-  ;; :hook
-  ;; (after-init-hook . doom-modeline-mode)
   :config
   (doom-modeline-mode t))
-
-(use-package spaceline-config
-  :disabled
-  :ensure spaceline
-  :custom
-  (powerline-default-separator nil)
-  (spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
-  (spaceline-minor-modes-p nil)
-  (spaceline-hud-p nil)
-  (spaceline-purpose-p nil)
-  (spaceline-buffer-position-p nil)
-  (spaceline-buffer-modified-p nil)
-  (spaceline-buffer-encoding-abbrev-p nil)
-  (spaceline-buffer-size-p nil)
-  (spaceline-input-method-p t)
-  (spaceline-org-clock-p t)
-  (spaceline-org-pomodoro-p t)
-  :preface
-  (defun spaceline-custom-theme (&rest additional-segments)
-    "My custom spaceline theme."
-    (apply 'spaceline--theme
-           '(((((persp-name :fallback workspace-number)
-                window-number) :separator "|"))
-             :fallback evil-state
-             :face highlight-face
-             :priority 100)
-           '((buffer-modified buffer-size buffer-id remote-host)
-             :priority 98)
-           additional-segments))
-  :config
-  (spaceline-custom-theme))
 #+END_SRC
 
 ** Theme
@@ -993,17 +966,6 @@ Quick access to shell
   (solarized-height-plus-4 1.0)
   :config
   (load-theme 'solarized-dark t))
-
-(use-package spacemacs-common
-  :disabled
-  :ensure spacemacs-theme
-  :custom
-  (spacemacs-theme-org-agenda-height nil)
-  (spacemacs-theme-org-bold t)
-  (spacemacs-theme-org-height nil)
-  (spacemacs-theme-org-highlight t)
-  :config
-  (load-theme 'spacemacs-light t))
 
 (use-package doom-themes
   :disabled
@@ -1264,6 +1226,41 @@ Line numbers
   (dumb-jump-prefer-searcher 'rg))
 #+END_SRC
 
+** Projects
+#+BEGIN_SRC emacs-lisp
+(use-package projectile
+  :defer t
+  :custom
+  (projectile-enable-caching t)
+  (projectile-completion-system 'ivy)
+  :config
+  (projectile-mode t))
+#+END_SRC
+
+** LSP
+#+begin_src emacs-lisp
+(use-package lsp-mode
+  :defer t
+  :custom
+  (lsp-prefer-flymake nil))
+
+(use-package lsp-ui
+  :after lsp-mode)
+
+(use-package company-lsp
+  :after company lsp-mode)
+
+(use-package dap-mode
+  :after lsp-mode
+  :general
+  (my/local-leader-def :keymaps 'dap-mode-map
+    "D" '(dap-hydra :wk "debug"))
+  :config
+  (dap-mode 1)
+  (dap-ui-mode 1))
+#+end_src
+
+* Languages
 ** Emacs Lisp
 #+BEGIN_SRC emacs-lisp
 (use-package lisp
@@ -1343,16 +1340,17 @@ Line numbers
   (cider-repl-mode-hook . eldoc-mode))
 #+END_SRC
 
-* Projects
-#+BEGIN_SRC emacs-lisp
-(use-package projectile
-  :defer t
-  :custom
-  (projectile-enable-caching t)
-  (projectile-completion-system 'ivy)
+** Java
+#+begin_src emacs-lisp
+(use-package lsp-java
+  :after cc-mode
   :config
-  (projectile-mode t))
-#+END_SRC
+  (add-hook 'java-mode-hook 'lsp))
+
+(use-package dap-java
+  :ensure nil
+  :after lsp-java)
+#+end_src
 
 * Git
 #+BEGIN_SRC emacs-lisp
@@ -1454,18 +1452,10 @@ Common
   :ensure org-plus-contrib
   :defer t
   :preface
-  (defun my/open-org-directory ()
-    (interactive)
-    (find-file org-directory))
-  (defun my/open-org-inbox-file ()
-    (interactive)
-    (find-file my/org-inbox-file))
-  (defun my/open-org-todo-file ()
-    (interactive)
-    (find-file my/org-todo-file))
-  (defun my/open-org-notes-file ()
-    (interactive)
-    (find-file my/org-notes-file))
+  (defun my/open-org-directory () (interactive) (find-file org-directory))
+  (defun my/open-org-inbox-file () (interactive) (find-file my/org-inbox-file))
+  (defun my/open-org-todo-file () (interactive) (find-file my/org-todo-file))
+  (defun my/open-org-notes-file () (interactive) (find-file my/org-notes-file))
   :custom-face
   (org-tag ((t (:inherit shadow))))
   :custom
@@ -1490,7 +1480,7 @@ Common
   (org-fontify-done-headline t)
   (org-fontify-quote-and-verse-blocks t)
 
-  (org-todo-keywords '((sequence "TODO(t)" "|" "DONE(d!/@)" "CANCELLED(c@/!)")))
+  (org-todo-keywords '((sequence "TODO(t)" "WAIT(w@/!)" "|" "DONE(d!/@)" "CANCELED(c@/!)")))
   (org-log-into-drawer t)
   (org-expiry-inactive-timestamps t)
 
