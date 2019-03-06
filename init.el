@@ -89,6 +89,7 @@
     "oL" 'counsel-find-library
     "op" 'package-list-packages
     "oc" 'customize-group
+    "ot" 'shell-pop
 
     "O" '(:ignore t :wk "Org")
     "Oa" 'org-agenda
@@ -117,6 +118,7 @@
     "fr" 'counsel-recentf
     "fR" 'crux-rename-file-and-buffer
     "fD" 'crux-delete-file-and-buffer
+    "ft" 'dired-sidebar-toggle-sidebar
 
     "e" '(:ignore t :wk "Emacs")
     "ed" 'iqa-find-user-init-directory
@@ -332,19 +334,23 @@
 (use-package shackle
   :custom
   (shackle-default-alignment 'below)
-  (shackle-default-size 0.4)
-  (shackle-rules '((help-mode :align below :select t :size 0.3)
+  (shackle-default-size 0.3)
+  (shackle-rules '((help-mode :align below :select t)
                    (helpful-mode :align below)
-                   (flycheck-error-list-mode :align below :size 0.25)
-                   (cider-repl-mode :align below :size 0.3)
+                   (flycheck-error-list-mode :align below)
+                   (cider-repl-mode :align below)
                    (ansible-doc-module-mode :align below)
-                   ("*Pack*" :align below :size 0.2)
+                   ("*Pack*" :align below)
                    ("\\*Async Shell Command\\*.*" :regexp t :ignore t)
                    (Man-mode :align below :select t)
                    ("\\*Man.*\\*" :regexp t :align below :select t)
-                   ("*Warnings*" :align below :size 0.3)
-                   ("*Compile-Log*" :align below :size 0.2)
-                   (compilation-mode :align below)))
+                   ("*lsp-help*" :align below)
+                   ("*Warnings*" :align below)
+                   ("*Compile-Log*" :align below)
+                   (compilation-mode :align below)
+                   ("*company-documentation*" :align below)
+                   ("*Go REPL*" :align below)
+                   ("\\*docker-compose .*\\*" :regexp t :align below)))
   :config
   (shackle-mode 1))
 
@@ -424,7 +430,7 @@
   ;; be very destructive! Disabling it deters the error, but does not fix
   ;; it entirely!
   (undo-tree-enable-undo-in-region nil)
-  (undo-tree-history-directory-alist `(("." . ,(concat user-emacs-directory "/.cache/undo-tree"))))
+  (undo-tree-history-directory-alist `(("." . ,temporary-file-directory)))
   :config
   (global-undo-tree-mode t))
 
@@ -502,8 +508,6 @@
 
 (use-package dired-sidebar
   :defer t
-  :general
-  ("M-f" 'dired-sidebar-toggle-sidebar)
   :custom
   ;; (dired-sidebar-theme 'none)
   (dired-sidebar-no-delete-other-windows t)
@@ -615,11 +619,7 @@
   :general
   ([remap shell-command]       'with-editor-shell-command)
   ([remap async-shell-command] 'with-editor-async-shell-command)
-  ;; :custom
-  ;; for supporting edit multiple files
-  ;; (with-editor-shell-command-use-emacsclient nil "For activating minor mode")
   :hook
-  (server-visit-hook . with-editor-mode)
   (shell-mode-hook   . with-editor-export-editor)
   (term-exec-hook    . with-editor-export-editor)
   (eshell-mode-hook  . with-editor-export-editor))
@@ -666,7 +666,6 @@
 
 (use-package shell-pop
   :defer t
-  :general ("M-`" 'shell-pop)
   :custom
   (shell-pop-full-span t "Spans full width of a window")
   (shell-pop-shell-type '("eshell" "*eshell-pop*" (lambda () (eshell)))))
@@ -727,6 +726,17 @@
         ;; '(left-curly-arrow nil) ;; left indicator only
         ;; '(left-curly-arrow right-curly-arrow) ;; default
         ))
+
+(use-package ansi-color
+  :preface
+  ;; http://endlessparentheses.com/ansi-colors-in-the-compilation-buffer-output.html
+  (defun endless/colorize-compilation ()
+    "Colorize from `compilation-filter-start' to `point'."
+    (let ((inhibit-read-only t))
+      (ansi-color-apply-on-region
+       compilation-filter-start (point))))
+  :hook
+  (compilation-filter-hook . endless/colorize-compilation))
 
 (use-package faces
   :ensure nil
@@ -863,6 +873,8 @@
 
 (use-package company
   :defer t
+  :general
+  ("M-S-SPC" 'company-complete)
   :custom
   (company-minimum-prefix-length 2)
   (company-require-match 'never)
@@ -1016,14 +1028,44 @@
 
 (use-package lsp-mode
   :defer t
+  :general
+  (my/local-leader-def :keymaps 'lsp-mode-map
+    "f" '(nil :wk "find")
+    "fd" '(lsp-find-definition :wk "definition")
+    "fi" '(lsp-find-implementation :wk "implementation")
+    "fr" '(lsp-find-references :wk "references")
+
+    "g" '(nil :wk "goto")
+    "gd" '(lsp-goto-type-definition :wk "definition")
+    "gi" '(lsp-goto-implementation :wk "implementation")
+
+    "w" '(nil :wk "workspace")
+    "wa" '(lsp-workspace-folders-add :wk "add")
+    "wr" '(lsp-workspace-folders-remove :wk "remove")
+    "ws" '(lsp-workspace-folders-switch :wk "switch")
+    "wR" '(lsp-restart-workspace :wk "restart")
+
+    "R" '(nil :wk "refactor")
+    "Rr" '(lsp-rename :wk "rename")
+
+    "=" '(lsp-format-buffer :wk "format")
+    "d" '(lsp-describe-thing-at-point :wk "doc")
+    "S" '(lsp-describe-session :wk "session"))
   :custom
   (lsp-prefer-flymake nil))
 
 (use-package lsp-ui
-  :after lsp-mode)
+  :after lsp-mode
+  :custom
+  (lsp-ui-doc-enable nil)
+  (lsp-ui-sideline-enable nil))
 
 (use-package company-lsp
-  :after company lsp-mode)
+  :after company lsp-mode
+  :custom
+  (company-lsp-cache-candidates 'auto)
+  :config
+  (my/company-add-with-yasnippet 'company-lsp))
 
 (use-package dap-mode
   :after lsp-mode
@@ -1056,7 +1098,7 @@
   :defer t
   :general
   (my/local-leader-def :keymaps 'emacs-lisp-mode-map
-    "r" '(:keymap erefactor-map :wk "refactor")))
+    "R" '(:keymap erefactor-map :wk "refactor")))
 
 (use-package eros
   :defer t
@@ -1115,6 +1157,47 @@
 (use-package dap-java
   :ensure nil
   :after lsp-java)
+
+(use-package go-mode
+  :hook
+  (go-mode-hook . lsp))
+
+(use-package go-tag
+  :after go-mode
+  :general
+  (my/local-leader-def :keymaps 'go-mode-map
+    "t" '(nil :wk "tag")
+    "tt" '(go-tag-add :wk "add")
+    "tT" '(go-tag-remove :wk "remove"))
+  :custom
+  (go-tag-args '("-transform" "snakecase")))
+
+(use-package gotest
+  :after go-mode
+  :general
+  (my/local-leader-def :keymaps 'go-mode-map
+    "e" '(nil :wk "eval")
+    "ee" '(go-run :wk "run")
+
+    "T" '(nil :wk "test")
+    "Tf" '(go-test-current-file :wk "file")
+    "Tt" '(go-test-current-test :wk "test")
+    "Tp" '(go-test-current-project :wk "project")
+
+    "b" '(nil :wk "benchmark")
+    "bb" '(go-test-current-benchmark :wk "benchmark")
+    "bf" '(go-test-current-file-benchmarks :wk "file")
+    "bp" '(go-test-current-project-benchmarks :wk "project")))
+
+(use-package go-playground
+  :after go-mode)
+
+(use-package gorepl-mode
+  :general
+  (my/local-leader-def :keymaps 'go-mode-map
+    "r" 'gorepl-hydra/body)
+  :hook
+  (go-mode-hook . gorepl-mode))
 
 (use-package magit
   :defer t
