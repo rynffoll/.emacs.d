@@ -79,11 +79,11 @@
     :prefix "SPC m"
     :non-normal-prefix "M-m m")
   (my/leader-def
-    "" '(nil :wk "Leader")
+    "" '(nil :wk "leader")
     "." 'counsel-find-file
     "SPC" 'execute-extended-command
 
-    "o" '(:ignore t :wk "Open")
+    "o" '(:ignore t :wk "open")
     "od" 'docker
     "ol" 'link-hint-open-link
     "oL" 'counsel-find-library
@@ -91,28 +91,29 @@
     "oc" 'customize-group
     "ot" 'shell-pop
 
-    "O" '(:ignore t :wk "Org")
+    "O" '(:ignore t :wk "org")
     "Oa" 'org-agenda
     "O." 'my/open-org-directory
     "Oi" 'my/open-org-inbox-file
     "Ot" 'my/open-org-todo-file
     "On" 'my/open-org-notes-file
 
-    "p" '(:keymap projectile-command-map :package projectile :wk "Project")
+    "p" '(:keymap projectile-command-map :package projectile :wk "project")
 
-    "b" '(:ignore t :wk "Buffer")
+    "b" '(:ignore t :wk "buffer")
     "b TAB" 'evil-switch-to-windows-last-buffer
     "bI" 'ibuffer
     "bn" 'evil-buffer-new
     "bb" 'ivy-switch-buffer
     "bk" 'kill-this-buffer
+    "bK" 'kill-buffer-and-window
     "b]" 'evil-next-buffer
     "b[" 'evil-prev-buffer
     "bR" 'rename-buffer
     "bm" 'my/switch-to-messages
     "bs" 'my/switch-to-scratch
 
-    "f" '(:ignore t :wk "File")
+    "f" '(:ignore t :wk "file")
     "fd" 'counsel-dired-jump
     "ff" 'counsel-find-file
     "fr" 'counsel-recentf
@@ -120,12 +121,12 @@
     "fD" 'crux-delete-file-and-buffer
     "ft" 'dired-sidebar-toggle-sidebar
 
-    "e" '(:ignore t :wk "Emacs")
+    "e" '(:ignore t :wk "emacs")
     "ed" 'iqa-find-user-init-directory
     "ee" 'iqa-find-user-init-file
     "er" 'iqa-reload-user-init-file
 
-    "g" '(:ignore t :wk "Git")
+    "g" '(:ignore t :wk "git")
     "g." 'magit-dispatch
     "gI" 'magit-init
     "gb" 'magit-blame
@@ -135,16 +136,16 @@
     "gl" 'magit-log-buffer-file
     "gt" 'git-timemachine
 
-    "/" '(:ignore t :wk "Search")
+    "/" '(:ignore t :wk "search")
     "/b" 'swiper
     "/d" 'counsel-rg
     "/p" 'counsel-projectile-rg
 
-    "j" '(:ignore t :wk "Jump")
+    "j" '(:ignore t :wk "jump")
     "ji" 'imenu
     "jj" 'dumb-jump-hydra/body
 
-    "h" '(:ignore t :wk "Help")
+    "h" '(:ignore t :wk "help")
     "h." 'helpful-at-point
     "hC" 'helpful-command
     "hT" 'google-translate-at-point-reverse
@@ -157,7 +158,7 @@
     "hF" 'counsel-faces
     "hM" 'man
 
-    "t" '(:ignore t :wk "Toggle")
+    "t" '(:ignore t :wk "toggle")
     "to" 'olivetti-mode
     "tt" 'counsel-load-theme
     "tr" 'rainbow-mode
@@ -170,11 +171,20 @@
     "te" 'toggle-indicate-empty-lines
     "tl" 'global-hl-line-mode
 
-    "q" '(:ignore t :wk "Quit")
+    "i" '(:ignore t :wk "insert")
+    "is" 'ivy-yasnippet
+    "ip" '(:ignore t :wk "password-generator")
+    "ips" 'password-generator-simple
+    "ipS" 'password-generator-strong
+    "ipp" 'password-generator-paranoid
+    "ipn" 'password-generator-numeric
+    "ipP" 'password-generator-phonetic
+
+    "q" '(:ignore t :wk "quit")
     "qq" 'kill-emacs
     "qr" 'restart-emacs)
   (my/local-leader-def
-    "" '(nil :wk "Local Leader")))
+    "" '(nil :wk "local leader")))
 
 (use-package evil
   :custom
@@ -183,6 +193,7 @@
   (evil-vsplit-window-right t)
   (evil-emacs-state-cursor 'hbar)
   (evil-mode-line-format nil)
+  (evil-symbol-word-search t)
   :config
   (evil-mode 1))
 
@@ -284,6 +295,11 @@
   :config
   (save-place-mode))
 
+(use-package recentf
+  :ensure nil
+  :custom
+  (recentf-max-saved-items 300))
+
 (use-package ibuffer
   :ensure nil
   :general ([remap list-buffers] 'ibuffer))
@@ -355,7 +371,6 @@
   (shackle-mode 1))
 
 (use-package eyebrowse
-  :defer t
   :preface
   (defun my/new-workspace ()
     (interactive)
@@ -381,7 +396,7 @@
                                      (eyebrowse--get 'window-configs)))))
   :general
   (my/leader-def
-    "w" '(:ignore t :wk "Workspace")
+    "w" '(:ignore t :wk "workspace")
     "wc" 'eyebrowse-close-window-config
     "w TAB" 'eyebrowse-last-window-config
     "wR" 'eyebrowse-rename-window-config
@@ -412,27 +427,18 @@
   :custom
   (custom-file null-device "Don't store customizations"))
 
-(use-package helpful
-  :defer t)
-
-(use-package which-key
-  :custom
-  (which-key-idle-delay 0.5)
-  (which-key-sort-uppercase-first nil)
-  :config
-  (which-key-mode +1))
-
 (use-package undo-tree
   :defer t
   :custom
   (undo-tree-auto-save-history t)
-  ;; undo-in-region is known to cause undo history corruption, which can
-  ;; be very destructive! Disabling it deters the error, but does not fix
-  ;; it entirely!
   (undo-tree-enable-undo-in-region nil)
   (undo-tree-history-directory-alist `(("." . ,temporary-file-directory)))
   :config
-  (global-undo-tree-mode t))
+  (global-undo-tree-mode -1))
+
+(use-package undo-propose
+  :general
+  (ctl-x-map "u" 'undo-propose))
 
 (use-package paradox
   :defer 5
@@ -485,7 +491,6 @@
   (dired-async-mode t))
 
 (use-package dired-hide-dotfiles
-  :after dired
   :general
   (:keymaps 'dired-mode-map :states 'normal
             "M-." 'dired-hide-dotfiles-mode))
@@ -516,7 +521,6 @@
                                           delete-other-windows)))
 
 (use-package pack
-  :defer t
   :general
   (:keymaps 'dired-mode-map :states 'normal
             "P" 'pack-dired-dwim)
@@ -524,17 +528,9 @@
   (pack-dired-default-extension ".zip"))
 
 (use-package dired-git-info
-  :ensure nil
-  :quelpa
-  (dired-git-info :fetcher github :repo "clemera/dired-git-info")
-  :after dired
   :general
   (:keymaps 'dired-mode-map :states 'normal
             ")" 'dired-git-info-mode))
-
-(use-package eshell
-  :ensure nil
-  :defer t)
 
 (use-package em-smart
   :ensure nil
@@ -557,7 +553,6 @@
 
 (use-package ediff
   :ensure nil
-  :defer t
   :custom
   (ediff-window-setup-function 'ediff-setup-windows-plain)
   (ediff-split-window-function 'split-window-horizontally)
@@ -615,7 +610,6 @@
   :after counsel projectile)
 
 (use-package with-editor
-  :defer t
   :general
   ([remap shell-command]       'with-editor-shell-command)
   ([remap async-shell-command] 'with-editor-async-shell-command)
@@ -637,15 +631,12 @@
   (insert-directory-program "gls"))
 
 (use-package browse-url
-  :disabled
+  :if (file-exists-p "/mnt/c/Windows/System32/cmd.exe")
   :ensure nil
-  :config
-  (let ((cmd-exe "/mnt/c/Windows/System32/cmd.exe")
-        (cmd-args '("/c" "start")))
-    (when (file-exists-p cmd-exe)
-      (setq browse-url-generic-program  cmd-exe
-            browse-url-generic-args     cmd-args
-            browse-url-browser-function 'browse-url-generic))))
+  :custom
+  (browse-url-generic-program "/mnt/c/Windows/System32/cmd.exe")
+  (browse-url-generic-args '("/c" "start"))
+  (browse-url-browser-function 'browse-url-generic))
 
 (use-package restart-emacs
   :defer t)
@@ -675,6 +666,9 @@
   (exec-path-from-shell-initialize))
 
 (use-package tldr
+  :defer t)
+
+(use-package helpful
   :defer t)
 
 (use-package which-key
@@ -817,7 +811,6 @@
   (column-number-mode 1))
 
 (use-package rainbow-mode
-  :defer t
   :hook css-mode-hook)
 
 (use-package paren
@@ -826,7 +819,6 @@
   (show-paren-mode t))
 
 (use-package rainbow-delimiters
-  :defer t
   :hook
   (prog-mode-hook . rainbow-delimiters-mode)
   (cider-repl-mode-hook . rainbow-delimiters-mode))
@@ -854,6 +846,10 @@
   :hook
   (prog-mode-hook . highlight-numbers-mode))
 
+(use-package page-break-lines
+  :hook
+  (after-init-hook . global-page-break-lines-mode))
+
 (use-package editorconfig
   :hook
   (prog-mode-hook . editorconfig-mode)
@@ -867,12 +863,16 @@
 
 (use-package yasnippet
   :hook
-  (prog-mode-hook . yas-minor-mode))
+  (prog-mode-hook . yas-minor-mode-on)
+  (text-mode-hook . yas-minor-mode-on))
 
-(use-package yasnippet-snippets)
+(use-package yasnippet-snippets
+  :defer t)
+
+(use-package ivy-yasnippet
+  :defer t)
 
 (use-package company
-  :defer t
   :general
   ("M-S-SPC" 'company-complete)
   :custom
@@ -886,20 +886,6 @@
   :hook
   (after-init-hook . global-company-mode))
 
-(use-package company-yasnippet
-  :ensure company
-  :after company yasnippet
-  :preface
-  (defun my/company-with-yasnippet (backend)
-    (if (and (listp backend) (member 'company-yasnippet backend))
-        backend
-      (append (if (consp backend) backend (list backend))
-              '(:with company-yasnippet))))
-  (defun my/company-add-with-yasnippet (backend)
-    (push (my/company-with-yasnippet backend) company-backends))
-  :custom
-  (company-backends (mapcar #'my/company-with-yasnippet company-backends)))
-
 (use-package company-box
   :disabled
   :after company all-the-icons
@@ -910,46 +896,14 @@
   (company-box-show-single-candidate t)
   (company-box-backends-colors nil)
   (company-box-max-candidates 50)
-  (company-box-icons-yasnippet (all-the-icons-material "short_text" :height 0.8 :face 'all-the-icons-green))
-  (company-box-icons-unknown (all-the-icons-material "find_in_page" :height 0.8 :face 'all-the-icons-purple))
-  (company-box-icons-elisp
-   `(,(all-the-icons-material "functions"                  :height 0.8 :face 'all-the-icons-red)
-     ,(all-the-icons-material "check_circle"               :height 0.8 :face 'all-the-icons-blue)
-     ,(all-the-icons-material "stars"                      :height 0.8 :face 'all-the-icons-orange)
-     ,(all-the-icons-material "format_paint"               :height 0.8 :face 'all-the-icons-pink)))
-  (company-box-icons-lsp
-   `((1  . ,(all-the-icons-material "text_fields"              :height 0.8 :face 'all-the-icons-green)) ; text
-     (2  . ,(all-the-icons-material "functions"                :height 0.8 :face 'all-the-icons-red))   ; method
-     (3  . ,(all-the-icons-material "functions"                :height 0.8 :face 'all-the-icons-red))   ; function
-     (4  . ,(all-the-icons-material "functions"                :height 0.8 :face 'all-the-icons-red))   ; constructor
-     (5  . ,(all-the-icons-material "functions"                :height 0.8 :face 'all-the-icons-red))   ; field
-     (6  . ,(all-the-icons-material "adjust"                   :height 0.8 :face 'all-the-icons-blue))  ; variable
-     (7  . ,(all-the-icons-material "class"                    :height 0.8 :face 'all-the-icons-red))   ; class
-     (8  . ,(all-the-icons-material "settings_input_component" :height 0.8 :face 'all-the-icons-red))   ; interface
-     (9  . ,(all-the-icons-material "view_module"              :height 0.8 :face 'all-the-icons-red))   ; module
-     (10 . ,(all-the-icons-material "settings"                 :height 0.8 :face 'all-the-icons-red))   ; property
-     (11 . ,(all-the-icons-material "straighten"               :height 0.8 :face 'all-the-icons-red))   ; unit
-     (12 . ,(all-the-icons-material "filter_1"                 :height 0.8 :face 'all-the-icons-red))   ; value
-     (13 . ,(all-the-icons-material "plus_one"                 :height 0.8 :face 'all-the-icons-red))   ; enum
-     (14 . ,(all-the-icons-material "filter_center_focus"      :height 0.8 :face 'all-the-icons-red))   ; keyword
-     (15 . ,(all-the-icons-material "short_text"               :height 0.8 :face 'all-the-icons-red))   ; snippet
-     (16 . ,(all-the-icons-material "color_lens"               :height 0.8 :face 'all-the-icons-red))   ; color
-     (17 . ,(all-the-icons-material "insert_drive_file"        :height 0.8 :face 'all-the-icons-red))   ; file
-     (18 . ,(all-the-icons-material "collections_bookmark"     :height 0.8 :face 'all-the-icons-red))   ; reference
-     (19 . ,(all-the-icons-material "folder"                   :height 0.8 :face 'all-the-icons-red))   ; folder
-     (20 . ,(all-the-icons-material "people"                   :height 0.8 :face 'all-the-icons-red))   ; enumMember
-     (21 . ,(all-the-icons-material "pause_circle_filled"      :height 0.8 :face 'all-the-icons-red))   ; constant
-     (22 . ,(all-the-icons-material "streetview"               :height 0.8 :face 'all-the-icons-red))   ; struct
-     (23 . ,(all-the-icons-material "event"                    :height 0.8 :face 'all-the-icons-red))   ; event
-     (24 . ,(all-the-icons-material "control_point"            :height 0.8 :face 'all-the-icons-red))   ; operator
-     (25 . ,(all-the-icons-material "class"                    :height 0.8 :face 'all-the-icons-red))))
+  (company-box-icons-alist 'company-box-icons-all-the-icons)
   :hook
   (company-mode-hook . company-box-mode))
 
 (use-package company-shell
   :after company
   :config
-  (my/company-add-with-yasnippet 'company-shell))
+  (add-to-list 'company-backends 'company-shell))
 
 (use-package company-flx
   :after company
@@ -1027,7 +981,6 @@
   (projectile-mode t))
 
 (use-package lsp-mode
-  :defer t
   :general
   (my/local-leader-def :keymaps 'lsp-mode-map
     "f" '(nil :wk "find")
@@ -1065,7 +1018,7 @@
   :custom
   (company-lsp-cache-candidates 'auto)
   :config
-  (my/company-add-with-yasnippet 'company-lsp))
+  (add-to-list 'company-backends 'company-lsp))
 
 (use-package dap-mode
   :after lsp-mode
@@ -1115,7 +1068,6 @@
   :defer t)
 
 (use-package cider
-  :defer t
   :general
   (my/local-leader-def :keymaps 'clojure-mode-map
     "j" 'cider-jack-in)
@@ -1200,7 +1152,6 @@
   (go-mode-hook . gorepl-mode))
 
 (use-package magit
-  :defer t
   :commands magit-blame
   :custom
   (magit-completing-read-function 'ivy-completing-read)
@@ -1317,9 +1268,12 @@ _K_: prev    _a_: all             _R_: refine
   (org-src-window-setup 'current-window)
   (org-edit-src-content-indentation 0)
 
-  (org-fontify-whole-heading-line t)
+  (org-hide-leading-stars t)
+  (org-hide-leading-stars-before-indent-mode t)
+
   (org-fontify-done-headline t)
   (org-fontify-quote-and-verse-blocks t)
+  (org-fontify-whole-heading-line t)
 
   (org-todo-keywords '((sequence "TODO(t)" "WAIT(w@/!)" "|" "DONE(d!/@)" "CANCELED(c@/!)")))
   (org-log-into-drawer t)
@@ -1426,7 +1380,7 @@ _K_: prev    _a_: all             _R_: refine
 (use-package company-ansible
   :after company
   :config
-  (my/company-add-with-yasnippet 'company-ansible))
+  (add-to-list 'company-backends 'company-ansible))
 
 (use-package ansible-vault-with-editor
   :ensure nil
@@ -1455,7 +1409,7 @@ _K_: prev    _a_: all             _R_: refine
 (use-package company-restclient
   :after company restclient
   :config
-  (my/company-add-with-yasnippet 'company-restclient))
+  (add-to-list 'company-backends 'company-restclient))
 
 (use-package password-generator
   :defer t)
@@ -1479,6 +1433,12 @@ _K_: prev    _a_: all             _R_: refine
   :defer t)
 
 (use-package try
+  :defer t)
+
+(use-package focus
+  :defer t)
+
+(use-package string-inflection
   :defer t)
 
 (setq debug-on-error nil)
