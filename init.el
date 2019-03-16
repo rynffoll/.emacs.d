@@ -1333,36 +1333,6 @@ _K_: prev    _a_: all             _R_: refine
   :defer t
   :mode "Procfile\\'")
 
-(use-package ansible-mode
-  :disabled
-  :ensure nil
-  :quelpa
-  (ansible-mode :fetcher github :repo "rynffoll/ansible-mode")
-  :defer t
-  :general
-  (my/local-leader-def :keymaps 'ansible-mode-map
-    "d" 'ansible-mode-decrypt-buffer
-    "e" 'ansible-mode-encrypt-buffer)
-  :custom
-  (ansible-mode-enable-auto-decrypt-encrypt t)
-  :hook
-  (yaml-mode-hook . ansible-mode-maybe-enable))
-
-(use-package ansible-vault
-  :disabled
-  :preface
-  (defun ansible-vault-mode-maybe ()
-    (when (ansible-vault--is-vault-file)
-      (ansible-vault-mode 1)))
-  :general
-  (my/local-leader-def :keymaps 'yaml-mode-map
-    "d" 'ansible-vault-decrypt-current-buffer
-    "e" 'ansible-vault-encrypt-current-buffer
-    "D" 'ansible-vault-decrypt-region
-    "E" 'ansible-vault-encrypt-region)
-  :hook
-  (yaml-mode-hook . ansible-vault-mode-maybe))
-
 (use-package ansible-doc
   :after yaml-mode
   :general
