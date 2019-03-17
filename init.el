@@ -810,6 +810,11 @@
   :config
   (column-number-mode 1))
 
+(use-package prog-mode
+  :ensure nil
+  :config
+  (global-prettify-symbols-mode t))
+
 (use-package rainbow-mode
   :hook css-mode-hook)
 
@@ -948,6 +953,7 @@
     ".....X.."))
 
 (use-package flycheck-inline
+  :disabled
   :after flycheck
   :custom-face
   (flycheck-inline-error ((t (:inherit compilation-error :box t))))

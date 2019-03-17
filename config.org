@@ -992,6 +992,11 @@ Simplified and community-driven man pages
   (async-shell-command-buffer 'new-buffer)
   :config
   (column-number-mode 1))
+
+(use-package prog-mode
+  :ensure nil
+  :config
+  (global-prettify-symbols-mode t))
 #+END_SRC
 
 Colorize strings that represent colors
@@ -1161,6 +1166,7 @@ Line numbers
     ".....X.."))
 
 (use-package flycheck-inline
+  :disabled
   :after flycheck
   :custom-face
   (flycheck-inline-error ((t (:inherit compilation-error :box t))))
