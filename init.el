@@ -82,6 +82,7 @@
     "" '(nil :wk "leader")
     "." 'counsel-find-file
     "SPC" 'execute-extended-command
+    ":" 'eval-expression
 
     "o" '(:ignore t :wk "open")
     "od" 'docker
@@ -119,7 +120,8 @@
     "fr" 'counsel-recentf
     "fR" 'crux-rename-file-and-buffer
     "fD" 'crux-delete-file-and-buffer
-    "ft" 'dired-sidebar-toggle-sidebar
+    ;; "ft" 'dired-sidebar-toggle-sidebar
+    "ft" 'treemacs
 
     "e" '(:ignore t :wk "emacs")
     "ed" 'iqa-find-user-init-directory
@@ -745,6 +747,7 @@
 (use-package all-the-icons)
 
 (use-package all-the-icons-dired
+  :disabled
   :hook
   (dired-mode-hook . all-the-icons-dired-mode))
 
@@ -752,7 +755,7 @@
   :ensure nil
   :custom-face
   (mode-line ((t :inherit mode-line :box nil :underline nil :overline nil)))
-  (mode-line-inactive ((t (:inherit mode-line-inactive :box nil :underline nil :overline nil)))))
+  (mode-line-inactive ((t :inherit mode-line-inactive :box nil :underline nil :overline nil))))
 
 (use-package hide-mode-line
   :hook
@@ -793,6 +796,7 @@
   :disabled
   :config
   (load-theme 'doom-one t)
+  (doom-themes-treemacs-config)
   (doom-themes-org-config))
 
 (use-package delsel
@@ -956,9 +960,9 @@
   :disabled
   :after flycheck
   :custom-face
-  (flycheck-inline-error ((t (:inherit compilation-error :box t))))
-  (flycheck-inline-info ((t (:inherit compilation-info :box t))))
-  (flycheck-inline-warning ((t (:inherit compilation-warning :box t))))
+  (flycheck-inline-error ((t :inherit compilation-error :box t)))
+  (flycheck-inline-info ((t :inherit compilation-info :box t)))
+  (flycheck-inline-warning ((t :inherit compilation-warning :box t)))
   :hook
   (flycheck-mode-hook . flycheck-inline-mode))
 
@@ -1034,6 +1038,86 @@
   :config
   (dap-mode 1)
   (dap-ui-mode 1))
+
+(use-package treemacs
+  :defer t
+  :preface
+  ;; (defun my/convert-to-treemacs-format-icon (item)
+  ;;   (-let* (((pattern f . spec) item)
+  ;;           (key (s-replace-all '(("^" . "") ("\\" . "") ("$" . "") ("." . "")) pattern))
+  ;;           (icon (apply f spec)))
+  ;;     (cons key icon)))
+  (defun my/hide-fringes ()
+    (when (display-graphic-p)
+      (set-window-fringes nil 0 0)))
+  :general
+  (my/leader-def
+    "0" 'treemacs-select-window
+    "ft" 'treemacs)
+  :custom-face
+  (treemacs-root-face ((t :inherit font-lock-constant-face :bold t :height 1.1)))
+  :custom
+  (treemacs-collapse-dirs (if (executable-find "python") 3 0))
+  (treemacs-follow-after-init t)
+  (treemacs-show-cursor t)
+  (treemacs-no-png-images nil)
+  (treemacs-no-delete-other-windows nil)
+  (treemacs-space-between-root-nodes nil)
+  (treemacs-width 35)
+  :hook
+  (treemacs-mode-hook . hide-mode-line-mode)
+  (treemacs-mode-hook . my/hide-fringes)
+  :config
+  (setq treemacs-icon-root-png (concat " " (all-the-icons-octicon "repo" :v-adjust -0.1 :height 1.2) " ")
+        treemacs-icon-open-png (concat (all-the-icons-octicon "file-directory" :v-adjust 0) " ")
+        treemacs-icon-closed-png (concat (all-the-icons-octicon "file-directory" :v-adjust 0) " ")
+        treemacs-icon-closed treemacs-icon-closed-png ;; For treemacs-icons-dired
+        treemacs-icon-tag-node-open-png (concat (all-the-icons-octicon "chevron-down") " ")
+        treemacs-icon-tag-node-closed-png (concat (all-the-icons-octicon "chevron-right") " ")
+        treemacs-icon-tag-leaf-png "- "
+
+        treemacs-icons-hash (make-hash-table :size 200 :test #'equal)
+        treemacs-icon-fallback (concat (all-the-icons-octicon "file-code" :v-adjust 0) " ")
+        treemacs-icon-text treemacs-icon-fallback)
+
+  ;; (--each (-map #'my/convert-to-treemacs-format-icon all-the-icons-icon-alist)
+  ;;   (-let [(file-ext . icon) it]
+  ;;     (treemacs-define-custom-icon icon file-ext)))
+
+  ;; (dolist (face '(treemacs-root-face
+  ;;                 treemacs-git-unmodified-face
+  ;;                 treemacs-git-modified-face
+  ;;                 treemacs-git-renamed-face
+  ;;                 treemacs-git-ignored-face
+  ;;                 treemacs-git-untracked-face
+  ;;                 treemacs-git-added-face
+  ;;                 treemacs-git-conflict-face
+  ;;                 treemacs-directory-face
+  ;;                 treemacs-directory-collapsed-face
+  ;;                 treemacs-file-face))
+  ;;   (let ((faces (face-attribute face :inherit nil)))
+  ;;     (set-face-attribute
+  ;;      face nil :inherit
+  ;;      `(variable-pitch ,@(delq 'unspecified (if (listp faces) faces (list faces)))))))
+
+  (treemacs-follow-mode t)
+  (treemacs-filewatch-mode t)
+  (treemacs-fringe-indicator-mode -1)
+  (treemacs-git-mode 'simple))
+
+(use-package treemacs-evil
+  :after treemacs evil)
+
+(use-package treemacs-projectile
+  :after treemacs projectile)
+
+(use-package treemacs-icons-dired
+  :after dired
+  :config
+  (treemacs-icons-dired-mode))
+
+(use-package treemacs-magit
+  :after treemacs magit)
 
 (use-package lisp
   :disabled
@@ -1255,7 +1339,7 @@ _K_: prev    _a_: all             _R_: refine
   (defun my/open-org-todo-file () (interactive) (find-file my/org-todo-file))
   (defun my/open-org-notes-file () (interactive) (find-file my/org-notes-file))
   :custom-face
-  (org-tag ((t (:inherit shadow))))
+  (org-tag ((t :inherit shadow)))
   :custom
   (org-modules '(org-expiry))
   (org-insert-heading-respect-content t "Insert new headings after current subtree rather than inside it")
@@ -1293,6 +1377,7 @@ _K_: prev    _a_: all             _R_: refine
   (org-archive-location (concat org-directory "/old/archive.org" "::* From %s")))
 
 (use-package org-bullets
+  :disabled
   :after org
   :custom
   ;; ♥ ● ◇ ✚ ✜ ☯ ◆ ♠ ♣ ♦ ☢ ❀ ◆ ◖ ▶
