@@ -51,6 +51,9 @@
   - [[#clojure][Clojure]]
   - [[#java][Java]]
   - [[#go][Go]]
+  - [[#protobuf][Protobuf]]
+  - [[#makefile][Makefile]]
+  - [[#js][JS]]
 - [[#git][Git]]
 - [[#org][Org]]
 - [[#tools][Tools]]
@@ -129,6 +132,8 @@
 (use-package quelpa-use-package
   :custom
   (quelpa-use-package-inhibit-loading-quelpa t "Improve startup performance"))
+
+(use-package use-package-ensure-system-package)
 #+END_SRC
 
 ** Automatically compile Emacs Lisp libraries
@@ -1440,6 +1445,8 @@ Line numbers
 ** Go
 #+begin_src emacs-lisp
 (use-package go-mode
+  :ensure-system-package
+  (gopls . "go get -u golang.org/x/tools/cmd/gopls")
   :hook
   (go-mode-hook . lsp))
 
@@ -1474,11 +1481,67 @@ Line numbers
   :after go-mode)
 
 (use-package gorepl-mode
+  :ensure-system-package
+  (gore . "go get -u github.com/motemen/gore/cmd/gore")
   :general
   (my/local-leader-def :keymaps 'go-mode-map
     "r" 'gorepl-hydra/body)
   :hook
   (go-mode-hook . gorepl-mode))
+#+end_src
+
+** Protobuf
+#+begin_src emacs-lisp
+(use-package protobuf-mode
+  :defer t)
+#+end_src
+
+** Makefile
+#+begin_src emacs-lisp
+(use-package makefile-executor
+  :general
+  (my/local-leader-def :keymaps 'makefile-mode-map
+    "e" '(nil :wk "eval")
+    "ee" '(makefile-executor-execute-target :wk "execute")
+    "eb" '(makefile-executor-execute-target :wk "execute in dedicated buffer")
+    "el" '(makefile-executor-execute-target :wk "execute last"))
+  :hook
+  (makefile-mode-hook . makefile-executor-mode))
+#+end_src
+
+** JS
+#+begin_src emacs-lisp
+(use-package js2-mode
+  :defer t
+  :ensure-system-package
+  ((typescript-language-server . "npm i -g typescript-language-server")
+   (typescript                 . "npm i -g typescript"))
+  :mode "\\.m?js\\'"
+  :hook
+  (js2-mode-hook . lsp))
+
+(use-package rjsx-mode
+  :defer t
+  :mode "components/.+\\.js$"
+  :hook
+  (rjsx-mode-hook . lsp))
+
+(use-package js2-refactor
+  :defer t
+  :general
+  (my/local-leader-def :keymaps '(js2-mode-map rjsx-mode-map)
+    "R." '(:keymap js2-refactor-mode-map :wk "js2-refactor"))
+  :hook
+  (js2-mode-hook  . js2-refactor-mode)
+  (rjsx-mode-hook . js2-refactor-mode)
+  :config
+  (js2r-add-keybindings-with-prefix ""))
+
+(use-package npm-mode
+  :defer t
+  :hook
+  (js2-mode-hook  . npm-mode)
+  (rjsx-mode-hook . npm-mode))
 #+end_src
 
 * Git
@@ -1701,7 +1764,7 @@ Babel
   :mode "\\.j2\\'")
 
 (use-package company-ansible
-  :after company
+  :after company yaml-mode
   :config
   (add-to-list 'company-backends 'company-ansible))
 
@@ -1736,6 +1799,9 @@ Babel
   :after company restclient
   :config
   (add-to-list 'company-backends 'company-restclient))
+
+(use-package httprepl
+  :defer t)
 #+END_SRC
 
 ** Password Generator

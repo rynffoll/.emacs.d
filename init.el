@@ -55,6 +55,8 @@
   :custom
   (quelpa-use-package-inhibit-loading-quelpa t "Improve startup performance"))
 
+(use-package use-package-ensure-system-package)
+
 (use-package auto-compile
   :disabled
   :custom
@@ -1201,6 +1203,8 @@
   :after lsp-java)
 
 (use-package go-mode
+  :ensure-system-package
+  (gopls . "go get -u golang.org/x/tools/cmd/gopls")
   :hook
   (go-mode-hook . lsp))
 
@@ -1235,11 +1239,58 @@
   :after go-mode)
 
 (use-package gorepl-mode
+  :ensure-system-package
+  (gore . "go get -u github.com/motemen/gore/cmd/gore")
   :general
   (my/local-leader-def :keymaps 'go-mode-map
     "r" 'gorepl-hydra/body)
   :hook
   (go-mode-hook . gorepl-mode))
+
+(use-package protobuf-mode
+  :defer t)
+
+(use-package makefile-executor
+  :general
+  (my/local-leader-def :keymaps 'makefile-mode-map
+    "e" '(nil :wk "eval")
+    "ee" '(makefile-executor-execute-target :wk "execute")
+    "eb" '(makefile-executor-execute-target :wk "execute in dedicated buffer")
+    "el" '(makefile-executor-execute-target :wk "execute last"))
+  :hook
+  (makefile-mode-hook . makefile-executor-mode))
+
+(use-package js2-mode
+  :defer t
+  :ensure-system-package
+  ((typescript-language-server . "npm i -g typescript-language-server")
+   (typescript                 . "npm i -g typescript"))
+  :mode "\\.m?js\\'"
+  :hook
+  (js2-mode-hook . lsp))
+
+(use-package rjsx-mode
+  :defer t
+  :mode "components/.+\\.js$"
+  :hook
+  (rjsx-mode-hook . lsp))
+
+(use-package js2-refactor
+  :defer t
+  :general
+  (my/local-leader-def :keymaps '(js2-mode-map rjsx-mode-map)
+    "R." '(:keymap js2-refactor-mode-map :wk "js2-refactor"))
+  :hook
+  (js2-mode-hook  . js2-refactor-mode)
+  (rjsx-mode-hook . js2-refactor-mode)
+  :config
+  (js2r-add-keybindings-with-prefix ""))
+
+(use-package npm-mode
+  :defer t
+  :hook
+  (js2-mode-hook  . npm-mode)
+  (rjsx-mode-hook . npm-mode))
 
 (use-package magit
   :commands magit-blame
@@ -1439,7 +1490,7 @@ _K_: prev    _a_: all             _R_: refine
   :mode "\\.j2\\'")
 
 (use-package company-ansible
-  :after company
+  :after company yaml-mode
   :config
   (add-to-list 'company-backends 'company-ansible))
 
@@ -1471,6 +1522,9 @@ _K_: prev    _a_: all             _R_: refine
   :after company restclient
   :config
   (add-to-list 'company-backends 'company-restclient))
+
+(use-package httprepl
+  :defer t)
 
 (use-package password-generator
   :defer t)
