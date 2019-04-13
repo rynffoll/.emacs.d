@@ -376,11 +376,12 @@
 
 (use-package eyebrowse
   :preface
-  (defun my/new-workspace ()
+  (defun my/eyebrowse-create-window-config-with-tag ()
     (interactive)
-    (eyebrowse-create-window-config)
-    (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) nil))
-  (defun my/new-project-workspace ()
+    (let ((tag (read-string "Tag: ")))
+      (eyebrowse-create-window-config)
+      (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) tag)))
+  (defun my/eyebrowse-create-projectile-window-config ()
     (interactive)
     (eyebrowse-create-window-config)
     (let* ((inhibit-quit t)
@@ -392,12 +393,13 @@
         (progn
           (eyebrowse-close-window-config)
           (setq quit-flag nil)))))
-  (defun my/delete-other-workspaces ()
+  (defun my/eyebrowse-close-other-window-configs ()
     (interactive)
-    (mapcar #'eyebrowse--delete-window-config
-            (mapcar #'car
-                    (assq-delete-all (eyebrowse--get 'current-slot)
-                                     (eyebrowse--get 'window-configs)))))
+    (when (or (not eyebrowse-close-window-config-prompt)
+              (yes-or-no-p "Close other window configs?"))
+      (mapcar #'eyebrowse--delete-window-config
+              (remove (eyebrowse--get 'current-slot)
+                      (mapcar #'car (eyebrowse--get 'window-configs))))))
   :general
   (my/leader-def
     "w" '(:ignore t :wk "workspace")
@@ -417,12 +419,13 @@
     "w9" 'eyebrowse-switch-to-window-config-9
     "w[" 'eyebrowse-prev-window-config
     "w]" 'eyebrowse-next-window-config
-    "wn" 'my/new-workspace
-    "wp" 'my/new-project-workspace
-    "wC" 'my/delete-other-workspaces)
+    "wn" 'my/eyebrowse-create-window-config-with-tag
+    "wp" 'my/eyebrowse-create-projectile-window-config
+    "wC" 'my/eyebrowse-close-other-window-configs)
   :custom
   (eyebrowse-new-workspace t "Clean up and display the scratch buffer")
   (eyebrowse-wrap-around t)
+  (eyebrowse-close-window-config-prompt t)
   :config
   (eyebrowse-mode t))
 
