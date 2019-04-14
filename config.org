@@ -165,6 +165,10 @@
     :keymaps 'override
     :prefix "SPC m"
     :non-normal-prefix "M-m m")
+  (general-define-key
+   :states '(normal visual motion)
+   :prefix ","
+   "" (general-simulate-key "SPC m"))
   (my/leader-def
     "" '(nil :wk "leader")
     "." 'counsel-find-file
