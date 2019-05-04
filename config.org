@@ -33,7 +33,7 @@
   - [[#common-1][Common]]
   - [[#fonts][Fonts]]
   - [[#icons][Icons]]
-  - [[#mode-line][Mode-line]]
+  - [[#mode-line][Mode Line]]
   - [[#theme][Theme]]
 - [[#editor][Editor]]
   - [[#common-2][Common]]
@@ -54,8 +54,13 @@
   - [[#protobuf][Protobuf]]
   - [[#makefile][Makefile]]
   - [[#js][JS]]
+  - [[#plantuml][PlantUML]]
 - [[#git][Git]]
 - [[#org][Org]]
+  - [[#common-3][Common]]
+  - [[#org-bullets][Org Bullets]]
+  - [[#table-of-contents][Table of Contents]]
+  - [[#babel][Babel]]
 - [[#tools][Tools]]
   - [[#docker][Docker]]
   - [[#ansible][Ansible]]
@@ -290,6 +295,8 @@
   (evil-emacs-state-cursor 'hbar)
   (evil-mode-line-format nil)
   (evil-symbol-word-search t)
+  (evil-move-beyond-eol nil)
+  (evil-move-cursor-back t)
   :config
   (evil-mode 1))
 
@@ -486,6 +493,8 @@ Pop-ups
 ** Workspaces
 #+BEGIN_SRC emacs-lisp
 (use-package eyebrowse
+  :commands
+  eyebrowse-create-window-config
   :preface
   (defun my/eyebrowse-create-window-config-with-tag ()
     (interactive)
@@ -557,10 +566,12 @@ Pop-ups
   (undo-tree-auto-save-history t)
   (undo-tree-enable-undo-in-region nil)
   (undo-tree-history-directory-alist `(("." . ,temporary-file-directory)))
-  :config
-  (global-undo-tree-mode -1))
+  ;; :config
+  ;; (global-undo-tree-mode -1)
+  )
 
 (use-package undo-propose
+  :disabled
   :general
   (ctl-x-map "u" 'undo-propose))
 #+END_SRC
@@ -723,7 +734,9 @@ Pop-ups
   (ivy-virtual-abbreviate 'full)
   (ivy-on-del-error-function nil)
   (ivy-use-selectable-prompt t)
-  (ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
+  (ivy-re-builders-alist '((counsel-rg . ivy--regex-plus)
+                           (swiper     . ivy--regex-plus)
+                           (t          . ivy--regex-fuzzy)))
   :config
   (ivy-mode +1))
 
@@ -755,7 +768,12 @@ Pop-ups
   (ivy-rich-mode 1))
 
 (use-package counsel-projectile
-  :after counsel projectile)
+  :after counsel projectile
+  :config
+  (counsel-projectile-mode))
+
+(use-package counsel-tramp
+  :defer t)
 #+END_SRC
 
 ** With Editor
@@ -827,6 +845,8 @@ Quick access to shell
 #+BEGIN_SRC emacs-lisp
 (use-package shell-pop
   :defer t
+  :general
+  ("s-t" 'shell-pop)
   :custom
   (shell-pop-full-span t "Spans full width of a window")
   (shell-pop-shell-type '("eshell" "*eshell-pop*" (lambda () (eshell)))))
@@ -938,7 +958,7 @@ Simplified and community-driven man pages
   (dired-mode-hook . all-the-icons-dired-mode))
 #+END_SRC
 
-** Mode-line
+** Mode Line
 #+BEGIN_SRC emacs-lisp
 (use-package faces
   :ensure nil
@@ -961,7 +981,6 @@ Simplified and community-driven man pages
   (doom-modeline-buffer-file-name-style 'buffer-name)
   (doom-modeline-minor-modes t)
   (doom-modeline-enable-word-count t)
-  (doom-modeline-major-mode-color-icon t)
   :config
   (doom-modeline-mode t))
 #+END_SRC
@@ -987,7 +1006,7 @@ Simplified and community-driven man pages
 (use-package doom-themes
   :disabled
   :config
-  (load-theme 'doom-one t)
+  (load-theme 'doom-city-lights t)
   (doom-themes-treemacs-config)
   (doom-themes-org-config))
 #+END_SRC
@@ -1551,6 +1570,34 @@ Line numbers
   (rjsx-mode-hook . npm-mode))
 #+end_src
 
+** PlantUML
+:PROPERTIES:
+:CREATED:  [2019-05-04 Sat 11:05]
+:END:
+#+begin_src emacs-lisp
+(use-package plantuml-mode
+  :defer t
+  :general
+  (my/local-leader-def :keymaps 'plantuml-mode-map
+    "p" '(plantuml-preview :wk "preview"))
+  :custom
+  (plantuml-output-type "utxt")
+  (plantuml-jar-path
+   (car (last (file-expand-wildcards
+               "/usr/local/Cellar/plantuml/*/libexec/plantuml.jar")))))
+
+(use-package flycheck-plantuml
+  :after plantuml-mode
+  :config
+  (flycheck-plantuml-setup))
+
+(use-package ob-plantuml
+  :ensure org-plus-contrib
+  :after org
+  :custom
+  (org-plantuml-jar-path plantuml-jar-path))
+#+end_src
+
 * Git
 #+BEGIN_SRC emacs-lisp
 (use-package magit
@@ -1644,8 +1691,8 @@ _K_: prev    _a_: all             _R_: refine
 #+END_SRC
 
 * Org
-Common
-#+BEGIN_SRC emacs-lisp
+** Common
+#+begin_src emacs-lisp
 (use-package org
   :ensure org-plus-contrib
   :defer t
@@ -1691,10 +1738,10 @@ Common
   (my/org-notes-file (concat org-directory "/notes.org"))
   (org-agenda-files `(,my/org-inbox-file ,my/org-todo-file))
   (org-archive-location (concat org-directory "/old/archive.org" "::* From %s")))
-#+END_SRC
+#+end_src
 
-Show org-mode bullets as UTF-8 characters
-#+BEGIN_SRC emacs-lisp
+** Org Bullets
+#+begin_src emacs-lisp
 (use-package org-bullets
   :disabled
   :after org
@@ -1704,20 +1751,30 @@ Show org-mode bullets as UTF-8 characters
   (org-bullets-bullet-list '("◆"))
   :hook
   (org-mode-hook . org-bullets-mode))
-#+END_SRC
+#+end_src
 
-Table of Contents
-#+BEGIN_SRC emacs-lisp
+** Table of Contents
+#+begin_src emacs-lisp
 (use-package toc-org
   :after org
   :hook
   (org-mode-hook . toc-org-enable))
-#+END_SRC
+#+end_src
 
-Babel
+** Babel
 #+begin_src emacs-lisp
+(use-package ob-core
+  :ensure org-plus-contrib
+  :after org
+  :config
+  (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images))
+
 (use-package ob-async
-  :after org ob)
+  :after org)
+
+(use-package ob-shell
+  :ensure org-plus-contrib
+  :after org)
 #+end_src
 
 * Tools
@@ -1799,9 +1856,6 @@ Babel
   :hook
   (restclient-mode-hook . restclient-test-mode))
 
-(use-package ob-restclient
-  :after org restclient)
-
 (use-package company-restclient
   :after company restclient
   :config
@@ -1809,6 +1863,9 @@ Babel
 
 (use-package httprepl
   :defer t)
+
+(use-package ob-restclient
+  :after org restclient)
 #+END_SRC
 
 ** Password Generator

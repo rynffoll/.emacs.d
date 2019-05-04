@@ -202,6 +202,8 @@
   (evil-emacs-state-cursor 'hbar)
   (evil-mode-line-format nil)
   (evil-symbol-word-search t)
+  (evil-move-beyond-eol nil)
+  (evil-move-cursor-back t)
   :config
   (evil-mode 1))
 
@@ -379,6 +381,8 @@
   (shackle-mode 1))
 
 (use-package eyebrowse
+  :commands
+  eyebrowse-create-window-config
   :preface
   (defun my/eyebrowse-create-window-config-with-tag ()
     (interactive)
@@ -444,10 +448,12 @@
   (undo-tree-auto-save-history t)
   (undo-tree-enable-undo-in-region nil)
   (undo-tree-history-directory-alist `(("." . ,temporary-file-directory)))
-  :config
-  (global-undo-tree-mode -1))
+  ;; :config
+  ;; (global-undo-tree-mode -1)
+  )
 
 (use-package undo-propose
+  :disabled
   :general
   (ctl-x-map "u" 'undo-propose))
 
@@ -586,7 +592,9 @@
   (ivy-virtual-abbreviate 'full)
   (ivy-on-del-error-function nil)
   (ivy-use-selectable-prompt t)
-  (ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
+  (ivy-re-builders-alist '((counsel-rg . ivy--regex-plus)
+                           (swiper     . ivy--regex-plus)
+                           (t          . ivy--regex-fuzzy)))
   :config
   (ivy-mode +1))
 
@@ -618,7 +626,12 @@
   (ivy-rich-mode 1))
 
 (use-package counsel-projectile
-  :after counsel projectile)
+  :after counsel projectile
+  :config
+  (counsel-projectile-mode))
+
+(use-package counsel-tramp
+  :defer t)
 
 (use-package with-editor
   :general
@@ -668,6 +681,8 @@
 
 (use-package shell-pop
   :defer t
+  :general
+  ("s-t" 'shell-pop)
   :custom
   (shell-pop-full-span t "Spans full width of a window")
   (shell-pop-shell-type '("eshell" "*eshell-pop*" (lambda () (eshell)))))
@@ -781,7 +796,6 @@
   (doom-modeline-buffer-file-name-style 'buffer-name)
   (doom-modeline-minor-modes t)
   (doom-modeline-enable-word-count t)
-  (doom-modeline-major-mode-color-icon t)
   :config
   (doom-modeline-mode t))
 
@@ -804,7 +818,7 @@
 (use-package doom-themes
   :disabled
   :config
-  (load-theme 'doom-one t)
+  (load-theme 'doom-city-lights t)
   (doom-themes-treemacs-config)
   (doom-themes-org-config))
 
@@ -1299,6 +1313,28 @@
   (js2-mode-hook  . npm-mode)
   (rjsx-mode-hook . npm-mode))
 
+(use-package plantuml-mode
+  :defer t
+  :general
+  (my/local-leader-def :keymaps 'plantuml-mode-map
+    "p" '(plantuml-preview :wk "preview"))
+  :custom
+  (plantuml-output-type "utxt")
+  (plantuml-jar-path
+   (car (last (file-expand-wildcards
+               "/usr/local/Cellar/plantuml/*/libexec/plantuml.jar")))))
+
+(use-package flycheck-plantuml
+  :after plantuml-mode
+  :config
+  (flycheck-plantuml-setup))
+
+(use-package ob-plantuml
+  :ensure org-plus-contrib
+  :after org
+  :custom
+  (org-plantuml-jar-path plantuml-jar-path))
+
 (use-package magit
   :commands magit-blame
   :custom
@@ -1449,8 +1485,18 @@ _K_: prev    _a_: all             _R_: refine
   :hook
   (org-mode-hook . toc-org-enable))
 
+(use-package ob-core
+  :ensure org-plus-contrib
+  :after org
+  :config
+  (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images))
+
 (use-package ob-async
-  :after org ob)
+  :after org)
+
+(use-package ob-shell
+  :ensure org-plus-contrib
+  :after org)
 
 (use-package docker
   :defer t
@@ -1522,9 +1568,6 @@ _K_: prev    _a_: all             _R_: refine
   :hook
   (restclient-mode-hook . restclient-test-mode))
 
-(use-package ob-restclient
-  :after org restclient)
-
 (use-package company-restclient
   :after company restclient
   :config
@@ -1532,6 +1575,9 @@ _K_: prev    _a_: all             _R_: refine
 
 (use-package httprepl
   :defer t)
+
+(use-package ob-restclient
+  :after org restclient)
 
 (use-package password-generator
   :defer t)
