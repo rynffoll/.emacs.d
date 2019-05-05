@@ -241,7 +241,7 @@
 
     "j" '(:ignore t :wk "jump")
     "ji" 'imenu
-    "jj" 'dumb-jump-hydra/body
+    "jj" 'hydra-dumb-jump/body
 
     "h" '(:ignore t :wk "help")
     "h." 'helpful-at-point
@@ -433,6 +433,13 @@
 
 ** Windows
 #+BEGIN_SRC emacs-lisp
+(use-package window
+  :ensure nil
+  :general
+  (evil-window-map
+   "m" 'maximize-window
+   "M" 'minimize-window))
+
 (use-package winner
   :ensure nil
   :general
@@ -1217,15 +1224,16 @@ Line numbers
 (use-package dumb-jump
   :defer t
   :preface
-  (defhydra dumb-jump-hydra (:color blue :columns 3)
+  (defhydra hydra-dumb-jump
+    (:color blue :columns 3)
     "Dumb Jump"
-    ("j" dumb-jump-go "Go")
-    ("o" dumb-jump-go-other-window "Other window")
-    ("e" dumb-jump-go-prefer-external "Go external")
-    ("x" dumb-jump-go-prefer-external-other-window "Go external other window")
-    ("i" dumb-jump-go-prompt "Prompt")
-    ("l" dumb-jump-quick-look "Quick look")
-    ("b" dumb-jump-back "Back"))
+    ("j" dumb-jump-go "go")
+    ("o" dumb-jump-go-other-window "other window")
+    ("e" dumb-jump-go-prefer-external "go external")
+    ("x" dumb-jump-go-prefer-external-other-window "go external other window")
+    ("i" dumb-jump-go-prompt "prompt")
+    ("l" dumb-jump-quick-look "quick look")
+    ("b" dumb-jump-back "back"))
   :custom
   (dumb-jump-selector 'ivy)
   (dumb-jump-prefer-searcher 'rg))
@@ -1251,6 +1259,7 @@ Line numbers
     "fd" '(lsp-find-definition :wk "definition")
     "fi" '(lsp-find-implementation :wk "implementation")
     "fr" '(lsp-find-references :wk "references")
+    "ft" '(lsp-find-type-definition :wk "type definition")
 
     "g" '(nil :wk "goto")
     "gd" '(lsp-goto-type-definition :wk "definition")
@@ -1261,6 +1270,7 @@ Line numbers
     "wr" '(lsp-workspace-folders-remove :wk "remove")
     "ws" '(lsp-workspace-folders-switch :wk "switch")
     "wR" '(lsp-restart-workspace :wk "restart")
+    "wQ" '(lsp-shutdown-workspace :wk "shutdown")
 
     "R" '(nil :wk "refactor")
     "Rr" '(lsp-rename :wk "rename")
@@ -1424,7 +1434,13 @@ Line numbers
 (use-package cider
   :general
   (my/local-leader-def :keymaps 'clojure-mode-map
-    "j" 'cider-jack-in)
+    "c" '(nil :wk "connect")
+    "cc" '(cider-jack-in :wk "jack-in")
+    "cj" '(cider-jack-in-clj :wk "jack-in-clj")
+    "cs" '(cider-jack-in-cljs :wk "jack-in-cljs")
+    "cC" '(cider-connect :wk "connect")
+    "cR" '(cider-restart :wk "restart")
+    "cQ" '(cider-quit :wk "quit"))
   :custom
   (cider-repl-use-pretty-printing t)
   (cider-repl-pop-to-buffer-on-connect 'display-only)
@@ -1611,6 +1627,8 @@ Line numbers
 
 (use-package magit-todos
   :after magit
+  :custom
+  (magit-todos-keyword-suffix (rx (optional "(" (1+ (not (any ")"))) ")" ":")))
   :config
   (magit-todos-mode))
 
@@ -1648,12 +1666,12 @@ Line numbers
 
 (use-package smerge-mode
   :defer t
-  :config
-  (defhydra unpackaged/smerge-hydra
-    (:color pink :hint nil :post (smerge-auto-leave))
+  :preface
+  (defhydra hydra-smerge
+    (:color blue :hint none :post (smerge-auto-leave))
     "
 ^Move^       ^Keep^               ^Diff^                 ^Other^
-^^-----------^^-------------------^^---------------------^^-------
+^^───────────^^───────────────────^^─────────────────────^^───────
 _n_: next    _b_: base            _<_: upper/base        _C_: combine
 _p_: prev    _u_: upper           _=_: upper/lower       _r_: resolve
 _J_: next    _l_: lower           _>_: base/lower        _k_: kill current
@@ -1682,12 +1700,11 @@ _K_: prev    _a_: all             _R_: refine
             (interactive)
             (save-buffer)
             (bury-buffer))
-     "Save and bury buffer" :color blue)
-    ("q" nil "cancel" :color blue))
+     "save and bury buffer"))
   :hook
   (magit-diff-visit-file-hook . (lambda ()
                                   (when smerge-mode
-                                    (unpackaged/smerge-hydra/body)))))
+                                    (hydra-smerge/body)))))
 #+END_SRC
 
 * Org
@@ -1783,12 +1800,60 @@ _K_: prev    _a_: all             _R_: refine
 (use-package docker
   :defer t
   :config
-  (with-eval-after-load 'evil
-    (evil-set-initial-state 'docker-container-mode 'motion)
-    (evil-set-initial-state 'docker-image-mode 'motion)
-    (evil-set-initial-state 'docker-network-mode 'motion)
-    (evil-set-initial-state 'docker-volume-mode 'motion)
-    (evil-set-initial-state 'docker-machine-mode 'motion)))
+  ;; FIXME https://github.com/emacs-evil/evil-collection/pull/205
+  (evil-collection-define-key 'normal 'docker-container-mode-map
+    "." 'docker-container-ls-popup
+    "?" 'docker-container-help-popup
+    "C" 'docker-container-cp-popup
+    "D" 'docker-container-rm-popup
+    "I" 'docker-container-inspect-popup
+    "K" 'docker-container-kill-popup
+    "L" 'docker-container-logs-popup
+    "O" 'docker-container-stop-popup
+    "P" 'docker-container-pause-popup
+    "R" 'docker-container-restart-popup
+    "S" 'docker-container-start-popup
+    "a" 'docker-container-attach-popup
+    "b" 'docker-container-shell-popup
+    "d" 'docker-container-diff-popup
+    "f" 'docker-container-find-file-popup
+    "q" 'quit-window
+    "r" 'docker-container-rename-selection)
+
+  (evil-collection-define-key 'normal 'docker-image-mode-map
+    "." 'docker-image-ls-popup
+    "?" 'docker-image-help-popup
+    "D" 'docker-image-rm-popup
+    "F" 'docker-image-pull-popup
+    "I" 'docker-image-inspect-popup
+    "P" 'docker-image-push-popup
+    "R" 'docker-image-run-popup
+    "T" 'docker-image-tag-selection
+    "q" 'quit-window)
+
+  (evil-collection-define-key 'normal 'docker-machine-mode-map
+    "." 'docker-machine-ls-popup
+    "?" 'docker-machine-help-popup
+    "C" 'docker-machine-create
+    "D" 'docker-machine-rm-popup
+    "E" 'docker-machine-env-popup
+    "O" 'docker-machine-stop-popup
+    "R" 'docker-machine-restart-popup
+    "S" 'docker-machine-start-popup
+    "q" 'quit-window)
+
+  (evil-collection-define-key 'normal 'docker-network-mode-map
+    "." 'docker-network-ls-popup
+    "?" 'docker-network-help-popup
+    "D" 'docker-network-rm-popup
+    "q" 'quit-window)
+
+  (evil-collection-define-key 'normal 'docker-volume-mode-map
+    "." 'docker-volume-ls-popup
+    "?" 'docker-volume-help-popup
+    "D" 'docker-volume-rm-popup
+    "d" 'docker-volume-dired-selection
+    "q" 'quit-window))
 
 (use-package docker-tramp
   :defer t)
@@ -1881,7 +1946,12 @@ _K_: prev    _a_: all             _R_: refine
   :custom
   (google-translate-default-target-language "ru")
   (google-translate-default-source-language "en")
-  (google-translate-pop-up-buffer-set-focus t))
+  (google-translate-pop-up-buffer-set-focus t)
+  :init
+  (with-eval-after-load 'google-translate-tk
+    ;; FIXME https://github.com/atykhonov/google-translate/issues/52#issuecomment-481310626
+    (defun google-translate--search-tkk () "Search TKK." (list 430675 2721866130))))
+
 
 (use-package olivetti
   :defer t
