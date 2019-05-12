@@ -521,11 +521,18 @@
 
 (use-package dired-subtree
   :defer t
+  :preface
+  (defun my/dired-subtree-revert ()
+    (call-interactively 'revert-buffer)
+    (recenter))
   :general
   (:keymaps 'dired-mode-map :states 'normal
             "TAB" 'dired-subtree-toggle)
   :custom
-  (dired-subtree-use-backgrounds nil))
+  (dired-subtree-use-backgrounds nil)
+  :config
+  ;; for treemacs-icons-dired
+  (advice-add #'dired-subtree-toggle :after #'my/dired-subtree-revert))
 
 (use-package dired-narrow
   :defer t
@@ -536,6 +543,7 @@
             "M-n r" 'dired-narrow-regexp))
 
 (use-package dired-sidebar
+  :disabled
   :defer t
   :custom
   ;; (dired-sidebar-theme 'none)
