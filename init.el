@@ -92,7 +92,6 @@
 
     "o" '(:ignore t :wk "open")
     "od" 'docker
-    "ol" 'link-hint-open-link
     "oL" 'counsel-find-library
     "op" 'package-list-packages
     "oc" 'customize-group
@@ -1004,6 +1003,42 @@
   :hook
   (flycheck-mode-hook . flycheck-inline-mode))
 
+(use-package avy
+  :ensure t
+  :general
+  (my/leader-def
+    "jc" 'avy-goto-char
+    "jC" 'avy-goto-char-2
+    "jw" 'avy-goto-word-0
+    "jW" 'avy-goto-word-1
+    "jl" 'avy-goto-line)
+  :custom
+  (avy-background t))
+
+(use-package ace-window
+  :ensure t
+  :general
+  (evil-window-map
+   "." 'ace-window)
+  :custom
+  (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  (aw-scope 'frame))
+
+(use-package ace-link
+  :disabled ;; unsupported some modes (ex. magit)
+  :ensure t
+  :general
+  (my/leader-def
+    "ol" 'ace-link)
+  :config
+  (ace-link-setup-default))
+
+(use-package link-hint
+  :ensure t
+  :general
+  (my/leader-def
+    "ol" 'link-hint-open-link))
+
 (use-package dumb-jump
   :defer t
   :preface
@@ -1673,9 +1708,6 @@ _K_: prev    _a_: all             _R_: refine
   (olivetti-body-width 100))
 
 (use-package crux
-  :defer t)
-
-(use-package link-hint
   :defer t)
 
 (use-package try
