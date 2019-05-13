@@ -964,7 +964,10 @@ Simplified and community-driven man pages
   :quelpa
   (font-lock+ :repo "emacsmirror/font-lock-plus" :fetcher github))
 
-(use-package all-the-icons)
+(use-package all-the-icons
+  :config
+  (unless (member "all-the-icons" (font-family-list))
+    (all-the-icons-install-fonts t)))
 
 (use-package all-the-icons-dired
   :disabled
@@ -1778,12 +1781,16 @@ _K_: prev    _a_: all             _R_: refine
   (org-use-sub-superscripts '{} "Require {} for sub/super scripts")
   (org-return-follows-link t)
 
+  (org-list-allow-alphabetical t)
+  (org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+")))
+
   (org-startup-with-inline-images t)
 
   (org-src-fontify-natively t)
   (org-src-tab-acts-natively t)
   (org-src-window-setup 'current-window)
   (org-edit-src-content-indentation 0)
+  (org-catch-invisible-edits 'smart)
 
   (org-hide-leading-stars t)
   (org-hide-leading-stars-before-indent-mode t)
