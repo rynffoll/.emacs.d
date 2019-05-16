@@ -1397,6 +1397,30 @@
   :custom
   (org-plantuml-jar-path plantuml-jar-path))
 
+(use-package sql
+  :ensure nil
+  :general
+  (my/local-leader-def :keymaps 'sql-mode-map
+    "c" '(nil :wk "connect")
+    "cc" '(sql-connect :wk "connect")
+    "e" '(nil :wk "eval")
+    "ee" '(sql-send-paragraph :wk "paragraph")
+    "el" '(sql-send-line-and-next :wk "line and next")
+    "eb" '(sql-send-buffer :wk "buffer")
+    "er" '(sql-send-region :wk "region")
+    "es" '(sql-send-string :wk "string")
+    "l" '(nil :wk "list")
+    "la" '(sql-list-all :wk "all")
+    "lt" '(sql-list-table :wk "table"))
+  :custom
+  (sql-connection-alist '((pg-local
+                           (sql-product 'postgres)
+                           (sql-port 5432)
+                           (sql-server "localhost")
+                           (sql-user "postgres")
+                           (sql-password "postgres")
+                           (sql-database "postgres")))))
+
 (use-package magit
   :commands magit-blame
   :custom

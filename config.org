@@ -55,6 +55,7 @@
   - [[#makefile][Makefile]]
   - [[#js][JS]]
   - [[#plantuml][PlantUML]]
+  - [[#sql][SQL]]
 - [[#git][Git]]
 - [[#org][Org]]
   - [[#common-3][Common]]
@@ -1637,9 +1638,6 @@ Jump to definition
 #+end_src
 
 ** PlantUML
-:PROPERTIES:
-:CREATED:  [2019-05-04 Sat 11:05]
-:END:
 #+begin_src emacs-lisp
 (use-package plantuml-mode
   :defer t
@@ -1662,6 +1660,33 @@ Jump to definition
   :after org
   :custom
   (org-plantuml-jar-path plantuml-jar-path))
+#+end_src
+
+** SQL
+#+begin_src emacs-lisp
+(use-package sql
+  :ensure nil
+  :general
+  (my/local-leader-def :keymaps 'sql-mode-map
+    "c" '(nil :wk "connect")
+    "cc" '(sql-connect :wk "connect")
+    "e" '(nil :wk "eval")
+    "ee" '(sql-send-paragraph :wk "paragraph")
+    "el" '(sql-send-line-and-next :wk "line and next")
+    "eb" '(sql-send-buffer :wk "buffer")
+    "er" '(sql-send-region :wk "region")
+    "es" '(sql-send-string :wk "string")
+    "l" '(nil :wk "list")
+    "la" '(sql-list-all :wk "all")
+    "lt" '(sql-list-table :wk "table"))
+  :custom
+  (sql-connection-alist '((pg-local
+                           (sql-product 'postgres)
+                           (sql-port 5432)
+                           (sql-server "localhost")
+                           (sql-user "postgres")
+                           (sql-password "postgres")
+                           (sql-database "postgres")))))
 #+end_src
 
 * Git
