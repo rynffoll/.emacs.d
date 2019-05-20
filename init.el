@@ -1008,13 +1008,40 @@
 
 (use-package avy
   :ensure t
+  :preface
+  (defhydra hydra-avy
+    (:color blue :hint nil)
+    "
+^Line^       ^Region^       ^Goto^
+^^───────────^^─────────────^^─────────────
+_y_: yank    _Y_: yank      _c_: char
+_m_: move    _M_: move      _w_: any word
+_k_: kill    _K_: kill      _W_: word
+^^           ^^             _l_: line
+^^           ^^             _L_: end of line
+"
+    ;; line
+    ("y" avy-copy-line)
+    ("m" avy-move-line)
+    ("k" avy-kill-whole-line)
+    ;; region
+    ("Y" avy-copy-region)
+    ("M" avy-move-region)
+    ("K" avy-kill-region)
+    ;; goto
+    ("c" avy-goto-char)
+    ("w" avy-goto-word-0)
+    ("W" avy-goto-word-1)
+    ("l" avy-goto-line)
+    ("L" avy-goto-end-of-line))
   :general
   (my/leader-def
+    "j." 'hydra-avy/body
     "jc" 'avy-goto-char
-    "jC" 'avy-goto-char-2
     "jw" 'avy-goto-word-0
     "jW" 'avy-goto-word-1
-    "jl" 'avy-goto-line)
+    "jl" 'avy-goto-line
+    "jL" 'avy-goto-end-of-line)
   :custom
   (avy-background t))
 
@@ -1047,7 +1074,6 @@
   :preface
   (defhydra hydra-dumb-jump
     (:color blue :columns 3)
-    "Dumb Jump"
     ("j" dumb-jump-go "go")
     ("o" dumb-jump-go-other-window "other window")
     ("e" dumb-jump-go-prefer-external "go external")
@@ -1473,39 +1499,42 @@
   :defer t
   :preface
   (defhydra hydra-smerge
-    (:color blue :hint none :post (smerge-auto-leave))
+    (:color pink :hint nil :post (smerge-auto-leave))
     "
-^Move^       ^Keep^               ^Diff^                 ^Other^
-^^───────────^^───────────────────^^─────────────────────^^───────
-_n_: next    _b_: base            _<_: upper/base        _C_: combine
-_p_: prev    _u_: upper           _=_: upper/lower       _r_: resolve
-_J_: next    _l_: lower           _>_: base/lower        _k_: kill current
-_K_: prev    _a_: all             _R_: refine
-^^           _RET_: current       _E_: ediff
+^Move^       ^Keep^             ^Diff^                ^Other^
+^^───────────^^─────────────────^^────────────────────^^─────────────────
+_n_: next    _b_: base          _<_: upper/base       _C_: combine
+_p_: prev    _u_: upper         _=_: upper/lower      _r_: resolve
+_J_: next    _l_: lower         _>_: base/lower       _k_: kill current
+_K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
+^^           _RET_: current     _E_: ediff            _q_: cancel
 "
+    ;; move
     ("n" smerge-next)
     ("p" smerge-prev)
     ("J" smerge-next)
     ("K" smerge-prev)
+    ;; keep
     ("b" smerge-keep-base)
     ("u" smerge-keep-upper)
     ("l" smerge-keep-lower)
     ("a" smerge-keep-all)
     ("RET" smerge-keep-current)
-    ("\C-m" smerge-keep-current)
+    ;; diff
     ("<" smerge-diff-base-upper)
     ("=" smerge-diff-upper-lower)
     (">" smerge-diff-base-lower)
     ("R" smerge-refine)
     ("E" smerge-ediff)
+    ;; other
     ("C" smerge-combine-with-next)
     ("r" smerge-resolve)
     ("k" smerge-kill-current)
     ("ZZ" (lambda ()
             (interactive)
             (save-buffer)
-            (bury-buffer))
-     "save and bury buffer"))
+            (bury-buffer)) :color blue)
+    ("q" nil :color blue))
   :hook
   (magit-diff-visit-file-hook . (lambda ()
                                   (when smerge-mode
@@ -1522,7 +1551,6 @@ _K_: prev    _a_: all             _R_: refine
   :custom-face
   (org-tag ((t :inherit shadow)))
   :custom
-  (org-modules '(org-expiry))
   (org-insert-heading-respect-content t "Insert new headings after current subtree rather than inside it")
 
   (org-startup-indented t)
@@ -1552,7 +1580,6 @@ _K_: prev    _a_: all             _R_: refine
 
   (org-todo-keywords '((sequence "TODO(t)" "WAIT(w@/!)" "|" "DONE(d!/@)" "CANCELED(c@/!)")))
   (org-log-into-drawer t)
-  (org-expiry-inactive-timestamps t)
 
   (org-directory "~/Org")
   (my/org-inbox-file (concat org-directory "/inbox.org"))
