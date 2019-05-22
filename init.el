@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 (setq debug-on-error t)
 (setq debug-on-quit t)
 
@@ -57,18 +59,7 @@
 
 (use-package use-package-ensure-system-package)
 
-(use-package auto-compile
-  :disabled
-  :custom
-  (auto-compile-display-buffer nil)
-  :config
-  (auto-compile-on-load-mode 1)
-  (auto-compile-on-save-mode 1))
-
 (use-package general
-  :preface
-  (defun my/switch-to-scratch () (interactive) (switch-to-buffer "*scratch*"))
-  (defun my/switch-to-messages () (interactive) (switch-to-buffer "*Messages*"))
   :config
   (general-create-definer my/leader-def
     :states '(normal visual insert emacs motion)
@@ -86,110 +77,19 @@
    "" (general-simulate-key "SPC m"))
   (my/leader-def
     "" '(nil :wk "leader")
-    "." 'counsel-find-file
-    "SPC" 'execute-extended-command
-    ":" 'eval-expression
-
     "o" '(:ignore t :wk "open")
-    "od" 'docker
-    "oL" 'counsel-find-library
-    "op" 'package-list-packages
-    "oc" 'customize-group
-    "ot" 'shell-pop
-
     "O" '(:ignore t :wk "org")
-    "Oa" 'org-agenda
-    "O." 'my/open-org-directory
-    "Oi" 'my/open-org-inbox-file
-    "Ot" 'my/open-org-todo-file
-    "On" 'my/open-org-notes-file
-
-    "p" '(:keymap projectile-command-map :package projectile :wk "project")
-
     "b" '(:ignore t :wk "buffer")
-    "b TAB" 'evil-switch-to-windows-last-buffer
-    "bI" 'ibuffer
-    "bn" 'evil-buffer-new
-    "bb" 'ivy-switch-buffer
-    "bk" 'kill-this-buffer
-    "bK" 'kill-buffer-and-window
-    "b]" 'evil-next-buffer
-    "b[" 'evil-prev-buffer
-    "bR" 'rename-buffer
-    "bm" 'my/switch-to-messages
-    "bs" 'my/switch-to-scratch
-
+    "c" '(:ignore t :wk "copy")
     "f" '(:ignore t :wk "file")
-    "fd" 'counsel-dired-jump
-    "ff" 'counsel-find-file
-    "fr" 'counsel-recentf
-    "fR" 'crux-rename-file-and-buffer
-    "fD" 'crux-delete-file-and-buffer
-    ;; "ft" 'dired-sidebar-toggle-sidebar
-    "ft" 'treemacs
-
     "e" '(:ignore t :wk "emacs")
-    "ed" 'iqa-find-user-init-directory
-    "ee" 'iqa-find-user-init-file
-    "er" 'iqa-reload-user-init-file
-
     "g" '(:ignore t :wk "git")
-    "g." 'magit-dispatch
-    "gI" 'magit-init
-    "gb" 'magit-blame
-    "gc" 'magit-clone
-    "gg" 'magit-status
-    "gi" 'gitignore-templates-new-file
-    "gl" 'magit-log-buffer-file
-    "gt" 'git-timemachine
-
     "/" '(:ignore t :wk "search")
-    "/b" 'swiper
-    "/d" 'counsel-rg
-    "/p" 'counsel-projectile-rg
-
     "j" '(:ignore t :wk "jump")
-    "ji" 'imenu
-    "jj" 'hydra-dumb-jump/body
-
     "h" '(:ignore t :wk "help")
-    "h." 'helpful-at-point
-    "hC" 'helpful-command
-    "hT" 'google-translate-at-point-reverse
-    "hc" 'helpful-callable
-    "hf" 'describe-function
-    "hk" 'helpful-key
-    "hm" 'helpful-macro
-    "ht" 'google-translate-at-point
-    "hv" 'describe-variable
-    "hF" 'counsel-faces
-    "hM" 'man
-
     "t" '(:ignore t :wk "toggle")
-    "to" 'olivetti-mode
-    "tt" 'counsel-load-theme
-    "tr" 'rainbow-mode
-    "tw" 'whitespace-mode
-    "tm" 'toggle-frame-maximized
-    "tf" 'toggle-frame-fullscreen
-    "tn" 'display-line-numbers-mode
-    "tT" 'toggle-truncate-lines
-    "ti" 'highlight-indent-guides-mode
-    "te" 'toggle-indicate-empty-lines
-    "tl" 'global-hl-line-mode
-
     "i" '(:ignore t :wk "insert")
-    "is" 'ivy-yasnippet
-    "ip" '(:ignore t :wk "password-generator")
-    "ips" 'password-generator-simple
-    "ipS" 'password-generator-strong
-    "ipp" 'password-generator-paranoid
-    "ipn" 'password-generator-numeric
-    "ipP" 'password-generator-phonetic
-
-    "q" '(:ignore t :wk "quit")
-    "qq" 'kill-emacs
-    "qr" 'restart-emacs)
+    "q" '(:ignore t :wk "quit"))
   (my/local-leader-def
     "" '(nil :wk "local leader")))
 
@@ -256,6 +156,9 @@
 
 (use-package emacs
   :ensure nil
+  :general
+  (my/leader-def
+    "qq" 'kill-emacs)
   :custom
   (inhibit-startup-screen t)
   (initial-scratch-message nil)
@@ -309,14 +212,75 @@
   :custom
   (recentf-max-saved-items 300))
 
+(use-package iqa
+  :defer t
+  :general
+  (my/leader-def
+    "e" '(:ignore t :wk "emacs")
+    "ed" 'iqa-find-user-init-directory
+    "ee" 'iqa-find-user-init-file
+    "er" 'iqa-reload-user-init-file)
+  :custom
+  (iqa-user-init-file (concat user-emacs-directory "config.org")))
+
+(use-package cus-edit
+  :ensure nil
+  :general
+  (my/leader-def
+    "oc" 'customize-group)
+  :custom
+  (custom-file null-device "Don't store customizations"))
+
+(use-package epa
+  :ensure nil
+  :defer t
+  :custom
+  (epa-pinentry-mode 'loopback))
+
+(use-package emacs
+  :ensure nil
+  :preface
+  (defun my/switch-to-scratch () (interactive) (switch-to-buffer "*scratch*"))
+  (defun my/switch-to-messages () (interactive) (switch-to-buffer "*Messages*"))
+  :general
+  (my/leader-def
+    "bs" '(my/switch-to-scratch :wk "open scratch")
+    "bm" '(my/switch-to-messages :wk "open messages")
+    "bR" 'rename-buffer))
+
+(use-package menu-bar
+  :ensure nil
+  :general
+  (my/leader-def
+    "bk" 'kill-this-buffer))
+
+(use-package window
+  :ensure nil
+  :general
+  (my/leader-def
+    "bb" 'switch-to-buffer
+    "bK" 'kill-buffer-and-window))
+
 (use-package ibuffer
   :ensure nil
-  :general ([remap list-buffers] 'ibuffer))
+  :general
+  ([remap list-buffers] 'ibuffer)
+  (my/leader-def
+    "bI" 'ibuffer))
 
 (use-package uniquify
   :ensure nil
   :custom
   (uniquify-buffer-name-style 'forward))
+
+(use-package evil-commands
+  :ensure evil
+  :after evil
+  :general
+  (my/leader-def
+    "bn" 'evil-buffer-new
+    "b]" 'evil-next-buffer
+    "b[" 'evil-prev-buffer))
 
 (use-package ibuffer-vc
   :after ibuffer
@@ -339,8 +303,8 @@
   (evil-window-map
    "u" 'winner-undo
    "U" 'winner-redo)
-  :config
-  (winner-mode 1))
+  :hook
+  (after-init-hook . winner-mode))
 
 (use-package winum
   :demand
@@ -443,11 +407,6 @@
   :config
   (eyebrowse-mode t))
 
-(use-package cus-edit
-  :ensure nil
-  :custom
-  (custom-file null-device "Don't store customizations"))
-
 (use-package undo-tree
   :defer t
   :custom
@@ -465,6 +424,9 @@
 
 (use-package paradox
   :defer 5
+  :general
+  (my/leader-def
+    "op" 'paradox-list-packages)
   :custom
   (paradox-execute-asynchronously t)
   (paradox-github-token t "Don't ask github token")
@@ -484,12 +446,6 @@
   :custom
   (tramp-default-method "ssh")
   (tramp-default-proxies-alist nil))
-
-(use-package epa
-  :ensure nil
-  :defer t
-  :custom
-  (epa-pinentry-mode 'loopback))
 
 (use-package dired
   :ensure nil
@@ -544,6 +500,9 @@
 (use-package dired-sidebar
   :disabled
   :defer t
+  :general
+  (my/leader-def
+    "ft" 'dired-sidebar-toggle-sidebar)
   :custom
   ;; (dired-sidebar-theme 'none)
   (dired-sidebar-no-delete-other-windows t)
@@ -582,6 +541,29 @@
   (eshell-highlight-prompt nil)
   (eshell-prompt-function 'epe-theme-lambda))
 
+(use-package shell-pop
+  :defer t
+  :general
+  ("s-t" 'shell-pop)
+  (my/leader-def
+    "ot" 'shell-pop)
+  :custom
+  (shell-pop-full-span t "Spans full width of a window")
+  (shell-pop-shell-type '("eshell" "*eshell-pop*" (lambda () (eshell)))))
+
+(use-package exec-path-from-shell
+  :config
+  (exec-path-from-shell-initialize))
+
+(use-package with-editor
+  :general
+  ([remap shell-command]       'with-editor-shell-command)
+  ([remap async-shell-command] 'with-editor-async-shell-command)
+  :hook
+  (shell-mode-hook   . with-editor-export-editor)
+  (term-exec-hook    . with-editor-export-editor)
+  (eshell-mode-hook  . with-editor-export-editor))
+
 (use-package ediff
   :ensure nil
   :custom
@@ -597,6 +579,8 @@
   (ivy-mode-map
    "C-j" 'ivy-next-line
    "C-k" 'ivy-previous-line)
+  (my/leader-def
+    "bb" 'ivy-switch-buffer)
   :custom
   (ivy-wrap t)
   (ivy-fixed-height-minibuffer t)
@@ -612,7 +596,10 @@
   :config
   (ivy-mode +1))
 
-(use-package swiper)
+(use-package swiper
+  :general
+  (my/leader-def
+    "/b" 'swiper))
 
 (use-package smex)
 
@@ -625,6 +612,19 @@
   ([remap find-file]                'counsel-find-file)
   ([remap find-library]             'counsel-find-library)
   ([remap imenu]                    'counsel-imenu)
+  (my/leader-def
+    "." 'counsel-find-file
+
+    "oL" 'counsel-find-library
+
+    "ff" 'counsel-find-file
+    "fr" 'counsel-recentf
+
+    "/d" 'counsel-rg
+
+    "tt" 'counsel-load-theme
+
+    "hF" 'counsel-faces)
   :custom
   (counsel-describe-function-function 'helpful-callable)
   (counsel-describe-variable-function 'helpful-variable))
@@ -641,20 +641,14 @@
 
 (use-package counsel-projectile
   :after counsel projectile
+  :general
+  (my/leader-def
+    "/p" 'counsel-projectile-rg)
   :config
   (counsel-projectile-mode))
 
 (use-package counsel-tramp
   :defer t)
-
-(use-package with-editor
-  :general
-  ([remap shell-command]       'with-editor-shell-command)
-  ([remap async-shell-command] 'with-editor-async-shell-command)
-  :hook
-  (shell-mode-hook   . with-editor-export-editor)
-  (term-exec-hook    . with-editor-export-editor)
-  (eshell-mode-hook  . with-editor-export-editor))
 
 (use-package ns-win
   :if (memq window-system '(mac ns))
@@ -676,8 +670,92 @@
   (browse-url-generic-args '("/c" "start"))
   (browse-url-browser-function 'browse-url-generic))
 
-(use-package restart-emacs
+(use-package menu-bar
+  :ensure nil
+  :commands clipboard-kill-ring-save
+  :preface
+  (defun my/copy-whole-buffer ()
+    "Copy entire buffer to clipboard"
+    (interactive)
+    (clipboard-kill-ring-save (point-min) (point-max)))
+  :general
+  (my/leader-def
+    "cb" '(my/copy-whole-buffer :wk "copy whole buffer")))
+
+(use-package copy-as-format
+  :general
+  (my/leader-def
+    "cf" '(:ignore t :wk "copy as format")
+    "cff" 'copy-as-format
+    "cfa" 'copy-as-format-asciidoc
+    "cfb" 'copy-as-format-bitbucket
+    "cfd" 'copy-as-format-disqus
+    "cfg" 'copy-as-format-github
+    "cfl" 'copy-as-format-gitlab
+    "cfc" 'copy-as-format-hipchat
+    "cfh" 'copy-as-format-html
+    "cfj" 'copy-as-format-jira
+    "cfm" 'copy-as-format-markdown
+    "cfw" 'copy-as-format-mediawiki
+    "cfo" 'copy-as-format-org-mode
+    "cfp" 'copy-as-format-pod
+    "cfr" 'copy-as-format-rst
+    "cfs" 'copy-as-format-slack)
+  :custom
+  (copy-as-format-default "slack" "or Telegram"))
+
+(use-package help
+  :ensure nil
+  :general
+  (my/leader-def
+    "hd" 'describe-mode))
+
+(use-package help-fns
+  :ensure nil
+  :general
+  (my/leader-def
+    "hf" 'describe-function
+    "hv" 'describe-variable))
+
+(use-package man
+  :ensure nil
+  :general
+  (my/leader-def
+    "hM" 'man))
+
+(use-package helpful
+  :defer t
+  :general
+  (my/leader-def
+    "h." 'helpful-at-point
+    "hC" 'helpful-command
+    "hc" 'helpful-callable
+    "hk" 'helpful-key
+    "hm" 'helpful-macro))
+
+(use-package which-key
+  :custom
+  (which-key-idle-delay 0.5)
+  (which-key-sort-uppercase-first nil)
+  :config
+  (which-key-mode +1))
+
+(use-package discover-my-major
+  :general
+  (my/leader-def
+    "hD" 'discover-my-major)
+  :config
+  (with-eval-after-load 'evil
+    (evil-set-initial-state 'makey-key-mode 'motion)))
+
+(use-package tldr
   :defer t)
+
+(use-package restart-emacs
+  :defer t
+  :general
+  (my/leader-def
+    "qr" 'restart-emacs))
 
 (use-package reverse-im
   :config
@@ -688,43 +766,12 @@
     (define-key evil-insert-state-map (kbd "C-х") #'evil-normal-state)
     (define-key evil-visual-state-map (kbd "C-х") #'evil-exit-visual-state)))
 
-(use-package iqa
-  :defer t
-  :custom
-  (iqa-user-init-file (concat user-emacs-directory "config.org")))
-
-(use-package shell-pop
-  :defer t
-  :general
-  ("s-t" 'shell-pop)
-  :custom
-  (shell-pop-full-span t "Spans full width of a window")
-  (shell-pop-shell-type '("eshell" "*eshell-pop*" (lambda () (eshell)))))
-
-(use-package exec-path-from-shell
-  :config
-  (exec-path-from-shell-initialize))
-
-(use-package tldr
-  :defer t)
-
-(use-package helpful
-  :defer t)
-
-(use-package which-key
-  :custom
-  (which-key-idle-delay 0.5)
-  (which-key-sort-uppercase-first nil)
-  :config
-  (which-key-mode +1))
-
-(use-package ssh-config-mode
-  :defer t
-  :init
-  (autoload 'ssh-config-mode "ssh-config-mode" t))
-
 (use-package frame
   :ensure nil
+  :general
+  (my/leader-def
+    "tm" 'toggle-frame-maximized
+    "tf" 'toggle-frame-fullscreen)
   :custom
   (default-frame-alist '((left . 0.5) (top . 0.5)
                          (width . 0.7) (height . 0.9)))
@@ -848,6 +895,11 @@
 
 (use-package simple
   :ensure nil
+  :general
+  (my/leader-def
+    "SPC" 'execute-extended-command
+    ":" 'eval-expression
+    "tT" 'toggle-truncate-lines)
   :custom
   (backward-delete-char-untabify-method 'hungry)
   (async-shell-command-buffer 'new-buffer)
@@ -859,28 +911,40 @@
   :config
   (global-prettify-symbols-mode t))
 
-(use-package rainbow-mode
-  :hook css-mode-hook)
-
 (use-package paren
   :ensure nil
   :config
   (show-paren-mode t))
-
-(use-package rainbow-delimiters
-  :hook
-  (prog-mode-hook . rainbow-delimiters-mode)
-  (cider-repl-mode-hook . rainbow-delimiters-mode))
 
 (use-package elec-pair
   :ensure nil
   :config
   (electric-pair-mode t))
 
+(use-package rainbow-delimiters
+  :hook
+  (prog-mode-hook . rainbow-delimiters-mode)
+  (cider-repl-mode-hook . rainbow-delimiters-mode))
+
+(use-package whitespace
+  :ensure nil
+  :general
+  (my/leader-def
+    "tw" 'whitespace-mode))
+
 (use-package hl-line
   :ensure nil
+  :general
+  (my/leader-def
+    "tl" 'global-hl-line-mode)
   :config
   (global-hl-line-mode 1))
+
+(use-package rainbow-mode
+  :general
+  (my/leader-def
+    "tr" 'rainbow-mode)
+  :hook css-mode-hook)
 
 (use-package hl-todo
   :custom
@@ -889,7 +953,10 @@
   (global-hl-todo-mode))
 
 (use-package highlight-indent-guides
-  :defer t)
+  :defer t
+  :general
+  (my/leader-def
+    "ti" 'highlight-indent-guides-mode))
 
 (use-package highlight-numbers
   :hook
@@ -899,14 +966,23 @@
   :hook
   (after-init-hook . global-page-break-lines-mode))
 
-(use-package editorconfig
-  :hook
-  (prog-mode-hook . editorconfig-mode)
-  (text-mode-hook . editorconfig-mode))
+(use-package highlight-blocks
+  :defer t
+  :general
+  (my/leader-def
+    "tb" 'highlight-blocks-mode))
+
+(use-package show-eol
+  :general
+  (my/leader-def
+    "te" 'show-eol-mode))
 
 (use-package display-line-numbers
   :ensure nil
   :defer t
+  :general
+  (my/leader-def
+    "tn" 'display-line-numbers-mode)
   :custom
   (display-line-numbers-width-start t))
 
@@ -919,7 +995,10 @@
   :defer t)
 
 (use-package ivy-yasnippet
-  :defer t)
+  :defer t
+  :general
+  (my/leader-def
+    "is" 'ivy-yasnippet))
 
 (use-package company
   :general
@@ -984,27 +1063,35 @@
   :hook
   (prog-mode-hook . flycheck-mode)
   :custom
-  (flycheck-indication-mode 'right-fringe)
+  (flycheck-indication-mode 'right-fringe))
+
+(use-package fringe-helper
+  :after flycheck
   :config
-  (use-package fringe-helper)
   (fringe-helper-define 'flycheck-fringe-bitmap-double-arrow 'center
-    ".....X.."
-    "....XX.."
-    "...XXX.."
-    "..XXXX.."
-    "...XXX.."
-    "....XX.."
-    ".....X.."))
+                        ".....X.."
+                        "....XX.."
+                        "...XXX.."
+                        "..XXXX.."
+                        "...XXX.."
+                        "....XX.."
+                        ".....X.."))
 
 (use-package flycheck-inline
-  :disabled
+  ;; :disabled
   :after flycheck
   :custom-face
-  (flycheck-inline-error ((t :inherit compilation-error :box t)))
-  (flycheck-inline-info ((t :inherit compilation-info :box t)))
-  (flycheck-inline-warning ((t :inherit compilation-warning :box t)))
+  (flycheck-inline-error ((t :inherit compilation-error :box t :height 0.9)))
+  (flycheck-inline-info ((t :inherit compilation-info :box t :height 0.9)))
+  (flycheck-inline-warning ((t :inherit compilation-warning :box t :height 0.9)))
   :hook
   (flycheck-mode-hook . flycheck-inline-mode))
+
+(use-package imenu
+  :ensure nil
+  :general
+  (my/leader-def
+    "ji" 'imenu))
 
 (use-package avy
   :ensure t
@@ -1036,7 +1123,7 @@ _k_: kill    _K_: kill      _W_: word
     ("L" avy-goto-end-of-line))
   :general
   (my/leader-def
-    "j." 'hydra-avy/body
+    "j." '(hydra-avy/body :wk "hydra-avy")
     "jc" 'avy-goto-char
     "jw" 'avy-goto-word-0
     "jW" 'avy-goto-word-1
@@ -1081,12 +1168,18 @@ _k_: kill    _K_: kill      _W_: word
     ("i" dumb-jump-go-prompt "prompt")
     ("l" dumb-jump-quick-look "quick look")
     ("b" dumb-jump-back "back"))
+  :general
+  (my/leader-def
+    "jj" '(hydra-dumb-jump/body :wk "hydra-dumb-jump"))
   :custom
   (dumb-jump-selector 'ivy)
   (dumb-jump-prefer-searcher 'rg))
 
 (use-package projectile
   :defer t
+  :general
+  (my/leader-def
+    "p" '(:keymap projectile-command-map :package projectile :wk "project"))
   :custom
   (projectile-enable-caching t)
   (projectile-completion-system 'ivy)
@@ -1096,24 +1189,24 @@ _k_: kill    _K_: kill      _W_: word
 (use-package lsp-mode
   :general
   (my/local-leader-def :keymaps 'lsp-mode-map
-    "f" '(nil :wk "find")
+    "f" '(:ignore t :wk "find")
     "fd" '(lsp-find-definition :wk "definition")
     "fi" '(lsp-find-implementation :wk "implementation")
     "fr" '(lsp-find-references :wk "references")
     "ft" '(lsp-find-type-definition :wk "type definition")
 
-    "g" '(nil :wk "goto")
+    "g" '(:ignore t :wk "goto")
     "gd" '(lsp-goto-type-definition :wk "definition")
     "gi" '(lsp-goto-implementation :wk "implementation")
 
-    "w" '(nil :wk "workspace")
+    "w" '(:ignore t :wk "workspace")
     "wa" '(lsp-workspace-folders-add :wk "add")
     "wr" '(lsp-workspace-folders-remove :wk "remove")
     "ws" '(lsp-workspace-folders-switch :wk "switch")
     "wR" '(lsp-restart-workspace :wk "restart")
     "wQ" '(lsp-shutdown-workspace :wk "shutdown")
 
-    "R" '(nil :wk "refactor")
+    "R" '(:ignore t :wk "refactor")
     "Rr" '(lsp-rename :wk "rename")
 
     "=" '(lsp-format-buffer :wk "format")
@@ -1143,6 +1236,11 @@ _k_: kill    _K_: kill      _W_: word
   :config
   (dap-mode 1)
   (dap-ui-mode 1))
+
+(use-package editorconfig
+  :hook
+  (prog-mode-hook . editorconfig-mode)
+  (text-mode-hook . editorconfig-mode))
 
 (use-package treemacs
   :defer t
@@ -1265,7 +1363,7 @@ _k_: kill    _K_: kill      _W_: word
 (use-package cider
   :general
   (my/local-leader-def :keymaps 'clojure-mode-map
-    "c" '(nil :wk "connect")
+    "c" '(:ignore t :wk "connect")
     "cc" '(cider-jack-in :wk "jack-in")
     "cj" '(cider-jack-in-clj :wk "jack-in-clj")
     "cs" '(cider-jack-in-cljs :wk "jack-in-cljs")
@@ -1321,7 +1419,7 @@ _k_: kill    _K_: kill      _W_: word
   :after go-mode
   :general
   (my/local-leader-def :keymaps 'go-mode-map
-    "t" '(nil :wk "tag")
+    "t" '(:ignore t :wk "tag")
     "tt" '(go-tag-add :wk "add")
     "tT" '(go-tag-remove :wk "remove"))
   :custom
@@ -1331,15 +1429,15 @@ _k_: kill    _K_: kill      _W_: word
   :after go-mode
   :general
   (my/local-leader-def :keymaps 'go-mode-map
-    "e" '(nil :wk "eval")
+    "e" '(:ignore t :wk "eval")
     "ee" '(go-run :wk "run")
 
-    "T" '(nil :wk "test")
+    "T" '(:ignore t :wk "test")
     "Tf" '(go-test-current-file :wk "file")
     "Tt" '(go-test-current-test :wk "test")
     "Tp" '(go-test-current-project :wk "project")
 
-    "b" '(nil :wk "benchmark")
+    "b" '(:ignore t :wk "benchmark")
     "bb" '(go-test-current-benchmark :wk "benchmark")
     "bf" '(go-test-current-file-benchmarks :wk "file")
     "bp" '(go-test-current-project-benchmarks :wk "project")))
@@ -1362,7 +1460,7 @@ _k_: kill    _K_: kill      _W_: word
 (use-package makefile-executor
   :general
   (my/local-leader-def :keymaps 'makefile-mode-map
-    "e" '(nil :wk "eval")
+    "e" '(:ignore t :wk "eval")
     "ee" '(makefile-executor-execute-target :wk "execute")
     "eb" '(makefile-executor-execute-target :wk "execute in dedicated buffer")
     "el" '(makefile-executor-execute-target :wk "execute last"))
@@ -1427,15 +1525,17 @@ _k_: kill    _K_: kill      _W_: word
   :ensure nil
   :general
   (my/local-leader-def :keymaps 'sql-mode-map
-    "c" '(nil :wk "connect")
+    "c" '(:ignore t :wk "connect")
     "cc" '(sql-connect :wk "connect")
-    "e" '(nil :wk "eval")
+
+    "e" '(:ignore t :wk "eval")
     "ee" '(sql-send-paragraph :wk "paragraph")
     "el" '(sql-send-line-and-next :wk "line and next")
     "eb" '(sql-send-buffer :wk "buffer")
     "er" '(sql-send-region :wk "region")
     "es" '(sql-send-string :wk "string")
-    "l" '(nil :wk "list")
+
+    "l" '(:ignore t :wk "list")
     "la" '(sql-list-all :wk "all")
     "lt" '(sql-list-table :wk "table"))
   :custom
@@ -1447,8 +1547,22 @@ _k_: kill    _K_: kill      _W_: word
                            (sql-password "postgres")
                            (sql-database "postgres")))))
 
+(use-package vimrc-mode
+  :defer t)
+
 (use-package magit
   :commands magit-blame
+  :general
+  (my/leader-def
+    "g" '(:ignore t :wk "git")
+    "g." 'magit-dispatch
+    "gI" 'magit-init
+    "gb" 'magit-blame
+    "gc" 'magit-clone
+    "gg" 'magit-status
+    "gi" 'gitignore-templates-new-file
+    "gl" 'magit-log-buffer-file
+    "gt" 'git-timemachine)
   :custom
   (magit-completing-read-function 'ivy-completing-read)
   (magit-clone-default-directory "~/Projects")
@@ -1467,7 +1581,11 @@ _k_: kill    _K_: kill      _W_: word
   :after magit)
 
 (use-package git-timemachine
-  :defer t)
+  :defer t
+  :general
+  (my/leader-def
+    "g" '(:ignore t :wk "git")
+    "gt" 'git-timemachine))
 
 (use-package gitattributes-mode
   :defer t)
@@ -1481,6 +1599,9 @@ _k_: kill    _K_: kill      _W_: word
 (use-package gitignore-templates
   :defer t
   :general
+  (my/leader-def
+    "g" '(:ignore t :wk "git")
+    "gi" 'gitignore-templates-new-file)
   (my/local-leader-def :keymaps 'gitignore-mode-map
     "i" 'gitignore-templates-insert))
 
@@ -1548,6 +1669,13 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
   (defun my/open-org-inbox-file () (interactive) (find-file my/org-inbox-file))
   (defun my/open-org-todo-file () (interactive) (find-file my/org-todo-file))
   (defun my/open-org-notes-file () (interactive) (find-file my/org-notes-file))
+  :general
+  (my/leader-def
+    "Oa" '(org-agenda :wk "agenda")
+    "O." '(my/open-org-directory :wk "open org-directory")
+    "Oi" '(my/open-org-inbox-file :wk "open inbox")
+    "Ot" '(my/open-org-todo-file :wk "open todo")
+    "On" '(my/open-org-notes-file :wk "open notes"))
   :custom-face
   (org-tag ((t :inherit shadow)))
   :custom
@@ -1618,6 +1746,9 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
 
 (use-package docker
   :defer t
+  :general
+  (my/leader-def
+    "od" 'docker)
   :config
   ;; FIXME https://github.com/emacs-evil/evil-collection/pull/205
   (evil-collection-define-key 'normal 'docker-container-mode-map
@@ -1739,17 +1870,37 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
   :config
   (add-to-list 'company-backends 'company-restclient))
 
-(use-package httprepl
-  :defer t)
-
 (use-package ob-restclient
   :after org restclient)
 
-(use-package password-generator
+(use-package httprepl
   :defer t)
+
+(use-package know-your-http-well
+  :defer t)
+
+(use-package ssh-config-mode
+  :defer t
+  :init
+  (autoload 'ssh-config-mode "ssh-config-mode" t))
+
+(use-package password-generator
+  :defer t
+  :general
+  (my/leader-def
+    "ip" '(:ignore t :wk "password-generator")
+    "ips" 'password-generator-simple
+    "ipS" 'password-generator-strong
+    "ipp" 'password-generator-paranoid
+    "ipn" 'password-generator-numeric
+    "ipP" 'password-generator-phonetic))
 
 (use-package google-translate
   :defer t
+  :general
+  (my/leader-def
+    "ht" 'google-translate-at-point
+    "hT" 'google-translate-at-point-reverse)
   :custom
   (google-translate-default-target-language "ru")
   (google-translate-default-source-language "en")
@@ -1759,14 +1910,20 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
     ;; FIXME https://github.com/atykhonov/google-translate/issues/52#issuecomment-481310626
     (defun google-translate--search-tkk () "Search TKK." (list 430675 2721866130))))
 
-
 (use-package olivetti
   :defer t
+  :general
+  (my/leader-def
+    "to" 'olivetti-mode)
   :custom
   (olivetti-body-width 100))
 
 (use-package crux
-  :defer t)
+  :defer t
+  :general
+  (my/leader-def
+    "fR" 'crux-rename-file-and-buffer
+    "fD" 'crux-delete-file-and-buffer))
 
 (use-package try
   :defer t)
@@ -1775,6 +1932,24 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
   :defer t)
 
 (use-package string-inflection
+  :defer t)
+
+(use-package memory-usage
+  :defer t)
+
+(use-package copyit
+  :defer t)
+
+(use-package daemons
+  :defer t)
+
+(use-package diffview
+  :defer t)
+
+(use-package htmlize
+  :defer t)
+
+(use-package ztree
   :defer t)
 
 (setq debug-on-error nil)
