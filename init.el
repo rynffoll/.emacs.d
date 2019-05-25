@@ -830,6 +830,7 @@
   (font-lock+ :repo "emacsmirror/font-lock-plus" :fetcher github))
 
 (use-package all-the-icons
+  :if window-system
   :config
   (unless (member "all-the-icons" (font-family-list))
     (all-the-icons-install-fonts t)))
@@ -1057,6 +1058,59 @@
   :defer t
   :hook
   (prog-mode-hook . hs-minor-mode))
+
+(use-package ispell
+  :ensure nil
+  :defer t
+  :if (executable-find "hunspell")
+  :init
+  ;; ignore $LANG for choosing dictionary
+  (setenv "DICTIONARY" "ru_RU,en_US")
+  :custom
+  (ispell-really-aspell nil)
+  (ispell-really-hunspell t)
+  (ispell-dictionary "ru_RU,en_US")
+  :config
+  (setq ispell-program-name "hunspell")
+  ;; ispell-set-spellchecker-params has to be called
+  ;; before ispell-hunspell-add-multi-dic will work
+  (ispell-set-spellchecker-params)
+  (ispell-hunspell-add-multi-dic "ru_RU,en_US"))
+
+(use-package flyspell
+  :defer t
+  :general
+  (my/leader-def
+    "ts" 'flyspell-mode)
+  (flyspell-mode-map
+   "C-," nil
+   "C-." nil
+   "C-c $" nil)
+  :custom
+  (flyspell-delay 1)
+  (flyspell-use-meta-tab nil)
+  (flyspell-issue-message-flag nil)
+  (flyspell-prog-text-faces '(;; font-lock-string-face
+                              font-lock-comment-face
+                              font-lock-doc-face))
+  :hook
+  (text-mode-hook . flyspell-mode)
+  (org-mode-hook . flyspell-mode)
+  (prog-mode-hook . flyspell-prog-mode))
+
+(use-package flyspell-correct
+  :after flyspell
+  :general
+  (flyspell-mode-map
+   "C-;" 'flyspell-correct-at-point))
+
+(use-package flyspell-correct-ivy
+  ;; :disabled
+  :after ivy flyspell)
+
+(use-package flyspell-correct-popup
+  :disabled
+  :after flyspell)
 
 (use-package flycheck
   :defer t
