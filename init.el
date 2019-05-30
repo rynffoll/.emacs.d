@@ -412,15 +412,7 @@
   :custom
   (undo-tree-auto-save-history t)
   (undo-tree-enable-undo-in-region nil)
-  (undo-tree-history-directory-alist `(("." . ,temporary-file-directory)))
-  ;; :config
-  ;; (global-undo-tree-mode -1)
-  )
-
-(use-package undo-propose
-  :disabled
-  :general
-  (ctl-x-map "u" 'undo-propose))
+  (undo-tree-history-directory-alist `(("." . ,temporary-file-directory))))
 
 (use-package paradox
   :defer 5
@@ -497,19 +489,6 @@
             "M-n f" 'dired-narrow-fuzzy
             "M-n r" 'dired-narrow-regexp))
 
-(use-package dired-sidebar
-  :disabled
-  :defer t
-  :general
-  (my/leader-def
-    "ft" 'dired-sidebar-toggle-sidebar)
-  :custom
-  ;; (dired-sidebar-theme 'none)
-  (dired-sidebar-no-delete-other-windows t)
-  (dired-sidebar-toggle-hidden-commands '(balance-windows
-                                          evil-window-delete
-                                          delete-other-windows)))
-
 (use-package pack
   :general
   (:keymaps 'dired-mode-map :states 'normal
@@ -545,8 +524,6 @@
   :defer t
   :general
   ("s-t" 'shell-pop)
-  (my/leader-def
-    "ot" 'shell-pop)
   :custom
   (shell-pop-full-span t "Spans full width of a window")
   (shell-pop-shell-type '("eshell" "*eshell-pop*" (lambda () (eshell)))))
@@ -835,11 +812,6 @@
   (unless (member "all-the-icons" (font-family-list))
     (all-the-icons-install-fonts t)))
 
-(use-package all-the-icons-dired
-  :disabled
-  :hook
-  (dired-mode-hook . all-the-icons-dired-mode))
-
 (use-package faces
   :ensure nil
   :custom-face
@@ -1105,12 +1077,7 @@
    "C-;" 'flyspell-correct-at-point))
 
 (use-package flyspell-correct-ivy
-  ;; :disabled
   :after ivy flyspell)
-
-(use-package flyspell-correct-popup
-  :disabled
-  :after flyspell)
 
 (use-package flycheck
   :defer t
@@ -1132,7 +1099,6 @@
                         ".....X.."))
 
 (use-package flycheck-inline
-  ;; :disabled
   :after flycheck
   :custom-face
   (flycheck-inline-error ((t :inherit compilation-error :box t :height 0.9)))
@@ -1194,15 +1160,6 @@ _k_: kill    _K_: kill      _W_: word
   :custom
   (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   (aw-scope 'frame))
-
-(use-package ace-link
-  :disabled ;; unsupported some modes (ex. magit)
-  :ensure t
-  :general
-  (my/leader-def
-    "ol" 'ace-link)
-  :config
-  (ace-link-setup-default))
 
 (use-package link-hint
   :ensure t
@@ -1375,12 +1332,6 @@ _k_: kill    _K_: kill      _W_: word
 
 (use-package treemacs-magit
   :after treemacs magit)
-
-(use-package lisp
-  :disabled
-  :ensure nil
-  :hook
-  (after-save-hook . check-parens))
 
 (use-package highlight-defined
   :defer t
@@ -1729,7 +1680,8 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
     "O." '(my/open-org-directory :wk "open org-directory")
     "Oi" '(my/open-org-inbox-file :wk "open inbox")
     "Ot" '(my/open-org-todo-file :wk "open todo")
-    "On" '(my/open-org-notes-file :wk "open notes"))
+    "On" '(my/open-org-notes-file :wk "open notes")
+    "Or" '(org-mode-restart :wk "restart"))
   :custom-face
   (org-tag ((t :inherit shadow)))
   :custom
@@ -1873,7 +1825,7 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
   :defer t
   :general
   (my/local-leader-def :keymaps 'docker-compose-mode-map
-    "m" 'docker-compose))
+    "." 'docker-compose))
 
 (use-package yaml-mode
   :defer t
@@ -1989,21 +1941,6 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
   :defer t)
 
 (use-package memory-usage
-  :defer t)
-
-(use-package copyit
-  :defer t)
-
-(use-package daemons
-  :defer t)
-
-(use-package diffview
-  :defer t)
-
-(use-package htmlize
-  :defer t)
-
-(use-package ztree
   :defer t)
 
 (setq debug-on-error nil)
