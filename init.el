@@ -1607,6 +1607,9 @@ _k_: kill    _K_: kill      _W_: word
 (use-package vimrc-mode
   :defer t)
 
+(use-package groovy-mode
+  :defer t)
+
 (use-package magit
   :commands magit-blame
   :general

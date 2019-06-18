@@ -63,6 +63,7 @@
   - [[#plantuml][PlantUML]]
   - [[#sql][SQL]]
   - [[#vimrc][Vimrc]]
+  - [[#groovy][Groovy]]
 - [[#git][Git]]
 - [[#org][Org]]
   - [[#common-3][Common]]
@@ -1899,6 +1900,12 @@ Jump to definition
 ** Vimrc
 #+begin_src emacs-lisp
 (use-package vimrc-mode
+  :defer t)
+#+end_src
+
+** Groovy
+#+begin_src emacs-lisp
+(use-package groovy-mode
   :defer t)
 #+end_src
 
