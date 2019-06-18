@@ -210,7 +210,10 @@
 (use-package recentf
   :ensure nil
   :custom
-  (recentf-max-saved-items 300))
+  (recentf-max-saved-items 300)
+  (recentf-auto-cleanup 30)
+  :config
+  (run-with-idle-timer 30 t 'recentf-save-list))
 
 (use-package iqa
   :defer t
@@ -415,15 +418,14 @@
   (undo-tree-history-directory-alist `(("." . ,temporary-file-directory))))
 
 (use-package paradox
-  :defer 5
   :general
   (my/leader-def
     "op" 'paradox-list-packages)
   :custom
   (paradox-execute-asynchronously t)
   (paradox-github-token t "Don't ask github token")
-  :config
-  (paradox-enable))
+  :hook
+  (after-init-hook . paradox-enable))
 
 (use-package calendar
   :ensure nil
@@ -570,8 +572,8 @@
   (ivy-re-builders-alist '((counsel-rg . ivy--regex-plus)
                            (swiper     . ivy--regex-plus)
                            (t          . ivy--regex-fuzzy)))
-  :config
-  (ivy-mode +1))
+  :hook
+  (after-init-hook . ivy-mode))
 
 (use-package swiper
   :general
@@ -712,7 +714,7 @@
 
 (use-package which-key
   :custom
-  (which-key-idle-delay 0.5)
+  (which-key-idle-delay 0.3)
   (which-key-sort-uppercase-first nil)
   :config
   (which-key-mode +1))
@@ -884,27 +886,6 @@
   :config
   (global-prettify-symbols-mode t))
 
-(use-package paren
-  :ensure nil
-  :config
-  (show-paren-mode t))
-
-(use-package elec-pair
-  :ensure nil
-  :config
-  (electric-pair-mode t))
-
-(use-package rainbow-delimiters
-  :hook
-  (prog-mode-hook . rainbow-delimiters-mode)
-  (cider-repl-mode-hook . rainbow-delimiters-mode))
-
-(use-package whitespace
-  :ensure nil
-  :general
-  (my/leader-def
-    "tw" 'whitespace-mode))
-
 (use-package hl-line
   :ensure nil
   :general
@@ -912,12 +893,6 @@
     "tl" 'global-hl-line-mode)
   :config
   (global-hl-line-mode 1))
-
-(use-package rainbow-mode
-  :general
-  (my/leader-def
-    "tr" 'rainbow-mode)
-  :hook css-mode-hook)
 
 (use-package hl-todo
   :custom
@@ -935,15 +910,42 @@
   :hook
   (prog-mode-hook . highlight-numbers-mode))
 
-(use-package page-break-lines
-  :hook
-  (after-init-hook . global-page-break-lines-mode))
-
 (use-package highlight-blocks
   :defer t
   :general
   (my/leader-def
     "tb" 'highlight-blocks-mode))
+
+(use-package paren
+  :ensure nil
+  :config
+  (show-paren-mode t))
+
+(use-package elec-pair
+  :ensure nil
+  :config
+  (electric-pair-mode t))
+
+(use-package rainbow-delimiters
+  :hook
+  (prog-mode-hook . rainbow-delimiters-mode)
+  (cider-repl-mode-hook . rainbow-delimiters-mode))
+
+(use-package rainbow-mode
+  :general
+  (my/leader-def
+    "tr" 'rainbow-mode)
+  :hook css-mode-hook)
+
+(use-package whitespace
+  :ensure nil
+  :general
+  (my/leader-def
+    "tw" 'whitespace-mode))
+
+(use-package page-break-lines
+  :hook
+  (after-init-hook . global-page-break-lines-mode))
 
 (use-package show-eol
   :general
@@ -1061,7 +1063,8 @@
   :if (executable-find "hunspell")
   :init
   ;; ignore $LANG for choosing dictionary
-  (setenv "DICTIONARY" "ru_RU,en_US")
+  ;; (setenv "DICTIONARY" "ru_RU,en_US")
+  (setenv "LANG" "en_US.UTF-8")
   :custom
   (ispell-really-aspell nil)
   (ispell-really-hunspell t)
@@ -1238,8 +1241,8 @@ _k_: kill    _K_: kill      _W_: word
     "wa" '(lsp-workspace-folders-add :wk "add")
     "wr" '(lsp-workspace-folders-remove :wk "remove")
     "ws" '(lsp-workspace-folders-switch :wk "switch")
-    "wR" '(lsp-restart-workspace :wk "restart")
-    "wQ" '(lsp-shutdown-workspace :wk "shutdown")
+    "wR" '(lsp-workspace-restart :wk "restart")
+    "wQ" '(lsp-workspace-shutdown :wk "shutdown")
 
     "R" '(:ignore t :wk "refactor")
     "Rr" '(lsp-rename :wk "rename")
@@ -1255,6 +1258,13 @@ _k_: kill    _K_: kill      _W_: word
   :custom
   (lsp-ui-doc-enable nil)
   (lsp-ui-sideline-enable nil))
+
+(use-package lsp-treemacs
+  :after lsp-mode
+  :general
+  (my/local-leader-def :keymaps 'lsp-mode-map
+    "T" '(:ignore :wk "treemacs")
+    "Te" '(lsp-treemacs-errors-list :wk "error list")))
 
 (use-package company-lsp
   :after company lsp-mode
@@ -1280,11 +1290,6 @@ _k_: kill    _K_: kill      _W_: word
 (use-package treemacs
   :defer t
   :preface
-  ;; (defun my/convert-to-treemacs-format-icon (item)
-  ;;   (-let* (((pattern f . spec) item)
-  ;;           (key (s-replace-all '(("^" . "") ("\\" . "") ("$" . "") ("." . "")) pattern))
-  ;;           (icon (apply f spec)))
-  ;;     (cons key icon)))
   (defun my/hide-fringes ()
     (when (display-graphic-p)
       (set-window-fringes nil 0 0)))
@@ -1306,37 +1311,18 @@ _k_: kill    _K_: kill      _W_: word
   (treemacs-mode-hook . hide-mode-line-mode)
   (treemacs-mode-hook . my/hide-fringes)
   :config
-  (setq treemacs-icon-root-png (concat " " (all-the-icons-octicon "repo" :v-adjust -0.1 :height 1.2) " ")
-        treemacs-icon-open-png (concat (all-the-icons-octicon "file-directory" :v-adjust 0) " ")
-        treemacs-icon-closed-png (concat (all-the-icons-octicon "file-directory" :v-adjust 0) " ")
-        treemacs-icon-closed treemacs-icon-closed-png ;; For treemacs-icons-dired
-        treemacs-icon-tag-node-open-png (concat (all-the-icons-octicon "chevron-down") " ")
-        treemacs-icon-tag-node-closed-png (concat (all-the-icons-octicon "chevron-right") " ")
-        treemacs-icon-tag-leaf-png "- "
+  (with-eval-after-load 'all-the-icons
+    (setq treemacs-icon-root-png (concat " " (all-the-icons-octicon "repo" :v-adjust -0.1 :height 1.2) " ")
+          treemacs-icon-open-png (concat (all-the-icons-octicon "file-directory" :v-adjust 0) " ")
+          treemacs-icon-closed-png (concat (all-the-icons-octicon "file-directory" :v-adjust 0) " ")
+          treemacs-icon-closed treemacs-icon-closed-png ;; For treemacs-icons-dired
+          treemacs-icon-tag-node-open-png (concat (all-the-icons-octicon "chevron-down") " ")
+          treemacs-icon-tag-node-closed-png (concat (all-the-icons-octicon "chevron-right") " ")
+          treemacs-icon-tag-leaf-png "- "
 
-        treemacs-icons-hash (make-hash-table :size 200 :test #'equal)
-        treemacs-icon-fallback (concat (all-the-icons-octicon "file-code" :v-adjust 0) " ")
-        treemacs-icon-text treemacs-icon-fallback)
-
-  ;; (--each (-map #'my/convert-to-treemacs-format-icon all-the-icons-icon-alist)
-  ;;   (-let [(file-ext . icon) it]
-  ;;     (treemacs-define-custom-icon icon file-ext)))
-
-  ;; (dolist (face '(treemacs-root-face
-  ;;                 treemacs-git-unmodified-face
-  ;;                 treemacs-git-modified-face
-  ;;                 treemacs-git-renamed-face
-  ;;                 treemacs-git-ignored-face
-  ;;                 treemacs-git-untracked-face
-  ;;                 treemacs-git-added-face
-  ;;                 treemacs-git-conflict-face
-  ;;                 treemacs-directory-face
-  ;;                 treemacs-directory-collapsed-face
-  ;;                 treemacs-file-face))
-  ;;   (let ((faces (face-attribute face :inherit nil)))
-  ;;     (set-face-attribute
-  ;;      face nil :inherit
-  ;;      `(variable-pitch ,@(delq 'unspecified (if (listp faces) faces (list faces)))))))
+          treemacs-icons-hash (make-hash-table :size 200 :test #'equal)
+          treemacs-icon-fallback (concat (all-the-icons-octicon "file-code" :v-adjust 0) " ")
+          treemacs-icon-text treemacs-icon-fallback))
 
   (treemacs-follow-mode t)
   (treemacs-filewatch-mode t)
@@ -1431,8 +1417,50 @@ _k_: kill    _K_: kill      _W_: word
 
 (use-package lsp-java
   :after cc-mode
+  :general
+  (my/local-leader-def :keymaps 'java-mode-map
+    "Re" '(:ignore t :wk "extract")
+    "Rem" '(lsp-java-extract-method :wk "method")
+    "Rec" '(lsp-java-extract-to-constant :wk "constant")
+    "Rel" '(lsp-java-extract-to-local-variable :wk "local variable")
+
+    "Ra" '(:ignore t :wk "add")
+    "Rai" '(lsp-java-add-import :wk "missing import")
+    "Rau" '(lsp-java-add-unimplemented-methods :wk "unimplemented methods")
+    "Rat" '(lsp-java-add-throws :wk "throws")
+
+    "Rc" '(:ignore t :wk "create")
+    "Rcp" '(lsp-java-create-parameter :wk "parameter")
+    "Rcf" '(lsp-java-create-field :wk "field")
+    "Rcl" '(lsp-java-create-local :wk "local")
+
+    "Ro" '(lsp-java-organize-imports :wk "organize imports")
+
+    "G" '(:ignore t :wk "generate")
+    "Gt" '(lsp-java-generate-to-string :wk "toString")
+    "Ge" '(lsp-java-generate-equals-and-hash-code :wk "equals and hashCode")
+    "Go" '(lsp-java-generate-overrides :wk "method overrides")
+    "Gg" '(lsp-java-generate-getters-and-setters :wk "getters and setters")
+
+    "P" '(:ignore t :wk "project")
+    "Pb" '(lsp-java-build-project :wk "build")
+    "Pc" '(lsp-java-update-project-configuration :wk "update configuration")
+    "Pu" '(lsp-java-update-project-uris :wk "update URIs")
+
+    "T" '(:ignore t :wk "treemacs")
+    "Tr" '(lsp-java-treemacs-register :wk "register")
+    "Tu" '(lsp-java-treemacs-unregister :wk "unregister"))
   :config
   (add-hook 'java-mode-hook 'lsp))
+
+(use-package lsp-java-boot
+  :ensure lsp-java
+  :hook
+  (lsp-mode-hook . lsp-lens-mode)
+  (java-mode-hook . lsp-java-boot-lens-mode))
+
+(use-package lsp-java-treemacs
+  :ensure lsp-java)
 
 (use-package dap-java
   :ensure nil
@@ -1685,10 +1713,11 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
             (save-buffer)
             (bury-buffer)) :color blue)
     ("q" nil :color blue))
-  :hook
-  (magit-diff-visit-file-hook . (lambda ()
-                                  (when smerge-mode
-                                    (hydra-smerge/body)))))
+  ;; :hook
+  ;; (magit-diff-visit-file-hook . (lambda ()
+  ;;                                 (when smerge-mode
+  ;;                                   (hydra-smerge/body))))
+  )
 
 (use-package org
   :ensure org-plus-contrib
