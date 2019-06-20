@@ -94,6 +94,9 @@
     "" '(nil :wk "local leader")))
 
 (use-package evil
+  :general
+  (evil-insert-state-map
+   "C-k" nil)
   :custom
   (evil-want-keybinding nil)
   (evil-split-window-below t)
@@ -211,9 +214,8 @@
   :ensure nil
   :custom
   (recentf-max-saved-items 300)
-  (recentf-auto-cleanup 30)
   :config
-  (run-with-idle-timer 30 t 'recentf-save-list))
+  (recentf-mode t))
 
 (use-package iqa
   :defer t
@@ -861,6 +863,11 @@
   (doom-themes-treemacs-config)
   (doom-themes-org-config))
 
+(use-package poet-theme
+  :disabled
+  :config
+  (load-theme 'poet t))
+
 (use-package delsel
   :ensure nil
   :general
@@ -1020,9 +1027,7 @@
   (company-box-candidate ((t :inherit company-tooltip-common)))
   (company-box-scrollbar ((t :inherit company-scrollbar-fg)))
   :custom
-  (company-box-show-single-candidate t)
   (company-box-backends-colors nil)
-  (company-box-max-candidates 50)
   (company-box-icons-alist 'company-box-icons-all-the-icons)
   :hook
   (company-mode-hook . company-box-mode))
@@ -1214,7 +1219,6 @@ _k_: kill    _K_: kill      _W_: word
   (dumb-jump-prefer-searcher 'rg))
 
 (use-package projectile
-  :defer t
   :general
   (my/leader-def
     "p" '(:keymap projectile-command-map :package projectile :wk "project"))
@@ -1459,8 +1463,8 @@ _k_: kill    _K_: kill      _W_: word
   (lsp-mode-hook . lsp-lens-mode)
   (java-mode-hook . lsp-java-boot-lens-mode))
 
-(use-package lsp-java-treemacs
-  :ensure lsp-java)
+;; (use-package lsp-java-treemacs
+;;   :ensure lsp-java)
 
 (use-package dap-java
   :ensure nil
@@ -1476,9 +1480,9 @@ _k_: kill    _K_: kill      _W_: word
   :after go-mode
   :general
   (my/local-leader-def :keymaps 'go-mode-map
-    "t" '(:ignore t :wk "tag")
-    "tt" '(go-tag-add :wk "add")
-    "tT" '(go-tag-remove :wk "remove"))
+    "Rt" '(:ignore t :wk "tag")
+    "Rta" '(go-tag-add :wk "add")
+    "Rtr" '(go-tag-remove :wk "remove"))
   :custom
   (go-tag-args '("-transform" "snakecase")))
 
@@ -1489,10 +1493,10 @@ _k_: kill    _K_: kill      _W_: word
     "e" '(:ignore t :wk "eval")
     "ee" '(go-run :wk "run")
 
-    "T" '(:ignore t :wk "test")
-    "Tf" '(go-test-current-file :wk "file")
-    "Tt" '(go-test-current-test :wk "test")
-    "Tp" '(go-test-current-project :wk "project")
+    "t" '(:ignore t :wk "test")
+    "tf" '(go-test-current-file :wk "file")
+    "tt" '(go-test-current-test :wk "test")
+    "tp" '(go-test-current-project :wk "project")
 
     "b" '(:ignore t :wk "benchmark")
     "bb" '(go-test-current-benchmark :wk "benchmark")
@@ -1740,6 +1744,7 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
     "Or" '(org-mode-restart :wk "restart"))
   :custom-face
   (org-tag ((t :inherit shadow)))
+  (org-ellipsis ((t :underline nil)))
   :custom
   (org-insert-heading-respect-content t "Insert new headings after current subtree rather than inside it")
 
@@ -1764,7 +1769,7 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
   (org-hide-leading-stars t)
   (org-hide-leading-stars-before-indent-mode t)
 
-  (org-fontify-done-headline t)
+  (org-fontify-done-headline nil)
   (org-fontify-quote-and-verse-blocks t)
   (org-fontify-whole-heading-line t)
 
@@ -1967,10 +1972,7 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
   (google-translate-default-target-language "ru")
   (google-translate-default-source-language "en")
   (google-translate-pop-up-buffer-set-focus t)
-  :init
-  (with-eval-after-load 'google-translate-tk
-    ;; FIXME https://github.com/atykhonov/google-translate/issues/52#issuecomment-481310626
-    (defun google-translate--search-tkk () "Search TKK." (list 430675 2721866130))))
+  (google-translate-backend-method 'curl))
 
 (use-package olivetti
   :defer t
@@ -1987,8 +1989,17 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
     "fR" 'crux-rename-file-and-buffer
     "fD" 'crux-delete-file-and-buffer))
 
+(use-package deadgrep
+  :defer t
+  :general
+  (my/leader-def
+    "/D" 'deadgrep))
+
 (use-package try
-  :defer t)
+  :defer t
+  :general
+  (my/leader-def
+    "ot" 'try))
 
 (use-package focus
   :defer t)
