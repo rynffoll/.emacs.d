@@ -64,6 +64,7 @@
   - [[#sql][SQL]]
   - [[#vimrc][Vimrc]]
   - [[#groovy][Groovy]]
+  - [[#markdown][Markdown]]
 - [[#git][Git]]
 - [[#org][Org]]
   - [[#common-3][Common]]
@@ -1928,6 +1929,19 @@ Jump to definition
 #+begin_src emacs-lisp
 (use-package groovy-mode
   :defer t)
+#+end_src
+
+** Markdown
+#+begin_src emacs-lisp
+(use-package markdown-mode
+  :defer t
+  :general
+  (my/local-leader-def :keymaps 'markdown-mode-map
+    "p" '(markdown-preview :wk "preview"))
+  :custom
+  (markdown-fontify-code-blocks-natively t)
+  :config
+  (add-to-list 'markdown-code-lang-modes '("clj" . clojure-mode)))
 #+end_src
 
 * Git

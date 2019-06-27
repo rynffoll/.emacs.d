@@ -1631,6 +1631,16 @@ _k_: kill    _K_: kill      _W_: word
 (use-package groovy-mode
   :defer t)
 
+(use-package markdown-mode
+  :defer t
+  :general
+  (my/local-leader-def :keymaps 'markdown-mode-map
+    "p" '(markdown-preview :wk "preview"))
+  :custom
+  (markdown-fontify-code-blocks-natively t)
+  :config
+  (add-to-list 'markdown-code-lang-modes '("clj" . clojure-mode)))
+
 (use-package magit
   :commands magit-blame
   :general
