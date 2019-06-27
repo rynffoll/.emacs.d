@@ -863,11 +863,6 @@
   (doom-themes-treemacs-config)
   (doom-themes-org-config))
 
-(use-package poet-theme
-  :disabled
-  :config
-  (load-theme 'poet t))
-
 (use-package delsel
   :ensure nil
   :general
@@ -1315,18 +1310,43 @@ _k_: kill    _K_: kill      _W_: word
   (treemacs-mode-hook . hide-mode-line-mode)
   (treemacs-mode-hook . my/hide-fringes)
   :config
-  (with-eval-after-load 'all-the-icons
-    (setq treemacs-icon-root-png (concat " " (all-the-icons-octicon "repo" :v-adjust -0.1 :height 1.2) " ")
-          treemacs-icon-open-png (concat (all-the-icons-octicon "file-directory" :v-adjust 0) " ")
-          treemacs-icon-closed-png (concat (all-the-icons-octicon "file-directory" :v-adjust 0) " ")
-          treemacs-icon-closed treemacs-icon-closed-png ;; For treemacs-icons-dired
-          treemacs-icon-tag-node-open-png (concat (all-the-icons-octicon "chevron-down") " ")
-          treemacs-icon-tag-node-closed-png (concat (all-the-icons-octicon "chevron-right") " ")
-          treemacs-icon-tag-leaf-png "- "
+  (treemacs-create-theme "Icons"
+    :config
+    (progn
+      (treemacs-create-icon
+       :icon (concat (all-the-icons-octicon "repo" :v-adjust -0.1 :height 1.2) " ")
+       :extensions (root))
 
-          treemacs-icons-hash (make-hash-table :size 200 :test #'equal)
-          treemacs-icon-fallback (concat (all-the-icons-octicon "file-code" :v-adjust 0) " ")
-          treemacs-icon-text treemacs-icon-fallback))
+      (treemacs-create-icon
+       :icon (concat  (all-the-icons-octicon "file-directory" :v-adjust 0) " ")
+       :extensions (dir-open))
+      (treemacs-create-icon
+       :icon (concat (all-the-icons-octicon "file-directory" :v-adjust 0) " ")
+       :extensions (dir-closed))
+
+      (treemacs-create-icon
+       :icon (concat "  " (all-the-icons-octicon "tag" :v-adjust 0) " ")
+       :extensions (tag-leaf))
+      (treemacs-create-icon
+       :icon (concat
+              (all-the-icons-octicon "chevron-down" :v-adjust 0)
+              " "
+              (all-the-icons-octicon "tag" :v-adjust 0)
+              " ")
+       :extensions (tag-open))
+      (treemacs-create-icon
+       :icon (concat
+              (all-the-icons-octicon "chevron-right" :v-adjust 0)
+              " "
+              (all-the-icons-octicon "tag" :v-adjust 0)
+              " ")
+       :extensions (tag-closed))
+
+      (treemacs-create-icon
+       :icon (concat (all-the-icons-octicon "file-code" :v-adjust 0) " ")
+       :extensions (fallback))))
+
+  (treemacs-load-theme "Icons")
 
   (treemacs-follow-mode t)
   (treemacs-filewatch-mode t)
@@ -1462,9 +1482,6 @@ _k_: kill    _K_: kill      _W_: word
   :hook
   (lsp-mode-hook . lsp-lens-mode)
   (java-mode-hook . lsp-java-boot-lens-mode))
-
-;; (use-package lsp-java-treemacs
-;;   :ensure lsp-java)
 
 (use-package dap-java
   :ensure nil
