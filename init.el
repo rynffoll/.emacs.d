@@ -1641,6 +1641,10 @@ _k_: kill    _K_: kill      _W_: word
   :config
   (add-to-list 'markdown-code-lang-modes '("clj" . clojure-mode)))
 
+(use-package json-mode
+  :hook
+  (json-mode-hook . (lambda () (setq flycheck-checker 'json-jq))))
+
 (use-package magit
   :commands magit-blame
   :general
