@@ -1408,7 +1408,9 @@ _k_: kill    _K_: kill      _W_: word
     "cs" '(cider-jack-in-cljs :wk "jack-in-cljs")
     "cC" '(cider-connect :wk "connect")
     "cR" '(cider-restart :wk "restart")
-    "cQ" '(cider-quit :wk "quit"))
+    "cQ" '(cider-quit :wk "quit")
+
+    "=" '(cider-format-buffer :wk "format"))
   :custom
   (cider-repl-use-pretty-printing t)
   (cider-repl-pop-to-buffer-on-connect 'display-only)
