@@ -1715,7 +1715,7 @@ _k_: kill    _K_: kill      _W_: word
   :defer t
   :preface
   (defhydra hydra-smerge
-    (:color pink :hint nil :post (smerge-auto-leave))
+    (:color pink :hint nil)
     "
 ^Move^       ^Keep^             ^Diff^                ^Other^
 ^^───────────^^─────────────────^^────────────────────^^─────────────────
@@ -1751,11 +1751,9 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
             (save-buffer)
             (bury-buffer)) :color blue)
     ("q" nil :color blue))
-  ;; :hook
-  ;; (magit-diff-visit-file-hook . (lambda ()
-  ;;                                 (when smerge-mode
-  ;;                                   (hydra-smerge/body))))
-  )
+  :general
+  (my/local-leader-def :keymaps 'smerge-mode-map
+    "." 'hydra-smerge/body))
 
 (use-package org
   :ensure org-plus-contrib
