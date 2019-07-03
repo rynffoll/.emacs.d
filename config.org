@@ -66,6 +66,7 @@
   - [[#groovy][Groovy]]
   - [[#markdown][Markdown]]
   - [[#json][JSON]]
+  - [[#yaml][YAML]]
 - [[#git][Git]]
 - [[#org][Org]]
   - [[#common-3][Common]]
@@ -1954,6 +1955,20 @@ Jump to definition
   (json-mode-hook . (lambda () (setq flycheck-checker 'json-jq))))
 #+end_src
 
+** YAML
+#+begin_src emacs-lisp
+(use-package yaml-mode
+  :defer t
+  :mode "Procfile\\'"
+  :hook
+  (yaml-mode-hook . flycheck-mode))
+
+(use-package flycheck-yamllint
+  :after flycheck yaml-mode
+  :hook
+  (flycheck-mode-hook . flycheck-yamllint-setup))
+#+end_src
+
 * Git
 #+begin_src emacs-lisp
 (use-package magit
@@ -2248,10 +2263,6 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
 
 ** Ansible
 #+begin_src emacs-lisp
-(use-package yaml-mode
-  :defer t
-  :mode "Procfile\\'")
-
 (use-package ansible-doc
   :after yaml-mode
   :general

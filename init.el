@@ -1647,6 +1647,17 @@ _k_: kill    _K_: kill      _W_: word
   :hook
   (json-mode-hook . (lambda () (setq flycheck-checker 'json-jq))))
 
+(use-package yaml-mode
+  :defer t
+  :mode "Procfile\\'"
+  :hook
+  (yaml-mode-hook . flycheck-mode))
+
+(use-package flycheck-yamllint
+  :after flycheck yaml-mode
+  :hook
+  (flycheck-mode-hook . flycheck-yamllint-setup))
+
 (use-package magit
   :commands magit-blame
   :general
@@ -1918,10 +1929,6 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
   :general
   (my/local-leader-def :keymaps 'docker-compose-mode-map
     "." 'docker-compose))
-
-(use-package yaml-mode
-  :defer t
-  :mode "Procfile\\'")
 
 (use-package ansible-doc
   :after yaml-mode
