@@ -1585,7 +1585,8 @@ _k_: kill    _K_: kill      _W_: word
   (my/local-leader-def :keymaps 'plantuml-mode-map
     "p" '(plantuml-preview :wk "preview"))
   :custom
-  (plantuml-output-type "utxt")
+  (plantuml-output-type (if (display-images-p) "png" "txt"))
+  (plantuml-default-exec-mode 'jar)
   (plantuml-jar-path
    (car (last (file-expand-wildcards
                "/usr/local/Cellar/plantuml/*/libexec/plantuml.jar")))))
