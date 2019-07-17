@@ -1306,6 +1306,8 @@ _k_: kill    _K_: kill      _W_: word
   (treemacs-no-delete-other-windows nil)
   (treemacs-space-between-root-nodes nil)
   (treemacs-width 35)
+  (treemacs-recenter-after-file-follow 'on-distance)
+  (treemacs-recenter-after-tag-follow 'on-distance)
   :hook
   (treemacs-mode-hook . hide-mode-line-mode)
   (treemacs-mode-hook . my/hide-fringes)
@@ -1346,12 +1348,7 @@ _k_: kill    _K_: kill      _W_: word
        :icon (concat (all-the-icons-octicon "file-code" :v-adjust 0) " ")
        :extensions (fallback))))
 
-  (treemacs-load-theme "Icons")
-
-  (treemacs-follow-mode t)
-  (treemacs-filewatch-mode t)
-  (treemacs-fringe-indicator-mode -1)
-  (treemacs-git-mode 'simple))
+  (treemacs-load-theme "Icons"))
 
 (use-package treemacs-evil
   :after treemacs evil)
