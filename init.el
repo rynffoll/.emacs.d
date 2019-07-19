@@ -1637,6 +1637,7 @@ _k_: kill    _K_: kill      _W_: word
   (my/local-leader-def :keymaps 'markdown-mode-map
     "p" '(markdown-preview :wk "preview"))
   :custom
+  (markdown-command "pandoc")
   (markdown-fontify-code-blocks-natively t)
   :config
   (add-to-list 'markdown-code-lang-modes '("clj" . clojure-mode)))
