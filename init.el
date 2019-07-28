@@ -94,6 +94,11 @@
     "" '(nil :wk "local leader")))
 
 (use-package evil
+  :preface
+  (defun my/save-and-kill-buffer ()
+    (interactive)
+    (save-buffer)
+    (kill-this-buffer))
   :general
   (evil-insert-state-map
    "C-k" nil)
@@ -107,7 +112,9 @@
   (evil-move-beyond-eol nil)
   (evil-move-cursor-back t)
   :config
-  (evil-mode 1))
+  (evil-mode 1)
+  (evil-ex-define-cmd "q" 'kill-this-buffer)
+  (evil-ex-define-cmd "wq" 'my/save-and-kill-buffer))
 
 (use-package evil-collection
   :after evil
@@ -422,7 +429,7 @@
 (use-package paradox
   :general
   (my/leader-def
-    "op" 'paradox-list-packages)
+    "oP" 'paradox-list-packages)
   :custom
   (paradox-execute-asynchronously t)
   (paradox-github-token t "Don't ask github token")
@@ -597,6 +604,8 @@
     "." 'counsel-find-file
 
     "oL" 'counsel-find-library
+    "op" 'counsel-package
+    "oh" 'counsel-command-history
 
     "ff" 'counsel-find-file
     "fr" 'counsel-recentf
@@ -629,7 +638,10 @@
   (counsel-projectile-mode))
 
 (use-package counsel-tramp
-  :defer t)
+  :defer t
+  :general
+  (my/leader-def
+    "fT" 'counsel-tramp))
 
 (use-package ns-win
   :if (memq window-system '(mac ns))
