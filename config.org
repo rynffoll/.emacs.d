@@ -1957,6 +1957,11 @@ Jump to definition
   (markdown-fontify-code-blocks-natively t)
   :config
   (add-to-list 'markdown-code-lang-modes '("clj" . clojure-mode)))
+
+(use-package grip-mode
+  :general
+  (my/local-leader-def :keymaps '(markdown-mode-map org-mode-map)
+    "g" '(grip-mode :wk "grip-mode")))
 #+end_src
 
 ** JSON

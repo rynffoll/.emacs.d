@@ -1654,6 +1654,11 @@ _k_: kill    _K_: kill      _W_: word
   :config
   (add-to-list 'markdown-code-lang-modes '("clj" . clojure-mode)))
 
+(use-package grip-mode
+  :general
+  (my/local-leader-def :keymaps '(markdown-mode-map org-mode-map)
+    "g" '(grip-mode :wk "grip-mode")))
+
 (use-package json-mode
   :hook
   (json-mode-hook . (lambda () (setq flycheck-checker 'json-jq))))
