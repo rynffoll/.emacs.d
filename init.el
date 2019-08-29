@@ -164,6 +164,13 @@
   :config
   (global-evil-mc-mode t))
 
+(use-package which-key
+  :custom
+  (which-key-idle-delay 0.3)
+  (which-key-sort-uppercase-first nil)
+  :config
+  (which-key-mode))
+
 (use-package emacs
   :ensure nil
   :general
@@ -204,6 +211,7 @@
   :custom
   (auto-revert-verbose nil)
   (global-auto-revert-non-file-buffers t)
+  (auto-revert-check-vc-info t)
   :config
   (global-auto-revert-mode))
 
@@ -619,11 +627,6 @@
   (counsel-describe-function-function 'helpful-callable)
   (counsel-describe-variable-function 'helpful-variable))
 
-(use-package hydra)
-
-(use-package ivy-hydra
-  :after ivy hydra)
-
 (use-package ivy-rich
   :after ivy
   :config
@@ -726,24 +729,6 @@
     "hk" 'helpful-key
     "hm" 'helpful-macro))
 
-(use-package which-key
-  :custom
-  (which-key-idle-delay 0.3)
-  (which-key-sort-uppercase-first nil)
-  :config
-  (which-key-mode +1))
-
-(use-package discover-my-major
-  :general
-  (my/leader-def
-    "hD" 'discover-my-major)
-  :config
-  (with-eval-after-load 'evil
-    (evil-set-initial-state 'makey-key-mode 'motion)))
-
-(use-package tldr
-  :defer t)
-
 (use-package restart-emacs
   :defer t
   :general
@@ -764,10 +749,10 @@
   :general
   (my/leader-def
     "tm" 'toggle-frame-maximized
-    "tf" 'toggle-frame-fullscreen)
+    "tF" 'toggle-frame-fullscreen)
   :custom
   (default-frame-alist '((left . 0.5) (top . 0.5)
-                         (width . 0.7) (height . 0.9)))
+                         (width . 0.75) (height . 0.9)))
   :config
   (blink-cursor-mode -1))
 
@@ -816,6 +801,10 @@
   :ensure nil
   :config
   (set-face-attribute 'default nil :font "Fira Mono 14"))
+
+(use-package default-text-scale
+  :config
+  (default-text-scale-mode))
 
 (use-package font-lock+
   :ensure nil
@@ -870,6 +859,8 @@
 
 (use-package doom-themes
   :disabled
+  :custom
+  (doom-themes-treemacs-theme "doom-colors")
   :config
   (load-theme 'doom-city-lights t)
   (doom-themes-treemacs-config)
@@ -966,29 +957,16 @@
   (my/leader-def
     "te" 'show-eol-mode))
 
-(use-package symbol-overlay
-  :preface
-  (defhydra hydra-symbol-overlay
-    (:color pink)
-    ("." symbol-overlay-put "put")
-    ("n" symbol-overlay-jump-next "jump next")
-    ("p" symbol-overlay-jump-prev "jump prev")
-    ("R" symbol-overlay-rename "rename")
-    ("C" symbol-overlay-remove-all "remove all")
-    ("q" nil "cancel" :color blue))
+(use-package hi-lock
+  :ensure nil
   :general
   (my/leader-def
-    "th" 'hydra-symbol-overlay/body)
-  :custom-face
-  (symbol-overlay-default-face ((t (:inherit 'region))))
-  (symbol-overlay-face-1 ((t (:inherit 'org-level-1 :inverse-video t))))
-  (symbol-overlay-face-2 ((t (:inherit 'org-level-2 :inverse-video t))))
-  (symbol-overlay-face-3 ((t (:inherit 'org-level-3 :inverse-video t))))
-  (symbol-overlay-face-4 ((t (:inherit 'org-level-4 :inverse-video t))))
-  (symbol-overlay-face-5 ((t (:inherit 'org-level-5 :inverse-video t))))
-  (symbol-overlay-face-6 ((t (:inherit 'org-level-6 :inverse-video t))))
-  (symbol-overlay-face-7 ((t (:inherit 'org-level-7 :inverse-video t))))
-  (symbol-overlay-face-8 ((t (:inherit 'org-level-8 :inverse-video t)))))
+    "th" '(:ignore t :wh "highlight")
+    "th." 'highlight-symbol-at-point
+    "thp" 'highlight-phrase
+    "thr" 'highlight-regexp
+    "thl" 'highlight-lines-matching-regexp
+    "thu" 'unhighlight-regexp))
 
 (use-package display-line-numbers
   :ensure nil
@@ -2056,7 +2034,10 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
     "ot" 'try))
 
 (use-package focus
-  :defer t)
+  :defer t
+  :general
+  (my/leader-def
+    "tf" 'focus-mode))
 
 (use-package string-inflection
   :defer t)
