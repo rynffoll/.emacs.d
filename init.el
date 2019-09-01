@@ -28,10 +28,6 @@
         ("melpa-stable" . "https://stable.melpa.org/packages/")
         ("melpa"        . "https://melpa.org/packages/")
         ("org"          . "https://orgmode.org/elpa/")))
-(setq package-archive-priorities
-      '(("melpa-stable" . 5)
-        ("gnu"          . 5)
-        ("melpa"        . 10)))
 (package-initialize)
 
 (setq package-enable-at-startup nil
@@ -891,6 +887,11 @@
   :config
   (global-prettify-symbols-mode t))
 
+(use-package subword
+  :ensure nil
+  :hook
+  (prog-mode-hook . subword-mode))
+
 (use-package hl-line
   :ensure nil
   :general
@@ -1021,11 +1022,6 @@
   :after company
   :config
   (add-to-list 'company-backends 'company-shell))
-
-(use-package company-flx
-  :after company
-  :config
-  (company-flx-mode +1))
 
 (use-package company-statistics
   :after company
@@ -1387,6 +1383,7 @@ _k_: kill    _K_: kill      _W_: word
   :defer t)
 
 (use-package cider
+  :pin melpa-stable
   :general
   (my/local-leader-def :keymaps 'clojure-mode-map
     "c" '(:ignore t :wk "connect")
@@ -1397,15 +1394,23 @@ _k_: kill    _K_: kill      _W_: word
     "cR" '(cider-restart :wk "restart")
     "cQ" '(cider-quit :wk "quit")
 
+    "b" '(:ignore t :wk "buffer")
+    "bs" 'cider-scratch
+
     "=" '(cider-format-buffer :wk "format"))
   :custom
   (cider-repl-use-pretty-printing t)
   (cider-repl-pop-to-buffer-on-connect 'display-only)
   (cider-repl-history-display-style 'one-line)
   (cider-repl-history-highlight-current-entry t)
-  (cider-repl-history-highlight-inserted-item t))
+  (cider-repl-history-highlight-inserted-item t)
+  :hook
+  (cider-repl-mode-hook . subword-mode)
+  (cider-mode-hook . cider-company-enable-fuzzy-completion)
+  (cider-repl-mode-hook . cider-company-enable-fuzzy-completion))
 
 (use-package cider-hydra
+  :pin melpa-stable
   :general
   (my/local-leader-def :keymaps 'clojure-mode-map
     "d" '(cider-hydra-doc/body :wk "doc")
@@ -1416,6 +1421,7 @@ _k_: kill    _K_: kill      _W_: word
   (clojure-mode-hook . cider-hydra-mode))
 
 (use-package clj-refactor
+  :pin melpa-stable
   :general
   (my/local-leader-def :keymaps 'clojure-mode-map
     "R" '(hydra-cljr-help-menu/body :wk "refactor"))
