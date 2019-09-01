@@ -466,7 +466,7 @@
   :ensure nil
   :defer t
   :custom
-  (dired-listing-switches "-aBhl --group-directories-first")
+  (dired-listing-switches "-lah --group-directories-first")
   (dired-auto-revert-buffer t)
   (dired-dwim-target t)
   (dired-recursive-copies 'always "Never prompt for recursive copies of a directory")
@@ -559,9 +559,8 @@
   (shell-pop-shell-type '("eshell" "*eshell-pop*" (lambda () (eshell)))))
 
 (use-package exec-path-from-shell
-  :defer t
-  :hook
-  (after-init-hook . exec-path-from-shell-initialize))
+  :config
+  (exec-path-from-shell-initialize))
 
 (use-package with-editor
   :defer t

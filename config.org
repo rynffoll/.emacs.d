@@ -618,7 +618,7 @@ Encryption
   :ensure nil
   :defer t
   :custom
-  (dired-listing-switches "-aBhl --group-directories-first")
+  (dired-listing-switches "-lah --group-directories-first")
   (dired-auto-revert-buffer t)
   (dired-dwim-target t)
   (dired-recursive-copies 'always "Never prompt for recursive copies of a directory")
@@ -721,9 +721,8 @@ Quick access to shell
 =$PATH= from user's shell
 #+begin_src emacs-lisp
 (use-package exec-path-from-shell
-  :defer t
-  :hook
-  (after-init-hook . exec-path-from-shell-initialize))
+  :config
+  (exec-path-from-shell-initialize))
 #+end_src
 
 Use the Emacsclient as the =$EDITOR= of child processes
