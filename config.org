@@ -5,8 +5,10 @@
   - [[#enable-lexical-scope][Enable lexical scope]]
   - [[#debugging-on-startup][Debugging on startup]]
   - [[#gc-tweaks][GC tweaks]]
-  - [[#initialize-package][Initialize package]]
-  - [[#install-use-package][Install use-package]]
+  - [[#file-handler-tweaks][File handler tweaks]]
+- [[#package-manager][Package Manager]]
+  - [[#package][package]]
+  - [[#use-package][use-package]]
 - [[#bindings][Bindings]]
   - [[#general][General]]
   - [[#evil][Evil]]
@@ -19,7 +21,7 @@
   - [[#pop-ups][Pop-ups]]
   - [[#workspaces][Workspaces]]
   - [[#better-undo][Better undo]]
-  - [[#package-manager][Package manager]]
+  - [[#package-manager-1][Package manager]]
   - [[#calendar][Calendar]]
   - [[#tramp][Tramp]]
   - [[#dired][Dired]]
@@ -109,14 +111,26 @@
 
 (add-hook 'emacs-startup-hook
           #'(lambda ()
-              (message "Emacs ready in %s with %d garbage collections."
-                       (format "%.2f seconds"
+              (message "Emacs ready (init time = %s, gc time = %s, gc count = %d)."
+                       (format "%.2fs"
                                (float-time
                                 (time-subtract after-init-time before-init-time)))
+                       (format "%.2fs" (float-time gc-elapsed))
                        gcs-done)))
 #+end_src
 
-** Initialize package
+** File handler tweaks
+#+begin_src emacs-lisp
+(defvar my/file-name-handler-alist file-name-handler-alist)
+(setq file-name-handler-alist nil)
+
+(add-hook 'emacs-startup-hook
+          #'(lambda ()
+              (setq file-name-handler-alist my/file-name-handler-alist)))
+#+end_src
+
+* Package Manager
+** package
 #+begin_src emacs-lisp
 (require 'package)
 (setq package-archives
@@ -130,7 +144,7 @@
       package--initialized t)
 #+end_src
 
-** Install use-package
+** use-package
 #+begin_src emacs-lisp
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -1070,18 +1084,20 @@ MacOS tweaks
   (after-init-hook . minions-mode))
 
 (use-package doom-modeline
-  :hook
-  (after-init-hook . doom-modeline-mode)
+  :defer t
   :custom
   (doom-modeline-height 25)
   (doom-modeline-bar-width 3)
   (doom-modeline-buffer-file-name-style 'buffer-name)
   (doom-modeline-minor-modes t)
   (doom-modeline-enable-word-count t)
+  :hook
+  (after-init-hook . doom-modeline-mode)
   :config
-  (dolist (bname '("*Messages*"))
-    (with-current-buffer bname
-      (doom-modeline-set-main-modeline))))
+  (dolist (name '("*Messages*" "*Compile-Log*"))
+    (when-let ((buffer (get-buffer name)))
+      (with-current-buffer buffer
+        (doom-modeline-set-main-modeline)))))
 #+end_src
 
 ** Theme

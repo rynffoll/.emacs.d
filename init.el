@@ -16,11 +16,19 @@
 
 (add-hook 'emacs-startup-hook
           #'(lambda ()
-              (message "Emacs ready in %s with %d garbage collections."
-                       (format "%.2f seconds"
+              (message "Emacs ready (init time = %s, gc time = %s, gc count = %d)."
+                       (format "%.2fs"
                                (float-time
                                 (time-subtract after-init-time before-init-time)))
+                       (format "%.2fs" (float-time gc-elapsed))
                        gcs-done)))
+
+(defvar my/file-name-handler-alist file-name-handler-alist)
+(setq file-name-handler-alist nil)
+
+(add-hook 'emacs-startup-hook
+          #'(lambda ()
+              (setq file-name-handler-alist my/file-name-handler-alist)))
 
 (require 'package)
 (setq package-archives
@@ -867,18 +875,20 @@
   (after-init-hook . minions-mode))
 
 (use-package doom-modeline
-  :hook
-  (after-init-hook . doom-modeline-mode)
+  :defer t
   :custom
   (doom-modeline-height 25)
   (doom-modeline-bar-width 3)
   (doom-modeline-buffer-file-name-style 'buffer-name)
   (doom-modeline-minor-modes t)
   (doom-modeline-enable-word-count t)
+  :hook
+  (after-init-hook . doom-modeline-mode)
   :config
-  (dolist (bname '("*Messages*"))
-    (with-current-buffer bname
-      (doom-modeline-set-main-modeline))))
+  (dolist (name '("*Messages*" "*Compile-Log*"))
+    (when-let ((buffer (get-buffer name)))
+      (with-current-buffer buffer
+        (doom-modeline-set-main-modeline)))))
 
 (use-package solarized-theme
   ;; :disabled
