@@ -606,11 +606,10 @@
   :hook
   (after-init-hook . ivy-mode))
 
-(use-package swiper
+(use-package ivy-rich
   :defer t
-  :general
-  (my/leader-def
-    "/b" 'swiper))
+  :hook
+  (ivy-mode-hook . ivy-rich-mode))
 
 (use-package counsel
   :defer t
@@ -641,11 +640,6 @@
   (counsel-describe-function-function 'helpful-callable)
   (counsel-describe-variable-function 'helpful-variable))
 
-(use-package ivy-rich
-  :defer t
-  :hook
-  (ivy-mode-hook . ivy-rich-mode))
-
 (use-package counsel-projectile
   :after counsel projectile
   :general
@@ -659,6 +653,17 @@
   :general
   (my/leader-def
     "fT" 'counsel-tramp))
+
+(use-package amx
+  :defer t
+  :custom
+  (amx-backend 'ivy))
+
+(use-package swiper
+  :defer t
+  :general
+  (my/leader-def
+    "/b" 'swiper))
 
 (use-package ns-win
   :if (memq window-system '(mac ns))

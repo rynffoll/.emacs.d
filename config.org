@@ -777,11 +777,10 @@ Use the Emacsclient as the =$EDITOR= of child processes
   :hook
   (after-init-hook . ivy-mode))
 
-(use-package swiper
+(use-package ivy-rich
   :defer t
-  :general
-  (my/leader-def
-    "/b" 'swiper))
+  :hook
+  (ivy-mode-hook . ivy-rich-mode))
 
 (use-package counsel
   :defer t
@@ -812,11 +811,6 @@ Use the Emacsclient as the =$EDITOR= of child processes
   (counsel-describe-function-function 'helpful-callable)
   (counsel-describe-variable-function 'helpful-variable))
 
-(use-package ivy-rich
-  :defer t
-  :hook
-  (ivy-mode-hook . ivy-rich-mode))
-
 (use-package counsel-projectile
   :after counsel projectile
   :general
@@ -830,6 +824,17 @@ Use the Emacsclient as the =$EDITOR= of child processes
   :general
   (my/leader-def
     "fT" 'counsel-tramp))
+
+(use-package amx
+  :defer t
+  :custom
+  (amx-backend 'ivy))
+
+(use-package swiper
+  :defer t
+  :general
+  (my/leader-def
+    "/b" 'swiper))
 #+end_src
 
 ** OS-specific
