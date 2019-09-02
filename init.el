@@ -4,31 +4,7 @@
 (setq debug-on-quit t)
 
 (setq load-prefer-newer t)
-(setq message-log-max t) ;; we don't want to lose any startup log info
-
-(setq gc-cons-threshold 402653184
-      gc-cons-percentage 0.6)
-
-(add-hook 'emacs-startup-hook
-          #'(lambda ()
-              (setq gc-cons-threshold 16777216
-                    gc-cons-percentage 0.1)))
-
-(add-hook 'emacs-startup-hook
-          #'(lambda ()
-              (message "Emacs ready (init time = %s, gc time = %s, gc count = %d)."
-                       (format "%.2fs"
-                               (float-time
-                                (time-subtract after-init-time before-init-time)))
-                       (format "%.2fs" (float-time gc-elapsed))
-                       gcs-done)))
-
-(defvar my/file-name-handler-alist file-name-handler-alist)
-(setq file-name-handler-alist nil)
-
-(add-hook 'emacs-startup-hook
-          #'(lambda ()
-              (setq file-name-handler-alist my/file-name-handler-alist)))
+(setq message-log-max t)
 
 (require 'package)
 (setq package-archives
@@ -36,23 +12,22 @@
         ("melpa-stable" . "https://stable.melpa.org/packages/")
         ("melpa"        . "https://melpa.org/packages/")
         ("org"          . "https://orgmode.org/elpa/")))
-(package-initialize)
 
-(setq package-enable-at-startup nil
-      package--initialized t)
+(unless (bound-and-true-p package--initialized) ; To avoid warnings in 27
+  (setq package-enable-at-startup nil)          ; To prevent initializing twice
+  (package-initialize))
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
 
+(setq use-package-always-ensure t)
+(setq use-package-hook-name-suffix nil)
+(setq use-package-enable-imenu-support t)
+(setq use-package-compute-statistics t)
+
 (eval-when-compile
   (require 'use-package))
-
-(setq use-package-compute-statistics t)
-(setq use-package-always-ensure t)
-(setq use-package-verbose t)
-(setq use-package-minimum-reported-time 0.01)
-(setq use-package-hook-name-suffix nil)
 
 (use-package quelpa-use-package
   :custom
@@ -639,6 +614,7 @@
     "ff" 'counsel-find-file
     "fr" 'counsel-recentf
 
+    "/b" 'swiper
     "/d" 'counsel-rg
 
     "tt" 'counsel-load-theme
@@ -649,29 +625,17 @@
   (counsel-describe-variable-function 'helpful-variable))
 
 (use-package counsel-projectile
-  :after counsel projectile
-  :general
-  (my/leader-def
-    "/p" 'counsel-projectile-rg)
-  :config
-  (counsel-projectile-mode))
-
-(use-package counsel-tramp
   :defer t
   :general
   (my/leader-def
-    "fT" 'counsel-tramp))
+    "/p" 'counsel-projectile-rg)
+  :hook
+  (after-init-hook . counsel-projectile-mode))
 
 (use-package amx
   :defer t
   :custom
   (amx-backend 'ivy))
-
-(use-package swiper
-  :defer t
-  :general
-  (my/leader-def
-    "/b" 'swiper))
 
 (use-package ns-win
   :if (memq window-system '(mac ns))
@@ -782,32 +746,13 @@
   (my/leader-def
     "tm" 'toggle-frame-maximized
     "tF" 'toggle-frame-fullscreen)
-  :custom
-  (default-frame-alist '((left . 0.5) (top . 0.5)
-                         (width . 0.75) (height . 0.9)
-                         ;; optimize startup time
-                         (tool-bar-lines . 0)
-                         (menu-bar-lines . 0)
-                         (vertical-scroll-bars)))
   :config
   (blink-cursor-mode -1))
-
-(use-package tool-bar
-  :disabled
-  :ensure nil
-  :config
-  (tool-bar-mode -1))
 
 (use-package tooltip
   :ensure nil
   :config
   (tooltip-mode -1))
-
-(use-package scroll-bar
-  :disabled
-  :ensure nil
-  :config
-  (scroll-bar-mode -1))
 
 (use-package menu-bar
   :ensure nil
@@ -1118,9 +1063,9 @@
   (prog-mode-hook . hs-minor-mode))
 
 (use-package ispell
+  :if (executable-find "hunspell")
   :ensure nil
   :defer t
-  :if (executable-find "hunspell")
   :init
   ;; ignore $LANG for choosing dictionary
   ;; (setenv "DICTIONARY" "ru_RU,en_US")
@@ -1169,27 +1114,25 @@
 
 (use-package flycheck
   :defer t
-  :hook
-  (prog-mode-hook . flycheck-mode)
   :custom
-  (flycheck-indication-mode 'right-fringe))
+  (flycheck-indication-mode 'right-fringe)
+  :hook
+  (prog-mode-hook . flycheck-mode))
 
 (use-package fringe-helper
-  :defer t
   :after flycheck
   :config
   (fringe-helper-define 'flycheck-fringe-bitmap-double-arrow 'center
-                        ".....X.."
-                        "....XX.."
-                        "...XXX.."
-                        "..XXXX.."
-                        "...XXX.."
-                        "....XX.."
-                        ".....X.."))
+    ".....X.."
+    "....XX.."
+    "...XXX.."
+    "..XXXX.."
+    "...XXX.."
+    "....XX.."
+    ".....X.."))
 
 (use-package flycheck-inline
   :defer t
-  :after flycheck
   :custom-face
   (flycheck-inline-error ((t :inherit compilation-error :box t :height 0.9)))
   (flycheck-inline-info ((t :inherit compilation-info :box t :height 0.9)))
