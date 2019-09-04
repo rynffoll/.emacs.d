@@ -1650,7 +1650,7 @@
   :defer t
   :general
   (my--local-leader-def :keymaps 'markdown-mode-map
-    "p" '(markdown-preview :wk "preview"))
+    "p" 'markdown-preview)
   :custom
   (markdown-command "pandoc")
   (markdown-fontify-code-blocks-natively t)
@@ -1661,7 +1661,7 @@
   :defer t
   :general
   (my--local-leader-def :keymaps '(markdown-mode-map org-mode-map)
-    "g" '(grip-mode :wk "grip-mode")))
+    "g" 'grip-mode))
 
 (use-package json-mode
   :defer t
@@ -1739,9 +1739,9 @@
   :hook
   (prog-mode-hook . diff-hl-mode)
   (org-mode-hook . diff-hl-mode)
-  (diff-hl-mode . diff-hl-flydiff-mode)
-  (dired-mode . diff-hl-dired-mode)
-  (magit-post-refresh . diff-hl-magit-post-refresh))
+  (diff-hl-mode-hook . diff-hl-flydiff-mode)
+  (dired-mode-hook . diff-hl-dired-mode)
+  (magit-post-refresh-hook . diff-hl-magit-post-refresh))
 
 (use-package smerge-mode
   :defer t
