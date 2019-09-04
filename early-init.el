@@ -1,8 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 
 ;; Package Manager
-(setq package-enable-at-startup nil
-      package-quickstart t)
+(setq package-enable-at-startup nil)
 
 ;; GC tweaks
 (setq gc-cons-threshold most-positive-fixnum
