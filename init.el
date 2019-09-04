@@ -37,12 +37,12 @@
 
 (use-package general
   :config
-  (general-create-definer my/leader-def
+  (general-create-definer my--leader-def
     :states '(normal visual insert emacs motion)
     :keymaps 'override
     :prefix "SPC"
     :non-normal-prefix "M-m")
-  (general-create-definer my/local-leader-def
+  (general-create-definer my--local-leader-def
     :states '(normal visual insert emacs motion)
     :keymaps 'override
     :prefix "SPC m"
@@ -51,7 +51,7 @@
    :states '(normal visual motion)
    :prefix ","
    "" (general-simulate-key "SPC m"))
-  (my/leader-def
+  (my--leader-def
     "" '(nil :wk "leader")
     "o" '(:ignore t :wk "open")
     "O" '(:ignore t :wk "org")
@@ -66,12 +66,12 @@
     "t" '(:ignore t :wk "toggle")
     "i" '(:ignore t :wk "insert")
     "q" '(:ignore t :wk "quit"))
-  (my/local-leader-def
+  (my--local-leader-def
     "" '(nil :wk "local leader")))
 
 (use-package evil
   :preface
-  (defun my/save-and-kill-buffer ()
+  (defun my--save-and-kill-buffer ()
     (interactive)
     (save-buffer)
     (kill-this-buffer))
@@ -90,7 +90,7 @@
   :config
   (evil-mode t)
   (evil-ex-define-cmd "q" 'kill-this-buffer)
-  (evil-ex-define-cmd "wq" 'my/save-and-kill-buffer))
+  (evil-ex-define-cmd "wq" 'my--save-and-kill-buffer))
 
 (use-package evil-collection
   :after evil
@@ -151,7 +151,7 @@
 (use-package emacs
   :ensure nil
   :general
-  (my/leader-def
+  (my--leader-def
     "qq" 'kill-emacs)
   :custom
   (inhibit-startup-screen t)
@@ -216,7 +216,7 @@
 (use-package iqa
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "e" '(:ignore t :wk "emacs")
     "ed" 'iqa-find-user-init-directory
     "ee" 'iqa-find-user-init-file
@@ -228,7 +228,7 @@
   :ensure nil
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "oc" 'customize-group)
   :custom
   (custom-file null-device "Don't store customizations"))
@@ -242,24 +242,24 @@
 (use-package emacs
   :ensure nil
   :preface
-  (defun my/switch-to-scratch () (interactive) (switch-to-buffer "*scratch*"))
-  (defun my/switch-to-messages () (interactive) (switch-to-buffer "*Messages*"))
+  (defun my--switch-to-scratch () (interactive) (switch-to-buffer "*scratch*"))
+  (defun my--switch-to-messages () (interactive) (switch-to-buffer "*Messages*"))
   :general
-  (my/leader-def
-    "bs" '(my/switch-to-scratch :wk "open scratch")
-    "bm" '(my/switch-to-messages :wk "open messages")
+  (my--leader-def
+    "bs" '(my--switch-to-scratch :wk "open scratch")
+    "bm" '(my--switch-to-messages :wk "open messages")
     "bR" 'rename-buffer))
 
 (use-package menu-bar
   :ensure nil
   :general
-  (my/leader-def
+  (my--leader-def
     "bk" 'kill-this-buffer))
 
 (use-package window
   :ensure nil
   :general
-  (my/leader-def
+  (my--leader-def
     "bb" 'switch-to-buffer
     "bK" 'kill-buffer-and-window))
 
@@ -268,7 +268,7 @@
   :defer t
   :general
   ([remap list-buffers] 'ibuffer)
-  (my/leader-def
+  (my--leader-def
     "bI" 'ibuffer))
 
 (use-package uniquify
@@ -281,7 +281,7 @@
   :ensure evil
   :after evil
   :general
-  (my/leader-def
+  (my--leader-def
     "bn" 'evil-buffer-new
     "b]" 'evil-next-buffer
     "b[" 'evil-prev-buffer))
@@ -313,7 +313,7 @@
 (use-package winum
   :demand
   :general
-  (my/leader-def
+  (my--leader-def
     "'" 'winum-select-window-by-number
     "0" 'winum-select-window-0-or-10
     "1" 'winum-select-window-1
@@ -360,12 +360,12 @@
   :commands
   eyebrowse-create-window-config
   :preface
-  (defun my/eyebrowse-create-window-config-with-tag ()
+  (defun my--eyebrowse-create-window-config-with-tag ()
     (interactive)
     (let ((tag (read-string "Tag: ")))
       (eyebrowse-create-window-config)
       (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) tag)))
-  (defun my/eyebrowse-create-projectile-window-config ()
+  (defun my--eyebrowse-create-projectile-window-config ()
     (interactive)
     (eyebrowse-create-window-config)
     (let* ((inhibit-quit t)
@@ -377,7 +377,7 @@
         (progn
           (eyebrowse-close-window-config)
           (setq quit-flag nil)))))
-  (defun my/eyebrowse-close-other-window-configs ()
+  (defun my--eyebrowse-close-other-window-configs ()
     (interactive)
     (when (or (not eyebrowse-close-window-config-prompt)
               (yes-or-no-p "Close other window configs?"))
@@ -385,7 +385,7 @@
               (remove (eyebrowse--get 'current-slot)
                       (mapcar #'car (eyebrowse--get 'window-configs))))))
   :general
-  (my/leader-def
+  (my--leader-def
     "w" '(:ignore t :wk "workspace")
     "wc" 'eyebrowse-close-window-config
     "w TAB" 'eyebrowse-last-window-config
@@ -403,9 +403,9 @@
     "w9" 'eyebrowse-switch-to-window-config-9
     "w[" 'eyebrowse-prev-window-config
     "w]" 'eyebrowse-next-window-config
-    "wn" 'my/eyebrowse-create-window-config-with-tag
-    "wp" 'my/eyebrowse-create-projectile-window-config
-    "wC" 'my/eyebrowse-close-other-window-configs)
+    "wn" 'my--eyebrowse-create-window-config-with-tag
+    "wp" 'my--eyebrowse-create-projectile-window-config
+    "wC" 'my--eyebrowse-close-other-window-configs)
   :custom
   (eyebrowse-new-workspace t "Clean up and display the scratch buffer")
   (eyebrowse-wrap-around t)
@@ -423,7 +423,7 @@
 (use-package paradox
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "oP" 'paradox-list-packages)
   :custom
   (paradox-execute-asynchronously t)
@@ -480,7 +480,7 @@
 (use-package dired-subtree
   :defer t
   :preface
-  (defun my/dired-subtree-revert ()
+  (defun my--dired-subtree-revert ()
     (call-interactively 'revert-buffer)
     (recenter))
   :general
@@ -490,7 +490,7 @@
   (dired-subtree-use-backgrounds nil)
   :config
   ;; for treemacs-icons-dired
-  (advice-add #'dired-subtree-toggle :after #'my/dired-subtree-revert))
+  (advice-add #'dired-subtree-toggle :after #'my--dired-subtree-revert))
 
 (use-package dired-narrow
   :defer t
@@ -572,7 +572,7 @@
   (ivy-mode-map
    "C-j" 'ivy-next-line
    "C-k" 'ivy-previous-line)
-  (my/leader-def
+  (my--leader-def
     "bb" 'ivy-switch-buffer)
   :custom
   (ivy-wrap t)
@@ -604,7 +604,7 @@
   ([remap find-file]                'counsel-find-file)
   ([remap find-library]             'counsel-find-library)
   ([remap imenu]                    'counsel-imenu)
-  (my/leader-def
+  (my--leader-def
     "." 'counsel-find-file
 
     "oL" 'counsel-find-library
@@ -627,7 +627,7 @@
 (use-package counsel-projectile
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "/p" 'counsel-projectile-rg)
   :hook
   (after-init-hook . counsel-projectile-mode))
@@ -662,18 +662,18 @@
   :defer t
   :commands clipboard-kill-ring-save
   :preface
-  (defun my/copy-whole-buffer ()
+  (defun my--copy-whole-buffer ()
     "Copy entire buffer to clipboard"
     (interactive)
     (clipboard-kill-ring-save (point-min) (point-max)))
   :general
-  (my/leader-def
-    "cb" '(my/copy-whole-buffer :wk "copy whole buffer")))
+  (my--leader-def
+    "cb" '(my--copy-whole-buffer :wk "copy whole buffer")))
 
 (use-package copy-as-format
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "cf" '(:ignore t :wk "copy as format")
     "cff" 'copy-as-format
     "cfa" 'copy-as-format-asciidoc
@@ -697,14 +697,14 @@
   :ensure nil
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "hd" 'describe-mode))
 
 (use-package help-fns
   :ensure nil
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "hf" 'describe-function
     "hv" 'describe-variable))
 
@@ -712,13 +712,13 @@
   :ensure nil
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "hM" 'man))
 
 (use-package helpful
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "h." 'helpful-at-point
     "hC" 'helpful-command
     "hc" 'helpful-callable
@@ -728,7 +728,7 @@
 (use-package restart-emacs
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "qr" 'restart-emacs))
 
 (use-package reverse-im
@@ -743,7 +743,7 @@
 (use-package frame
   :ensure nil
   :general
-  (my/leader-def
+  (my--leader-def
     "tm" 'toggle-frame-maximized
     "tF" 'toggle-frame-fullscreen)
   :config
@@ -872,7 +872,7 @@
   :ensure nil
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "SPC" 'execute-extended-command
     ":" 'eval-expression
     "tT" 'toggle-truncate-lines)
@@ -898,7 +898,7 @@
   :ensure nil
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "tl" 'global-hl-line-mode)
   :hook
   (after-init-hook . global-hl-line-mode))
@@ -913,7 +913,7 @@
 (use-package highlight-indent-guides
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "ti" 'highlight-indent-guides-mode))
 
 (use-package highlight-numbers
@@ -924,7 +924,7 @@
 (use-package highlight-blocks
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "tb" 'highlight-blocks-mode))
 
 (use-package paren
@@ -948,7 +948,7 @@
 (use-package rainbow-mode
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "tr" 'rainbow-mode)
   :hook css-mode-hook)
 
@@ -956,7 +956,7 @@
   :ensure nil
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "tw" 'whitespace-mode))
 
 (use-package page-break-lines
@@ -967,14 +967,14 @@
 (use-package show-eol
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "te" 'show-eol-mode))
 
 (use-package hi-lock
   :ensure nil
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "th" '(:ignore t :wh "highlight")
     "th." 'highlight-symbol-at-point
     "thp" 'highlight-phrase
@@ -986,7 +986,7 @@
   :ensure nil
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "tn" 'display-line-numbers-mode)
   :custom
   (display-line-numbers-width-start t))
@@ -1003,7 +1003,7 @@
 (use-package ivy-yasnippet
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "is" 'ivy-yasnippet))
 
 (use-package company
@@ -1084,7 +1084,7 @@
 (use-package flyspell
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "ts" 'flyspell-mode)
   (flyspell-mode-map
    "C-," nil
@@ -1144,13 +1144,13 @@
   :ensure nil
   :defer 1
   :general
-  (my/leader-def
+  (my--leader-def
     "ji" 'imenu))
 
 (use-package avy
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "jc" 'avy-goto-char
     "jw" 'avy-goto-word-0
     "jW" 'avy-goto-word-1
@@ -1171,7 +1171,7 @@
 (use-package link-hint
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "ol" 'link-hint-open-link))
 
 (use-package dumb-jump
@@ -1187,7 +1187,7 @@
     ("l" dumb-jump-quick-look "quick look")
     ("b" dumb-jump-back "back"))
   :general
-  (my/leader-def
+  (my--leader-def
     "jj" '(hydra-dumb-jump/body :wk "hydra-dumb-jump"))
   :custom
   (dumb-jump-selector 'ivy)
@@ -1196,7 +1196,7 @@
 (use-package projectile
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "p" '(:keymap projectile-command-map :package projectile :wk "project"))
   :custom
   (projectile-enable-caching t)
@@ -1207,7 +1207,7 @@
 (use-package lsp-mode
   :defer t
   :general
-  (my/local-leader-def :keymaps 'lsp-mode-map
+  (my--local-leader-def :keymaps 'lsp-mode-map
     "f" '(:ignore t :wk "find")
     "fd" '(lsp-find-definition :wk "definition")
     "fi" '(lsp-find-implementation :wk "implementation")
@@ -1245,7 +1245,7 @@
   :defer t
   :after lsp-mode treemacs
   :general
-  (my/local-leader-def :keymaps 'lsp-mode-map
+  (my--local-leader-def :keymaps 'lsp-mode-map
     "T" '(:ignore :wk "treemacs")
     "Te" '(lsp-treemacs-errors-list :wk "error list")))
 
@@ -1261,7 +1261,7 @@
   :defer t
   :after lsp-mode
   :general
-  (my/local-leader-def :keymaps 'dap-mode-map
+  (my--local-leader-def :keymaps 'dap-mode-map
     "D" '(dap-hydra :wk "debug"))
   :config
   (dap-mode 1)
@@ -1276,11 +1276,11 @@
 (use-package treemacs
   :defer t
   :preface
-  (defun my/hide-fringes ()
+  (defun my--hide-fringes ()
     (when (display-graphic-p)
       (set-window-fringes nil 0 0)))
   :general
-  (my/leader-def
+  (my--leader-def
     "0" 'treemacs-select-window
     "ft" 'treemacs)
   :custom-face
@@ -1297,7 +1297,7 @@
   (treemacs-recenter-after-tag-follow 'on-distance)
   :hook
   (treemacs-mode-hook . hide-mode-line-mode)
-  (treemacs-mode-hook . my/hide-fringes)
+  (treemacs-mode-hook . my--hide-fringes)
   :config
   (treemacs-create-theme "Icons"
     :config
@@ -1369,7 +1369,7 @@
 (use-package erefactor
   :defer t
   :general
-  (my/local-leader-def :keymaps 'emacs-lisp-mode-map
+  (my--local-leader-def :keymaps 'emacs-lisp-mode-map
     "R" '(:keymap erefactor-map :wk "refactor")))
 
 (use-package eros
@@ -1390,7 +1390,7 @@
   :pin melpa-stable
   :defer t
   :general
-  (my/local-leader-def :keymaps 'clojure-mode-map
+  (my--local-leader-def :keymaps 'clojure-mode-map
     "c" '(:ignore t :wk "connect")
     "cc" '(cider-jack-in :wk "jack-in")
     "cj" '(cider-jack-in-clj :wk "jack-in-clj")
@@ -1418,7 +1418,7 @@
   :pin melpa-stable
   :defer t
   :general
-  (my/local-leader-def :keymaps 'clojure-mode-map
+  (my--local-leader-def :keymaps 'clojure-mode-map
     "d" '(cider-hydra-doc/body :wk "doc")
     "e" '(cider-hydra-eval/body :wk "eval")
     "t" '(cider-hydra-test/body :wk "test")
@@ -1430,7 +1430,7 @@
   :pin melpa-stable
   :defer t
   :general
-  (my/local-leader-def :keymaps 'clojure-mode-map
+  (my--local-leader-def :keymaps 'clojure-mode-map
     "R" '(hydra-cljr-help-menu/body :wk "refactor"))
   :hook
   (clojure-mode-hook . clj-refactor-mode))
@@ -1446,7 +1446,7 @@
   :defer t
   :after cc-mode
   :general
-  (my/local-leader-def :keymaps 'java-mode-map
+  (my--local-leader-def :keymaps 'java-mode-map
     "Re" '(:ignore t :wk "extract")
     "Rem" '(lsp-java-extract-method :wk "method")
     "Rec" '(lsp-java-extract-to-constant :wk "constant")
@@ -1504,7 +1504,7 @@
   :defer t
   :after go-mode
   :general
-  (my/local-leader-def :keymaps 'go-mode-map
+  (my--local-leader-def :keymaps 'go-mode-map
     "Rt" '(:ignore t :wk "tag")
     "Rta" '(go-tag-add :wk "add")
     "Rtr" '(go-tag-remove :wk "remove"))
@@ -1515,7 +1515,7 @@
   :defer t
   :after go-mode
   :general
-  (my/local-leader-def :keymaps 'go-mode-map
+  (my--local-leader-def :keymaps 'go-mode-map
     "e" '(:ignore t :wk "eval")
     "ee" '(go-run :wk "run")
 
@@ -1538,7 +1538,7 @@
   :ensure-system-package
   (gore . "go get -u github.com/motemen/gore/cmd/gore")
   :general
-  (my/local-leader-def :keymaps 'go-mode-map
+  (my--local-leader-def :keymaps 'go-mode-map
     "r" 'gorepl-hydra/body)
   :hook
   (go-mode-hook . gorepl-mode))
@@ -1549,7 +1549,7 @@
 (use-package makefile-executor
   :defer t
   :general
-  (my/local-leader-def :keymaps 'makefile-mode-map
+  (my--local-leader-def :keymaps 'makefile-mode-map
     "e" '(:ignore t :wk "eval")
     "ee" '(makefile-executor-execute-target :wk "execute")
     "eb" '(makefile-executor-execute-target :wk "execute in dedicated buffer")
@@ -1575,7 +1575,7 @@
 (use-package js2-refactor
   :defer t
   :general
-  (my/local-leader-def :keymaps '(js2-mode-map rjsx-mode-map)
+  (my--local-leader-def :keymaps '(js2-mode-map rjsx-mode-map)
     "R." '(:keymap js2-refactor-mode-map :wk "js2-refactor"))
   :hook
   (js2-mode-hook  . js2-refactor-mode)
@@ -1592,7 +1592,7 @@
 (use-package plantuml-mode
   :defer t
   :general
-  (my/local-leader-def :keymaps 'plantuml-mode-map
+  (my--local-leader-def :keymaps 'plantuml-mode-map
     "p" '(plantuml-preview :wk "preview"))
   :custom
   (plantuml-output-type (if (display-images-p) "png" "txt"))
@@ -1617,7 +1617,7 @@
   :ensure nil
   :defer t
   :general
-  (my/local-leader-def :keymaps 'sql-mode-map
+  (my--local-leader-def :keymaps 'sql-mode-map
     "c" '(:ignore t :wk "connect")
     "cc" '(sql-connect :wk "connect")
 
@@ -1649,7 +1649,7 @@
 (use-package markdown-mode
   :defer t
   :general
-  (my/local-leader-def :keymaps 'markdown-mode-map
+  (my--local-leader-def :keymaps 'markdown-mode-map
     "p" '(markdown-preview :wk "preview"))
   :custom
   (markdown-command "pandoc")
@@ -1660,7 +1660,7 @@
 (use-package grip-mode
   :defer t
   :general
-  (my/local-leader-def :keymaps '(markdown-mode-map org-mode-map)
+  (my--local-leader-def :keymaps '(markdown-mode-map org-mode-map)
     "g" '(grip-mode :wk "grip-mode")))
 
 (use-package json-mode
@@ -1683,7 +1683,7 @@
   :defer t
   :commands magit-blame
   :general
-  (my/leader-def
+  (my--leader-def
     "g" '(:ignore t :wk "git")
     "g." 'magit-dispatch
     "gI" 'magit-init
@@ -1710,7 +1710,7 @@
 (use-package git-timemachine
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "g" '(:ignore t :wk "git")
     "gt" 'git-timemachine))
 
@@ -1726,10 +1726,10 @@
 (use-package gitignore-templates
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "g" '(:ignore t :wk "git")
     "gi" 'gitignore-templates-new-file)
-  (my/local-leader-def :keymaps 'gitignore-mode-map
+  (my--local-leader-def :keymaps 'gitignore-mode-map
     "i" 'gitignore-templates-insert))
 
 (use-package diff-hl
@@ -1784,24 +1784,24 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
             (bury-buffer)) :color blue)
     ("q" nil :color blue))
   :general
-  (my/local-leader-def :keymaps 'smerge-mode-map
+  (my--local-leader-def :keymaps 'smerge-mode-map
     "." 'hydra-smerge/body))
 
 (use-package org
   :ensure org-plus-contrib
   :defer t
   :preface
-  (defun my/open-org-directory () (interactive) (find-file org-directory))
-  (defun my/open-org-inbox-file () (interactive) (find-file my/org-inbox-file))
-  (defun my/open-org-todo-file () (interactive) (find-file my/org-todo-file))
-  (defun my/open-org-notes-file () (interactive) (find-file my/org-notes-file))
+  (defun my--open-org-directory () (interactive) (find-file org-directory))
+  (defun my--open-org-inbox-file () (interactive) (find-file my--org-inbox-file))
+  (defun my--open-org-todo-file () (interactive) (find-file my--org-todo-file))
+  (defun my--open-org-notes-file () (interactive) (find-file my--org-notes-file))
   :general
-  (my/leader-def
+  (my--leader-def
     "Oa" '(org-agenda :wk "agenda")
-    "O." '(my/open-org-directory :wk "open org-directory")
-    "Oi" '(my/open-org-inbox-file :wk "open inbox")
-    "Ot" '(my/open-org-todo-file :wk "open todo")
-    "On" '(my/open-org-notes-file :wk "open notes"))
+    "O." '(my--open-org-directory :wk "open org-directory")
+    "Oi" '(my--open-org-inbox-file :wk "open inbox")
+    "Ot" '(my--open-org-todo-file :wk "open todo")
+    "On" '(my--open-org-notes-file :wk "open notes"))
   :custom-face
   (org-tag ((t :inherit shadow)))
   (org-ellipsis ((t :underline nil)))
@@ -1837,10 +1837,10 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
   (org-log-into-drawer t)
 
   (org-directory "~/Org")
-  (my/org-inbox-file (concat org-directory "/inbox.org"))
-  (my/org-todo-file (concat org-directory "/todo.org"))
-  (my/org-notes-file (concat org-directory "/notes.org"))
-  (org-agenda-files `(,my/org-inbox-file ,my/org-todo-file))
+  (my--org-inbox-file (concat org-directory "/inbox.org"))
+  (my--org-todo-file (concat org-directory "/todo.org"))
+  (my--org-notes-file (concat org-directory "/notes.org"))
+  (org-agenda-files `(,my--org-inbox-file ,my--org-todo-file))
   (org-archive-location (concat org-directory "/old/archive.org" "::* From %s")))
 
 (use-package org-bullets
@@ -1874,7 +1874,7 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
 (use-package docker
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "od" 'docker)
   :config
   ;; FIXME https://github.com/emacs-evil/evil-collection/pull/205
@@ -1938,20 +1938,20 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
 (use-package dockerfile-mode
   :defer t
   :general
-  (my/local-leader-def :keymaps 'dockerfile-mode-map
+  (my--local-leader-def :keymaps 'dockerfile-mode-map
     "b" 'dockerfile-build-buffer
     "B" 'dockerfile-build-no-cache-buffer))
 
 (use-package docker-compose-mode
   :defer t
   :general
-  (my/local-leader-def :keymaps 'docker-compose-mode-map
+  (my--local-leader-def :keymaps 'docker-compose-mode-map
     "." 'docker-compose))
 
 (use-package ansible-doc
   :defer t
   :general
-  (my/local-leader-def :keymaps 'yaml-mode-map
+  (my--local-leader-def :keymaps 'yaml-mode-map
     "h" '(ansible-doc :wh "doc"))
   :hook
   (yaml-mode-hook . ansible-doc-mode)
@@ -1976,7 +1976,7 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
    :repo "rynffoll/ansible-vault-with-editor")
   :defer t
   :general
-  (my/local-leader-def :keymaps 'yaml-mode-map
+  (my--local-leader-def :keymaps 'yaml-mode-map
     "e" '(ansible-vault-with-editor-edit :wk "edit")
     "E" '(ansible-vault-with-editor-encrypt :wk "encrypt")
     "D" '(ansible-vault-with-editor-decrypt :wk "decrypt")))
@@ -2015,7 +2015,7 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
 (use-package password-generator
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "ip" '(:ignore t :wk "password-generator")
     "ips" 'password-generator-simple
     "ipS" 'password-generator-strong
@@ -2026,7 +2026,7 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
 (use-package google-translate
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "ht" 'google-translate-at-point
     "hT" 'google-translate-at-point-reverse)
   :custom
@@ -2038,7 +2038,7 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
 (use-package olivetti
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "to" 'olivetti-mode)
   :custom
   (olivetti-body-width 100))
@@ -2046,20 +2046,20 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
 (use-package crux
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "fR" 'crux-rename-file-and-buffer
     "fD" 'crux-delete-file-and-buffer))
 
 (use-package deadgrep
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "/D" 'deadgrep))
 
 (use-package try
   :defer t
   :general
-  (my/leader-def
+  (my--leader-def
     "ot" 'try))
 
 (use-package string-inflection
