@@ -982,6 +982,12 @@
     "thl" 'highlight-lines-matching-regexp
     "thu" 'unhighlight-regexp))
 
+(use-package so-long
+  :ensure nil
+  :defer t
+  :hook
+  (after-init-hook . global-so-long-mode))
+
 (use-package display-line-numbers
   :ensure nil
   :defer t

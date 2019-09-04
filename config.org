@@ -1211,6 +1211,15 @@ Highlight symbols
     "thu" 'unhighlight-regexp))
 #+end_src
 
+Long lines
+#+begin_src emacs-lisp
+(use-package so-long
+  :ensure nil
+  :defer t
+  :hook
+  (after-init-hook . global-so-long-mode))
+#+end_src
+
 ** Line Numbers
 #+begin_src emacs-lisp
 (use-package display-line-numbers
