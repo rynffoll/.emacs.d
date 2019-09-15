@@ -2201,13 +2201,16 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
   :ensure org-plus-contrib
   :defer t
   :hook
-  (org-babel-after-execute-hook . org-redisplay-inline-images))
+  (org-babel-after-execute-hook . org-redisplay-inline-images)
+  :config
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (shell . t)
+     (restclient . t)
+     (plantuml . t))))
 
 (use-package ob-async
-  :defer t)
-
-(use-package ob-shell
-  :ensure org-plus-contrib
   :defer t)
 #+end_src
 
