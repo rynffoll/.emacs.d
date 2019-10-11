@@ -56,7 +56,6 @@
     "o" '(:ignore t :wk "open")
     "O" '(:ignore t :wk "org")
     "b" '(:ignore t :wk "buffer")
-    "c" '(:ignore t :wk "copy")
     "f" '(:ignore t :wk "file")
     "e" '(:ignore t :wk "emacs")
     "g" '(:ignore t :wk "git")
@@ -650,48 +649,13 @@
   (insert-directory-program "gls"))
 
 (use-package browse-url
+  :disabled
   :if (file-exists-p "/mnt/c/Windows/System32/cmd.exe")
   :ensure nil
   :custom
   (browse-url-generic-program "/mnt/c/Windows/System32/cmd.exe")
   (browse-url-generic-args '("/c" "start"))
   (browse-url-browser-function 'browse-url-generic))
-
-(use-package menu-bar
-  :ensure nil
-  :defer t
-  :commands clipboard-kill-ring-save
-  :preface
-  (defun my--copy-whole-buffer ()
-    "Copy entire buffer to clipboard"
-    (interactive)
-    (clipboard-kill-ring-save (point-min) (point-max)))
-  :general
-  (my--leader-def
-    "cb" '(my--copy-whole-buffer :wk "copy whole buffer")))
-
-(use-package copy-as-format
-  :defer t
-  :general
-  (my--leader-def
-    "cf" '(:ignore t :wk "copy as format")
-    "cff" 'copy-as-format
-    "cfa" 'copy-as-format-asciidoc
-    "cfb" 'copy-as-format-bitbucket
-    "cfd" 'copy-as-format-disqus
-    "cfg" 'copy-as-format-github
-    "cfl" 'copy-as-format-gitlab
-    "cfc" 'copy-as-format-hipchat
-    "cfh" 'copy-as-format-html
-    "cfj" 'copy-as-format-jira
-    "cfm" 'copy-as-format-markdown
-    "cfw" 'copy-as-format-mediawiki
-    "cfo" 'copy-as-format-org-mode
-    "cfp" 'copy-as-format-pod
-    "cfr" 'copy-as-format-rst
-    "cfs" 'copy-as-format-slack)
-  :custom
-  (copy-as-format-default "slack" "or Telegram"))
 
 (use-package help
   :ensure nil
