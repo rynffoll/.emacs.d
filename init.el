@@ -1027,22 +1027,10 @@
   :hook
   (after-init-hook . global-company-mode))
 
-(use-package company-box
-  :disabled
-  :after company all-the-icons
-  :custom-face
-  (company-box-candidate ((t :inherit company-tooltip-common)))
-  (company-box-scrollbar ((t :inherit company-scrollbar-fg)))
-  :custom
-  (company-box-backends-colors nil)
-  (company-box-icons-alist 'company-box-icons-all-the-icons)
-  :hook
-  (company-mode-hook . company-box-mode))
-
 (use-package company-shell
   :defer t
   :after company
-  :config
+  :init
   (add-to-list 'company-backends 'company-shell))
 
 (use-package company-statistics
@@ -1260,7 +1248,7 @@
   :after company lsp-mode
   :custom
   (company-lsp-cache-candidates 'auto)
-  :config
+  :init
   (add-to-list 'company-backends 'company-lsp))
 
 (use-package dap-mode
@@ -1919,7 +1907,7 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
 (use-package company-ansible
   :defer t
   :after company yaml-mode
-  :config
+  :init
   (add-to-list 'company-backends 'company-ansible))
 
 (use-package ansible-vault-with-editor
@@ -1940,26 +1928,14 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
   :mode
   ("\\.http\\'" . restclient-mode))
 
-(use-package restclient-test
-  :defer t
-  :hook
-  (restclient-mode-hook . restclient-test-mode))
-
 (use-package company-restclient
   :defer t
   :after company restclient
-  :config
+  :init
   (add-to-list 'company-backends 'company-restclient))
 
 (use-package ob-restclient
-  :defer t
   :after org restclient)
-
-(use-package httprepl
-  :defer t)
-
-(use-package know-your-http-well
-  :defer t)
 
 (use-package ssh-config-mode
   :defer t
@@ -2017,9 +1993,6 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
     "ot" 'try))
 
 (use-package string-inflection
-  :defer t)
-
-(use-package memory-usage
   :defer t)
 
 (setq debug-on-error nil)
