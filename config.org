@@ -755,6 +755,9 @@ Ivy
   :hook
   (after-init-hook . ivy-mode))
 
+(use-package ivy-hydra
+  :defer t)
+
 (use-package ivy-rich
   :defer t
   :hook
@@ -1299,7 +1302,9 @@ Long lines
 
 (use-package flyspell-correct-ivy
   :defer t
-  :after flyspell-correct)
+  :after flyspell-correct
+  :custom
+  (flyspell-correct-interface 'flyspell-correct-ivy))
 #+end_src
 
 ** Syntax Checking

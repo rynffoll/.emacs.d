@@ -588,6 +588,9 @@
   :hook
   (after-init-hook . ivy-mode))
 
+(use-package ivy-hydra
+  :defer t)
+
 (use-package ivy-rich
   :defer t
   :hook
@@ -1054,7 +1057,9 @@
 
 (use-package flyspell-correct-ivy
   :defer t
-  :after flyspell-correct)
+  :after flyspell-correct
+  :custom
+  (flyspell-correct-interface 'flyspell-correct-ivy))
 
 (use-package flycheck
   :defer t
