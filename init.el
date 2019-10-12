@@ -709,7 +709,7 @@
   :general
   (my--leader-def
     "tm" 'toggle-frame-maximized
-    "tF" 'toggle-frame-fullscreen)
+    "tf" 'toggle-frame-fullscreen)
   :config
   (blink-cursor-mode -1))
 
@@ -750,11 +750,6 @@
   :config
   (set-face-attribute 'default nil :font "Fira Mono 14"))
 
-(use-package default-text-scale
-  :defer t
-  :hook
-  (after-init-hook . default-text-scale-mode))
-
 (use-package font-lock+
   :ensure nil
   :quelpa
@@ -786,18 +781,9 @@
 (use-package doom-modeline
   :defer t
   :custom
-  (doom-modeline-height 25)
-  (doom-modeline-bar-width 3)
   (doom-modeline-buffer-file-name-style 'buffer-name)
-  (doom-modeline-minor-modes t)
-  (doom-modeline-enable-word-count t)
   :hook
-  (after-init-hook . doom-modeline-mode)
-  :config
-  (dolist (name '("*Messages*" "*Compile-Log*"))
-    (when-let ((buffer (get-buffer name)))
-      (with-current-buffer buffer
-        (doom-modeline-set-main-modeline)))))
+  (after-init-hook . doom-modeline-mode))
 
 (use-package solarized-theme
   ;; :disabled
