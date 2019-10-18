@@ -558,6 +558,7 @@
   :ensure nil
   :defer t
   :custom
+  (winner-dont-bind-my-keys t "Unbind C-right/C-left")
   (ediff-window-setup-function 'ediff-setup-windows-plain)
   (ediff-split-window-function 'split-window-horizontally)
   (ediff-merge-split-window-function 'split-window-horizontally)
@@ -1686,8 +1687,7 @@
   :custom
   (diff-hl-draw-borders nil)
   :hook
-  (prog-mode-hook . diff-hl-mode)
-  (org-mode-hook . diff-hl-mode)
+  (after-init-hook . global-diff-hl-mode)
   (diff-hl-mode-hook . diff-hl-flydiff-mode)
   (dired-mode-hook . diff-hl-dired-mode)
   (magit-post-refresh-hook . diff-hl-magit-post-refresh))
@@ -1821,7 +1821,7 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
      (plantuml . t))))
 
 (use-package ob-async
-  :defer t)
+  :after org)
 
 (use-package docker
   :defer t
