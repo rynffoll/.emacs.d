@@ -577,9 +577,8 @@
   :custom
   (ivy-wrap t)
   (ivy-fixed-height-minibuffer t)
-  (ivy-initial-inputs-alist nil "Don't use ^ as initial input")
-  (ivy-format-function 'ivy-format-function-line "highlight til EOL")
-  (ivy-use-virtual-buffers nil "don't show recent files in switch-buffer")
+  (ivy-initial-inputs-alist nil)
+  (ivy-use-virtual-buffers t)
   (ivy-virtual-abbreviate 'full)
   (ivy-on-del-error-function nil)
   (ivy-use-selectable-prompt t)
@@ -594,6 +593,8 @@
 
 (use-package ivy-rich
   :defer t
+  :custom
+  (ivy-rich-path-style 'abbrev)
   :hook
   (ivy-mode-hook . ivy-rich-mode))
 
@@ -1337,7 +1338,6 @@
   :defer t)
 
 (use-package cider
-  :pin melpa-stable
   :defer t
   :general
   (my--local-leader-def :keymaps 'clojure-mode-map
@@ -1365,7 +1365,6 @@
   (cider-repl-mode-hook . cider-company-enable-fuzzy-completion))
 
 (use-package cider-hydra
-  :pin melpa-stable
   :defer t
   :general
   (my--local-leader-def :keymaps 'clojure-mode-map
@@ -1891,6 +1890,11 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
 
 (use-package ob-restclient
   :after org restclient)
+
+(use-package restclient-test
+  :defer t
+  :hook
+  (restclient-mode-hook . restclient-test-mode))
 
 (use-package ssh-config-mode
   :defer t
