@@ -173,6 +173,12 @@
   :config
   (defalias 'yes-or-no-p 'y-or-n-p))
 
+(use-package async
+  :defer t
+  :hook
+  (after-init-hook . async-bytecomp-package-mode)
+  (dired-mode-hook . dired-async-mode))
+
 (use-package files
   :ensure nil
   :custom
@@ -457,19 +463,6 @@
   :hook
   (dired-mode-hook . dired-hide-details-mode))
 
-(use-package dired-x
-  :ensure nil
-  :defer t
-  :custom
-  (dired-bind-jump nil))
-
-(use-package async
-  :defer 5
-  :hook
-  (dired-mode-hook . dired-async-mode)
-  :config
-  (async-bytecomp-package-mode 1))
-
 (use-package dired-hide-dotfiles
   :defer t
   :general
@@ -489,15 +482,9 @@
   (dired-subtree-use-backgrounds nil)
   :config
   ;; for treemacs-icons-dired
-  (advice-add #'dired-subtree-toggle :after #'my--dired-subtree-revert))
-
-(use-package dired-narrow
-  :defer t
-  :general
-  (:keymaps 'dired-mode-map :states 'normal
-            "M-n n" 'dired-narrow
-            "M-n f" 'dired-narrow-fuzzy
-            "M-n r" 'dired-narrow-regexp))
+  (advice-add #'dired-subtree-toggle :after #'my--dired-subtree-revert)
+  ;; for override evil-collection-dired binding
+  (defalias 'dired-subtree-cycle 'dired-subtree-toggle))
 
 (use-package pack
   :defer t
