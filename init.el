@@ -139,6 +139,13 @@
   :hook
   (after-init-hook . global-evil-mc-mode))
 
+(use-package evil-traces
+  :defer t
+  :hook
+  (after-init-hook . evil-traces-mode)
+  :config
+  (evil-traces-use-diff-faces))
+
 (use-package which-key
   :defer t
   :custom
@@ -425,6 +432,15 @@
   (undo-tree-enable-undo-in-region nil)
   (undo-tree-history-directory-alist `(("." . ,temporary-file-directory))))
 
+(use-package volatile-highlights
+  :defer t
+  :after undo-tree
+  :hook
+  (after-init-hook . volatile-highlights-mode)
+  :config
+  (vhl/define-extension 'undo-tree 'undo-tree-yank 'undo-tree-move)
+  (vhl/install-extension 'undo-tree))
+
 (use-package paradox
   :defer t
   :general
@@ -503,15 +519,18 @@
 (use-package em-smart
   :ensure nil
   :after eshell
-  :config (eshell-smart-initialize))
+  :config
+  (eshell-smart-initialize))
 
 (use-package esh-autosuggest
   :defer t
-  :hook (eshell-mode-hook . esh-autosuggest-mode))
+  :hook
+  (eshell-mode-hook . esh-autosuggest-mode))
 
 (use-package eshell-fringe-status
   :defer t
-  :hook (eshell-mode-hook . eshell-fringe-status-mode))
+  :hook
+  (eshell-mode-hook . eshell-fringe-status-mode))
 
 (use-package eshell-prompt-extras
   :after eshell
@@ -573,7 +592,9 @@
                            (swiper     . ivy--regex-plus)
                            (t          . ivy--regex-fuzzy)))
   :hook
-  (after-init-hook . ivy-mode))
+  (after-init-hook . ivy-mode)
+  ;; custom doesn't work
+  (ivy-mode-hook . (lambda () (setq ivy-initial-inputs-alist nil))))
 
 (use-package ivy-hydra
   :defer t)
