@@ -836,6 +836,11 @@
   :hook
   (prog-mode-hook . subword-mode))
 
+(use-package hungry-delete
+  :defer t
+  :hook
+  (after-init-hook . global-hungry-delete-mode))
+
 (use-package hl-line
   :ensure nil
   :defer t
