@@ -41,20 +41,18 @@
     :states '(normal visual insert emacs motion)
     :keymaps 'override
     :prefix "SPC"
-    :non-normal-prefix "M-m")
+    :non-normal-prefix "M-SPC")
   (general-create-definer my--local-leader-def
     :states '(normal visual insert emacs motion)
     :keymaps 'override
     :prefix "SPC m"
-    :non-normal-prefix "M-m m")
-  (general-define-key
-   :states '(normal visual motion)
-   :prefix ","
-   "" (general-simulate-key "SPC m"))
+    :non-normal-prefix "M-SPC m")
   (my--leader-def
     "" '(nil :wk "leader")
     "o" '(:ignore t :wk "open")
     "O" '(:ignore t :wk "org")
+    "p" '(:ignore t :wk "project")
+    "P" '(:ignore t :wk "package")
     "b" '(:ignore t :wk "buffer")
     "f" '(:ignore t :wk "file")
     "e" '(:ignore t :wk "emacs")
@@ -445,7 +443,7 @@
   :defer t
   :general
   (my--leader-def
-    "oP" 'paradox-list-packages)
+    "Pl" 'paradox-list-packages)
   :custom
   (paradox-execute-asynchronously t)
   (paradox-github-token t "Don't ask github token")
@@ -538,13 +536,14 @@
   (eshell-highlight-prompt nil)
   (eshell-prompt-function 'epe-theme-lambda))
 
-(use-package shell-pop
+(use-package eshell-toggle
   :defer t
   :general
-  ("s-t" 'shell-pop)
+  (my--leader-def
+    "ot" 'eshell-toggle)
   :custom
-  (shell-pop-full-span t "Spans full width of a window")
-  (shell-pop-shell-type '("eshell" "*eshell-pop*" (lambda () (eshell)))))
+  (eshell-toggle-use-projectile-root t)
+  (eshell-toggle-run-command nil))
 
 (use-package exec-path-from-shell
   :config
@@ -620,8 +619,9 @@
     "." 'counsel-find-file
 
     "oL" 'counsel-find-library
-    "op" 'counsel-package
     "oh" 'counsel-command-history
+
+    "Pp" 'counsel-package
 
     "ff" 'counsel-find-file
     "fr" 'counsel-recentf
@@ -794,6 +794,7 @@
 (use-package doom-modeline
   :defer t
   :custom
+  (doom-modeline-minor-modes t)
   (doom-modeline-buffer-file-name-style 'buffer-name)
   :hook
   (after-init-hook . doom-modeline-mode))
@@ -1622,7 +1623,7 @@
 (use-package grip-mode
   :defer t
   :general
-  (my--local-leader-def :keymaps '(markdown-mode-map org-mode-map)
+  (my--local-leader-def :keymaps 'markdown-mode-map
     "g" 'grip-mode))
 
 (use-package json-mode
@@ -1771,7 +1772,8 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
 
   (org-startup-indented t)
   (org-tags-column 0)
-  (org-ellipsis "  ")
+  ;; (org-ellipsis "  ")
+  (org-ellipsis "…")
   (org-pretty-entities t)
   (org-use-sub-superscripts '{} "Require {} for sub/super scripts")
   (org-return-follows-link t)
@@ -1795,6 +1797,9 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
   (org-fontify-whole-heading-line t)
 
   (org-todo-keywords '((sequence "TODO(t)" "WAIT(w@/!)" "|" "DONE(d!/@)" "CANCELED(c@/!)")))
+  (org-priority-faces '((?A . (:inherit error :weight bold))
+                        (?B . (:inherit warning :weight bold))
+                        (?C . (:inherit success :weight bold))))
   (org-log-into-drawer t)
 
   (org-directory "~/Org")
@@ -1805,12 +1810,12 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
   (org-archive-location (concat org-directory "/old/archive.org" "::* From %s")))
 
 (use-package org-bullets
-  :disabled
+  :defer t
   :after org
   :custom
   ;; ♥ ● ◇ ✚ ✜ ☯ ◆ ♠ ♣ ♦ ☢ ❀ ◆ ◖ ▶
   ;; ► • ★ ▸
-  (org-bullets-bullet-list '("◆"))
+  (org-bullets-bullet-list '("○"))
   :hook
   (org-mode-hook . org-bullets-mode))
 
@@ -1962,7 +1967,7 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
   :defer t
   :general
   (my--leader-def
-    "ot" 'try))
+    "Pt" 'try))
 
 (use-package string-inflection
   :defer t)
