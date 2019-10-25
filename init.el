@@ -496,9 +496,7 @@
   (dired-subtree-use-backgrounds nil)
   :config
   ;; for treemacs-icons-dired
-  (advice-add #'dired-subtree-toggle :after #'my--dired-subtree-revert)
-  ;; for override evil-collection-dired binding
-  (defalias 'dired-subtree-cycle 'dired-subtree-toggle))
+  (advice-add #'dired-subtree-toggle :after #'my--dired-subtree-revert))
 
 (use-package pack
   :defer t
