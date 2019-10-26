@@ -227,7 +227,6 @@
   :defer t
   :general
   (my--leader-def
-    "e" '(:ignore t :wk "emacs")
     "ed" 'iqa-find-user-init-directory
     "ee" 'iqa-find-user-init-file
     "er" 'iqa-reload-user-init-file)
@@ -396,7 +395,6 @@
                       (mapcar #'car (eyebrowse--get 'window-configs))))))
   :general
   (my--leader-def
-    "w" '(:ignore t :wk "workspace")
     "wc" 'eyebrowse-close-window-config
     "w TAB" 'eyebrowse-last-window-config
     "wR" 'eyebrowse-rename-window-config
@@ -629,7 +627,10 @@
 
     "tt" 'counsel-load-theme
 
-    "hF" 'counsel-faces)
+    "hF" '(:ignore t :wk "face")
+    "hFf" 'counsel-faces
+    "hFe" 'counsel-colors-emacs
+    "hFw" 'counsel-colors-web)
   :custom
   (counsel-describe-function-function 'helpful-callable)
   (counsel-describe-variable-function 'helpful-variable))
@@ -756,11 +757,6 @@
   :hook
   (compilation-filter-hook . endless/colorize-compilation))
 
-(use-package faces
-  :ensure nil
-  :config
-  (set-face-attribute 'default nil :font "Fira Mono 14"))
-
 (use-package font-lock+
   :ensure nil
   :quelpa
@@ -798,7 +794,7 @@
   (after-init-hook . doom-modeline-mode))
 
 (use-package solarized-theme
-  ;; :disabled
+  :disabled
   :custom
   (solarized-distinct-doc-face t)
   (solarized-use-variable-pitch nil)
@@ -1337,6 +1333,8 @@
 
 (use-package eros
   :defer t
+  :custom-face
+  (eros-result-overlay-face ((t :background "grey90")))
   :hook
   (emacs-lisp-mode-hook . eros-mode))
 
@@ -1365,6 +1363,8 @@
     "bs" 'cider-scratch
 
     "=" '(cider-format-buffer :wk "format"))
+  :custom-face
+  (cider-result-overlay-face ((t :background "grey90")))
   :custom
   (cider-repl-use-pretty-printing t)
   (cider-repl-pop-to-buffer-on-connect 'display-only)
@@ -1645,15 +1645,12 @@
   :commands magit-blame
   :general
   (my--leader-def
-    "g" '(:ignore t :wk "git")
     "g." 'magit-dispatch
     "gI" 'magit-init
     "gb" 'magit-blame
     "gc" 'magit-clone
     "gg" 'magit-status
-    "gi" 'gitignore-templates-new-file
-    "gl" 'magit-log-buffer-file
-    "gt" 'git-timemachine)
+    "gl" 'magit-log-buffer-file)
   :custom
   (magit-completing-read-function 'ivy-completing-read)
   (magit-clone-default-directory "~/Projects")
@@ -1672,26 +1669,19 @@
   :defer t
   :general
   (my--leader-def
-    "g" '(:ignore t :wk "git")
     "gt" 'git-timemachine))
-
-(use-package gitattributes-mode
-  :defer t)
-
-(use-package gitconfig-mode
-  :defer t)
-
-(use-package gitignore-mode
-  :defer t)
 
 (use-package gitignore-templates
   :defer t
   :general
   (my--leader-def
-    "g" '(:ignore t :wk "git")
     "gi" 'gitignore-templates-new-file)
   (my--local-leader-def :keymaps 'gitignore-mode-map
     "i" 'gitignore-templates-insert))
+
+(use-package gitattributes-mode :defer t)
+(use-package gitconfig-mode :defer t)
+(use-package gitignore-mode :defer t)
 
 (use-package diff-hl
   :defer t
@@ -1702,50 +1692,6 @@
   (diff-hl-mode-hook . diff-hl-flydiff-mode)
   (dired-mode-hook . diff-hl-dired-mode)
   (magit-post-refresh-hook . diff-hl-magit-post-refresh))
-
-(use-package smerge-mode
-  :defer t
-  :preface
-  (defhydra hydra-smerge
-    (:color pink :hint nil)
-    "
-^Move^       ^Keep^             ^Diff^                ^Other^
-^^───────────^^─────────────────^^────────────────────^^─────────────────
-_n_: next    _b_: base          _<_: upper/base       _C_: combine
-_p_: prev    _u_: upper         _=_: upper/lower      _r_: resolve
-_J_: next    _l_: lower         _>_: base/lower       _k_: kill current
-_K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
-^^           _RET_: current     _E_: ediff            _q_: cancel
-"
-    ;; move
-    ("n" smerge-next)
-    ("p" smerge-prev)
-    ("J" smerge-next)
-    ("K" smerge-prev)
-    ;; keep
-    ("b" smerge-keep-base)
-    ("u" smerge-keep-upper)
-    ("l" smerge-keep-lower)
-    ("a" smerge-keep-all)
-    ("RET" smerge-keep-current)
-    ;; diff
-    ("<" smerge-diff-base-upper)
-    ("=" smerge-diff-upper-lower)
-    (">" smerge-diff-base-lower)
-    ("R" smerge-refine)
-    ("E" smerge-ediff)
-    ;; other
-    ("C" smerge-combine-with-next)
-    ("r" smerge-resolve)
-    ("k" smerge-kill-current)
-    ("ZZ" (lambda ()
-            (interactive)
-            (save-buffer)
-            (bury-buffer)) :color blue)
-    ("q" nil :color blue))
-  :general
-  (my--local-leader-def :keymaps 'smerge-mode-map
-    "." 'hydra-smerge/body))
 
 (use-package org
   :ensure org-plus-contrib
@@ -1763,6 +1709,8 @@ _K_: prev    _a_: all           _R_: refine           _ZZ_: save and bury
     "Ot" '(my--open-org-todo-file :wk "open todo")
     "On" '(my--open-org-notes-file :wk "open notes"))
   :custom-face
+  (org-block-begin-line ((t :background "grey90")))
+  (org-block ((t :background "grey95")))
   (org-tag ((t :inherit shadow)))
   (org-ellipsis ((t :underline nil)))
   :custom

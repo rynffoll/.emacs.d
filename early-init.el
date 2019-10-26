@@ -30,16 +30,19 @@
               (setq file-name-handler-alist my--file-name-handler-alist)))
 
 ;; UI
-(push '(left . 0.5) default-frame-alist)
-(push '(top . 0.5) default-frame-alist)
-(push '(width . 0.75) default-frame-alist)
-(push '(height . 0.9) default-frame-alist)
-(push '(menu-bar-lines . 0) default-frame-alist)
-(push '(tool-bar-lines . 0) default-frame-alist)
-(push '(vertical-scroll-bars) default-frame-alist)
-(push '(vertical-scroll-bars) default-frame-alist)
-(push '(font . "Fira Mono 14") default-frame-alist)
+(add-to-list 'default-frame-alist '(left . 0.5))
+(add-to-list 'default-frame-alist '(top . 0.5))
+(add-to-list 'default-frame-alist '(width . 0.75))
+(add-to-list 'default-frame-alist '(height . 0.9))
+(add-to-list 'default-frame-alist '(menu-bar-lines . 0))
+(add-to-list 'default-frame-alist '(tool-bar-lines . 0))
+(add-to-list 'default-frame-alist '(vertical-scroll-bars))
+(add-to-list 'default-frame-alist '(vertical-scroll-bars))
+(add-to-list 'default-frame-alist '(font . "Iosevka Medium 14"))
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+(add-to-list 'default-frame-alist '(ns-appearance . light))
 
+(load-theme 'tsdh-light)
 
 ;; Resizing the Emacs frame can be a terribly expensive part of changing the
 ;; font. By inhibiting this, we easily halve startup times with fonts that are
