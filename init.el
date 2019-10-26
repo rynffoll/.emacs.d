@@ -679,6 +679,11 @@
     (define-key evil-insert-state-map (kbd "C-х") #'evil-normal-state)
     (define-key evil-visual-state-map (kbd "C-х") #'evil-exit-visual-state)))
 
+(use-package faces
+  :ensure nil
+  :custom-face
+  (vertical-border ((t :foreground "grey80"))))
+
 (use-package frame
   :ensure nil
   :general
@@ -997,6 +1002,8 @@
   (flyspell-correct-interface 'flyspell-correct-ivy))
 
 (use-package flycheck
+  :custom-face
+  (fringe ((t :background nil)))
   :custom
   (flycheck-indication-mode 'right-fringe)
   :hook
@@ -1511,6 +1518,11 @@
 
 (use-package magit
   :commands magit-blame
+  :preface
+  (defun my--magit-status ()
+    (interactive)
+    (let ((current-prefix-arg '(4)))
+      (call-interactively #'magit-status)))
   :general
   (my--leader-def
     "g." 'magit-dispatch
@@ -1518,7 +1530,8 @@
     "gb" 'magit-blame
     "gc" 'magit-clone
     "gg" 'magit-status
-    "gl" 'magit-log-buffer-file)
+    "gl" 'my--magit-status
+    "gL" 'magit-log-buffer-file)
   :custom
   (magit-completing-read-function 'ivy-completing-read)
   (magit-clone-default-directory "~/Projects")
