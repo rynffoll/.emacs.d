@@ -667,6 +667,7 @@ Quick access to shell
 #+begin_src emacs-lisp
 (use-package eshell-toggle
   :general
+  ("s-t" 'eshell-toggle)
   (my--leader-def
     "ot" 'eshell-toggle)
   :custom
@@ -875,11 +876,6 @@ MacOS tweaks
 * UI
 ** Common
 #+begin_src emacs-lisp
-(use-package faces
-  :ensure nil
-  :custom-face
-  (vertical-border ((t :foreground "grey80"))))
-
 (use-package frame
   :ensure nil
   :general
@@ -961,6 +957,13 @@ MacOS tweaks
 
 ** Theme
 #+begin_src emacs-lisp
+(use-package heumi-theme
+  :ensure nil
+  :load-path "site-lisp/heumi-theme"
+  :demand
+  :config
+  (load-theme 'heumi t))
+
 (use-package solarized-theme
   :disabled
   :custom
@@ -1019,6 +1022,11 @@ MacOS tweaks
   :ensure nil
   :hook
   (prog-mode-hook . subword-mode))
+
+(use-package so-long
+  :ensure nil
+  :hook
+  (after-init-hook . global-so-long-mode))
 
 (use-package hungry-delete
   :hook
@@ -1080,7 +1088,8 @@ Colorize color names
   :general
   (my--leader-def
     "tr" 'rainbow-mode)
-  :hook css-mode-hook)
+  :hook
+  (css-mode-hook . rainbow-mode))
 #+end_src
 
 Highlight special symbols
@@ -1115,12 +1124,12 @@ Highlight symbols
     "thu" 'unhighlight-regexp))
 #+end_src
 
-Long lines
+Highlight identifiers
 #+begin_src emacs-lisp
-(use-package so-long
-  :ensure nil
-  :hook
-  (after-init-hook . global-so-long-mode))
+(use-package color-identifiers-mode
+  :general
+  (my--leader-def
+    "tc" 'color-identifiers-mode))
 #+end_src
 
 ** Line Numbers
@@ -1258,6 +1267,7 @@ Long lines
   (prog-mode-hook . flycheck-mode))
 
 (use-package fringe-helper
+  :demand
   :after flycheck
   :config
   (fringe-helper-define 'flycheck-fringe-bitmap-double-arrow 'center
@@ -1517,8 +1527,6 @@ Jump to definition
     "R" '(:keymap erefactor-map :wk "refactor")))
 
 (use-package eros
-  :custom-face
-  (eros-result-overlay-face ((t :background "grey90")))
   :hook
   (emacs-lisp-mode-hook . eros-mode))
 #+end_src
@@ -1544,8 +1552,6 @@ Jump to definition
     "bs" 'cider-scratch
 
     "=" '(cider-format-buffer :wk "format"))
-  :custom-face
-  (cider-result-overlay-face ((t :background "grey90")))
   :custom
   (cider-repl-use-pretty-printing t)
   (cider-repl-pop-to-buffer-on-connect 'display-only)
@@ -1912,8 +1918,6 @@ Highlight diff
     "Ot" '(my--open-org-todo-file :wk "open todo")
     "On" '(my--open-org-notes-file :wk "open notes"))
   :custom-face
-  (org-block-begin-line ((t :background "grey90")))
-  (org-block ((t :background "grey95")))
   (org-tag ((t :inherit shadow)))
   (org-ellipsis ((t :underline nil)))
   :custom

@@ -510,6 +510,7 @@
 
 (use-package eshell-toggle
   :general
+  ("s-t" 'eshell-toggle)
   (my--leader-def
     "ot" 'eshell-toggle)
   :custom
@@ -679,11 +680,6 @@
     (define-key evil-insert-state-map (kbd "C-х") #'evil-normal-state)
     (define-key evil-visual-state-map (kbd "C-х") #'evil-exit-visual-state)))
 
-(use-package faces
-  :ensure nil
-  :custom-face
-  (vertical-border ((t :foreground "grey80"))))
-
 (use-package frame
   :ensure nil
   :general
@@ -756,6 +752,13 @@
   :hook
   (after-init-hook . doom-modeline-mode))
 
+(use-package heumi-theme
+  :ensure nil
+  :load-path "site-lisp/heumi-theme"
+  :demand
+  :config
+  (load-theme 'heumi t))
+
 (use-package solarized-theme
   :disabled
   :custom
@@ -811,6 +814,11 @@
   :hook
   (prog-mode-hook . subword-mode))
 
+(use-package so-long
+  :ensure nil
+  :hook
+  (after-init-hook . global-so-long-mode))
+
 (use-package hungry-delete
   :hook
   (after-init-hook . global-hungry-delete-mode))
@@ -862,7 +870,8 @@
   :general
   (my--leader-def
     "tr" 'rainbow-mode)
-  :hook css-mode-hook)
+  :hook
+  (css-mode-hook . rainbow-mode))
 
 (use-package whitespace
   :ensure nil
@@ -890,10 +899,10 @@
     "thl" 'highlight-lines-matching-regexp
     "thu" 'unhighlight-regexp))
 
-(use-package so-long
-  :ensure nil
-  :hook
-  (after-init-hook . global-so-long-mode))
+(use-package color-identifiers-mode
+  :general
+  (my--leader-def
+    "tc" 'color-identifiers-mode))
 
 (use-package display-line-numbers
   :ensure nil
@@ -1010,6 +1019,7 @@
   (prog-mode-hook . flycheck-mode))
 
 (use-package fringe-helper
+  :demand
   :after flycheck
   :config
   (fringe-helper-define 'flycheck-fringe-bitmap-double-arrow 'center
@@ -1243,8 +1253,6 @@
     "R" '(:keymap erefactor-map :wk "refactor")))
 
 (use-package eros
-  :custom-face
-  (eros-result-overlay-face ((t :background "grey90")))
   :hook
   (emacs-lisp-mode-hook . eros-mode))
 
@@ -1267,8 +1275,6 @@
     "bs" 'cider-scratch
 
     "=" '(cider-format-buffer :wk "format"))
-  :custom-face
-  (cider-result-overlay-face ((t :background "grey90")))
   :custom
   (cider-repl-use-pretty-printing t)
   (cider-repl-pop-to-buffer-on-connect 'display-only)
@@ -1585,8 +1591,6 @@
     "Ot" '(my--open-org-todo-file :wk "open todo")
     "On" '(my--open-org-notes-file :wk "open notes"))
   :custom-face
-  (org-block-begin-line ((t :background "grey90")))
-  (org-block ((t :background "grey95")))
   (org-tag ((t :inherit shadow)))
   (org-ellipsis ((t :underline nil)))
   :custom
