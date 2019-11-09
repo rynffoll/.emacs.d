@@ -552,7 +552,6 @@
   :custom
   (ivy-wrap t)
   (ivy-fixed-height-minibuffer t)
-  (ivy-initial-inputs-alist nil)
   (ivy-use-virtual-buffers t)
   (ivy-virtual-abbreviate 'full)
   (ivy-on-del-error-function nil)
@@ -561,9 +560,7 @@
                            (swiper     . ivy--regex-plus)
                            (t          . ivy--regex-fuzzy)))
   :hook
-  (after-init-hook . ivy-mode)
-  ;; custom doesn't work
-  (ivy-mode-hook . (lambda () (setq ivy-initial-inputs-alist nil))))
+  (after-init-hook . ivy-mode))
 
 (use-package ivy-hydra)
 
@@ -749,6 +746,7 @@
   :custom
   (doom-modeline-minor-modes t)
   (doom-modeline-buffer-file-name-style 'buffer-name)
+  (doom-modeline-evil-state-icon nil)
   :hook
   (after-init-hook . doom-modeline-mode))
 
@@ -810,6 +808,7 @@
   (after-init-hook . global-prettify-symbols-mode))
 
 (use-package subword
+  :disabled
   :ensure nil
   :hook
   (prog-mode-hook . subword-mode))

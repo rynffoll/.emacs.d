@@ -40,7 +40,7 @@
       (grey-3 "#ccc")
       (grey-4 "#666")
 
-      (yellow "#ffffdf")
+      (yellow-0 "#ffffdf")
 
       (green-0 "#f3ffe0")
       (green-1 "#9fef9d")
@@ -62,8 +62,9 @@
    `heumi
    `(default ((t (:background ,bg :foreground ,fg))))
    `(region ((t (:background ,blue-0))))
+   `(highlight ((t (:background ,green-1))))
    `(vertical-border ((t :foreground ,grey-3)))
-   `(hl-line ((t (:background ,grey-1 :extend t))))
+   `(match ((t (:background ,orange-0))))
 
    `(success ((t (:foreground ,green-2 :weight bold))))
    `(warning ((t (:foreground ,orange-1 :weight bold))))
@@ -71,7 +72,7 @@
 
    `(font-lock-builtin-face ((t (:foreground ,magenta-1))))
    `(font-lock-constant-face ((t (:background ,magenta-0))))
-   `(font-lock-comment-face ((t (:background ,yellow :foreground ,grey-4 :extend nil))))
+   `(font-lock-comment-face ((t (:background ,yellow-0 :foreground ,grey-4 :extend nil))))
    `(font-lock-comment-delimiter-face ((t (:inherit font-lock-comment-face :weight bold))))
    `(font-lock-string-face ((t (:background ,green-0 :extend nil))))
    `(font-lock-doc-face ((t (:inherit font-lock-string-face :slant italic))))
@@ -82,6 +83,28 @@
    `(font-lock-regexp-grouping-construct ((t (:foreground ,fg :weight bold))))
    `(font-lock-type-face ((t (:foreground ,fg))))
    `(font-lock-variable-name-face ((t (:foreground ,fg))))
+
+   ;; isearch
+   `(isearch ((t (:background ,orange-0 :weight bold))))
+
+   ;; anzu
+   `(anzu-match-1 ((t (:background ,blue-0))))
+   `(anzu-match-2 ((t (:background ,green-0))))
+   `(anzu-match-3 ((t (:background ,magenta-0))))
+   `(anzu-replace-to ((t (:background ,red-0))))
+
+   ;; which-key
+   `(which-key-separator-face ((t (:foreground ,grey-4))))
+
+   ;; hydra
+   `(hydra-face-red ((t (:foreground ,red-1 :weight bold))))
+   `(hydra-face-blue ((t (:foreground ,blue-2 :weight bold))))
+   `(hydra-face-amaranth ((t (:foreground ,magenta-1 :weight bold))))
+   `(hydra-face-pink ((t (:foreground ,red-0 :weight bold))))
+   `(hydra-face-teal ((t (:foreground ,green-2 :weight bold))))
+
+   ;; hl-line
+   `(hl-line ((t (:background ,grey-1 :extend t))))
 
    ;; dired
    `(dired-directory ((t (:foreground ,blue-2))))
@@ -151,7 +174,7 @@
    `(org-done ((t (:foreground ,green-2 :weight bold))))
    `(org-todo ((t (:foreground ,red-1 :weight bold))))
    `(org-block ((t (:background ,grey-0))))
-   `(org-block-begin-line ((t (:background ,grey-1))))
+   `(org-block-begin-line ((t (:background ,grey-1 :extend t))))
    `(org-block-end-line ((t (:inherit org-block-begin-line))))
    `(org-tag ((t (:inherit shadow))))
    `(org-ellipsis ((t (:underline nil))))
@@ -178,7 +201,19 @@
 
    ;; treemacs
    `(treemacs-directory-face ((t (:inherit dired-directory))))
-   `(treemacs-git-ignored-face ((t (:inherit shadow))))))
+   `(treemacs-git-ignored-face ((t (:inherit shadow))))
+
+   ;; company
+   `(company-echo-common ((t (:background ,grey-1))))
+   `(company-scrollbar-bg ((t (:background ,grey-0))))
+   `(company-scrollbar-fg ((t (:background ,grey-2))))
+   `(company-tooltip ((t (:background ,grey-1))))
+   `(company-tooltip-annotation ((t (:foreground ,fg))))
+   `(company-tooltip-selection ((t (:inherit region))))
+   `(company-tooltip-common ((t (:inherit company-tooltip))))
+   `(company-tooltip-common-selection ((t (:inherit company-tooltip-selection))))
+   `(company-tooltip-mouse ((t (:inherit company-tooltip-selection))))
+   ))
 
 ;;;###autoload
 (and load-file-name

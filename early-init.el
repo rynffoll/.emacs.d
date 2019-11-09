@@ -39,8 +39,8 @@
 (add-to-list 'default-frame-alist '(vertical-scroll-bars))
 (add-to-list 'default-frame-alist '(vertical-scroll-bars))
 (add-to-list 'default-frame-alist '(font . "Fira Mono Medium 14"))
-(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-(add-to-list 'default-frame-alist '(ns-appearance . light))
+;; (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+;; (add-to-list 'default-frame-alist '(ns-appearance . light))
 
 ;; Resizing the Emacs frame can be a terribly expensive part of changing the
 ;; font. By inhibiting this, we easily halve startup times with fonts that are
