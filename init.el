@@ -746,11 +746,17 @@
   :custom
   (doom-modeline-minor-modes t)
   (doom-modeline-buffer-file-name-style 'buffer-name)
-  (doom-modeline-evil-state-icon nil)
+  (doom-modeline-modal-icon nil)
   :hook
-  (after-init-hook . doom-modeline-mode))
+  (after-init-hook . doom-modeline-mode)
+  :config
+  (dolist (name '("*Messages*" "*Compile-Log*"))
+    (when-let ((buffer (get-buffer name)))
+      (with-current-buffer buffer
+        (doom-modeline-set-main-modeline)))))
 
 (use-package heumi-theme
+  :disabled
   :ensure nil
   :load-path "site-lisp/heumi-theme"
   :demand
@@ -758,7 +764,8 @@
   (load-theme 'heumi t))
 
 (use-package solarized-theme
-  :disabled
+  ;; :disabled
+  :demand
   :custom
   (solarized-distinct-doc-face t)
   (solarized-use-variable-pitch nil)
@@ -806,12 +813,6 @@
   :ensure nil
   :hook
   (after-init-hook . global-prettify-symbols-mode))
-
-(use-package subword
-  :disabled
-  :ensure nil
-  :hook
-  (prog-mode-hook . subword-mode))
 
 (use-package so-long
   :ensure nil
@@ -1276,10 +1277,11 @@
     "=" '(cider-format-buffer :wk "format"))
   :custom
   (cider-repl-use-pretty-printing t)
-  (cider-repl-pop-to-buffer-on-connect 'display-only)
+  (cider-repl-pop-to-buffer-on-connect nil)
   (cider-repl-history-display-style 'one-line)
   (cider-repl-history-highlight-current-entry t)
   (cider-repl-history-highlight-inserted-item t)
+  (nrepl-use-ssh-fallback-for-remote-hosts t)
   :hook
   (cider-repl-mode-hook . subword-mode)
   (cider-mode-hook . cider-company-enable-fuzzy-completion)

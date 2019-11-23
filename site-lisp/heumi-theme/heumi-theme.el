@@ -173,7 +173,7 @@
    `(org-hide ((t (:foreground ,bg))))
    `(org-done ((t (:foreground ,green-2 :weight bold))))
    `(org-todo ((t (:foreground ,red-1 :weight bold))))
-   `(org-block ((t (:background ,grey-0))))
+   `(org-block ((t (:background ,grey-0 :extend t))))
    `(org-block-begin-line ((t (:background ,grey-1 :extend t))))
    `(org-block-end-line ((t (:inherit org-block-begin-line))))
    `(org-tag ((t (:inherit shadow))))
