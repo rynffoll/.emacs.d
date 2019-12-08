@@ -804,7 +804,8 @@ MacOS tweaks
   :if (memq window-system '(mac ns))
   :ensure nil
   :custom
-  (insert-directory-program "gls"))
+  (insert-directory-program "gls")
+  (trash-directory "~/.Trash/emacs"))
 #+end_src
 
 [[https://adam.kruszewski.name/2017/09/emacs-in-wsl-and-opening-links/][WSL tweaks]]

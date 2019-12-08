@@ -624,7 +624,8 @@
   :if (memq window-system '(mac ns))
   :ensure nil
   :custom
-  (insert-directory-program "gls"))
+  (insert-directory-program "gls")
+  (trash-directory "~/.Trash/emacs"))
 
 (use-package browse-url
   :disabled
