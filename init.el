@@ -485,7 +485,9 @@
 (use-package dired-git-info
   :general
   (:keymaps 'dired-mode-map :states 'normal
-            ")" 'dired-git-info-mode))
+            ")" 'dired-git-info-mode)
+  :custom
+  (dgi-auto-hide-details-p nil))
 
 (use-package em-smart
   :ensure nil
@@ -511,8 +513,6 @@
 (use-package eshell-toggle
   :general
   ("s-t" 'eshell-toggle)
-  (my--leader-def
-    "ot" 'eshell-toggle)
   :custom
   (eshell-toggle-use-projectile-root t)
   (eshell-toggle-run-command nil))
