@@ -1277,8 +1277,6 @@
 
     "=" '(cider-format-buffer :wk "format"))
   :custom
-  (cider-repl-use-pretty-printing t)
-  (cider-repl-pop-to-buffer-on-connect nil)
   (cider-repl-history-display-style 'one-line)
   (cider-repl-history-highlight-current-entry t)
   (cider-repl-history-highlight-inserted-item t)
