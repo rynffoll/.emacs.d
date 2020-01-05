@@ -1512,8 +1512,12 @@
     "g" 'grip-mode))
 
 (use-package json-mode
+  :general
+  (my--local-leader-def :keymaps 'json-mode-map
+    "=" '(json-pretty-print-buffer :wk "format"))
   :hook
-  (json-mode-hook . (lambda () (setq flycheck-checker 'json-jq))))
+  (json-mode-hook . (lambda () (setq flycheck-checker 'json-jq
+                                js-indent-level 2))))
 
 (use-package yaml-mode
   :mode "Procfile\\'"
