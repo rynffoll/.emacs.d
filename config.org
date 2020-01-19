@@ -1,6 +1,7 @@
 #+title: Emacs config
 #+property: header-args:emacs-lisp :tangle "init.el"
 * Table of Contents :TOC:
+- [[#early-initialization][Early Initialization]]
 - [[#initialization][Initialization]]
 - [[#package-manager][Package Manager]]
 - [[#bindings][Bindings]]
@@ -76,6 +77,72 @@
   - [[#ssh][SSH]]
 - [[#utils][Utils]]
 - [[#the-end][The end]]
+
+* Early Initialization
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle "early-init.el"
+:END:
+
+Enable lexical scope
+#+begin_src emacs-lisp
+;;; -*- lexical-binding: t; -*-
+#+end_src
+
+Package Manager
+#+begin_src emacs-lisp
+(setq package-enable-at-startup nil)
+#+end_src
+
+GC tweaks
+#+begin_src emacs-lisp
+(setq gc-cons-threshold most-positive-fixnum
+      gc-cons-percentage 0.6)
+
+(add-hook 'emacs-startup-hook
+          #'(lambda ()
+              (setq gc-cons-threshold 16777216
+                    gc-cons-percentage 0.1)))
+
+(add-hook 'emacs-startup-hook
+          #'(lambda ()
+              (message "Emacs ready (init time = %s, gc time = %s, gc count = %d)."
+                       (format "%.2fs"
+                               (float-time
+                                (time-subtract after-init-time before-init-time)))
+                       (format "%.2fs" (float-time gc-elapsed))
+                       gcs-done)))
+#+end_src
+
+File handler tweaks
+#+begin_src emacs-lisp
+(defvar my--file-name-handler-alist file-name-handler-alist)
+(setq file-name-handler-alist nil)
+
+(add-hook 'emacs-startup-hook
+          #'(lambda ()
+              (setq file-name-handler-alist my--file-name-handler-alist)))
+
+#+end_src
+
+UI
+#+begin_src emacs-lisp
+(add-to-list 'default-frame-alist '(left . 0.5))
+(add-to-list 'default-frame-alist '(top . 0.5))
+(add-to-list 'default-frame-alist '(width . 0.75))
+(add-to-list 'default-frame-alist '(height . 0.9))
+(add-to-list 'default-frame-alist '(menu-bar-lines . 0))
+(add-to-list 'default-frame-alist '(tool-bar-lines . 0))
+(add-to-list 'default-frame-alist '(vertical-scroll-bars))
+(add-to-list 'default-frame-alist '(vertical-scroll-bars))
+(add-to-list 'default-frame-alist '(font . "Fira Mono Medium 14"))
+#+end_src
+
+Resizing the Emacs frame can be a terribly expensive part of changing the
+font. By inhibiting this, we easily halve startup times with fonts that are
+larger than the system default.
+#+begin_src emacs-lisp
+(setq frame-inhibit-implied-resize t)
+#+end_src
 
 * Initialization
 Enable lexical scope
