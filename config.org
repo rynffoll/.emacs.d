@@ -72,6 +72,7 @@
   - [[#babel][Babel]]
 - [[#tools][Tools]]
   - [[#docker][Docker]]
+  - [[#kubernetes][Kubernetes]]
   - [[#ansible][Ansible]]
   - [[#http][HTTP]]
   - [[#ssh][SSH]]
@@ -2084,6 +2085,17 @@ Highlight diff
   :general
   (my--local-leader-def :keymaps 'docker-compose-mode-map
     "." 'docker-compose))
+#+end_src
+
+** Kubernetes
+#+begin_src emacs-lisp
+(use-package kubernetes
+  :general
+  (my--leader-def
+    "ok" 'kubernetes-overview))
+
+(use-package kubernetes-evil
+  :after kubernetes)
 #+end_src
 
 ** Ansible

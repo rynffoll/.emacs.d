@@ -1678,6 +1678,14 @@
   (my--local-leader-def :keymaps 'docker-compose-mode-map
     "." 'docker-compose))
 
+(use-package kubernetes
+  :general
+  (my--leader-def
+    "ok" 'kubernetes-overview))
+
+(use-package kubernetes-evil
+  :after kubernetes)
+
 (use-package ansible-doc
   :general
   (my--local-leader-def :keymaps 'yaml-mode-map
