@@ -172,6 +172,7 @@
   (scroll-conservatively 101)
   (ring-bell-function 'ignore)
   (delete-by-moving-to-trash t)
+  (read-process-output-max (* 1024 1024))
   :hook
   (focus-out-hook . garbage-collect)
   :config
@@ -1126,27 +1127,16 @@
     "d" '(lsp-describe-thing-at-point :wk "doc")
     "S" '(lsp-describe-session :wk "session"))
   :custom
-  (lsp-prefer-flymake nil))
+  (lsp-prefer-capf t)
+  (lsp-keymap-prefix "C-c l")
+  :hook
+  (lsp-mode-hook . lsp-enable-which-key-integration))
 
 (use-package lsp-ui
   :after lsp-mode
   :custom
   (lsp-ui-doc-enable nil)
   (lsp-ui-sideline-enable nil))
-
-(use-package lsp-treemacs
-  :after lsp-mode treemacs
-  :general
-  (my--local-leader-def :keymaps 'lsp-mode-map
-    "T" '(:ignore :wk "treemacs")
-    "Te" '(lsp-treemacs-errors-list :wk "error list")))
-
-(use-package company-lsp
-  :after company lsp-mode
-  :custom
-  (company-lsp-cache-candidates 'auto)
-  :init
-  (add-to-list 'company-backends 'company-lsp))
 
 (use-package dap-mode
   :after lsp-mode
@@ -1393,15 +1383,6 @@
 
 (use-package go-playground
   :after go-mode)
-
-(use-package gorepl-mode
-  :ensure-system-package
-  (gore . "go get -u github.com/motemen/gore/cmd/gore")
-  :general
-  (my--local-leader-def :keymaps 'go-mode-map
-    "r" 'gorepl-hydra/body)
-  :hook
-  (go-mode-hook . gorepl-mode))
 
 (use-package protobuf-mode)
 
