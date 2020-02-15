@@ -1247,7 +1247,10 @@
   :hook
   (emacs-lisp-mode-hook . eros-mode))
 
-(use-package clojure-mode)
+(use-package clojure-mode
+  :config
+  (require 'flycheck-clj-kondo))
+
 (use-package clojure-mode-extra-font-locking)
 (use-package clojure-snippets)
 
@@ -1299,6 +1302,8 @@
   :hook
   (clojure-mode-hook . eldoc-mode)
   (cider-repl-mode-hook . eldoc-mode))
+
+(use-package flycheck-clj-kondo)
 
 (use-package lsp-java
   :after cc-mode
