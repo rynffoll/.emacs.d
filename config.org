@@ -3,6 +3,7 @@
 * Table of Contents :TOC:
 - [[#early-initialization][Early Initialization]]
 - [[#initialization][Initialization]]
+- [[#personal-info][Personal Info]]
 - [[#package-manager][Package Manager]]
 - [[#bindings][Bindings]]
   - [[#general][General]]
@@ -70,6 +71,7 @@
   - [[#org-bullets][Org Bullets]]
   - [[#table-of-contents][Table of Contents]]
   - [[#babel][Babel]]
+- [[#email][Email]]
 - [[#tools][Tools]]
   - [[#docker][Docker]]
   - [[#kubernetes][Kubernetes]]
@@ -160,6 +162,13 @@ Debugging on startup
 #+begin_src emacs-lisp
 (setq load-prefer-newer t)
 (setq message-log-max t)
+#+end_src
+
+* Personal Info
+#+begin_src emacs-lisp
+(setq user-full-name "Ruslan Kamashev"
+      user-login-name "rynffoll"
+      user-mail-address "rynffoll@gmail.com")
 #+end_src
 
 * Package Manager
@@ -2068,6 +2077,90 @@ Highlight diff
 
 (use-package ob-async
   :after org)
+#+end_src
+
+* Email
+Configure ~~/.authinfo.gpg~
+#+begin_src authinfo :tangle no
+machine imap.gmail.com login rynffoll port imaps password <PASSWORD>
+machine smtp.gmail.com login rynffoll port 587 password <PASSWORD>
+#+end_src
+
+Create Maildir
+#+begin_src sh :tangle no :async :results none
+mkdir -p ~/Maildir
+#+end_src
+
+Download messages
+#+begin_src sh :tangle no :async :results none
+mbsync -aV
+#+end_src
+
+Index Maildir
+#+begin_src sh :table no :async :results none
+mu index --maildir=~/Maildir
+#+end_src
+
+Mu4e
+#+begin_src emacs-lisp
+(use-package mu4e
+  :ensure nil
+  :load-path "/usr/local/share/emacs/site-lisp/mu/mu4e"
+  :general
+  (my--leader-def
+    "om" 'mu4e)
+  :custom
+  (mail-user-agent 'mu4e-user-agent)
+  (mu4e-maildir "~/Maildir")
+  (mu4e-drafts-folder "/[Gmail]/Drafts")
+  (mu4e-sent-folder   "/[Gmail]/Sent Mail")
+  (mu4e-trash-folder  "/[Gmail]/Trash")
+  (mu4e-refile-folder nil)
+  ;; (mu4e-sent-messages-behavior 'delete)
+  (mu4e-sent-messages-behavior 'sent)
+  (mu4e-get-mail-command "mbsync -aV")
+  (mu4e-maildir-shortcuts
+   `( ("/INBOX"            . ?i)
+      (,mu4e-drafts-folder . ?d)
+      (,mu4e-sent-folder   . ?s)
+      (,mu4e-trash-folder  . ?t)))
+  (mu4e-update-interval nil)
+  (mu4e-compose-signature-auto-include nil)
+  (mu4e-completing-read-function 'completing-read)
+  (message-kill-buffer-on-exit t)
+  (mu4e-use-fancy-chars t)
+  (mu4e-view-show-images t)
+  (mu4e-view-show-addresses t)
+  (mu4e-view-prefer-html t)
+  (mu4e-change-filenames-when-moving t)
+  (mu4e-attachment-dir "~/Downloads")
+  :config
+  (add-to-list 'mu4e-view-actions
+               '("browser" . mu4e-action-view-in-browser))
+  (add-to-list 'mu4e-view-actions
+               '("xwidget" . mu4e-action-view-with-xwidget)))
+
+(use-package mu4e-overview
+  :general
+  (:keymaps 'mu4e-main-mode-map :states 'normal
+            "o" 'mu4e-overview))
+
+(use-package mu4e-conversation
+  :config
+  (global-mu4e-conversation-mode))
+
+(use-package message
+  :ensure nil
+  :custom
+  (message-send-mail-function 'smtpmail-send-it))
+
+(use-package smtpmail
+  :ensure nil
+  :custom
+  (smtpmail-default-smtp-server "smtp.gmail.com")
+  (smtpmail-smtp-server "smtp.gmail.com")
+  (smtpmail-smtp-service 587)
+  (smtpmail-debug-info t))
 #+end_src
 
 * Tools

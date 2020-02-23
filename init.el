@@ -6,6 +6,10 @@
 (setq load-prefer-newer t)
 (setq message-log-max t)
 
+(setq user-full-name "Ruslan Kamashev"
+      user-login-name "rynffoll"
+      user-mail-address "rynffoll@gmail.com")
+
 (require 'package)
 (setq package-archives
       '(("gnu"          . "https://elpa.gnu.org/packages/")
@@ -1664,6 +1668,65 @@
 
 (use-package ob-async
   :after org)
+
+(use-package mu4e
+  :ensure nil
+  :load-path "/usr/local/share/emacs/site-lisp/mu/mu4e"
+  :general
+  (my--leader-def
+    "om" 'mu4e)
+  :custom
+  (mail-user-agent 'mu4e-user-agent)
+  (mu4e-maildir "~/Maildir")
+  (mu4e-drafts-folder "/[Gmail]/Drafts")
+  (mu4e-sent-folder   "/[Gmail]/Sent Mail")
+  (mu4e-trash-folder  "/[Gmail]/Trash")
+  (mu4e-refile-folder nil)
+  ;; (mu4e-sent-messages-behavior 'delete)
+  (mu4e-sent-messages-behavior 'sent)
+  (mu4e-get-mail-command "mbsync -aV")
+  (mu4e-maildir-shortcuts
+   `( ("/INBOX"            . ?i)
+      (,mu4e-drafts-folder . ?d)
+      (,mu4e-sent-folder   . ?s)
+      (,mu4e-trash-folder  . ?t)))
+  (mu4e-update-interval nil)
+  (mu4e-compose-signature-auto-include nil)
+  (mu4e-completing-read-function 'completing-read)
+  (message-kill-buffer-on-exit t)
+  (mu4e-use-fancy-chars t)
+  (mu4e-view-show-images t)
+  (mu4e-view-show-addresses t)
+  (mu4e-view-prefer-html t)
+  (mu4e-change-filenames-when-moving t)
+  (mu4e-attachment-dir "~/Downloads")
+  :config
+  (add-to-list 'mu4e-view-actions
+               '("browser" . mu4e-action-view-in-browser))
+  (add-to-list 'mu4e-view-actions
+               '("xwidget" . mu4e-action-view-with-xwidget)))
+
+(use-package mu4e-overview
+  :general
+  (:keymaps 'mu4e-main-mode-map :states 'normal
+            "o" 'mu4e-overview))
+
+(use-package mu4e-conversation
+  :config
+  (global-mu4e-conversation-mode))
+
+(use-package message
+  :ensure nil
+  :custom
+  (message-send-mail-function 'smtpmail-send-it))
+
+(use-package smtpmail
+  :ensure nil
+  :custom
+  (smtpmail-default-smtp-server "smtp.gmail.com")
+  (smtpmail-smtp-server "smtp.gmail.com")
+  (smtpmail-smtp-service 587)
+  (smtpmail-debug-info t))
 
 (use-package docker
   :general
