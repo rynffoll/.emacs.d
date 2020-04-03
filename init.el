@@ -1517,6 +1517,10 @@
   :hook
   (yaml-mode-hook . flycheck-yamllint-setup))
 
+(use-package lua-mode
+  :custom
+  (lua-indent-level 2))
+
 (use-package magit
   :commands magit-blame
   :preface

@@ -65,6 +65,7 @@
   - [[#markdown][Markdown]]
   - [[#json][JSON]]
   - [[#yaml][YAML]]
+  - [[#lua][Lua]]
 - [[#git][Git]]
 - [[#org][Org]]
   - [[#common-3][Common]]
@@ -1902,6 +1903,13 @@ Jump to definition
 (use-package flycheck-yamllint
   :hook
   (yaml-mode-hook . flycheck-yamllint-setup))
+#+end_src
+
+** Lua
+#+begin_src emacs-lisp
+(use-package lua-mode
+  :custom
+  (lua-indent-level 2))
 #+end_src
 
 * Git
