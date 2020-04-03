@@ -430,7 +430,8 @@
 (use-package paradox
   :general
   (my--leader-def
-    "Pl" 'paradox-list-packages)
+    "Pl" 'paradox-list-packages
+    "PU" 'paradox-upgrade-packages)
   :custom
   (paradox-execute-asynchronously t)
   (paradox-github-token t "Don't ask github token")
@@ -1684,7 +1685,7 @@
   (mu4e-refile-folder nil)
   ;; (mu4e-sent-messages-behavior 'delete)
   (mu4e-sent-messages-behavior 'sent)
-  (mu4e-get-mail-command "mbsync -aV")
+  (mu4e-get-mail-command "mbsync -a")
   (mu4e-maildir-shortcuts
    `( ("/INBOX"            . ?i)
       (,mu4e-drafts-folder . ?d)
@@ -1752,7 +1753,9 @@
     "ok" 'kubernetes-overview))
 
 (use-package kubernetes-evil
-  :after kubernetes)
+  :init
+  (with-eval-after-load 'kubernetes-overview
+    (require 'kubernetes-evil)))
 
 (use-package ansible-doc
   :general
