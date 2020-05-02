@@ -988,6 +988,7 @@
   (fringe ((t :background nil)))
   :custom
   (flycheck-indication-mode 'right-fringe)
+  (flycheck-temp-prefix ".flycheck")
   :hook
   (prog-mode-hook . flycheck-mode))
 
