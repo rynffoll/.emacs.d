@@ -34,6 +34,14 @@
   :custom
   (quelpa-use-package-inhibit-loading-quelpa t "Improve startup performance"))
 
+(use-package auto-compile
+  :custom
+  (auto-compile-display-buffer nil)
+  (auto-compile-use-mode-line nil)
+  :hook
+  (emacs-lisp-mode-hook . auto-compile-on-load-mode)
+  (emacs-lisp-mode-hook . auto-compile-on-save-mode))
+
 (use-package emacs
   :ensure nil
   :custom
