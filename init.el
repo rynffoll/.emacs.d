@@ -671,6 +671,8 @@
 
 (use-package exec-path-from-shell
   :demand
+  :custom
+  (exec-path-from-shell-arguments '("-l") "remove -i")
   :config
   (exec-path-from-shell-initialize))
 
