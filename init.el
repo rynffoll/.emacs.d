@@ -1541,11 +1541,11 @@
   (org-fontify-quote-and-verse-blocks t)
   (org-fontify-whole-heading-line t)
 
-  (org-todo-keywords '((sequence "TODO(t)" "WAIT(w@/!)" "|" "DONE(d!/@)" "CANCELED(c@/!)")))
+  (org-todo-keywords '((sequence "TODO(t)" "IN PROGRESS(i)" "WAITING(w)" "|" "DONE(d)" "CANCELED(c)")))
   (org-priority-faces '((?A . (:inherit error :weight bold))
                         (?B . (:inherit warning :weight bold))
                         (?C . (:inherit success :weight bold))))
-  (org-log-into-drawer t)
+  (org-log-done 'time)
 
   (org-directory "~/Org")
   (-org-inbox-file (concat org-directory "/inbox.org"))
@@ -1603,6 +1603,7 @@
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((emacs-lisp . t)
+     (scheme . t)
      (shell . t)
      (restclient . t)
      (plantuml . t))))
