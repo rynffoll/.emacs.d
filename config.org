@@ -1594,7 +1594,10 @@ Quick access to shell
 #+end_src
 
 ** Clojure
+Common
 #+begin_src emacs-lisp
+(use-package flycheck-clj-kondo)
+
 (use-package clojure-mode
   :config
   (require 'flycheck-clj-kondo))
@@ -1602,6 +1605,32 @@ Quick access to shell
 (use-package clojure-mode-extra-font-locking)
 (use-package clojure-snippets)
 
+(use-package clj-refactor
+  :pin melpa-stable
+  :general
+  (-local-leader-def :keymaps 'clojure-mode-map
+    "R" '(hydra-cljr-help-menu/body :wk "refactor"))
+  :hook
+  (clojure-mode-hook . clj-refactor-mode))
+
+(use-package eldoc
+  :ensure nil
+  :hook
+  (clojure-mode-hook . eldoc-mode)
+  (cider-repl-mode-hook . eldoc-mode))
+#+end_src
+
+Completion without REPL
+#+begin_src emacs-lisp
+(use-package anakondo
+  :hook
+  (clojure-mode-hook . anakondo-minor-mode)
+  (clojurescript-mode-hook . anakondo-minor-mode)
+  (clojurec-mode-hook . anakondo-minor-mode))
+#+end_src
+
+CIDER
+#+begin_src emacs-lisp
 (use-package cider
   :general
   (-local-leader-def :keymaps 'clojure-mode-map
@@ -1636,22 +1665,6 @@ Quick access to shell
     "r" '(cider-hydra-repl/body :wk "repl"))
   :hook
   (clojure-mode-hook . cider-hydra-mode))
-
-(use-package clj-refactor
-  :pin melpa-stable
-  :general
-  (-local-leader-def :keymaps 'clojure-mode-map
-    "R" '(hydra-cljr-help-menu/body :wk "refactor"))
-  :hook
-  (clojure-mode-hook . clj-refactor-mode))
-
-(use-package eldoc
-  :ensure nil
-  :hook
-  (clojure-mode-hook . eldoc-mode)
-  (cider-repl-mode-hook . eldoc-mode))
-
-(use-package flycheck-clj-kondo)
 #+end_src
 
 ** Java

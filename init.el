@@ -1244,12 +1244,34 @@
   :hook
   (emacs-lisp-mode-hook . eros-mode))
 
+(use-package flycheck-clj-kondo)
+
 (use-package clojure-mode
   :config
   (require 'flycheck-clj-kondo))
 
 (use-package clojure-mode-extra-font-locking)
 (use-package clojure-snippets)
+
+(use-package clj-refactor
+  :pin melpa-stable
+  :general
+  (-local-leader-def :keymaps 'clojure-mode-map
+    "R" '(hydra-cljr-help-menu/body :wk "refactor"))
+  :hook
+  (clojure-mode-hook . clj-refactor-mode))
+
+(use-package eldoc
+  :ensure nil
+  :hook
+  (clojure-mode-hook . eldoc-mode)
+  (cider-repl-mode-hook . eldoc-mode))
+
+(use-package anakondo
+  :hook
+  (clojure-mode-hook . anakondo-minor-mode)
+  (clojurescript-mode-hook . anakondo-minor-mode)
+  (clojurec-mode-hook . anakondo-minor-mode))
 
 (use-package cider
   :general
@@ -1285,22 +1307,6 @@
     "r" '(cider-hydra-repl/body :wk "repl"))
   :hook
   (clojure-mode-hook . cider-hydra-mode))
-
-(use-package clj-refactor
-  :pin melpa-stable
-  :general
-  (-local-leader-def :keymaps 'clojure-mode-map
-    "R" '(hydra-cljr-help-menu/body :wk "refactor"))
-  :hook
-  (clojure-mode-hook . clj-refactor-mode))
-
-(use-package eldoc
-  :ensure nil
-  :hook
-  (clojure-mode-hook . eldoc-mode)
-  (cider-repl-mode-hook . eldoc-mode))
-
-(use-package flycheck-clj-kondo)
 
 (use-package lsp-java
   :after cc-mode
