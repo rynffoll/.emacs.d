@@ -1185,13 +1185,13 @@
 
 (use-package eshell-toggle
   :preface
-  (defun eshell-toggle-init-vterm (dir)
+  (defun -eshell-toggle-init-vterm (dir)
     (let ((default-directory dir))
       (vterm)))
   :general
   ("s-t" 'eshell-toggle)
   :custom
-  (eshell-toggle-init-function 'eshell-toggle-init-vterm)
+  (eshell-toggle-init-function '-eshell-toggle-init-vterm)
   (eshell-toggle-use-projectile-root t)
   (eshell-toggle-run-command nil))
 
@@ -1442,6 +1442,10 @@
 (use-package lua-mode
   :custom
   (lua-indent-level 2))
+
+(use-package flymake-shellcheck
+  :hook
+  (sh-mode-hook . flymake-shellcheck-load))
 
 (use-package vimrc-mode)
 

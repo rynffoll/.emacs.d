@@ -39,8 +39,8 @@
 
 (add-to-list 'default-frame-alist '(left . 0.5))
 (add-to-list 'default-frame-alist '(top . 0.5))
-(add-to-list 'default-frame-alist '(width . 0.75))
-(add-to-list 'default-frame-alist '(height . 0.9))
+(add-to-list 'default-frame-alist '(width . 0.6))
+(add-to-list 'default-frame-alist '(height . 0.8))
 (add-to-list 'default-frame-alist '(menu-bar-lines . 0))
 (add-to-list 'default-frame-alist '(tool-bar-lines . 0))
 (add-to-list 'default-frame-alist '(vertical-scroll-bars))
