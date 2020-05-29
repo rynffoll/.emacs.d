@@ -1177,6 +1177,16 @@
   (eshell-prompt-function 'epe-theme-lambda))
 
 (use-package vterm
+  :preface
+  (defun -vterm ()
+    (interactive)
+    (let ((default-directory "~"))
+      (if (get-buffer "vterm")
+          (switch-to-buffer "vterm")
+        (vterm))))
+  :general
+  (-leader-def
+    "ot" '-vterm)
   :custom
   (vterm-kill-buffer-on-exit t)
   (vterm-max-scrollback 10000)
