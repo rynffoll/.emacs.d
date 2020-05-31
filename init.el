@@ -1751,6 +1751,13 @@
   :hook
   (restclient-mode-hook . restclient-test-mode))
 
+(use-package direnv
+ :general
+  (-local-leader-def :keymaps 'direnv-envrc-mode-map
+    "a" 'direnv-allow)
+ :hook
+ (after-init-hook . direnv-mode))
+
 (use-package password-generator
   :general
   (-leader-def
