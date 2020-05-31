@@ -68,12 +68,6 @@
   :config
   (defalias 'yes-or-no-p 'y-or-n-p))
 
-(use-package startup
-  :ensure nil
-  :custom
-  (inhibit-startup-screen t)
-  (initial-scratch-message nil))
-
 (use-package calendar
   :ensure nil
   :custom
@@ -100,7 +94,6 @@
     "p" '(:ignore t :wk "project")
     "P" '(:ignore t :wk "package")
     "b" '(:ignore t :wk "buffer")
-    "w" '(:ignore t :wk "workspaces")
     "f" '(:ignore t :wk "file")
     "e" '(:ignore t :wk "emacs")
     "g" '(:ignore t :wk "git")
@@ -218,6 +211,19 @@
   :hook
   (after-init-hook . reverse-im-mode))
 
+(use-package startup
+  :ensure nil
+  :custom
+  (inhibit-startup-screen t)
+  (initial-scratch-message nil))
+
+(tooltip-mode -1)
+;; (menu-bar-mode -1)
+
+(when window-system
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1))
+
 (use-package font-lock+
   :ensure nil
   :quelpa
@@ -251,7 +257,7 @@
   :hook
   (after-init-hook . doom-modeline-mode)
   :config
-  (dolist (name '("*Messages*" "*Compile-Log*"))
+  (dolist (name '("*Compile-Log*"))
     (when-let ((buffer (get-buffer name)))
       (with-current-buffer buffer
         (doom-modeline-set-main-modeline)))))
@@ -313,6 +319,31 @@
         ;; '(left-curly-arrow nil) ;; left indicator only
         ;; '(left-curly-arrow right-curly-arrow) ;; default
         ))
+
+(use-package tab-bar
+  :ensure nil
+  :preface
+  (defun -tab-bar-print-tabs (&optional ignore)
+    (interactive)
+    (let* ((tab-names (mapcar (lambda (tab) (alist-get 'name tab)) (tab-bar-tabs)))
+           (current-tab-name (alist-get 'name (tab-bar--current-tab)))
+           (tabs (mapcar (lambda (name)
+                           (if (s-equals? name current-tab-name)
+                               (propertize name 'face '(underline bold))
+                             name))
+                         tab-names)))
+      (message (concat "Tabs: " (s-join ", " tabs)))))
+  :custom
+  (tab-bar-tab-hints t)
+  (tab-bar-select-tab-modifiers '(super))
+  (tab-bar-show 1)
+  (tab-bar-new-tab-choice "*scratch*")
+  (tab-bar-new-tab-to 'rightmost)
+  (tab-bar-tab-post-open-functions (lambda (new-tab)
+                                     (tab-rename (read-string "Tab: "))))
+  :config
+  (when window-system
+    (advice-add #'tab-bar-select-tab :after #'-tab-bar-print-tabs)))
 
 (use-package window
   :ensure nil
@@ -569,62 +600,6 @@
   (projectile-completion-system 'ivy)
   :hook
   (after-init-hook . projectile-mode))
-
-(use-package eyebrowse
-  :commands
-  eyebrowse-create-window-config
-  :preface
-  (defun -eyebrowse-create-window-config-with-tag ()
-    (interactive)
-    (let ((tag (read-string "Tag: ")))
-      (eyebrowse-create-window-config)
-      (eyebrowse-rename-window-config (eyebrowse--get 'current-slot) tag)))
-  (defun -eyebrowse-create-projectile-window-config ()
-    (interactive)
-    (eyebrowse-create-window-config)
-    (let* ((inhibit-quit t)
-           (project-name (with-local-quit (projectile-switch-project))))
-      (if (> (length project-name) 0)
-          (eyebrowse-rename-window-config
-           (eyebrowse--get 'current-slot)
-           (file-name-nondirectory (directory-file-name project-name)))
-        (progn
-          (eyebrowse-close-window-config)
-          (setq quit-flag nil)))))
-  (defun -eyebrowse-close-other-window-configs ()
-    (interactive)
-    (when (or (not eyebrowse-close-window-config-prompt)
-              (yes-or-no-p "Close other window configs?"))
-      (mapcar #'eyebrowse--delete-window-config
-              (remove (eyebrowse--get 'current-slot)
-                      (mapcar #'car (eyebrowse--get 'window-configs))))))
-  :general
-  (-leader-def
-    "wc" 'eyebrowse-close-window-config
-    "w TAB" 'eyebrowse-last-window-config
-    "wR" 'eyebrowse-rename-window-config
-    "ww" 'eyebrowse-switch-to-window-config
-    "w0" 'eyebrowse-switch-to-window-config-0
-    "w1" 'eyebrowse-switch-to-window-config-1
-    "w2" 'eyebrowse-switch-to-window-config-2
-    "w3" 'eyebrowse-switch-to-window-config-3
-    "w4" 'eyebrowse-switch-to-window-config-4
-    "w5" 'eyebrowse-switch-to-window-config-5
-    "w6" 'eyebrowse-switch-to-window-config-6
-    "w7" 'eyebrowse-switch-to-window-config-7
-    "w8" 'eyebrowse-switch-to-window-config-8
-    "w9" 'eyebrowse-switch-to-window-config-9
-    "w[" 'eyebrowse-prev-window-config
-    "w]" 'eyebrowse-next-window-config
-    "wn" '-eyebrowse-create-window-config-with-tag
-    "wp" '-eyebrowse-create-projectile-window-config
-    "wC" '-eyebrowse-close-other-window-configs)
-  :custom
-  (eyebrowse-new-workspace t "Clean up and display the scratch buffer")
-  (eyebrowse-wrap-around t)
-  (eyebrowse-close-window-config-prompt t)
-  :hook
-  (after-init-hook . eyebrowse-mode))
 
 (use-package dired
   :ensure nil
