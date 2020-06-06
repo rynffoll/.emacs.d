@@ -93,6 +93,8 @@
     "O" '(:ignore t :wk "org")
     "p" '(:ignore t :wk "project")
     "P" '(:ignore t :wk "package")
+    "F" '(:ignore t :wk "frame")
+    "t" '(:ignore t :wk "tab")
     "b" '(:ignore t :wk "buffer")
     "f" '(:ignore t :wk "file")
     "e" '(:ignore t :wk "emacs")
@@ -100,7 +102,7 @@
     "/" '(:ignore t :wk "search")
     "j" '(:ignore t :wk "jump")
     "h" '(:ignore t :wk "help")
-    "t" '(:ignore t :wk "toggle")
+    "T" '(:ignore t :wk "toggle")
     "i" '(:ignore t :wk "insert")
     "q" '(:ignore t :wk "quit"))
   (-local-leader-def
@@ -305,10 +307,26 @@
   :ensure nil
   :general
   (-leader-def
-    "tm" 'toggle-frame-maximized
-    "tf" 'toggle-frame-fullscreen)
+    "Ff" 'select-frame-by-name
+    "Fn" 'make-frame-command
+    "Fc" 'delete-frame
+    "FC" 'delete-other-frames
+    "F[" 'ns-prev-frame
+    "F]" 'ns-next-frame
+    "Fo" 'other-frame
+    "Fb" 'switch-to-buffer-other-frame
+    "FM" 'toggle-frame-maximized
+    "FF" 'toggle-frame-fullscreen)
   :config
   (blink-cursor-mode -1))
+
+(use-package ns-win
+  :if (eq window-system 'ns)
+  :ensure nil
+  :general
+  (-leader-def
+    "F[" 'ns-prev-frame
+    "F]" 'ns-next-frame))
 
 (use-package fringe
   :ensure nil
@@ -325,25 +343,62 @@
   :preface
   (defun -tab-bar-print-tabs (&optional ignore)
     (interactive)
-    (let* ((tab-names (mapcar (lambda (tab) (alist-get 'name tab)) (tab-bar-tabs)))
-           (current-tab-name (alist-get 'name (tab-bar--current-tab)))
-           (tabs (mapcar (lambda (name)
-                           (if (s-equals? name current-tab-name)
-                               (propertize name 'face '(underline bold))
-                             name))
-                         tab-names)))
-      (message (concat "Tabs: " (s-join ", " tabs)))))
+    (let* ((current-tab-index (1+ (tab-bar--current-tab-index)))
+           (tab-names (mapcar (lambda (tab) (alist-get 'name tab)) (tab-bar-tabs)))
+           (tabs (mapconcat
+                  (lambda (name)
+                    (let* ((index (1+ (tab-bar--tab-index-by-name name)))
+                           (name-with-index (format "%d:%s" index name)))
+                      (if (= index current-tab-index)
+                          (propertize name-with-index 'face '(underline bold))
+                        name-with-index)))
+                  tab-names ", ")))
+      (message (concat "Tabs: " tabs))))
+  (defun -tab-bar-rename-or-close (name)
+    (if name
+        (tab-rename name)
+      (progn
+        (tab-close)
+        (setq quit-flag nil))))
+  (defun -tab-bar-post-open-rename (tab)
+    (let* ((index (1+ (tab-bar--current-tab-index)))
+           (prompt (format "%d:" index))
+           (inhibit-quit t)
+           (name (with-local-quit (read-string prompt))))
+      (-tab-bar-rename-or-close name)))
+  (defun -tab-bar-post-open-projectile (tab)
+    (let* ((inhibit-quit t)
+           (project (with-local-quit (projectile-switch-project)))
+           (name (when project
+                   (file-name-nondirectory
+                    (directory-file-name project)))))
+      (-tab-bar-rename-or-close name)))
+  (defun -tab-bar-projectile ()
+    (interactive)
+    (let* ((tab-bar-tab-post-open-functions #'-tab-bar-post-open-projectile))
+      (tab-new)))
+  :general
+  (-leader-def
+    "t." '-tab-bar-print-tabs
+    "tt" 'tab-bar-select-tab-by-name
+    "tn" 'tab-new
+    "tp" '-tab-bar-projectile
+    "t[" 'tab-previous
+    "t]" 'tab-next
+    "tc" 'tab-close
+    "tC" 'tab-close-other
+    "tu" 'tab-undo)
   :custom
   (tab-bar-tab-hints t)
   (tab-bar-select-tab-modifiers '(super))
   (tab-bar-show 1)
   (tab-bar-new-tab-choice "*scratch*")
   (tab-bar-new-tab-to 'rightmost)
-  (tab-bar-tab-post-open-functions (lambda (new-tab)
-                                     (tab-rename (read-string "Tab: "))))
+  (tab-bar-tab-post-open-functions #'-tab-bar-post-open-rename)
   :config
-  (when window-system
-    (advice-add #'tab-bar-select-tab :after #'-tab-bar-print-tabs)))
+  (advice-add #'tab-bar-select-tab :after #'-tab-bar-print-tabs)
+  (advice-add #'tab-close :after #'-tab-bar-print-tabs)
+  (advice-add #'tab-close-other :after #'-tab-bar-print-tabs))
 
 (use-package window
   :ensure nil
@@ -367,7 +422,6 @@
   :demand
   :general
   (-leader-def
-    "'" 'winum-select-window-by-number
     "0" 'winum-select-window-0-or-10
     "1" 'winum-select-window-1
     "2" 'winum-select-window-2
@@ -399,7 +453,10 @@
   :ensure nil
   :general
   (-leader-def
-    "bk" 'kill-this-buffer))
+    "bk" 'kill-this-buffer
+
+    "Tde" 'toggle-debug-on-error
+    "Tdq" 'toggle-debug-on-quit))
 
 (use-package window
   :ensure nil
@@ -513,7 +570,7 @@
     "/b" 'swiper
     "/d" 'counsel-rg
 
-    "tt" 'counsel-load-theme
+    "Tt" 'counsel-load-theme
 
     "hF" '(:ignore t :wk "face")
     "hFf" 'counsel-faces
@@ -568,6 +625,13 @@
   (recentf-max-saved-items 300)
   :hook
   (after-init-hook . recentf-mode))
+
+(use-package files
+  :if (eq system-type 'darwin)
+  :ensure nil
+  :custom
+  (insert-directory-program "gls")
+  (trash-directory "~/.Trash/emacs"))
 
 (use-package iqa
   :general
@@ -642,9 +706,7 @@
 (use-package dired-git-info
   :general
   (:keymaps 'dired-mode-map :states 'normal
-            ")" 'dired-git-info-mode)
-  :custom
-  (dgi-auto-hide-details-p nil))
+            ")" 'dired-git-info-mode))
 
 (use-package tramp
   :ensure nil
@@ -667,22 +729,6 @@
   (shell-mode-hook   . with-editor-export-editor)
   (term-exec-hook    . with-editor-export-editor)
   (eshell-mode-hook  . with-editor-export-editor))
-
-(use-package files
-  :if (eq system-type 'darwin)
-  :ensure nil
-  :custom
-  (insert-directory-program "gls")
-  (trash-directory "~/.Trash/emacs"))
-
-(use-package browse-url
-  :disabled
-  :if (file-exists-p "/mnt/c/Windows/System32/cmd.exe")
-  :ensure nil
-  :custom
-  (browse-url-generic-program "/mnt/c/Windows/System32/cmd.exe")
-  (browse-url-generic-args '("/c" "start"))
-  (browse-url-browser-function 'browse-url-generic))
 
 (use-package help
   :ensure nil
@@ -725,7 +771,7 @@
   (-leader-def
     "SPC" 'execute-extended-command
     ":" 'eval-expression
-    "tT" 'toggle-truncate-lines)
+    "TT" 'toggle-truncate-lines)
   :custom
   (backward-delete-char-untabify-method 'hungry)
   (async-shell-command-buffer 'new-buffer)
@@ -780,7 +826,7 @@
     (setq-local global-hl-line-mode nil))
   :general
   (-leader-def
-    "tl" 'global-hl-line-mode)
+    "Tl" 'global-hl-line-mode)
   :hook
   (after-init-hook . global-hl-line-mode))
 
@@ -810,7 +856,7 @@
 (use-package rainbow-mode
   :general
   (-leader-def
-    "tr" 'rainbow-mode)
+    "Tr" 'rainbow-mode)
   :hook
   (css-mode-hook . rainbow-mode))
 
@@ -818,7 +864,7 @@
   :ensure nil
   :general
   (-leader-def
-    "tw" 'whitespace-mode))
+    "Tw" 'whitespace-mode))
 
 (use-package page-break-lines
   :hook
@@ -827,7 +873,7 @@
 (use-package highlight-indent-guides
   :general
   (-leader-def
-    "ti" 'highlight-indent-guides-mode))
+    "Ti" 'highlight-indent-guides-mode))
 
 (use-package hl-todo
   :custom
@@ -839,23 +885,23 @@
   :ensure nil
   :general
   (-leader-def
-    "th" '(:ignore t :wh "highlight")
-    "th." 'highlight-symbol-at-point
-    "thp" 'highlight-phrase
-    "thr" 'highlight-regexp
-    "thl" 'highlight-lines-matching-regexp
-    "thu" 'unhighlight-regexp))
+    "/h" '(:ignore t :wh "highlight")
+    "/h." 'highlight-symbol-at-point
+    "/hp" 'highlight-phrase
+    "/hr" 'highlight-regexp
+    "/hl" 'highlight-lines-matching-regexp
+    "/hu" 'unhighlight-regexp))
 
 (use-package color-identifiers-mode
   :general
   (-leader-def
-    "tc" 'color-identifiers-mode))
+    "Tc" 'color-identifiers-mode))
 
 (use-package display-line-numbers
   :ensure nil
   :general
   (-leader-def
-    "tn" 'display-line-numbers-mode)
+    "Tn" 'display-line-numbers-mode)
   :custom
   (display-line-numbers-width-start t))
 
@@ -930,7 +976,7 @@
 (use-package flyspell
   :general
   (-leader-def
-    "ts" 'flyspell-mode)
+    "Ts" 'flyspell-mode)
   (flyspell-mode-map
    "C-," nil
    "C-." nil
@@ -1782,7 +1828,7 @@
 (use-package olivetti
   :general
   (-leader-def
-    "to" 'olivetti-mode)
+    "To" 'olivetti-mode)
   :custom
   (olivetti-body-width 100))
 

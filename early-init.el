@@ -47,7 +47,7 @@
 (add-to-list 'default-frame-alist '(internal-border-width . 0))
 (add-to-list 'default-frame-alist '(tabs
                                     (current-tab
-                                     (name . "default")
+                                     (name . "main")
                                      (explicit-name . t))))
 ;; (add-to-list 'default-frame-alist '(fullscreen . fullboth))
 (add-to-list 'default-frame-alist '(font . "Fira Mono Medium 14"))
