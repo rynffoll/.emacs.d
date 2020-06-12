@@ -50,4 +50,4 @@
                                      (name . "main")
                                      (explicit-name . t))))
 ;; (add-to-list 'default-frame-alist '(fullscreen . fullboth))
-(add-to-list 'default-frame-alist '(font . "Fira Mono Medium 14"))
+(add-to-list 'default-frame-alist '(font . "JetBrains Mono 14"))
