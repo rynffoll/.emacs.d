@@ -1542,58 +1542,61 @@
 (use-package org
   :ensure org-plus-contrib
   :preface
-  (defun -open-org-directory () (interactive) (find-file org-directory))
+  (defun -open-org-directory  () (interactive) (find-file org-directory))
   (defun -open-org-inbox-file () (interactive) (find-file -org-inbox-file))
-  (defun -open-org-todo-file () (interactive) (find-file -org-todo-file))
+  (defun -open-org-todo-file  () (interactive) (find-file -org-todo-file))
+  (defun -open-org-work-file  () (interactive) (find-file -org-work-file))
   (defun -open-org-notes-file () (interactive) (find-file -org-notes-file))
   :general
   (-leader-def
-    "Oa" '(org-agenda :wk "agenda")
-    "O." '(-open-org-directory :wk "open org-directory")
-    "Oi" '(-open-org-inbox-file :wk "open inbox")
-    "Ot" '(-open-org-todo-file :wk "open todo")
-    "On" '(-open-org-notes-file :wk "open notes"))
+    "Oa" '(org-agenda           :wk "agenda")
+    "O." '(-open-org-directory  :wk "open org-directory")
+    "Oi" '(-open-org-inbox-file :wk "open inbox.org")
+    "Ot" '(-open-org-todo-file  :wk "open todo.org")
+    "Ow" '(-open-org-work-file  :wk "open work.org")
+    "On" '(-open-org-notes-file :wk "open notes.org"))
   :custom
-  (org-insert-heading-respect-content t "Insert new headings after current subtree rather than inside it")
+  (org-directory "~/Org")
+  (-org-inbox-file (concat org-directory "/inbox.org"))
+  (-org-todo-file (concat org-directory "/todo.org"))
+  (-org-work-file (concat org-directory "/work.org"))
+  (-org-notes-file (concat org-directory "/notes.org"))
+  (org-agenda-files `(,-org-inbox-file ,-org-todo-file ,-org-work-file))
+  (org-archive-location (concat org-directory "/old/archive.org" "::* From %s"))
 
   (org-startup-indented t)
+  (org-hide-leading-stars t)
+  (org-hide-leading-stars-before-indent-mode t)
+  (org-insert-heading-respect-content t)
+
   (org-tags-column 0)
   ;; (org-ellipsis "  ") ; conflict with diff-hl
   (org-ellipsis "…")
   (org-pretty-entities t)
-  (org-use-sub-superscripts '{} "Require {} for sub/super scripts")
-  (org-return-follows-link t)
 
-  (org-list-allow-alphabetical t)
-  (org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+")))
+  (org-todo-keywords '((sequence "TODO(t)" "IN PROGRESS(i)" "WAITING(w)" "|" "DONE(d)" "CANCELED(c)")))
+  (org-log-done 'time)
 
   (org-startup-with-inline-images t)
 
-  (org-src-fontify-natively t)
-  (org-src-tab-acts-natively t)
-  (org-src-window-setup 'current-window)
-  (org-edit-src-content-indentation 0)
   (org-catch-invisible-edits 'smart)
 
-  (org-hide-leading-stars t)
-  (org-hide-leading-stars-before-indent-mode t)
-
+  (org-src-fontify-natively t)
   (org-fontify-done-headline nil)
-  (org-fontify-quote-and-verse-blocks t)
-  (org-fontify-whole-heading-line t)
+  (org-fontify-whole-heading-line t))
 
-  (org-todo-keywords '((sequence "TODO(t)" "IN PROGRESS(i)" "WAITING(w)" "|" "DONE(d)" "CANCELED(c)")))
-  (org-priority-faces '((?A . (:inherit error :weight bold))
-                        (?B . (:inherit warning :weight bold))
-                        (?C . (:inherit success :weight bold))))
-  (org-log-done 'time)
+(use-package org-src
+  :ensure org-plus-contrib
+  :custom
+  (org-src-tab-acts-natively t)
+  (org-src-window-setup 'current-window)
+  (org-edit-src-content-indentation 0))
 
-  (org-directory "~/Org")
-  (-org-inbox-file (concat org-directory "/inbox.org"))
-  (-org-todo-file (concat org-directory "/todo.org"))
-  (-org-notes-file (concat org-directory "/notes.org"))
-  (org-agenda-files `(,-org-inbox-file ,-org-todo-file))
-  (org-archive-location (concat org-directory "/old/archive.org" "::* From %s")))
+(use-package org-list
+  :ensure org-plus-contrib
+  :custom
+  (org-list-allow-alphabetical t)
+  (org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))))
 
 (use-package org-face
   :ensure org-plus-contrib
@@ -1609,7 +1612,11 @@
   (org-level-5 ((t :weight bold)))
   (org-level-6 ((t :weight bold)))
   (org-level-7 ((t :weight bold)))
-  (org-level-8 ((t :weight bold))))
+  (org-level-8 ((t :weight bold)))
+  :custom
+  (org-priority-faces '((?A . (:inherit error :weight bold))
+                        (?B . (:inherit warning :weight bold))
+                        (?C . (:inherit success :weight bold)))))
 
 (use-package org-bullets
   :after org
