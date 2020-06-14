@@ -387,6 +387,7 @@
     "t]" 'tab-next
     "tc" 'tab-close
     "tC" 'tab-close-other
+    "tr" 'tab-rename
     "tu" 'tab-undo)
   :custom
   (tab-bar-tab-hints t)
