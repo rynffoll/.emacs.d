@@ -561,15 +561,16 @@ Calendar
     (interactive)
     (let* ((current-tab-index (1+ (tab-bar--current-tab-index)))
            (tab-names (mapcar (lambda (tab) (alist-get 'name tab)) (tab-bar-tabs)))
+           (separator (propertize " | " 'face '(shadow)))
            (tabs (mapconcat
                   (lambda (name)
                     (let* ((index (1+ (tab-bar--tab-index-by-name name)))
                            (name-with-index (format "%d:%s" index name)))
                       (if (= index current-tab-index)
-                          (propertize name-with-index 'face '(underline bold))
-                        name-with-index)))
-                  tab-names ", ")))
-      (message (concat "Tabs: " tabs))))
+                          (propertize name-with-index 'face '(font-lock-constant-face bold))
+                        (propertize name-with-index 'face '(shadow)))))
+                  tab-names separator)))
+      (message tabs)))
   (defun -tab-bar-rename-or-close (name)
     (if name
         (tab-rename name)
@@ -2003,6 +2004,7 @@ Highlight diff
   ;; (org-ellipsis "  ") ; conflict with diff-hl
   (org-ellipsis "…")
   (org-pretty-entities t)
+  (org-use-sub-superscripts '{} "Require {} for sub/super scripts")
 
   (org-todo-keywords '((sequence "TODO(t)" "IN PROGRESS(i)" "WAITING(w)" "|" "DONE(d)" "CANCELED(c)")))
   (org-log-done 'time)
