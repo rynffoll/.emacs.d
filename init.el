@@ -662,10 +662,9 @@
   (-leader-def
     "p" '(:keymap projectile-command-map :package projectile :wk "project"))
   :custom
+  (projectile-project-search-path '("~/Projects"))
   (projectile-enable-caching t)
-  (projectile-completion-system 'ivy)
-  :hook
-  (after-init-hook . projectile-mode))
+  (projectile-completion-system 'ivy))
 
 (use-package dired
   :ensure nil
@@ -922,14 +921,12 @@
 (use-package company
   :general
   ("M-S-SPC" 'company-complete)
+  :custom-face
+  (company-tooltip-selection ((t :inverse-video t)))
   :custom
-  (company-minimum-prefix-length 2)
-  (company-require-match 'never)
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.3)
   (company-selection-wrap-around t)
-  (company-tooltip-minimum-width 30)
-  (company-tooltip-align-annotations t)
-  (company-dabbrev-ignore-case nil)
-  (company-dabbrev-downcase nil)
   :hook
   (after-init-hook . global-company-mode))
 
@@ -1050,14 +1047,6 @@
     :fringe-bitmap '-flycheck-fringe-indicator
     :fringe-face 'flycheck-fringe-info))
 
-(use-package flycheck-inline
-  :custom-face
-  (flycheck-inline-error ((t :inherit compilation-error :box t :height 0.9)))
-  (flycheck-inline-info ((t :inherit compilation-info :box t :height 0.9)))
-  (flycheck-inline-warning ((t :inherit compilation-warning :box t :height 0.9)))
-  :hook
-  (flycheck-mode-hook . flycheck-inline-mode))
-
 (use-package imenu
   :ensure nil
   :general
@@ -1120,11 +1109,8 @@
   :custom
   (treemacs-collapse-dirs (if (executable-find "python") 3 0))
   (treemacs-follow-after-init t)
-  (treemacs-show-cursor t)
-  (treemacs-no-png-images nil)
   (treemacs-no-delete-other-windows nil)
   (treemacs-space-between-root-nodes nil)
-  (treemacs-width 35)
   (treemacs-recenter-after-file-follow 'on-distance)
   (treemacs-recenter-after-tag-follow 'on-distance)
   :hook
@@ -1133,39 +1119,59 @@
   :config
   (treemacs-create-theme "Icons"
     :config
-    (progn
-      (treemacs-create-icon
-       :icon (concat (all-the-icons-octicon "repo" :v-adjust -0.1 :height 1.2) " ")
-       :extensions (root))
+    (let ((root-icon       (format "%s " (all-the-icons-octicon "repo" :v-adjust -0.1 :height 1.2)))
 
-      (treemacs-create-icon
-       :icon (concat  (all-the-icons-octicon "file-directory" :v-adjust 0) " ")
-       :extensions (dir-open))
-      (treemacs-create-icon
-       :icon (concat (all-the-icons-octicon "file-directory" :v-adjust 0) " ")
-       :extensions (dir-closed))
+          (dir-open-icon   (format "%s " (all-the-icons-octicon "file-directory" :v-adjust 0)))
+          (dir-closed-icon (format "%s " (all-the-icons-octicon "file-directory" :v-adjust 0)))
 
-      (treemacs-create-icon
-       :icon (concat "  " (all-the-icons-octicon "tag" :v-adjust 0) " ")
-       :extensions (tag-leaf))
-      (treemacs-create-icon
-       :icon (concat
-              (all-the-icons-octicon "chevron-down" :v-adjust 0)
-              " "
-              (all-the-icons-octicon "tag" :v-adjust 0)
-              " ")
-       :extensions (tag-open))
-      (treemacs-create-icon
-       :icon (concat
-              (all-the-icons-octicon "chevron-right" :v-adjust 0)
-              " "
-              (all-the-icons-octicon "tag" :v-adjust 0)
-              " ")
-       :extensions (tag-closed))
+          (tag-leaf-icon   (format "  %s " (all-the-icons-octicon "tag" :v-adjust 0)))
+          (tag-open-icon   (format "%s %s "
+                                   (all-the-icons-octicon "chevron-down" :v-adjust 0)
+                                   (all-the-icons-octicon "tag" :v-adjust 0)))
+          (tag-closed-icon (format "%s %s "
+                                   (all-the-icons-octicon "chevron-right" :v-adjust 0)
+                                   (all-the-icons-octicon "tag" :v-adjust 0)))
 
-      (treemacs-create-icon
-       :icon (concat (all-the-icons-octicon "file-code" :v-adjust 0) " ")
-       :extensions (fallback))))
+          (error-icon      (format "%s " (all-the-icons-octicon "alert" :v-adjust 0 :face 'error)))
+          (warning-icon    (format "%s " (all-the-icons-octicon "stop"  :v-adjust 0 :face 'warning)))
+          (info-icon       (format "%s " (all-the-icons-octicon "info"  :v-adjust 0 :face 'success)))
+
+          (text-icon       (format "%s " (all-the-icons-octicon "file-text" :v-adjust 0)))
+          (archive-icon    (format "%s " (all-the-icons-octicon "file-zip" :v-adjust 0)))
+          (binary-icon     (format "%s " (all-the-icons-octicon "file-binary" :v-adjust 0)))
+          (pdf-icon        (format "%s " (all-the-icons-octicon "file-pdf" :v-adjust 0)))
+          (media-icon      (format "%s " (all-the-icons-octicon "file-media" :v-adjust 0)))
+
+          (fallback-icon   (format "%s " (all-the-icons-octicon "file-code" :v-adjust 0))))
+
+      (treemacs-create-icon :icon root-icon :extensions (root))
+
+      (treemacs-create-icon :icon dir-open-icon :extensions (dir-open))
+      (treemacs-create-icon :icon dir-closed-icon :extensions (dir-closed))
+
+      (treemacs-create-icon :icon tag-leaf-icon :extensions (tag-leaf))
+      (treemacs-create-icon :icon tag-open-icon :extensions (tag-open))
+      (treemacs-create-icon :icon tag-closed-icon :extensions (tag-closed))
+
+      (treemacs-create-icon :icon error-icon :extensions (error))
+      (treemacs-create-icon :icon warning-icon :extensions (warning))
+      (treemacs-create-icon :icon info-icon :extensions (info))
+
+      (treemacs-create-icon :icon text-icon
+                            :extensions ("md" "markdown" "rst" "log" "org" "txt"
+                                         "CONTRIBUTE" "LICENSE" "README" "CHANGELOG"))
+      (treemacs-create-icon :icon archive-icon
+                            :extensions ("zip" "7z" "tar" "gz" "rar" "tgz"
+                                         "xz" "dmg" "iso"))
+      (treemacs-create-icon :icon binary-icon
+                            :extensions ("exe" "dll" "obj" "so" "o" "out" "elc"))
+      (treemacs-create-icon :icon pdf-icon :extensions ("pdf"))
+      (treemacs-create-icon :icon media-icon
+                            :extensions ("png" "jpg" "jpeg" "gif" "ico" "svg" "bmp"
+                                         "mov" "avi" "mp4" "webm" "mkv"
+                                         "wav" "mp3" "ogg" "midi"))
+
+      (treemacs-create-icon :icon fallback-icon :extensions (fallback))))
 
   (treemacs-load-theme "Icons"))
 
@@ -1211,7 +1217,6 @@
   (-leader-def
     "ot" '-vterm)
   :custom
-  (vterm-kill-buffer-on-exit t)
   (vterm-max-scrollback 10000)
   :hook
   (vterm-mode-hook . -disable-global-hl-line-mode))
@@ -1227,264 +1232,6 @@
   (eshell-toggle-init-function '-eshell-toggle-init-vterm)
   (eshell-toggle-use-projectile-root t)
   (eshell-toggle-run-command nil))
-
-(use-package lsp-mode
-  :custom
-  (lsp-keep-workspace-alive nil)
-  (lsp-prefer-capf t)
-  (lsp-keymap-prefix "C-c l")
-  :hook
-  (lsp-mode-hook . lsp-enable-which-key-integration))
-
-(use-package lsp-ui
-  :after lsp-mode
-  :custom
-  (lsp-ui-doc-enable nil)
-  (lsp-ui-sideline-enable nil))
-
-(use-package lsp-ivy
-  :after lsp-mode
-  :general
-  (lsp-command-map
-   "i" 'lsp-ivy-workspace-symbol
-   "I" 'lsp-ivy-global-workspace-symbol))
-
-(use-package dap-mode
-  :after lsp-mode
-  :general
-  (lsp-command-map
-   "D" 'dap-hydra)
-  :config
-  (dap-mode 1)
-  (dap-ui-mode 1))
-
-(use-package highlight-defined
-  :custom
-  (highlight-defined-face-use-itself t)
-  :hook
-  (emacs-lisp-mode-hook . highlight-defined-mode))
-
-(use-package highlight-quoted
-  :hook
-  (emacs-lisp-mode-hook . highlight-quoted-mode))
-
-(use-package erefactor
-  :general
-  (-local-leader-def :keymaps 'emacs-lisp-mode-map
-    "R" '(:keymap erefactor-map :wk "refactor")))
-
-(use-package eros
-  :hook
-  (emacs-lisp-mode-hook . eros-mode))
-
-(use-package flycheck-clj-kondo)
-
-(use-package clojure-mode
-  :config
-  (require 'flycheck-clj-kondo))
-
-(use-package clojure-mode-extra-font-locking)
-(use-package clojure-snippets)
-
-(use-package clj-refactor
-  :pin melpa-stable
-  :general
-  (-local-leader-def :keymaps 'clojure-mode-map
-    "R" '(hydra-cljr-help-menu/body :wk "refactor"))
-  :hook
-  (clojure-mode-hook . clj-refactor-mode))
-
-(use-package eldoc
-  :ensure nil
-  :hook
-  (clojure-mode-hook . eldoc-mode)
-  (cider-repl-mode-hook . eldoc-mode))
-
-(use-package anakondo
-  :hook
-  (clojure-mode-hook . anakondo-minor-mode)
-  (clojurescript-mode-hook . anakondo-minor-mode)
-  (clojurec-mode-hook . anakondo-minor-mode))
-
-(use-package cider
-  :general
-  (-local-leader-def :keymaps 'clojure-mode-map
-    "c" '(:ignore t :wk "connect")
-    "cc" '(cider-jack-in :wk "jack-in")
-    "cj" '(cider-jack-in-clj :wk "jack-in-clj")
-    "cs" '(cider-jack-in-cljs :wk "jack-in-cljs")
-    "cC" '(cider-connect :wk "connect")
-    "cR" '(cider-restart :wk "restart")
-    "cQ" '(cider-quit :wk "quit")
-
-    "b" '(:ignore t :wk "buffer")
-    "bs" 'cider-scratch
-
-    "=" '(cider-format-buffer :wk "format"))
-  :custom
-  (cider-repl-history-display-style 'one-line)
-  (cider-repl-history-highlight-current-entry t)
-  (cider-repl-history-highlight-inserted-item t)
-  (nrepl-use-ssh-fallback-for-remote-hosts t)
-  :hook
-  (cider-repl-mode-hook . subword-mode)
-  (cider-mode-hook . cider-company-enable-fuzzy-completion)
-  (cider-repl-mode-hook . cider-company-enable-fuzzy-completion))
-
-(use-package cider-hydra
-  :general
-  (-local-leader-def :keymaps 'clojure-mode-map
-    "d" '(cider-hydra-doc/body :wk "doc")
-    "e" '(cider-hydra-eval/body :wk "eval")
-    "t" '(cider-hydra-test/body :wk "test")
-    "r" '(cider-hydra-repl/body :wk "repl"))
-  :hook
-  (clojure-mode-hook . cider-hydra-mode))
-
-(use-package lsp-java
-  :after cc-mode
-  :hook
-  (java-mode-hook . lsp-deferred))
-
-(use-package lsp-java-boot
-  :ensure lsp-java
-  :hook
-  (lsp-mode-hook . lsp-lens-mode)
-  (java-mode-hook . lsp-java-boot-lens-mode))
-
-(use-package dap-java
-  :ensure nil
-  :after lsp-java)
-
-(use-package go-mode
-  :preface
-  (defun -setup-go-mode ()
-    (add-hook 'before-save-hook #'lsp-format-buffer t t)
-    (add-hook 'before-save-hook #'lsp-organize-imports t t))
-  :hook
-  (go-mode-hook . lsp-deferred)
-  (go-mode-hook . -setup-go-mode))
-
-(use-package makefile-executor
-  :general
-  (-local-leader-def :keymaps 'makefile-mode-map
-    "e" '(:ignore t :wk "eval")
-    "ee" '(makefile-executor-execute-target :wk "execute")
-    "eb" '(makefile-executor-execute-target :wk "execute in dedicated buffer")
-    "el" '(makefile-executor-execute-target :wk "execute last"))
-  :hook
-  (makefile-mode-hook . makefile-executor-mode))
-
-(use-package js-mode
-  :ensure nil
-  :hook
-  (js-mode-hook . lsp-deferred))
-
-(use-package web-mode
-  :mode "\\.html?\\'"
-  :custom
-  (web-mode-enable-block-face t)
-  (web-mode-enable-part-face t)
-  (web-mode-enable-comment-interpolation t)
-  (web-mode-enable-current-element-highlight t))
-
-(use-package plantuml-mode
-  :general
-  (-local-leader-def :keymaps 'plantuml-mode-map
-    "p" '(plantuml-preview :wk "preview"))
-  :custom
-  (plantuml-output-type (if (display-images-p) "png" "txt"))
-  (plantuml-default-exec-mode 'jar)
-  (plantuml-jar-path
-   (car (last (file-expand-wildcards
-               "/usr/local/Cellar/plantuml/*/libexec/plantuml.jar")))))
-
-(use-package flycheck-plantuml
-  :hook
-  (plantuml-mode-hook . flycheck-plantuml-setup))
-
-(use-package ob-plantuml
-  :ensure org-plus-contrib
-  :after org
-  :custom
-  (org-plantuml-jar-path plantuml-jar-path))
-
-(use-package sql
-  :ensure nil
-  :general
-  (-local-leader-def :keymaps 'sql-mode-map
-    "c" '(:ignore t :wk "connect")
-    "cc" '(sql-connect :wk "connect")
-
-    "e" '(:ignore t :wk "eval")
-    "ee" '(sql-send-paragraph :wk "paragraph")
-    "el" '(sql-send-line-and-next :wk "line and next")
-    "eb" '(sql-send-buffer :wk "buffer")
-    "er" '(sql-send-region :wk "region")
-    "es" '(sql-send-string :wk "string")
-
-    "l" '(:ignore t :wk "list")
-    "la" '(sql-list-all :wk "all")
-    "lt" '(sql-list-table :wk "table"))
-  :custom
-  (sql-connection-alist '((pg-local
-                           (sql-product 'postgres)
-                           (sql-port 5432)
-                           (sql-server "localhost")
-                           (sql-user "postgres")
-                           (sql-password "postgres")
-                           (sql-database "postgres")))))
-
-(use-package groovy-mode)
-
-(use-package markdown-mode
-  :general
-  (-local-leader-def :keymaps 'markdown-mode-map
-    "p" 'markdown-preview)
-  :custom
-  (markdown-command "pandoc")
-  (markdown-fontify-code-blocks-natively t)
-  :config
-  (add-to-list 'markdown-code-lang-modes '("clj" . clojure-mode)))
-
-(use-package grip-mode
-  :general
-  (-local-leader-def :keymaps 'markdown-mode-map
-    "g" 'grip-mode))
-
-(use-package json-mode
-  :preface
-  (defun -setup-json-mode ()
-    (setq flycheck-checker 'json-jq
-          js-indent-level 2))
-  :general
-  (-local-leader-def :keymaps 'json-mode-map
-    "=" '(json-pretty-print-buffer :wk "format"))
-  :hook
-  (json-mode-hook . -setup-json-mode))
-
-(use-package yaml-mode
-  :mode "Procfile\\'"
-  :hook
-  (yaml-mode-hook . flycheck-mode))
-
-(use-package flycheck-yamllint
-  :hook
-  (yaml-mode-hook . flycheck-yamllint-setup))
-
-(use-package lua-mode
-  :custom
-  (lua-indent-level 2))
-
-(use-package flymake-shellcheck
-  :hook
-  (sh-mode-hook . flymake-shellcheck-load))
-
-(use-package vimrc-mode)
-
-(use-package ssh-config-mode
-  :init
-  (autoload 'ssh-config-mode "ssh-config-mode" t))
 
 (use-package magit
   :commands magit-blame
@@ -1648,16 +1395,14 @@
 
 (use-package ob-core
   :ensure org-plus-contrib
-  :hook
-  (org-babel-after-execute-hook . org-redisplay-inline-images)
-  :config
-  (org-babel-do-load-languages
-   'org-babel-load-languages
+  :custom
+  (org-babel-load-languages 
    '((emacs-lisp . t)
-     (scheme . t)
-     (shell . t)
-     (restclient . t)
-     (plantuml . t))))
+     (scheme     . t)
+     (shell      . t)
+     (plantuml   . t)))
+  :hook
+  (org-babel-after-execute-hook . org-redisplay-inline-images))
 
 (use-package ob-async
   :demand
@@ -1668,6 +1413,268 @@
   :custom
   (org-babel-default-header-args:sh '((:results . "verbatim silent")
                                       (:async   . nil))))
+
+(use-package lsp-mode
+  :custom
+  (lsp-keep-workspace-alive nil)
+  (lsp-prefer-capf t)
+  (lsp-keymap-prefix "C-c l")
+  :hook
+  (lsp-mode-hook . lsp-enable-which-key-integration))
+
+(use-package lsp-ui)
+
+(use-package lsp-ivy
+  :general
+  (lsp-command-map
+   "i" 'lsp-ivy-workspace-symbol
+   "I" 'lsp-ivy-global-workspace-symbol))
+
+(use-package dap-mode
+  :general
+  (lsp-command-map
+   "D" 'dap-hydra)
+  :config
+  (dap-mode 1)
+  (dap-ui-mode 1)
+  (dap-tooltip-mode 1)
+  (dap-ui-controls-mode 1))
+
+(use-package highlight-defined
+  :custom
+  (highlight-defined-face-use-itself t)
+  :hook
+  (emacs-lisp-mode-hook . highlight-defined-mode))
+
+(use-package highlight-quoted
+  :hook
+  (emacs-lisp-mode-hook . highlight-quoted-mode))
+
+(use-package erefactor
+  :general
+  (-local-leader-def :keymaps 'emacs-lisp-mode-map
+    "R" '(:keymap erefactor-map :wk "refactor")))
+
+(use-package eros
+  :hook
+  (emacs-lisp-mode-hook . eros-mode))
+
+(use-package flycheck-clj-kondo)
+
+(use-package clojure-mode
+  :config
+  (require 'flycheck-clj-kondo))
+
+(use-package clojure-mode-extra-font-locking)
+(use-package clojure-snippets)
+
+(use-package clj-refactor
+  :pin melpa-stable
+  :general
+  (-local-leader-def :keymaps 'clojure-mode-map
+    "R" '(hydra-cljr-help-menu/body :wk "refactor"))
+  :hook
+  (clojure-mode-hook . clj-refactor-mode))
+
+(use-package eldoc
+  :ensure nil
+  :hook
+  (clojure-mode-hook . eldoc-mode)
+  (cider-repl-mode-hook . eldoc-mode))
+
+(use-package anakondo
+  :disabled ;; project analysing is too slow
+  :hook
+  (clojure-mode-hook . anakondo-minor-mode)
+  (clojurescript-mode-hook . anakondo-minor-mode)
+  (clojurec-mode-hook . anakondo-minor-mode))
+
+(use-package cider
+  :general
+  (-local-leader-def :keymaps 'clojure-mode-map
+    "c" '(:ignore t :wk "connect")
+    "cc" '(cider-jack-in :wk "jack-in")
+    "cj" '(cider-jack-in-clj :wk "jack-in-clj")
+    "cs" '(cider-jack-in-cljs :wk "jack-in-cljs")
+    "cC" '(cider-connect :wk "connect")
+    "cR" '(cider-restart :wk "restart")
+    "cQ" '(cider-quit :wk "quit")
+
+    "b" '(:ignore t :wk "buffer")
+    "bs" 'cider-scratch
+
+    "=" '(cider-format-buffer :wk "format"))
+  :custom
+  (cider-repl-history-display-style 'one-line)
+  (cider-repl-history-highlight-current-entry t)
+  (cider-repl-history-highlight-inserted-item t)
+  (nrepl-use-ssh-fallback-for-remote-hosts t)
+  :hook
+  (cider-repl-mode-hook . subword-mode)
+  (cider-mode-hook . cider-company-enable-fuzzy-completion)
+  (cider-repl-mode-hook . cider-company-enable-fuzzy-completion))
+
+(use-package cider-hydra
+  :general
+  (-local-leader-def :keymaps 'clojure-mode-map
+    "d" '(cider-hydra-doc/body :wk "doc")
+    "e" '(cider-hydra-eval/body :wk "eval")
+    "t" '(cider-hydra-test/body :wk "test")
+    "r" '(cider-hydra-repl/body :wk "repl"))
+  :hook
+  (clojure-mode-hook . cider-hydra-mode))
+
+(use-package lsp-java
+  :after cc-mode
+  :hook
+  (java-mode-hook . lsp-deferred))
+
+(use-package lsp-java-boot
+  :ensure lsp-java
+  :hook
+  (lsp-mode-hook . lsp-lens-mode)
+  (java-mode-hook . lsp-java-boot-lens-mode))
+
+(use-package dap-java
+  :ensure nil
+  :after lsp-java)
+
+(use-package go-mode
+  :preface
+  (defun -setup-go-mode ()
+    (add-hook 'before-save-hook #'lsp-format-buffer t t)
+    (add-hook 'before-save-hook #'lsp-organize-imports t t))
+  :hook
+  (go-mode-hook . lsp-deferred)
+  (go-mode-hook . -setup-go-mode))
+
+(use-package makefile-executor
+  :general
+  (-local-leader-def :keymaps 'makefile-mode-map
+    "e" '(:ignore t :wk "eval")
+    "ee" '(makefile-executor-execute-target :wk "execute")
+    "eb" '(makefile-executor-execute-target :wk "execute in dedicated buffer")
+    "el" '(makefile-executor-execute-target :wk "execute last"))
+  :hook
+  (makefile-mode-hook . makefile-executor-mode))
+
+(use-package js-mode
+  :ensure nil
+  :hook
+  (js-mode-hook . lsp-deferred))
+
+(use-package web-mode
+  :mode "\\.html?\\'"
+  :custom
+  (web-mode-enable-block-face t)
+  (web-mode-enable-part-face t)
+  (web-mode-enable-comment-interpolation t)
+  (web-mode-enable-current-element-highlight t))
+
+(use-package plantuml-mode
+  :general
+  (-local-leader-def :keymaps 'plantuml-mode-map
+    "p" '(plantuml-preview :wk "preview"))
+  :custom
+  (plantuml-output-type (if (display-images-p) "png" "txt"))
+  (plantuml-default-exec-mode 'jar)
+  (plantuml-jar-path
+   (car (last (file-expand-wildcards
+               "/usr/local/Cellar/plantuml/*/libexec/plantuml.jar")))))
+
+(use-package flycheck-plantuml
+  :hook
+  (plantuml-mode-hook . flycheck-plantuml-setup))
+
+(use-package ob-plantuml
+  :ensure org-plus-contrib
+  :after ob-core
+  :custom
+  (org-plantuml-jar-path plantuml-jar-path))
+
+(use-package sql
+  :ensure nil
+  :general
+  (-local-leader-def :keymaps 'sql-mode-map
+    "c" '(:ignore t :wk "connect")
+    "cc" '(sql-connect :wk "connect")
+
+    "e" '(:ignore t :wk "eval")
+    "ee" '(sql-send-paragraph :wk "paragraph")
+    "el" '(sql-send-line-and-next :wk "line and next")
+    "eb" '(sql-send-buffer :wk "buffer")
+    "er" '(sql-send-region :wk "region")
+    "es" '(sql-send-string :wk "string")
+
+    "l" '(:ignore t :wk "list")
+    "la" '(sql-list-all :wk "all")
+    "lt" '(sql-list-table :wk "table"))
+  :custom
+  (sql-connection-alist '((pg-local
+                           (sql-product 'postgres)
+                           (sql-port 5432)
+                           (sql-server "localhost")
+                           (sql-user "postgres")
+                           (sql-password "postgres")
+                           (sql-database "postgres")))))
+
+(use-package groovy-mode)
+
+(use-package markdown-mode
+  :general
+  (-local-leader-def :keymaps 'markdown-mode-map
+    "p" 'markdown-preview)
+  :custom
+  (markdown-command "pandoc")
+  (markdown-fontify-code-blocks-natively t)
+  :config
+  (add-to-list 'markdown-code-lang-modes '("clj" . clojure-mode)))
+
+(use-package grip-mode
+  :general
+  (-local-leader-def :keymaps 'markdown-mode-map
+    "g" 'grip-mode))
+
+(use-package json-mode
+  :preface
+  (defun -setup-json-mode ()
+    (setq flycheck-checker 'json-jq
+          js-indent-level 2))
+  :general
+  (-local-leader-def :keymaps 'json-mode-map
+    "=" '(json-pretty-print-buffer :wk "format"))
+  :hook
+  (json-mode-hook . -setup-json-mode))
+
+(use-package yaml-mode
+  :mode "Procfile\\'"
+  :hook
+  (yaml-mode-hook . flycheck-mode))
+
+(use-package flycheck-yamllint
+  :hook
+  (yaml-mode-hook . flycheck-yamllint-setup))
+
+(use-package lua-mode
+  :custom
+  (lua-indent-level 2))
+
+(use-package sh-script
+  :preface
+  (defun -setup-sh-mode ()
+    (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p t t))
+  :hook
+  (sh-mode-hook . -setup-sh-mode))
+
+(use-package flymake-shellcheck
+  :hook
+  (sh-mode-hook . flymake-shellcheck-load))
+
+(use-package vimrc-mode)
+
+(use-package ssh-config-mode
+  :init
+  (autoload 'ssh-config-mode "ssh-config-mode" t))
 
 (use-package mu4e
   :ensure nil
@@ -1791,21 +1798,22 @@
     "E" '(ansible-vault-with-editor-encrypt :wk "encrypt")
     "D" '(ansible-vault-with-editor-decrypt :wk "decrypt")))
 
-(use-package restclient
-  :mode
-  ("\\.http\\'" . restclient-mode))
+(use-package verb
+  :general
+  (org-mode-map
+   "C-c C-r" '(:keymap verb-command-map :package verb :wk "verb"))
+  :custom
+  (verb-auto-kill-response-buffers t)
+  (verb-auto-show-headers-buffer nil)
+  (verb-json-use-mode 'json-mode))
 
-(use-package company-restclient
-  :after company restclient
-  :init
-  (add-to-list 'company-backends 'company-restclient))
-
-(use-package ob-restclient
-  :after org restclient)
-
-(use-package restclient-test
-  :hook
-  (restclient-mode-hook . restclient-test-mode))
+(use-package ob-verb
+  :ensure verb
+  :after ob-core
+  :config
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   (append org-babel-load-languages '((verb . t)))))
 
 (use-package direnv
  :general
