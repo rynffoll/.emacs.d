@@ -1288,6 +1288,36 @@
   (magit-pre-refresh-hook . diff-hl-magit-pre-refresh)
   (magit-post-refresh-hook . diff-hl-magit-post-refresh))
 
+(use-package alert
+  :preface
+  (defun -osx-notification (info)
+    (let ((title (alert-encode-string (plist-get info :title)))
+          (message (alert-encode-string (plist-get info :message))))
+      (do-applescript
+       (format "display notification %S with title %S" message title)))
+    (alert-message-notify info))
+  :custom
+  (alert-default-style 'osx-notification)
+  :config
+  (alert-define-style 'osx-notification
+                      :title "AppleScript notification"
+                      :notifier #'-osx-notification))
+
+(use-package appt
+  :ensure nil
+  :preface
+  (defun -appt-alert (min-to-app new-time appt-msg)
+    (let ((title (format "Appointment in %s minutes" min-to-app)))
+      (alert appt-msg :title title)))
+  :custom
+  (appt-time-msg-list nil)
+  (appt-message-warning-time 15)
+  (appt-display-interval 5)
+  (appt-display-mode-line nil)
+  (appt-disp-window-function #'-appt-alert)
+  :config
+  (appt-activate 1))
+
 (use-package org
   :ensure org-plus-contrib
   :preface
@@ -1298,7 +1328,6 @@
   (defun -open-org-notes-file () (interactive) (find-file -org-notes-file))
   :general
   (-leader-def
-    "Oa" '(org-agenda           :wk "agenda")
     "O." '(-open-org-directory  :wk "open org-directory")
     "Oi" '(-open-org-inbox-file :wk "open inbox.org")
     "Ot" '(-open-org-todo-file  :wk "open todo.org")
@@ -1347,6 +1376,18 @@
   :custom
   (org-list-allow-alphabetical t)
   (org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))))
+
+(use-package org-agenda
+  :ensure org-plus-contrib
+  :defer 5
+  :general
+  (-leader-def
+    "Oa" '(org-agenda :wk "agenda"))
+  :hook
+  (org-agenda-finalize-hook . org-agenda-to-appt)
+  :config
+  (org-agenda-to-appt)
+  (run-at-time nil (* 10 60) 'org-agenda-to-appt))
 
 (use-package org-face
   :ensure org-plus-contrib

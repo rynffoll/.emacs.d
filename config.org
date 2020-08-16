@@ -44,8 +44,13 @@
 - [[#file-tree][File Tree]]
 - [[#terminal][Terminal]]
 - [[#git][Git]]
+- [[#notification][Notification]]
+- [[#appointment][Appointment]]
 - [[#org][Org]]
   - [[#common][Common]]
+  - [[#code-blocks][Code Blocks]]
+  - [[#lists][Lists]]
+  - [[#agenda][Agenda]]
   - [[#faces][Faces]]
   - [[#table-of-contents][Table of Contents]]
   - [[#babel][Babel]]
@@ -1646,6 +1651,42 @@ Highlight diff
   (magit-post-refresh-hook . diff-hl-magit-post-refresh))
 #+end_src
 
+* Notification
+#+begin_src emacs-lisp
+(use-package alert
+  :preface
+  (defun -osx-notification (info)
+    (let ((title (alert-encode-string (plist-get info :title)))
+          (message (alert-encode-string (plist-get info :message))))
+      (do-applescript
+       (format "display notification %S with title %S" message title)))
+    (alert-message-notify info))
+  :custom
+  (alert-default-style 'osx-notification)
+  :config
+  (alert-define-style 'osx-notification
+                      :title "AppleScript notification"
+                      :notifier #'-osx-notification))
+#+end_src
+
+* Appointment
+#+begin_src emacs-lisp
+(use-package appt
+  :ensure nil
+  :preface
+  (defun -appt-alert (min-to-app new-time appt-msg)
+    (let ((title (format "Appointment in %s minutes" min-to-app)))
+      (alert appt-msg :title title)))
+  :custom
+  (appt-time-msg-list nil)
+  (appt-message-warning-time 15)
+  (appt-display-interval 5)
+  (appt-display-mode-line nil)
+  (appt-disp-window-function #'-appt-alert)
+  :config
+  (appt-activate 1))
+#+end_src
+
 * Org
 ** Common
 #+begin_src emacs-lisp
@@ -1659,7 +1700,6 @@ Highlight diff
   (defun -open-org-notes-file () (interactive) (find-file -org-notes-file))
   :general
   (-leader-def
-    "Oa" '(org-agenda           :wk "agenda")
     "O." '(-open-org-directory  :wk "open org-directory")
     "Oi" '(-open-org-inbox-file :wk "open inbox.org")
     "Ot" '(-open-org-todo-file  :wk "open todo.org")
@@ -1697,7 +1737,7 @@ Highlight diff
   (org-fontify-whole-heading-line t))
 #+end_src
 
-Code Blocks
+** Code Blocks
 #+begin_src emacs-lisp
 (use-package org-src
   :ensure org-plus-contrib
@@ -1707,13 +1747,28 @@ Code Blocks
   (org-edit-src-content-indentation 0))
 #+end_src
 
-Lists
+** Lists
 #+begin_src emacs-lisp
 (use-package org-list
   :ensure org-plus-contrib
   :custom
   (org-list-allow-alphabetical t)
   (org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))))
+#+end_src
+
+** Agenda
+#+begin_src emacs-lisp
+(use-package org-agenda
+  :ensure org-plus-contrib
+  :defer 5
+  :general
+  (-leader-def
+    "Oa" '(org-agenda :wk "agenda"))
+  :hook
+  (org-agenda-finalize-hook . org-agenda-to-appt)
+  :config
+  (org-agenda-to-appt)
+  (run-at-time nil (* 10 60) 'org-agenda-to-appt))
 #+end_src
 
 ** Faces
@@ -2258,7 +2313,6 @@ Mu4e
   :init
   (with-eval-after-load 'kubernetes-overview
     (require 'kubernetes-evil)))
-#+end_src
 #+end_src
 
 ** Ansible
