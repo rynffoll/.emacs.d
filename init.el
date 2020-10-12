@@ -54,8 +54,7 @@
   (create-lockfiles nil "Stop creating .# files")
   (frame-resize-pixelwise t)
   (window-resize-pixelwise t)
-  ;; https://github.com/justbur/emacs-which-key/issues/130#issuecomment-416299329
-  (inhibit-compacting-font-caches nil)
+  (inhibit-compacting-font-caches t)
   (scroll-step 1)
   (scroll-preserve-screen-position t)
   (scroll-margin 0)
@@ -88,25 +87,25 @@
     :prefix "SPC m"
     :non-normal-prefix "M-SPC m")
   (-leader-def
-    "" '(nil :wk "leader")
-    "o" '(:ignore t :wk "open")
-    "O" '(:ignore t :wk "org")
-    "p" '(:ignore t :wk "project")
-    "P" '(:ignore t :wk "package")
-    "F" '(:ignore t :wk "frame")
-    "t" '(:ignore t :wk "tab")
-    "b" '(:ignore t :wk "buffer")
-    "f" '(:ignore t :wk "file")
-    "e" '(:ignore t :wk "emacs")
-    "g" '(:ignore t :wk "git")
-    "/" '(:ignore t :wk "search")
-    "j" '(:ignore t :wk "jump")
-    "h" '(:ignore t :wk "help")
-    "T" '(:ignore t :wk "toggle")
-    "i" '(:ignore t :wk "insert")
-    "q" '(:ignore t :wk "quit"))
+    ""    '(nil :wk "leader")
+    "o"   '(:ignore t :wk "open")
+    "O"   '(:ignore t :wk "org")
+    "p"   '(:ignore t :wk "project")
+    "P"   '(:ignore t :wk "package")
+    "F"   '(:ignore t :wk "frame")
+    "TAB" '(:ignore t :wk "tab")
+    "b"   '(:ignore t :wk "buffer")
+    "f"   '(:ignore t :wk "file")
+    "e"   '(:ignore t :wk "emacs")
+    "g"   '(:ignore t :wk "git")
+    "/"   '(:ignore t :wk "search")
+    "j"   '(:ignore t :wk "jump")
+    "h"   '(:ignore t :wk "help")
+    "t"   '(:ignore t :wk "toggle")
+    "i"   '(:ignore t :wk "insert")
+    "q"   '(:ignore t :wk "quit"))
   (-local-leader-def
-    "" '(nil :wk "local leader")))
+    ""    '(nil :wk "local leader")))
 
 (use-package evil
   :demand
@@ -338,6 +337,10 @@
         ;; '(left-curly-arrow right-curly-arrow) ;; default
         ))
 
+(use-package default-text-scale
+  :hook
+  (after-init-hook . default-text-scale-mode))
+
 (use-package tab-bar
   :ensure nil
   :preface
@@ -345,14 +348,16 @@
     (interactive)
     (let* ((current-tab-index (1+ (tab-bar--current-tab-index)))
            (tab-names (mapcar (lambda (tab) (alist-get 'name tab)) (tab-bar-tabs)))
-           (separator (propertize " | " 'face '(shadow)))
+           (separator (propertize "|" 'face '(shadow)))
+           (active-face '(font-lock-constant-face :inverse-video t))
+           (inactivate-face '(shadow))
            (tabs (mapconcat
                   (lambda (name)
                     (let* ((index (1+ (tab-bar--tab-index-by-name name)))
-                           (name-with-index (format "%d:%s" index name)))
-                      (if (= index current-tab-index)
-                          (propertize name-with-index 'face '(font-lock-constant-face bold))
-                        (propertize name-with-index 'face '(shadow)))))
+                           (name-with-index (format " %d:%s " index name))
+                           (active? (= index current-tab-index))
+                           (face (if active? active-face inactivate-face)))
+                      (propertize name-with-index 'face face)))
                   tab-names separator)))
       (message tabs)))
   (defun -tab-bar-rename-or-close (name)
@@ -378,18 +383,31 @@
     (interactive)
     (let* ((tab-bar-tab-post-open-functions #'-tab-bar-post-open-projectile))
       (tab-new)))
+  (defun -tab-bar-init ()
+    (let ((tab-bar-tab-post-open-functions nil)
+          (current-index (1+ (tab-bar--current-tab-index)))
+          (tabs '((1 . "main")
+                  (2 . "org")
+                  (3 . "work"))))
+      (dolist (tab tabs)
+        (let ((index (car tab))
+              (name  (cdr tab)))
+          (unless (tab-bar--tab-index-by-name name)
+            (tab-new-to index)
+            (tab-rename name))))
+      (tab-select current-index)))
   :general
   (-leader-def
-    "t." '-tab-bar-print-tabs
-    "tt" 'tab-bar-select-tab-by-name
-    "tn" 'tab-new
-    "tp" '-tab-bar-projectile
-    "t[" 'tab-previous
-    "t]" 'tab-next
-    "tc" 'tab-close
-    "tC" 'tab-close-other
-    "tr" 'tab-rename
-    "tu" 'tab-undo)
+    "TAB TAB" '-tab-bar-print-tabs
+    "TAB ."   'tab-bar-select-tab-by-name
+    "TAB n"   'tab-new
+    "TAB p"   '-tab-bar-projectile
+    "TAB ["   'tab-previous
+    "TAB ]"   'tab-next
+    "TAB c"   'tab-close
+    "TAB C"   'tab-close-other
+    "TAB r"   'tab-rename
+    "TAB u"   'tab-undo)
   :custom
   (tab-bar-tab-hints t)
   (tab-bar-select-tab-modifiers '(super))
@@ -397,10 +415,12 @@
   (tab-bar-new-tab-choice "*scratch*")
   (tab-bar-new-tab-to 'rightmost)
   (tab-bar-tab-post-open-functions #'-tab-bar-post-open-rename)
+  :hook
+  (after-init-hook . -tab-bar-init)
   :config
   (advice-add #'tab-bar-select-tab :after #'-tab-bar-print-tabs)
-  (advice-add #'tab-close :after #'-tab-bar-print-tabs)
-  (advice-add #'tab-close-other :after #'-tab-bar-print-tabs))
+  (advice-add #'tab-close          :after #'-tab-bar-print-tabs)
+  (advice-add #'tab-close-other    :after #'-tab-bar-print-tabs))
 
 (use-package window
   :ensure nil
@@ -457,8 +477,8 @@
   (-leader-def
     "bk" 'kill-this-buffer
 
-    "Tde" 'toggle-debug-on-error
-    "Tdq" 'toggle-debug-on-quit))
+    "tde" 'toggle-debug-on-error
+    "tdq" 'toggle-debug-on-quit))
 
 (use-package window
   :ensure nil
@@ -572,7 +592,7 @@
     "/b" 'swiper
     "/d" 'counsel-rg
 
-    "Tt" 'counsel-load-theme
+    "tt" 'counsel-load-theme
 
     "hF" '(:ignore t :wk "face")
     "hFf" 'counsel-faces
@@ -772,7 +792,7 @@
   (-leader-def
     "SPC" 'execute-extended-command
     ":" 'eval-expression
-    "TT" 'toggle-truncate-lines)
+    "tT" 'toggle-truncate-lines)
   :custom
   (backward-delete-char-untabify-method 'hungry)
   (async-shell-command-buffer 'new-buffer)
@@ -827,7 +847,7 @@
     (setq-local global-hl-line-mode nil))
   :general
   (-leader-def
-    "Tl" 'global-hl-line-mode)
+    "tl" 'global-hl-line-mode)
   :hook
   (after-init-hook . global-hl-line-mode))
 
@@ -857,7 +877,7 @@
 (use-package rainbow-mode
   :general
   (-leader-def
-    "Tr" 'rainbow-mode)
+    "tr" 'rainbow-mode)
   :hook
   (css-mode-hook . rainbow-mode))
 
@@ -865,7 +885,7 @@
   :ensure nil
   :general
   (-leader-def
-    "Tw" 'whitespace-mode))
+    "tw" 'whitespace-mode))
 
 (use-package page-break-lines
   :hook
@@ -874,11 +894,16 @@
 (use-package highlight-indent-guides
   :general
   (-leader-def
-    "Ti" 'highlight-indent-guides-mode))
+    "ti" 'highlight-indent-guides-mode)
+  :custom
+  (highlight-indent-guides-method 'character)
+  (highlight-indent-guides-responsive t))
 
 (use-package hl-todo
   :custom
   (hl-todo-highlight-punctuation ":")
+  (hl-todo-keyword-faces '(("TODO"   . hl-todo)
+                           ("FIXME"  . hl-todo)))
   :hook
   (after-init-hook . global-hl-todo-mode))
 
@@ -896,13 +921,13 @@
 (use-package color-identifiers-mode
   :general
   (-leader-def
-    "Tc" 'color-identifiers-mode))
+    "tc" 'color-identifiers-mode))
 
 (use-package display-line-numbers
   :ensure nil
   :general
   (-leader-def
-    "Tn" 'display-line-numbers-mode)
+    "tn" 'display-line-numbers-mode)
   :custom
   (display-line-numbers-width-start t))
 
@@ -975,7 +1000,7 @@
 (use-package flyspell
   :general
   (-leader-def
-    "Ts" 'flyspell-mode)
+    "ts" 'flyspell-mode)
   (flyspell-mode-map
    "C-," nil
    "C-." nil
@@ -1119,59 +1144,65 @@
   :config
   (treemacs-create-theme "Icons"
     :config
-    (let ((root-icon       (format "%s " (all-the-icons-octicon "repo" :v-adjust -0.1 :height 1.2)))
+    (progn
+      (treemacs-create-icon
+       :icon (format "%s " (all-the-icons-octicon "repo" :v-adjust -0.1 :height 1.2))
+       :extensions (root))
 
-          (dir-open-icon   (format "%s " (all-the-icons-octicon "file-directory" :v-adjust 0)))
-          (dir-closed-icon (format "%s " (all-the-icons-octicon "file-directory" :v-adjust 0)))
+      (treemacs-create-icon
+       :icon (format "%s " (all-the-icons-octicon "file-directory" :v-adjust 0))
+       :extensions (dir-open))
+      (treemacs-create-icon
+       :icon (format "%s " (all-the-icons-octicon "file-directory" :v-adjust 0))
+       :extensions (dir-closed))
 
-          (tag-leaf-icon   (format "  %s " (all-the-icons-octicon "tag" :v-adjust 0)))
-          (tag-open-icon   (format "%s %s "
-                                   (all-the-icons-octicon "chevron-down" :v-adjust 0)
-                                   (all-the-icons-octicon "tag" :v-adjust 0)))
-          (tag-closed-icon (format "%s %s "
-                                   (all-the-icons-octicon "chevron-right" :v-adjust 0)
-                                   (all-the-icons-octicon "tag" :v-adjust 0)))
+      (treemacs-create-icon
+       :icon (format "  %s " (all-the-icons-octicon "tag" :v-adjust 0))
+       :extensions (tag-leaf))
+      (treemacs-create-icon
+       :icon (format "%s %s "
+                     (all-the-icons-octicon "chevron-down" :v-adjust 0)
+                     (all-the-icons-octicon "tag" :v-adjust 0))
+       :extensions (tag-open))
+      (treemacs-create-icon
+       :icon (format "%s %s "
+                     (all-the-icons-octicon "chevron-right" :v-adjust 0)
+                     (all-the-icons-octicon "tag" :v-adjust 0))
+       :extensions (tag-closed))
 
-          (error-icon      (format "%s " (all-the-icons-octicon "alert" :v-adjust 0 :face 'error)))
-          (warning-icon    (format "%s " (all-the-icons-octicon "stop"  :v-adjust 0 :face 'warning)))
-          (info-icon       (format "%s " (all-the-icons-octicon "info"  :v-adjust 0 :face 'success)))
+      (treemacs-create-icon
+       :icon (format "%s " (all-the-icons-octicon "alert" :v-adjust 0 :face 'error))
+       :extensions (error))
+      (treemacs-create-icon
+       :icon (format "%s " (all-the-icons-octicon "stop"  :v-adjust 0 :face 'warning))
+       :extensions (warning))
+      (treemacs-create-icon
+       :icon (format "%s " (all-the-icons-octicon "info"  :v-adjust 0 :face 'success))
+       :extensions (info))
 
-          (text-icon       (format "%s " (all-the-icons-octicon "file-text" :v-adjust 0)))
-          (archive-icon    (format "%s " (all-the-icons-octicon "file-zip" :v-adjust 0)))
-          (binary-icon     (format "%s " (all-the-icons-octicon "file-binary" :v-adjust 0)))
-          (pdf-icon        (format "%s " (all-the-icons-octicon "file-pdf" :v-adjust 0)))
-          (media-icon      (format "%s " (all-the-icons-octicon "file-media" :v-adjust 0)))
+      (treemacs-create-icon
+       :icon (format "%s " (all-the-icons-octicon "file-text" :v-adjust 0))
+       :extensions ("md" "markdown" "rst" "log" "org" "txt"
+                    "CONTRIBUTE" "LICENSE" "README" "CHANGELOG"))
+      (treemacs-create-icon
+       :icon (format "%s " (all-the-icons-octicon "file-zip" :v-adjust 0))
+       :extensions ("zip" "7z" "tar" "gz" "rar" "tgz"
+                    "xz" "dmg" "iso"))
+      (treemacs-create-icon
+       :icon (format "%s " (all-the-icons-octicon "file-binary" :v-adjust 0))
+       :extensions ("exe" "dll" "obj" "so" "o" "out" "elc"))
+      (treemacs-create-icon
+       :icon (format "%s " (all-the-icons-octicon "file-pdf" :v-adjust 0))
+       :extensions ("pdf"))
+      (treemacs-create-icon
+       :icon (format "%s " (all-the-icons-octicon "file-media" :v-adjust 0))
+       :extensions ("png" "jpg" "jpeg" "gif" "ico" "svg" "bmp"
+                    "mov" "avi" "mp4" "webm" "mkv"
+                    "wav" "mp3" "ogg" "midi"))
 
-          (fallback-icon   (format "%s " (all-the-icons-octicon "file-code" :v-adjust 0))))
-
-      (treemacs-create-icon :icon root-icon :extensions (root))
-
-      (treemacs-create-icon :icon dir-open-icon :extensions (dir-open))
-      (treemacs-create-icon :icon dir-closed-icon :extensions (dir-closed))
-
-      (treemacs-create-icon :icon tag-leaf-icon :extensions (tag-leaf))
-      (treemacs-create-icon :icon tag-open-icon :extensions (tag-open))
-      (treemacs-create-icon :icon tag-closed-icon :extensions (tag-closed))
-
-      (treemacs-create-icon :icon error-icon :extensions (error))
-      (treemacs-create-icon :icon warning-icon :extensions (warning))
-      (treemacs-create-icon :icon info-icon :extensions (info))
-
-      (treemacs-create-icon :icon text-icon
-                            :extensions ("md" "markdown" "rst" "log" "org" "txt"
-                                         "CONTRIBUTE" "LICENSE" "README" "CHANGELOG"))
-      (treemacs-create-icon :icon archive-icon
-                            :extensions ("zip" "7z" "tar" "gz" "rar" "tgz"
-                                         "xz" "dmg" "iso"))
-      (treemacs-create-icon :icon binary-icon
-                            :extensions ("exe" "dll" "obj" "so" "o" "out" "elc"))
-      (treemacs-create-icon :icon pdf-icon :extensions ("pdf"))
-      (treemacs-create-icon :icon media-icon
-                            :extensions ("png" "jpg" "jpeg" "gif" "ico" "svg" "bmp"
-                                         "mov" "avi" "mp4" "webm" "mkv"
-                                         "wav" "mp3" "ogg" "midi"))
-
-      (treemacs-create-icon :icon fallback-icon :extensions (fallback))))
+      (treemacs-create-icon
+       :icon (format "%s " (all-the-icons-octicon "file-code" :v-adjust 0))
+       :extensions (fallback))))
 
   (treemacs-load-theme "Icons"))
 
@@ -1319,7 +1350,7 @@
   (appt-activate 1))
 
 (use-package org
-  :ensure org-plus-contrib
+  :ensure nil
   :preface
   (defun -open-org-directory  () (interactive) (find-file org-directory))
   (defun -open-org-inbox-file () (interactive) (find-file -org-inbox-file))
@@ -1343,9 +1374,10 @@
   (org-archive-location (concat org-directory "/old/archive.org" "::* From %s"))
 
   (org-startup-indented t)
+  (org-insert-heading-respect-content t)
   (org-hide-leading-stars t)
   (org-hide-leading-stars-before-indent-mode t)
-  (org-insert-heading-respect-content t)
+  (org-hide-emphasis-markers t)
 
   (org-tags-column 0)
   ;; (org-ellipsis "  ") ; conflict with diff-hl
@@ -1365,20 +1397,20 @@
   (org-fontify-whole-heading-line t))
 
 (use-package org-src
-  :ensure org-plus-contrib
+  :ensure nil
   :custom
   (org-src-tab-acts-natively t)
   (org-src-window-setup 'current-window)
   (org-edit-src-content-indentation 0))
 
 (use-package org-list
-  :ensure org-plus-contrib
+  :ensure nil
   :custom
   (org-list-allow-alphabetical t)
   (org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))))
 
 (use-package org-agenda
-  :ensure org-plus-contrib
+  :ensure nil
   :defer 5
   :general
   (-leader-def
@@ -1390,7 +1422,7 @@
   (run-at-time nil (* 10 60) 'org-agenda-to-appt))
 
 (use-package org-face
-  :ensure org-plus-contrib
+  :ensure nil
   :custom-face
   (org-tag ((t :inherit shadow)))
   (org-ellipsis ((t :underline nil)))
@@ -1435,7 +1467,7 @@
   (org-mode-hook . toc-org-enable))
 
 (use-package ob-core
-  :ensure org-plus-contrib
+  :ensure nil
   :custom
   (org-babel-load-languages 
    '((emacs-lisp . t)
@@ -1450,7 +1482,7 @@
   :after ob-core)
 
 (use-package ob-shell
-  :ensure org-plus-contrib
+  :ensure nil
   :custom
   (org-babel-default-header-args:sh '((:results . "verbatim silent")
                                       (:async   . nil))))
@@ -1628,7 +1660,7 @@
   (plantuml-mode-hook . flycheck-plantuml-setup))
 
 (use-package ob-plantuml
-  :ensure org-plus-contrib
+  :ensure nil
   :after ob-core
   :custom
   (org-plantuml-jar-path plantuml-jar-path))
@@ -1690,7 +1722,8 @@
 (use-package yaml-mode
   :mode "Procfile\\'"
   :hook
-  (yaml-mode-hook . flycheck-mode))
+  (yaml-mode-hook . flycheck-mode)
+  (yaml-mode-hook . highlight-indent-guides-mode))
 
 (use-package flycheck-yamllint
   :hook
@@ -1787,8 +1820,6 @@
   (-leader-def
     "od" 'docker))
 
-(use-package docker-tramp)
-
 (use-package dockerfile-mode
   :general
   (-local-leader-def :keymaps 'dockerfile-mode-map
@@ -1799,16 +1830,6 @@
   :general
   (-local-leader-def :keymaps 'docker-compose-mode-map
     "." 'docker-compose))
-
-(use-package kubernetes
-  :general
-  (-leader-def
-    "ok" 'kubernetes-overview))
-
-(use-package kubernetes-evil
-  :init
-  (with-eval-after-load 'kubernetes-overview
-    (require 'kubernetes-evil)))
 
 (use-package ansible-doc
   :general
@@ -1857,11 +1878,22 @@
    (append org-babel-load-languages '((verb . t)))))
 
 (use-package direnv
- :general
+  :preface
+  (defun -direnv-hook ()
+    (add-hook
+     'after-save-hook
+     (lambda ()
+       (call-interactively 'direnv-update-environment))
+     nil t))
+  :general
   (-local-leader-def :keymaps 'direnv-envrc-mode-map
-    "a" 'direnv-allow)
- :hook
- (after-init-hook . direnv-mode))
+    "a" 'direnv-allow
+    "u" 'direnv-update-environment)
+  :custom
+  (direnv-always-show-summary nil)
+  :hook
+  (after-init-hook . direnv-mode)
+  (direnv-envrc-mode-hook . -direnv-hook))
 
 (use-package password-generator
   :general
@@ -1887,7 +1919,7 @@
 (use-package olivetti
   :general
   (-leader-def
-    "To" 'olivetti-mode)
+    "to" 'olivetti-mode)
   :custom
   (olivetti-body-width 100))
 

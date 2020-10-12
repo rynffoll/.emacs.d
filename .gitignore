@@ -25,3 +25,4 @@ url/
 var/
 workspace/
 amx-items
+async-bytecomp.log
