@@ -67,6 +67,26 @@
   :config
   (defalias 'yes-or-no-p 'y-or-n-p))
 
+(use-package mule
+  :ensure nil
+  :custom
+  (default-input-method 'russian-computer)
+  :config
+  (prefer-coding-system 'utf-8)
+  (set-default-coding-systems 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8))
+
+(use-package emacs
+  :ensure nil
+  :custom
+  (buffer-file-coding-system 'utf-8))
+
+(use-package select
+  :ensure nil
+  :custom
+  (x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
+
 (use-package calendar
   :ensure nil
   :custom
@@ -126,6 +146,8 @@
   (evil-symbol-word-search t)
   (evil-move-beyond-eol nil)
   (evil-move-cursor-back t)
+  (evil-undo-system 'undo-fu)
+  (evil-want-C-i-jump nil)
   :config
   (evil-mode t)
   (evil-ex-define-cmd "q" 'kill-this-buffer)
@@ -201,7 +223,6 @@
 
 (use-package reverse-im
   :general
-  ("s-r"  'reverse-im-translate-word)
   (evil-normal-state-map "C-х" 'evil-force-normal-state)
   (evil-insert-state-map "C-х" 'evil-normal-state)
   (evil-visual-state-map "C-х" 'evil-exit-visual-state)
@@ -212,6 +233,12 @@
   :hook
   (after-init-hook . reverse-im-mode))
 
+(use-package xt-mouse
+  :unless (display-graphic-p)
+  :ensure nil
+  :hook
+  (after-init-hook . xterm-mouse-mode))
+
 (use-package startup
   :ensure nil
   :custom
@@ -219,16 +246,12 @@
   (initial-scratch-message nil))
 
 (tooltip-mode -1)
-;; (menu-bar-mode -1)
+(unless (display-graphic-p)
+  (menu-bar-mode -1))
 
 (when window-system
   (scroll-bar-mode -1)
   (tool-bar-mode -1))
-
-(use-package font-lock+
-  :ensure nil
-  :quelpa
-  (font-lock+ :repo "emacsmirror/font-lock-plus" :fetcher github))
 
 (use-package all-the-icons
   :if (display-graphic-p)
@@ -255,6 +278,9 @@
   (doom-modeline-minor-modes t)
   (doom-modeline-buffer-file-name-style 'buffer-name)
   (doom-modeline-modal-icon nil)
+  (doom-modeline-buffer-encoding nil)
+  (doom-modeline-major-mode-icon nil)
+  (doom-modeline-buffer-modification-icon nil)
   :hook
   (after-init-hook . doom-modeline-mode)
   :config
@@ -328,6 +354,7 @@
     "F]" 'ns-next-frame))
 
 (use-package fringe
+  :if (display-graphic-p)
   :ensure nil
   :init
   (setf (cdr (assq 'continuation fringe-indicator-alist))
@@ -410,13 +437,13 @@
     "TAB u"   'tab-undo)
   :custom
   (tab-bar-tab-hints t)
-  (tab-bar-select-tab-modifiers '(super))
-  (tab-bar-show 1)
+  ;; (tab-bar-select-tab-modifiers '(meta))
+  (tab-bar-show nil)
   (tab-bar-new-tab-choice "*scratch*")
   (tab-bar-new-tab-to 'rightmost)
   (tab-bar-tab-post-open-functions #'-tab-bar-post-open-rename)
-  :hook
-  (after-init-hook . -tab-bar-init)
+  ;; :hook
+  ;; (window-setup-hook . -tab-bar-init)
   :config
   (advice-add #'tab-bar-select-tab :after #'-tab-bar-print-tabs)
   (advice-add #'tab-close          :after #'-tab-bar-print-tabs)
@@ -683,6 +710,7 @@
     "p" '(:keymap projectile-command-map :package projectile :wk "project"))
   :custom
   (projectile-project-search-path '("~/Projects"))
+  (projectile-auto-discover nil)
   (projectile-enable-caching t)
   (projectile-completion-system 'ivy))
 
@@ -813,6 +841,8 @@
   :hook
   (after-init-hook . global-hungry-delete-mode))
 
+(use-package edit-indirect)
+
 (use-package ediff
   :ensure nil
   :custom
@@ -824,10 +854,13 @@
   (ediff-quit-hook . winner-undo))
 
 (use-package undo-tree
+  :disabled
   :custom
   (undo-tree-auto-save-history t)
   (undo-tree-enable-undo-in-region nil)
   (undo-tree-history-directory-alist `(("." . ,temporary-file-directory))))
+
+(use-package undo-fu)
 
 (use-package ansi-color
   :preface
@@ -1035,42 +1068,43 @@
   :hook
   (prog-mode-hook . flycheck-mode)
   :config
-  (define-fringe-bitmap '-flycheck-fringe-indicator
-    (vector #b00000000
-            #b00000000
-            #b00000000
-            #b00000000
-            #b00000000
-            #b00000100
-            #b00001100
-            #b00011100
-            #b00111100
-            #b00011100
-            #b00001100
-            #b00000100
-            #b00000000
-            #b00000000
-            #b00000000
-            #b00000000
-            #b00000000))
+  (when (display-graphic-p)
+    (define-fringe-bitmap '-flycheck-fringe-indicator
+      (vector #b00000000
+              #b00000000
+              #b00000000
+              #b00000000
+              #b00000000
+              #b00000100
+              #b00001100
+              #b00011100
+              #b00111100
+              #b00011100
+              #b00001100
+              #b00000100
+              #b00000000
+              #b00000000
+              #b00000000
+              #b00000000
+              #b00000000))
 
-  (flycheck-define-error-level 'error
-    :severity 2
-    :overlay-category 'flycheck-error-overlay
-    :fringe-bitmap '-flycheck-fringe-indicator
-    :fringe-face 'flycheck-fringe-error)
+    (flycheck-define-error-level 'error
+      :severity 2
+      :overlay-category 'flycheck-error-overlay
+      :fringe-bitmap '-flycheck-fringe-indicator
+      :fringe-face 'flycheck-fringe-error)
 
-  (flycheck-define-error-level 'warning
-    :severity 1
-    :overlay-category 'flycheck-warning-overlay
-    :fringe-bitmap '-flycheck-fringe-indicator
-    :fringe-face 'flycheck-fringe-warning)
+    (flycheck-define-error-level 'warning
+      :severity 1
+      :overlay-category 'flycheck-warning-overlay
+      :fringe-bitmap '-flycheck-fringe-indicator
+      :fringe-face 'flycheck-fringe-warning)
 
-  (flycheck-define-error-level 'info
-    :severity 0
-    :overlay-category 'flycheck-info-overlay
-    :fringe-bitmap '-flycheck-fringe-indicator
-    :fringe-face 'flycheck-fringe-info))
+    (flycheck-define-error-level 'info
+      :severity 0
+      :overlay-category 'flycheck-info-overlay
+      :fringe-bitmap '-flycheck-fringe-indicator
+      :fringe-face 'flycheck-fringe-info)))
 
 (use-package imenu
   :ensure nil
@@ -1088,14 +1122,6 @@
     "jL" 'avy-goto-end-of-line)
   :custom
   (avy-background t))
-
-(use-package ace-window
-  :general
-  (evil-window-map
-   "." 'ace-window)
-  :custom
-  (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-  (aw-scope 'frame))
 
 (use-package link-hint
   :general
@@ -1213,6 +1239,7 @@
   :after treemacs projectile)
 
 (use-package treemacs-icons-dired
+  :if (display-graphic-p)
   :hook
   (dired-mode-hook . treemacs-icons-dired-mode))
 
@@ -1258,7 +1285,7 @@
     (let ((default-directory dir))
       (vterm)))
   :general
-  ("s-t" 'eshell-toggle)
+  ("M-`" 'eshell-toggle)
   :custom
   (eshell-toggle-init-function '-eshell-toggle-init-vterm)
   (eshell-toggle-use-projectile-root t)
@@ -1469,7 +1496,7 @@
 (use-package ob-core
   :ensure nil
   :custom
-  (org-babel-load-languages 
+  (org-babel-load-languages
    '((emacs-lisp . t)
      (scheme     . t)
      (shell      . t)
@@ -1663,7 +1690,9 @@
   :ensure nil
   :after ob-core
   :custom
-  (org-plantuml-jar-path plantuml-jar-path))
+  (org-plantuml-jar-path
+   (car (last (file-expand-wildcards
+               "/usr/local/Cellar/plantuml/*/libexec/plantuml.jar")))))
 
 (use-package sql
   :ensure nil
@@ -1799,12 +1828,14 @@
   (smtpmail-debug-info t))
 
 (use-package xwidget
+  :if (display-graphic-p)
   :ensure nil
   :general
   (-leader-def
     "ow" 'xwidget-webkit-browse-url))
 
 (use-package xwwp-follow-link-ivy
+  :if (display-graphic-p)
   :general
   (:keymaps 'xwidget-webkit-mode-map :states 'normal
     "f" 'xwwp-follow-link)
