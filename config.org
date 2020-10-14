@@ -36,7 +36,6 @@
 - [[#better-undo][Better Undo]]
 - [[#highlighting][Highlighting]]
 - [[#line-numbers][Line Numbers]]
-- [[#snippets][Snippets]]
 - [[#auto-completion][Auto Completion]]
 - [[#search][Search]]
 - [[#folding][Folding]]
@@ -1288,21 +1287,6 @@ Highlight identifiers
   (display-line-numbers-width-start t))
 #+end_src
 
-* Snippets
-#+begin_src emacs-lisp
-(use-package yasnippet
-  :hook
-  (text-mode-hook . yas-minor-mode-on)
-  (prog-mode-hook . yas-minor-mode-on))
-
-(use-package yasnippet-snippets)
-
-(use-package ivy-yasnippet
-  :general
-  (-leader-def
-    "is" 'ivy-yasnippet))
-#+end_src
-
 * Auto Completion
 #+begin_src emacs-lisp
 (use-package company
@@ -1982,7 +1966,6 @@ Common
   (require 'flycheck-clj-kondo))
 
 (use-package clojure-mode-extra-font-locking)
-(use-package clojure-snippets)
 
 (use-package clj-refactor
   :pin melpa-stable

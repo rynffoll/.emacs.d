@@ -964,18 +964,6 @@
   :custom
   (display-line-numbers-width-start t))
 
-(use-package yasnippet
-  :hook
-  (text-mode-hook . yas-minor-mode-on)
-  (prog-mode-hook . yas-minor-mode-on))
-
-(use-package yasnippet-snippets)
-
-(use-package ivy-yasnippet
-  :general
-  (-leader-def
-    "is" 'ivy-yasnippet))
-
 (use-package company
   :general
   ("M-S-SPC" 'company-complete)
@@ -1566,7 +1554,6 @@
   (require 'flycheck-clj-kondo))
 
 (use-package clojure-mode-extra-font-locking)
-(use-package clojure-snippets)
 
 (use-package clj-refactor
   :pin melpa-stable
