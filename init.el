@@ -1827,21 +1827,6 @@
   (smtpmail-smtp-service 587)
   (smtpmail-debug-info t))
 
-(use-package xwidget
-  :if (display-graphic-p)
-  :ensure nil
-  :general
-  (-leader-def
-    "ow" 'xwidget-webkit-browse-url))
-
-(use-package xwwp-follow-link-ivy
-  :if (display-graphic-p)
-  :general
-  (:keymaps 'xwidget-webkit-mode-map :states 'normal
-    "f" 'xwwp-follow-link)
-  :custom
-  (xwwp-follow-link-completion-system 'ivy))
-
 (use-package editorconfig
   :hook
   (after-init-hook . editorconfig-mode))

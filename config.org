@@ -75,7 +75,6 @@
   - [[#shell][Shell]]
   - [[#config][Config]]
 - [[#email][Email]]
-- [[#xwidget][Xwidget]]
 - [[#tools][Tools]]
   - [[#editorconfig][EditorConfig]]
   - [[#docker][Docker]]
@@ -2330,24 +2329,6 @@ Mu4e
   (smtpmail-smtp-server "smtp.gmail.com")
   (smtpmail-smtp-service 587)
   (smtpmail-debug-info t))
-#+end_src
-
-* Xwidget
-#+begin_src emacs-lisp
-(use-package xwidget
-  :if (display-graphic-p)
-  :ensure nil
-  :general
-  (-leader-def
-    "ow" 'xwidget-webkit-browse-url))
-
-(use-package xwwp-follow-link-ivy
-  :if (display-graphic-p)
-  :general
-  (:keymaps 'xwidget-webkit-mode-map :states 'normal
-    "f" 'xwwp-follow-link)
-  :custom
-  (xwwp-follow-link-completion-system 'ivy))
 #+end_src
 
 * Tools
