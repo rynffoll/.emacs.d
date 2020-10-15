@@ -767,6 +767,7 @@
   :demand
   :custom
   (exec-path-from-shell-arguments '("-l") "remove -i")
+  (exec-path-from-shell-variables '("PATH" "MANPATH" "LANG"))
   :config
   (exec-path-from-shell-initialize))
 
@@ -1003,10 +1004,6 @@
 (use-package ispell
   :if (executable-find "hunspell")
   :ensure nil
-  :init
-  ;; ignore $LANG for choosing dictionary
-  ;; (setenv "DICTIONARY" "ru_RU,en_US")
-  (setenv "LANG" "en_US.UTF-8")
   :custom
   (ispell-really-aspell nil)
   (ispell-really-hunspell t)
