@@ -146,7 +146,7 @@
   (evil-symbol-word-search t)
   (evil-move-beyond-eol nil)
   (evil-move-cursor-back t)
-  (evil-undo-system 'undo-fu)
+  (evil-undo-system 'undo-tree)
   (evil-want-C-i-jump nil)
   :config
   (evil-mode t)
@@ -846,13 +846,16 @@
   (ediff-quit-hook . winner-undo))
 
 (use-package undo-tree
-  :disabled
+  :if (eq evil-undo-system 'undo-tree)
   :custom
   (undo-tree-auto-save-history t)
   (undo-tree-enable-undo-in-region nil)
-  (undo-tree-history-directory-alist `(("." . ,temporary-file-directory))))
+  (undo-tree-history-directory-alist `(("." . ,temporary-file-directory)))
+  :hook
+  (after-init-hook . global-undo-tree-mode))
 
-(use-package undo-fu)
+(use-package undo-fu
+  :if (eq evil-undo-system 'undo-fu))
 
 (use-package ansi-color
   :preface
