@@ -289,16 +289,7 @@
       (with-current-buffer buffer
         (doom-modeline-set-main-modeline)))))
 
-(use-package heumi-theme
-  :disabled
-  :ensure nil
-  :load-path "site-lisp/heumi-theme"
-  :demand
-  :config
-  (load-theme 'heumi t))
-
 (use-package solarized-theme
-  ;; :disabled
   :demand
   :custom
   (solarized-distinct-doc-face t)
@@ -936,8 +927,8 @@
 (use-package hl-todo
   :custom
   (hl-todo-highlight-punctuation ":")
-  (hl-todo-keyword-faces '(("TODO"   . hl-todo)
-                           ("FIXME"  . hl-todo)))
+  (hl-todo-keyword-faces '(("TODO"  . hl-todo)
+                           ("FIXME" . hl-todo)))
   :hook
   (after-init-hook . global-hl-todo-mode))
 
