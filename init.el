@@ -401,19 +401,6 @@
     (interactive)
     (let* ((tab-bar-tab-post-open-functions #'-tab-bar-post-open-projectile))
       (tab-new)))
-  (defun -tab-bar-init ()
-    (let ((tab-bar-tab-post-open-functions nil)
-          (current-index (1+ (tab-bar--current-tab-index)))
-          (tabs '((1 . "main")
-                  (2 . "org")
-                  (3 . "work"))))
-      (dolist (tab tabs)
-        (let ((index (car tab))
-              (name  (cdr tab)))
-          (unless (tab-bar--tab-index-by-name name)
-            (tab-new-to index)
-            (tab-rename name))))
-      (tab-select current-index)))
   :general
   (-leader-def
     "TAB TAB" '-tab-bar-print-tabs
@@ -433,8 +420,6 @@
   (tab-bar-new-tab-choice "*scratch*")
   (tab-bar-new-tab-to 'rightmost)
   (tab-bar-tab-post-open-functions #'-tab-bar-post-open-rename)
-  ;; :hook
-  ;; (window-setup-hook . -tab-bar-init)
   :config
   (advice-add #'tab-bar-select-tab :after #'-tab-bar-print-tabs)
   (advice-add #'tab-close          :after #'-tab-bar-print-tabs)
@@ -1334,7 +1319,9 @@
        (format "display notification %S with title %S" message title)))
     (alert-message-notify info))
   :custom
-  (alert-default-style 'osx-notification)
+  (alert-default-style (if (eq window-system 'ns)
+                           'osx-notification
+                         'message))
   :config
   (alert-define-style 'osx-notification
                       :title "AppleScript notification"
