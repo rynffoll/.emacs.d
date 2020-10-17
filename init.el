@@ -100,12 +100,12 @@
     :states '(normal visual insert emacs motion)
     :keymaps 'override
     :prefix "SPC"
-    :non-normal-prefix "M-SPC")
+    :global-prefix "M-SPC")
   (general-create-definer -local-leader-def
     :states '(normal visual insert emacs motion)
     :keymaps 'override
     :prefix "SPC m"
-    :non-normal-prefix "M-SPC m")
+    :global-prefix "M-,")
   (-leader-def
     ""    '(nil :wk "leader")
     "o"   '(:ignore t :wk "open")
@@ -137,6 +137,9 @@
   :general
   (evil-insert-state-map
    "C-k" nil)
+  (-leader-def
+    "j[" 'evil-jump-backward
+    "j]" 'evil-jump-forward)
   :custom
   (evil-want-keybinding nil)
   (evil-split-window-below t)
@@ -183,7 +186,6 @@
 
 (use-package evil-org
   :custom
-  (evil-org-special-o/O '(item table-row))
   (evil-org-key-theme '(todo textobjects insert navigation heading))
   :hook
   (org-mode-hook . evil-org-mode))
@@ -618,6 +620,9 @@
 
 (use-package files
   :ensure nil
+  :general
+  (-leader-def
+    "br" 'revert-buffer)
   :custom
   (require-final-newline t)
   (make-backup-files nil "Stop creating backup~ files")
@@ -1249,7 +1254,7 @@
     (let ((default-directory dir))
       (vterm)))
   :general
-  ("M-`" 'eshell-toggle)
+  ("M-§" 'eshell-toggle)
   :custom
   (eshell-toggle-init-function '-eshell-toggle-init-vterm)
   (eshell-toggle-use-projectile-root t)
@@ -1367,6 +1372,8 @@
     "Ot" '(-open-org-todo-file  :wk "open todo.org")
     "Ow" '(-open-org-work-file  :wk "open work.org")
     "On" '(-open-org-notes-file :wk "open notes.org"))
+  (-local-leader-def
+    "i" 'org-insert-structure-template)
   :custom
   (org-directory "~/Org")
   (-org-inbox-file (concat org-directory "/inbox.org"))
@@ -1867,6 +1874,7 @@
    (append org-babel-load-languages '((verb . t)))))
 
 (use-package direnv
+  :if (executable-find "direnv")
   :preface
   (defun -direnv-hook ()
     (add-hook
