@@ -1310,7 +1310,10 @@
   (magit-pre-refresh-hook . diff-hl-magit-pre-refresh)
   (magit-post-refresh-hook . diff-hl-magit-post-refresh))
 
+(use-package alert)
+
 (use-package alert
+  :if (eq window-system 'ns)
   :preface
   (defun -osx-notification (info)
     (let ((title (alert-encode-string (plist-get info :title)))
@@ -1319,9 +1322,7 @@
        (format "display notification %S with title %S" message title)))
     (alert-message-notify info))
   :custom
-  (alert-default-style (if (eq window-system 'ns)
-                           'osx-notification
-                         'message))
+  (alert-default-style 'osx-notification)
   :config
   (alert-define-style 'osx-notification
                       :title "AppleScript notification"
@@ -1331,16 +1332,25 @@
   :ensure nil
   :preface
   (defun -appt-alert (min-to-app new-time appt-msg)
-    (let ((title (format "Appointment in %s minutes" min-to-app)))
-      (alert appt-msg :title title)))
+    (let ((min-to-app (if (listp min-to-app) min-to-app `(,min-to-app)))
+          (appt-msg   (if (listp appt-msg)   appt-msg   `(,appt-msg))))
+      (dotimes (i (length appt-msg))
+        (let* ((min-to-app (nth i min-to-app))
+               (appt-msg   (nth i appt-msg))
+               (title (format "Appointment in %s minutes" min-to-app)))
+          (alert appt-msg :title title)))))
   :custom
   (appt-time-msg-list nil)
   (appt-message-warning-time 15)
   (appt-display-interval 5)
   (appt-display-mode-line nil)
-  (appt-disp-window-function #'-appt-alert)
+  ;; (appt-disp-window-function #'-appt-alert)
+  (appt-audible nil)
+  (appt-display-diary nil)
   :config
-  (appt-activate 1))
+  (when (eq appt-disp-window-function 'appt-disp-window)
+    (advice-add #'appt-disp-window :after #'-appt-alert))
+  (appt-activate t))
 
 (use-package org
   :ensure nil
@@ -1404,15 +1414,13 @@
 
 (use-package org-agenda
   :ensure nil
-  :defer 5
   :general
   (-leader-def
     "Oa" '(org-agenda :wk "agenda"))
   :hook
-  (org-agenda-finalize-hook . org-agenda-to-appt)
-  :config
-  (org-agenda-to-appt)
-  (run-at-time nil (* 10 60) 'org-agenda-to-appt))
+  (org-agenda-finalize-hook . org-agenda-to-appt))
+
+(run-at-time "10 sec" (* 10 60) 'org-agenda-to-appt)
 
 (use-package org-face
   :ensure nil
