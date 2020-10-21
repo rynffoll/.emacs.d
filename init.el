@@ -1254,7 +1254,7 @@
     (let ((default-directory dir))
       (vterm)))
   :general
-  ("M-§" 'eshell-toggle)
+  ("§" 'eshell-toggle)
   :custom
   (eshell-toggle-init-function '-eshell-toggle-init-vterm)
   (eshell-toggle-use-projectile-root t)
@@ -1321,10 +1321,11 @@
   :if (eq window-system 'ns)
   :preface
   (defun -osx-notification (info)
-    (let ((title (alert-encode-string (plist-get info :title)))
-          (message (alert-encode-string (plist-get info :message))))
-      (do-applescript
-       (format "display notification %S with title %S" message title)))
+    (let* ((title   (substring-no-properties (plist-get info :title)))
+           (message (substring-no-properties (plist-get info :message)))
+           (script  (format "display notification %S with title %S"
+                            message title)))
+      (do-applescript script))
     (alert-message-notify info))
   :custom
   (alert-default-style 'osx-notification)
@@ -1387,7 +1388,7 @@
   (org-insert-heading-respect-content t)
   (org-hide-leading-stars t)
   (org-hide-leading-stars-before-indent-mode t)
-  (org-hide-emphasis-markers t)
+  (org-hide-emphasis-markers nil)
 
   (org-tags-column 0)
   ;; (org-ellipsis "  ") ; conflict with diff-hl
