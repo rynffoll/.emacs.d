@@ -1726,12 +1726,12 @@ macOS notifications
   (appt-message-warning-time 15)
   (appt-display-interval 5)
   (appt-display-mode-line nil)
-  ;; (appt-disp-window-function #'-appt-alert)
+  (appt-disp-window-function (if (display-graphic-p)
+                                 #'-appt-alert
+                               #'appt-disp-window))
   (appt-audible nil)
   (appt-display-diary nil)
   :config
-  (when (eq appt-disp-window-function 'appt-disp-window)
-    (advice-add #'appt-disp-window :after #'-appt-alert))
   (appt-activate t))
 #+end_src
 
