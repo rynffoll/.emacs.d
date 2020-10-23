@@ -1993,16 +1993,6 @@ Common
   (cider-repl-mode-hook . eldoc-mode))
 #+end_src
 
-Completion without REPL
-#+begin_src emacs-lisp
-(use-package anakondo
-  :disabled ;; project analysing is too slow
-  :hook
-  (clojure-mode-hook . anakondo-minor-mode)
-  (clojurescript-mode-hook . anakondo-minor-mode)
-  (clojurec-mode-hook . anakondo-minor-mode))
-#+end_src
-
 CIDER
 #+begin_src emacs-lisp
 (use-package cider

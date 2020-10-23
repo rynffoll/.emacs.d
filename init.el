@@ -1576,13 +1576,6 @@
   (clojure-mode-hook . eldoc-mode)
   (cider-repl-mode-hook . eldoc-mode))
 
-(use-package anakondo
-  :disabled ;; project analysing is too slow
-  :hook
-  (clojure-mode-hook . anakondo-minor-mode)
-  (clojurescript-mode-hook . anakondo-minor-mode)
-  (clojurec-mode-hook . anakondo-minor-mode))
-
 (use-package cider
   :general
   (-local-leader-def :keymaps 'clojure-mode-map
