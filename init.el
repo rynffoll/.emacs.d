@@ -823,8 +823,6 @@
   :hook
   (after-init-hook . global-hungry-delete-mode))
 
-(use-package edit-indirect)
-
 (use-package ediff
   :ensure nil
   :custom
@@ -1381,14 +1379,25 @@
   (-org-todo-file (concat org-directory "/todo.org"))
   (-org-work-file (concat org-directory "/work.org"))
   (-org-notes-file (concat org-directory "/notes.org"))
-  (org-agenda-files `(,-org-inbox-file ,-org-todo-file ,-org-work-file))
-  (org-archive-location (concat org-directory "/old/archive.org" "::* From %s"))
 
   (org-startup-indented t)
   (org-insert-heading-respect-content t)
   (org-hide-leading-stars t)
   (org-hide-leading-stars-before-indent-mode t)
   (org-hide-emphasis-markers nil)
+
+  (org-agenda-files `(,-org-inbox-file ,-org-todo-file ,-org-work-file))
+  (org-agenda-inhibit-startup nil)
+  (org-agenda-skip-unavailable-files t)
+
+  (org-archive-location (concat org-directory "/old/archive.org" "::* From %s"))
+  (org-archive-file-header-format nil)
+
+  (org-refile-targets '((org-agenda-files :maxlevel . 3)))
+  (org-refile-use-outline-path 'file)
+  (org-outline-path-complete-in-steps nil)
+  (org-refile-allow-creating-parent-nodes 'confirm)
+  (org-refile-use-cache t)
 
   (org-tags-column 0)
   ;; (org-ellipsis "  ") ; conflict with diff-hl
@@ -1425,6 +1434,10 @@
   :general
   (-leader-def
     "Oa" '(org-agenda :wk "agenda"))
+  :custom
+  (org-agenda-window-setup 'current-window)
+  (org-agenda-skip-deadline-if-done t)
+  (org-agenda-skip-scheduled-if-done t)
   :hook
   (org-agenda-finalize-hook . org-agenda-to-appt))
 

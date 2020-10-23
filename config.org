@@ -31,7 +31,6 @@
 - [[#environment-variables][Environment Variables]]
 - [[#help][Help]]
 - [[#editor][Editor]]
-- [[#edit-region][Edit Region]]
 - [[#ediff][Ediff]]
 - [[#better-undo][Better Undo]]
 - [[#highlighting][Highlighting]]
@@ -1111,11 +1110,6 @@ Use the Emacsclient as the ~$EDITOR~ of child processes
   (after-init-hook . global-hungry-delete-mode))
 #+end_src
 
-* Edit Region
-#+begin_src emacs-lisp
-(use-package edit-indirect)
-#+end_src
-
 * Ediff
 #+begin_src emacs-lisp
 (use-package ediff
@@ -1767,14 +1761,25 @@ macOS notifications
   (-org-todo-file (concat org-directory "/todo.org"))
   (-org-work-file (concat org-directory "/work.org"))
   (-org-notes-file (concat org-directory "/notes.org"))
-  (org-agenda-files `(,-org-inbox-file ,-org-todo-file ,-org-work-file))
-  (org-archive-location (concat org-directory "/old/archive.org" "::* From %s"))
 
   (org-startup-indented t)
   (org-insert-heading-respect-content t)
   (org-hide-leading-stars t)
   (org-hide-leading-stars-before-indent-mode t)
   (org-hide-emphasis-markers nil)
+
+  (org-agenda-files `(,-org-inbox-file ,-org-todo-file ,-org-work-file))
+  (org-agenda-inhibit-startup nil)
+  (org-agenda-skip-unavailable-files t)
+
+  (org-archive-location (concat org-directory "/old/archive.org" "::* From %s"))
+  (org-archive-file-header-format nil)
+
+  (org-refile-targets '((org-agenda-files :maxlevel . 3)))
+  (org-refile-use-outline-path 'file)
+  (org-outline-path-complete-in-steps nil)
+  (org-refile-allow-creating-parent-nodes 'confirm)
+  (org-refile-use-cache t)
 
   (org-tags-column 0)
   ;; (org-ellipsis "  ") ; conflict with diff-hl
@@ -1820,6 +1825,10 @@ macOS notifications
   :general
   (-leader-def
     "Oa" '(org-agenda :wk "agenda"))
+  :custom
+  (org-agenda-window-setup 'current-window)
+  (org-agenda-skip-deadline-if-done t)
+  (org-agenda-skip-scheduled-if-done t)
   :hook
   (org-agenda-finalize-hook . org-agenda-to-appt))
 #+end_src
