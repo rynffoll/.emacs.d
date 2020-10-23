@@ -1313,9 +1313,10 @@
   (magit-pre-refresh-hook . diff-hl-magit-pre-refresh)
   (magit-post-refresh-hook . diff-hl-magit-post-refresh))
 
-(use-package alert)
+(use-package alert :disabled)
 
 (use-package alert
+  :disabled
   :if (eq window-system 'ns)
   :preface
   (defun -osx-notification (info)
@@ -1333,6 +1334,7 @@
                       :notifier #'-osx-notification))
 
 (use-package appt
+  :disabled
   :ensure nil
   :preface
   (defun -appt-alert (min-to-app new-time appt-msg)
@@ -1441,7 +1443,8 @@
   :hook
   (org-agenda-finalize-hook . org-agenda-to-appt))
 
-(run-at-time "10 sec" (* 10 60) 'org-agenda-to-appt)
+(when (bound-and-true-p appt-timer)
+  (run-at-time "10 sec" (* 10 60) 'org-agenda-to-appt))
 
 (use-package org-face
   :ensure nil

@@ -1685,12 +1685,13 @@ Highlight diff
 * Notification
 TTY notifications
 #+begin_src emacs-lisp
-(use-package alert)
+(use-package alert :disabled)
 #+end_src
 
 macOS notifications
 #+begin_src emacs-lisp
 (use-package alert
+  :disabled
   :if (eq window-system 'ns)
   :preface
   (defun -osx-notification (info)
@@ -1711,6 +1712,7 @@ macOS notifications
 * Appointment
 #+begin_src emacs-lisp
 (use-package appt
+  :disabled
   :ensure nil
   :preface
   (defun -appt-alert (min-to-app new-time appt-msg)
@@ -1834,7 +1836,8 @@ macOS notifications
 #+end_src
 
 #+begin_src emacs-lisp
-(run-at-time "10 sec" (* 10 60) 'org-agenda-to-appt)
+(when (bound-and-true-p appt-timer)
+  (run-at-time "10 sec" (* 10 60) 'org-agenda-to-appt))
 #+end_src
 
 ** Faces
