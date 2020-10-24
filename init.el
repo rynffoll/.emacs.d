@@ -93,6 +93,11 @@
   (calendar-date-style 'iso)
   (calendar-week-start-day 1))
 
+(use-package async
+  :hook
+  (after-init-hook . async-bytecomp-package-mode)
+  (dired-mode-hook . dired-async-mode))
+
 (use-package general
   :config
   (general-evil-setup t)
@@ -248,8 +253,7 @@
   (initial-scratch-message nil))
 
 (tooltip-mode -1)
-(unless (display-graphic-p)
-  (menu-bar-mode -1))
+(menu-bar-mode -1)
 
 (when window-system
   (scroll-bar-mode -1)
@@ -292,7 +296,6 @@
         (doom-modeline-set-main-modeline)))))
 
 (use-package solarized-theme
-  :demand
   :custom
   (solarized-distinct-doc-face t)
   (solarized-use-variable-pitch nil)
@@ -304,13 +307,8 @@
   (solarized-height-plus-2 1.0)
   (solarized-height-plus-3 1.0)
   (solarized-height-plus-4 1.0)
-  :config
+  :init
   (load-theme 'solarized-gruvbox-dark t))
-
-(use-package async
-  :hook
-  (after-init-hook . async-bytecomp-package-mode)
-  (dired-mode-hook . dired-async-mode))
 
 (use-package paradox
   :general
@@ -329,8 +327,6 @@
     "Fn" 'make-frame-command
     "Fc" 'delete-frame
     "FC" 'delete-other-frames
-    "F[" 'ns-prev-frame
-    "F]" 'ns-next-frame
     "Fo" 'other-frame
     "Fb" 'switch-to-buffer-other-frame
     "FM" 'toggle-frame-maximized
@@ -351,8 +347,8 @@
   :ensure nil
   :init
   (setf (cdr (assq 'continuation fringe-indicator-alist))
-        ;; '(nil nil) ;; no continuation indicators
-        '(nil right-curly-arrow) ;; right indicator only
+        '(nil nil) ;; no continuation indicators
+        ;; '(nil right-curly-arrow) ;; right indicator only
         ;; '(left-curly-arrow nil) ;; left indicator only
         ;; '(left-curly-arrow right-curly-arrow) ;; default
         ))
@@ -560,6 +556,7 @@
   (ivy-virtual-abbreviate 'full)
   (ivy-on-del-error-function nil)
   (ivy-use-selectable-prompt t)
+  (ivy-initial-inputs-alist nil "Remove ^ from prompt")
   (ivy-re-builders-alist '((counsel-rg . ivy--regex-plus)
                            (swiper     . ivy--regex-plus)
                            (t          . ivy--regex-fuzzy)))
@@ -866,14 +863,6 @@
     "tl" 'global-hl-line-mode)
   :hook
   (after-init-hook . global-hl-line-mode))
-
-(use-package volatile-highlights
-  :after undo-tree
-  :hook
-  (after-init-hook . volatile-highlights-mode)
-  :config
-  (vhl/define-extension 'undo-tree 'undo-tree-yank 'undo-tree-move)
-  (vhl/install-extension 'undo-tree))
 
 (use-package paren
   :ensure nil
