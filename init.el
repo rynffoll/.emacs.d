@@ -1293,13 +1293,15 @@
 (use-package gitignore-mode)
 
 (use-package diff-hl
+  :disabled
   :custom
   (diff-hl-draw-borders nil)
   :hook
-  (after-init-hook . global-diff-hl-mode)
-  (diff-hl-mode-hook . diff-hl-flydiff-mode)
-  (dired-mode-hook . diff-hl-dired-mode)
-  (magit-pre-refresh-hook . diff-hl-magit-pre-refresh)
+  (after-init-hook         . global-diff-hl-mode)
+  (after-init-hook         . diff-hl-margin-mode)
+  (diff-hl-mode-hook       . diff-hl-flydiff-mode)
+  (dired-mode-hook         . diff-hl-dired-mode)
+  (magit-pre-refresh-hook  . diff-hl-magit-pre-refresh)
   (magit-post-refresh-hook . diff-hl-magit-post-refresh))
 
 (use-package alert :disabled)
