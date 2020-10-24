@@ -62,6 +62,10 @@
   (ring-bell-function 'ignore)
   (delete-by-moving-to-trash t)
   (read-process-output-max (* 1024 1024))
+  (bidi-inhibit-bpa t)
+  (bidi-display-reordering 'left-to-right)
+  (bidi-paragraph-direction 'left-to-right)
+  (fast-but-imprecise-scrolling t)
   :hook
   (focus-out-hook . garbage-collect)
   :config
@@ -649,6 +653,7 @@
 (use-package recentf
   :ensure nil
   :custom
+  (recentf-auto-cleanup 300)
   (recentf-max-saved-items 300)
   :hook
   (after-init-hook . recentf-mode))
@@ -1370,8 +1375,8 @@
   :custom
   (org-directory "~/Org")
   (-org-inbox-file (concat org-directory "/inbox.org"))
-  (-org-todo-file (concat org-directory "/todo.org"))
-  (-org-work-file (concat org-directory "/work.org"))
+  (-org-todo-file  (concat org-directory "/todo.org"))
+  (-org-work-file  (concat org-directory "/work.org"))
   (-org-notes-file (concat org-directory "/notes.org"))
 
   (org-startup-indented t)
@@ -1430,8 +1435,8 @@
     "Oa" '(org-agenda :wk "agenda"))
   :custom
   (org-agenda-window-setup 'current-window)
-  (org-agenda-skip-deadline-if-done t)
-  (org-agenda-skip-scheduled-if-done t)
+  (org-agenda-skip-deadline-if-done (bound-and-true-p appt-timer))
+  (org-agenda-skip-scheduled-if-done (bound-and-true-p appt-timer))
   :hook
   (org-agenda-finalize-hook . org-agenda-to-appt))
 
