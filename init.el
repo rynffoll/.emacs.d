@@ -1271,6 +1271,7 @@
                                   (,magit-clone-default-directory . 1))))
 
 (use-package magit-todos
+  :disabled
   :custom
   (magit-todos-keyword-suffix (rx (optional "(" (1+ (not (any ")"))) ")" ":")))
   :hook
