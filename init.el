@@ -1392,8 +1392,7 @@
   (org-refile-use-cache t)
 
   (org-tags-column 0)
-  (org-ellipsis "  ") ; conflict with diff-hl
-  ;; (org-ellipsis "…")
+  (org-ellipsis "…")
   (org-pretty-entities t)
   (org-use-sub-superscripts '{} "Require {} for sub/super scripts")
 
