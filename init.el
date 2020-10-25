@@ -217,12 +217,13 @@
   (evil-traces-use-diff-faces))
 
 (use-package which-key
-  :custom-face
-  (which-key-local-map-description-face ((t :weight bold)))
   :custom
-  (which-key-idle-delay 0.3)
-  (which-key-sort-order #'which-key-prefix-then-key-order)
-  (which-key-sort-uppercase-first nil)
+  ;; Allow C-h to trigger which-key before it is done automatically
+  (which-key-show-early-on-C-h t)
+  ;; make sure which-key doesn't show normally but refreshes quickly after it is
+  ;; triggered.
+  (which-key-idle-delay 10000)
+  (which-key-idle-secondary-delay 0.05)
   :hook
   (after-init-hook . which-key-mode))
 
