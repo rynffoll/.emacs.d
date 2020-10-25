@@ -104,7 +104,6 @@
 
 (use-package general
   :config
-  (general-evil-setup t)
   (general-create-definer -leader-def
     :states '(normal visual insert emacs motion)
     :keymaps 'override
@@ -169,7 +168,6 @@
   :demand
   :after evil
   :custom
-  (evil-collection-setup-minibuffer nil)
   (evil-collection-company-use-tng nil)
   :config
   (evil-collection-init))
@@ -304,7 +302,6 @@
   :custom
   (solarized-distinct-doc-face t)
   (solarized-use-variable-pitch nil)
-  (solarized-emphasize-indicators t)
   (solarized-scale-org-headlines nil)
   (solarized-scale-outline-headlines nil)
   (solarized-height-minus-1 1.0)
@@ -526,7 +523,6 @@
 
 (use-package shackle
   :custom
-  (shackle-default-alignment 'below)
   (shackle-default-size 0.3)
   (shackle-rules '((help-mode :align below :select t)
                    (helpful-mode :align below)
@@ -654,7 +650,6 @@
 (use-package recentf
   :ensure nil
   :custom
-  (recentf-auto-cleanup 300)
   (recentf-max-saved-items 300)
   :hook
   (after-init-hook . recentf-mode))
@@ -683,10 +678,10 @@
   :custom
   (custom-file null-device "Don't store customizations"))
 
-(use-package epa
+(use-package epg-config
   :ensure nil
   :custom
-  (epa-pinentry-mode 'loopback))
+  (epg-pinentry-mode 'loopback))
 
 (use-package projectile
   :general
@@ -840,7 +835,6 @@
   :if (eq evil-undo-system 'undo-tree)
   :custom
   (undo-tree-auto-save-history t)
-  (undo-tree-enable-undo-in-region nil)
   (undo-tree-history-directory-alist `(("." . ,temporary-file-directory)))
   :hook
   (after-init-hook . global-undo-tree-mode))
@@ -1384,14 +1378,12 @@
   (org-insert-heading-respect-content t)
   (org-hide-leading-stars t)
   (org-hide-leading-stars-before-indent-mode t)
-  (org-hide-emphasis-markers nil)
 
   (org-agenda-files `(,-org-inbox-file ,-org-todo-file ,-org-work-file))
-  (org-agenda-inhibit-startup nil)
+  (org-agenda-inhibit-startup t)
   (org-agenda-skip-unavailable-files t)
 
   (org-archive-location (concat org-directory "/old/archive.org" "::* From %s"))
-  (org-archive-file-header-format nil)
 
   (org-refile-targets '((org-agenda-files :maxlevel . 3)))
   (org-refile-use-outline-path 'file)
@@ -1400,8 +1392,8 @@
   (org-refile-use-cache t)
 
   (org-tags-column 0)
-  ;; (org-ellipsis "  ") ; conflict with diff-hl
-  (org-ellipsis "…")
+  (org-ellipsis "  ") ; conflict with diff-hl
+  ;; (org-ellipsis "…")
   (org-pretty-entities t)
   (org-use-sub-superscripts '{} "Require {} for sub/super scripts")
 
@@ -1412,8 +1404,6 @@
 
   (org-catch-invisible-edits 'smart)
 
-  (org-src-fontify-natively t)
-  (org-fontify-done-headline nil)
   (org-fontify-whole-heading-line t))
 
 (use-package org-src
@@ -1504,16 +1494,9 @@
   :demand
   :after ob-core)
 
-(use-package ob-shell
-  :ensure nil
-  :custom
-  (org-babel-default-header-args:sh '((:results . "verbatim silent")
-                                      (:async   . nil))))
-
 (use-package lsp-mode
   :custom
   (lsp-keep-workspace-alive nil)
-  (lsp-prefer-capf t)
   (lsp-keymap-prefix "C-c l")
   :hook
   (lsp-mode-hook . lsp-enable-which-key-integration))
@@ -1580,32 +1563,26 @@
 (use-package cider
   :general
   (-local-leader-def :keymaps 'clojure-mode-map
-    "c" '(:ignore t :wk "connect")
-    "cc" '(cider-jack-in :wk "jack-in")
-    "cj" '(cider-jack-in-clj :wk "jack-in-clj")
+    "c" '(:ignore t           :wk "connect")
+    "cc" '(cider-jack-in      :wk "jack-in")
+    "cj" '(cider-jack-in-clj  :wk "jack-in-clj")
     "cs" '(cider-jack-in-cljs :wk "jack-in-cljs")
-    "cC" '(cider-connect :wk "connect")
-    "cR" '(cider-restart :wk "restart")
-    "cQ" '(cider-quit :wk "quit")
+    "cC" '(cider-connect      :wk "connect")
+    "cR" '(cider-restart      :wk "restart")
+    "cQ" '(cider-quit         :wk "quit")
 
-    "b" '(:ignore t :wk "buffer")
+    "b" '(:ignore t           :wk "buffer")
     "bs" 'cider-scratch
 
     "=" '(cider-format-buffer :wk "format"))
-  :custom
-  (cider-repl-history-display-style 'one-line)
-  (cider-repl-history-highlight-current-entry t)
-  (cider-repl-history-highlight-inserted-item t)
-  (nrepl-use-ssh-fallback-for-remote-hosts t)
   :hook
-  (cider-repl-mode-hook . subword-mode)
-  (cider-mode-hook . cider-company-enable-fuzzy-completion)
+  (cider-mode-hook      . cider-company-enable-fuzzy-completion)
   (cider-repl-mode-hook . cider-company-enable-fuzzy-completion))
 
 (use-package cider-hydra
   :general
   (-local-leader-def :keymaps 'clojure-mode-map
-    "d" '(cider-hydra-doc/body :wk "doc")
+    "d" '(cider-hydra-doc/body  :wk "doc")
     "e" '(cider-hydra-eval/body :wk "eval")
     "t" '(cider-hydra-test/body :wk "test")
     "r" '(cider-hydra-repl/body :wk "repl"))
@@ -1870,7 +1847,6 @@
    "C-c C-r" '(:keymap verb-command-map :package verb :wk "verb"))
   :custom
   (verb-auto-kill-response-buffers t)
-  (verb-auto-show-headers-buffer nil)
   (verb-json-use-mode 'json-mode))
 
 (use-package ob-verb
