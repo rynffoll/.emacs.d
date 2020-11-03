@@ -1383,7 +1383,7 @@
   (org-agenda-inhibit-startup t)
   (org-agenda-skip-unavailable-files t)
 
-  (org-archive-location (concat org-directory "/old/archive.org" "::* From %s"))
+  (org-archive-location (concat org-directory "/archive.org::datetree/"))
 
   (org-refile-targets '((org-agenda-files :maxlevel . 3)))
   (org-refile-use-outline-path 'file)
@@ -1404,6 +1404,11 @@
   (org-catch-invisible-edits 'smart)
 
   (org-fontify-whole-heading-line t))
+
+(use-package org-archive
+  :ensure nil
+  :custom
+  (org-archive-file-header-format nil))
 
 (use-package org-src
   :ensure nil

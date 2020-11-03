@@ -48,6 +48,7 @@
 - [[#appointment][Appointment]]
 - [[#org][Org]]
   - [[#common][Common]]
+  - [[#archive][Archive]]
   - [[#code-blocks][Code Blocks]]
   - [[#lists][Lists]]
   - [[#agenda][Agenda]]
@@ -1762,7 +1763,7 @@ macOS notifications
   (org-agenda-inhibit-startup t)
   (org-agenda-skip-unavailable-files t)
 
-  (org-archive-location (concat org-directory "/old/archive.org" "::* From %s"))
+  (org-archive-location (concat org-directory "/archive.org::datetree/"))
 
   (org-refile-targets '((org-agenda-files :maxlevel . 3)))
   (org-refile-use-outline-path 'file)
@@ -1783,6 +1784,13 @@ macOS notifications
   (org-catch-invisible-edits 'smart)
 
   (org-fontify-whole-heading-line t))
+#+end_src
+** Archive
+#+begin_src emacs-lisp
+(use-package org-archive
+  :ensure nil
+  :custom
+  (org-archive-file-header-format nil))
 #+end_src
 
 ** Code Blocks
@@ -2212,13 +2220,13 @@ SSH
 #+end_src
 
 * Email
-Configure =~/.authinfo.gpg= ([[https://myaccount.google.com/apppasswords][App passwords]])
+Configure ~~/.authinfo.gpg~ ([[https://myaccount.google.com/apppasswords][App passwords]])
 #+begin_src emacs-lisp :tangle no
 machine imap.gmail.com login rynffoll port imaps password <PASSWORD>
 machine smtp.gmail.com login rynffoll port 587 password <PASSWORD>
 #+end_src
 
-Create =~/Maildir=
+Create ~~/Maildir~
 #+begin_src sh :output silent :tangle no
 mkdir -p ~/Maildir
 #+end_src
