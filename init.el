@@ -1114,12 +1114,12 @@
   :custom-face
   (treemacs-root-face ((t :inherit font-lock-constant-face :bold t :height 1.1)))
   :custom
-  (treemacs-collapse-dirs (if (executable-find "python") 3 0))
   (treemacs-follow-after-init t)
   (treemacs-no-delete-other-windows nil)
   (treemacs-space-between-root-nodes nil)
   (treemacs-recenter-after-file-follow 'on-distance)
   (treemacs-recenter-after-tag-follow 'on-distance)
+  (treemacs-show-cursor t)
   :hook
   (treemacs-mode-hook . hide-mode-line-mode)
   (treemacs-mode-hook . -hide-fringes)
@@ -1189,7 +1189,8 @@
   (treemacs-load-theme "Icons"))
 
 (use-package treemacs-evil
-  :after treemacs)
+  :demand
+  :after treemacs evil)
 
 (use-package treemacs-projectile
   :after treemacs projectile)
