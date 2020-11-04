@@ -1816,15 +1816,6 @@
   (-local-leader-def :keymaps 'docker-compose-mode-map
     "." 'docker-compose))
 
-(use-package ansible-doc
-  :general
-  (-local-leader-def :keymaps 'yaml-mode-map
-    "h" '(ansible-doc :wh "doc"))
-  :hook
-  (yaml-mode-hook . ansible-doc-mode)
-  :config
-  (evil-set-initial-state 'ansible-doc-module-mode 'motion))
-
 (use-package jinja2-mode
   :mode "\\.j2\\'")
 
