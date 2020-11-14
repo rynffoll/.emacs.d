@@ -35,6 +35,8 @@
           #'(lambda ()
               (setq file-name-handler-alist -file-name-handler-alist)))
 
+(setq site-run-file nil)
+
 (setq frame-inhibit-implied-resize t)
 
 (add-to-list 'default-frame-alist '(left . 0.5))

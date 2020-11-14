@@ -66,8 +66,6 @@
   (bidi-display-reordering 'left-to-right)
   (bidi-paragraph-direction 'left-to-right)
   (fast-but-imprecise-scrolling t)
-  :hook
-  (focus-out-hook . garbage-collect)
   :config
   (defalias 'yes-or-no-p 'y-or-n-p))
 
@@ -499,7 +497,6 @@
 
 (use-package uniquify
   :ensure nil
-  :defer 2
   :custom
   (uniquify-buffer-name-style 'forward))
 
@@ -743,6 +740,7 @@
   (tramp-default-proxies-alist nil))
 
 (use-package exec-path-from-shell
+  :if (or (memq window-system '(mac ns x)) (daemonp))
   :demand
   :custom
   (exec-path-from-shell-arguments '("-l") "remove -i")
@@ -1485,14 +1483,22 @@
 
 (use-package ob-core
   :ensure nil
-  :custom
-  (org-babel-load-languages
-   '((emacs-lisp . t)
-     (scheme     . t)
-     (shell      . t)
-     (plantuml   . t)))
   :hook
   (org-babel-after-execute-hook . org-redisplay-inline-images))
+
+(use-package ob-emacs-lisp
+  :ensure nil
+  :commands
+  org-babel-execute:emacs-lisp
+  org-babel-expand-body:emacs-lisp)
+
+(use-package ob-shell
+  :ensure nil
+  :commands
+  org-babel-execute:sh
+  org-babel-expand-body:sh
+  org-babel-execute:bash
+  org-babel-expand-body:bash)
 
 (use-package ob-async
   :demand
@@ -1658,6 +1664,8 @@
 (use-package ob-plantuml
   :ensure nil
   :after ob-core
+  :commands
+  org-babel-execute:plantuml
   :custom
   (org-plantuml-jar-path
    (car (last (file-expand-wildcards
@@ -1847,10 +1855,8 @@
 (use-package ob-verb
   :ensure verb
   :after ob-core
-  :config
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   (append org-babel-load-languages '((verb . t)))))
+  :commands
+  org-babel-execute:verb)
 
 (use-package direnv
   :if (executable-find "direnv")
