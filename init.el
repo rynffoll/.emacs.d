@@ -167,19 +167,13 @@
   :after evil
   :custom
   (evil-collection-company-use-tng nil)
+  (evil-collection-magit-want-horizontal-movement t)
   :config
   (evil-collection-init))
 
 (use-package evil-commentary
   :hook
   (after-init-hook . evil-commentary-mode))
-
-(use-package evil-magit
-  :demand
-  :after magit
-  :custom
-  (evil-magit-want-horizontal-movement t)
-  (evil-magit-use-z-for-folds t))
 
 (use-package evil-surround
   :hook
