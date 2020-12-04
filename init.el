@@ -715,18 +715,6 @@
   ;; for treemacs-icons-dired
   (advice-add #'dired-subtree-toggle :after #'-dired-subtree-revert))
 
-(use-package pack
-  :general
-  (:keymaps 'dired-mode-map :states 'normal
-            "P" 'pack-dired-dwim)
-  :custom
-  (pack-dired-default-extension ".zip"))
-
-(use-package dired-git-info
-  :general
-  (:keymaps 'dired-mode-map :states 'normal
-            ")" 'dired-git-info-mode))
-
 (use-package tramp
   :ensure nil
   :custom
