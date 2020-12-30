@@ -1738,54 +1738,6 @@
   :init
   (autoload 'ssh-config-mode "ssh-config-mode" t))
 
-(use-package mu4e
-  :ensure nil
-  :load-path "/usr/local/share/emacs/site-lisp/mu/mu4e"
-  :general
-  (-leader-def
-    "om" 'mu4e)
-  :custom
-  (mail-user-agent 'mu4e-user-agent)
-  (mu4e-drafts-folder "/[Gmail]/Drafts")
-  (mu4e-sent-folder   "/[Gmail]/Sent Mail")
-  (mu4e-trash-folder  "/[Gmail]/Trash")
-  (mu4e-refile-folder nil)
-  ;; (mu4e-sent-messages-behavior 'delete)
-  (mu4e-sent-messages-behavior 'sent)
-  (mu4e-get-mail-command "mbsync -a")
-  (mu4e-maildir-shortcuts
-   `( ("/INBOX"            . ?i)
-      (,mu4e-drafts-folder . ?d)
-      (,mu4e-sent-folder   . ?s)
-      (,mu4e-trash-folder  . ?t)))
-  (mu4e-compose-signature-auto-include nil)
-  (mu4e-completing-read-function 'completing-read)
-  (mu4e-use-fancy-chars nil)
-  (mu4e-view-show-images t)
-  (mu4e-view-show-addresses t)
-  (mu4e-view-prefer-html t)
-  (mu4e-change-filenames-when-moving t)
-  (mu4e-attachment-dir "~/Downloads")
-  :config
-  (add-to-list 'mu4e-view-actions
-               '("browser" . mu4e-action-view-in-browser))
-  (add-to-list 'mu4e-view-actions
-               '("xwidget" . mu4e-action-view-with-xwidget)))
-
-(use-package message
-  :ensure nil
-  :custom
-  (message-kill-buffer-on-exit t)
-  (message-send-mail-function 'smtpmail-send-it))
-
-(use-package smtpmail
-  :ensure nil
-  :custom
-  (smtpmail-default-smtp-server "smtp.gmail.com")
-  (smtpmail-smtp-server "smtp.gmail.com")
-  (smtpmail-smtp-service 587)
-  (smtpmail-debug-info t))
-
 (use-package editorconfig
   :hook
   (after-init-hook . editorconfig-mode))
