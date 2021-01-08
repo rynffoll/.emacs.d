@@ -31,48 +31,48 @@
 
 (use-package quelpa-use-package
   :demand
-  :custom
-  (quelpa-use-package-inhibit-loading-quelpa t "Improve startup performance"))
+  :init
+  (setq quelpa-use-package-inhibit-loading-quelpa t))
 
 (use-package auto-compile
-  :custom
-  (auto-compile-display-buffer nil)
-  (auto-compile-use-mode-line nil)
+  :init
+  (setq auto-compile-display-buffer nil)
+  (setq auto-compile-use-mode-line nil)
   :hook
   (emacs-lisp-mode-hook . auto-compile-on-load-mode)
   (emacs-lisp-mode-hook . auto-compile-on-save-mode))
 
 (use-package emacs
   :ensure nil
-  :custom
+  :init
   ;; https://github.com/emacs-evil/evil-surround/issues/107#issuecomment-306117178
-  (major-mode 'text-mode)
-  (load-prefer-newer t)
-  (use-dialog-box nil)
-  (enable-recursive-minibuffers t)
-  (indent-tabs-mode nil "Don't use tabs")
-  (create-lockfiles nil "Stop creating .# files")
-  (frame-resize-pixelwise t)
-  (window-resize-pixelwise t)
-  (inhibit-compacting-font-caches t)
-  (scroll-step 1)
-  (scroll-preserve-screen-position t)
-  (scroll-margin 0)
-  (scroll-conservatively 101)
-  (ring-bell-function 'ignore)
-  (delete-by-moving-to-trash t)
-  (read-process-output-max (* 1024 1024))
-  (bidi-inhibit-bpa t)
-  (bidi-display-reordering 'left-to-right)
-  (bidi-paragraph-direction 'left-to-right)
-  (fast-but-imprecise-scrolling t)
+  (setq major-mode 'text-mode)
+  (setq load-prefer-newer t)
+  (setq use-dialog-box nil)
+  (setq enable-recursive-minibuffers t)
+  (setq indent-tabs-mode nil)
+  (setq create-lockfiles nil)
+  (setq frame-resize-pixelwise t)
+  (setq window-resize-pixelwise t)
+  (setq inhibit-compacting-font-caches t)
+  (setq scroll-step 1)
+  (setq scroll-preserve-screen-position t)
+  (setq scroll-margin 0)
+  (setq scroll-conservatively 101)
+  (setq ring-bell-function 'ignore)
+  (setq delete-by-moving-to-trash t)
+  (setq read-process-output-max (* 1024 1024))
+  (setq bidi-inhibit-bpa t)
+  (setq bidi-display-reordering 'left-to-right)
+  (setq bidi-paragraph-direction 'left-to-right)
+  (setq fast-but-imprecise-scrolling t)
   :config
   (defalias 'yes-or-no-p 'y-or-n-p))
 
 (use-package mule
   :ensure nil
-  :custom
-  (default-input-method 'russian-computer)
+  :init
+  (setq default-input-method 'russian-computer)
   :config
   (prefer-coding-system 'utf-8)
   (set-default-coding-systems 'utf-8)
@@ -81,19 +81,19 @@
 
 (use-package emacs
   :ensure nil
-  :custom
-  (buffer-file-coding-system 'utf-8))
+  :init
+  (setq buffer-file-coding-system 'utf-8))
 
 (use-package select
   :ensure nil
-  :custom
-  (x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
+  :init
+  (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 
 (use-package calendar
   :ensure nil
-  :custom
-  (calendar-date-style 'iso)
-  (calendar-week-start-day 1))
+  :init
+  (setq calendar-date-style 'iso)
+  (setq calendar-week-start-day 1))
 
 (use-package async
   :hook
@@ -146,17 +146,17 @@
   (-leader-def
     "j[" 'evil-jump-backward
     "j]" 'evil-jump-forward)
-  :custom
-  (evil-want-keybinding nil)
-  (evil-split-window-below t)
-  (evil-vsplit-window-right t)
-  (evil-emacs-state-cursor 'hbar)
-  (evil-mode-line-format nil)
-  (evil-symbol-word-search t)
-  (evil-move-beyond-eol nil)
-  (evil-move-cursor-back t)
-  (evil-undo-system 'undo-tree)
-  (evil-want-C-i-jump nil)
+  :init
+  (setq evil-want-keybinding nil)
+  (setq evil-split-window-below t)
+  (setq evil-vsplit-window-right t)
+  (setq evil-emacs-state-cursor 'hbar)
+  (setq evil-mode-line-format nil)
+  (setq evil-symbol-word-search t)
+  (setq evil-move-beyond-eol nil)
+  (setq evil-move-cursor-back t)
+  (setq evil-undo-system 'undo-tree)
+  (setq evil-want-C-i-jump nil)
   :config
   (evil-mode t)
   (evil-ex-define-cmd "q" 'kill-this-buffer)
@@ -165,9 +165,9 @@
 (use-package evil-collection
   :demand
   :after evil
-  :custom
-  (evil-collection-company-use-tng nil)
-  (evil-collection-magit-want-horizontal-movement t)
+  :init
+  (setq evil-collection-company-use-tng nil)
+  (setq evil-collection-magit-want-horizontal-movement t)
   :config
   (evil-collection-init))
 
@@ -184,8 +184,8 @@
   (after-init-hook . global-evil-matchit-mode))
 
 (use-package evil-org
-  :custom
-  (evil-org-key-theme '(todo textobjects insert navigation heading))
+  :init
+  (setq evil-org-key-theme '(todo textobjects insert navigation heading))
   :hook
   (org-mode-hook . evil-org-mode))
 
@@ -207,31 +207,31 @@
   (evil-traces-use-diff-faces))
 
 (use-package which-key
-  :custom
+  :init
   ;; Allow C-h to trigger which-key before it is done automatically
-  (which-key-show-early-on-C-h t)
+  (setq which-key-show-early-on-C-h t)
   ;; make sure which-key doesn't show normally but refreshes quickly after it is
   ;; triggered.
-  (which-key-idle-delay 10000)
-  (which-key-idle-secondary-delay 0.05)
+  (setq which-key-idle-delay 10000)
+  (setq which-key-idle-secondary-delay 0.05)
   :hook
   (after-init-hook . which-key-mode))
 
 (use-package char-fold
   :ensure nil
-  :custom
-  (char-fold-symmetric t)
-  (search-default-mode #'char-fold-to-regexp))
+  :init
+  (setq char-fold-symmetric t)
+  (setq search-default-mode #'char-fold-to-regexp))
 
 (use-package reverse-im
   :general
   (evil-normal-state-map "C-х" 'evil-force-normal-state)
   (evil-insert-state-map "C-х" 'evil-normal-state)
   (evil-visual-state-map "C-х" 'evil-exit-visual-state)
-  :custom
-  (reverse-im-char-fold t)
-  (reverse-im-read-char-advice-function #'reverse-im-read-char-exclude)
-  (reverse-im-input-methods '("russian-computer"))
+  :init
+  (setq reverse-im-char-fold t)
+  (setq reverse-im-read-char-advice-function #'reverse-im-read-char-exclude)
+  (setq reverse-im-input-methods '("russian-computer"))
   :hook
   (after-init-hook . reverse-im-mode))
 
@@ -243,9 +243,9 @@
 
 (use-package startup
   :ensure nil
-  :custom
-  (inhibit-startup-screen t)
-  (initial-scratch-message nil))
+  :init
+  (setq inhibit-startup-screen t)
+  (setq initial-scratch-message nil))
 
 (tooltip-mode -1)
 (menu-bar-mode -1)
@@ -275,13 +275,13 @@
   (after-init-hook . minions-mode))
 
 (use-package doom-modeline
-  :custom
-  (doom-modeline-minor-modes t)
-  (doom-modeline-buffer-file-name-style 'buffer-name)
-  (doom-modeline-modal-icon nil)
-  (doom-modeline-buffer-encoding nil)
-  (doom-modeline-major-mode-icon nil)
-  (doom-modeline-buffer-modification-icon nil)
+  :init
+  (setq doom-modeline-minor-modes t)
+  (setq doom-modeline-buffer-file-name-style 'buffer-name)
+  (setq doom-modeline-modal-icon nil)
+  (setq doom-modeline-buffer-encoding nil)
+  (setq doom-modeline-major-mode-icon nil)
+  (setq doom-modeline-buffer-modification-icon nil)
   :hook
   (after-init-hook . doom-modeline-mode)
   :config
@@ -291,17 +291,16 @@
         (doom-modeline-set-main-modeline)))))
 
 (use-package solarized-theme
-  :custom
-  (solarized-distinct-doc-face t)
-  (solarized-use-variable-pitch nil)
-  (solarized-scale-org-headlines nil)
-  (solarized-scale-outline-headlines nil)
-  (solarized-height-minus-1 1.0)
-  (solarized-height-plus-1 1.0)
-  (solarized-height-plus-2 1.0)
-  (solarized-height-plus-3 1.0)
-  (solarized-height-plus-4 1.0)
   :init
+  (setq solarized-distinct-doc-face t)
+  (setq solarized-use-variable-pitch nil)
+  (setq solarized-scale-org-headlines nil)
+  (setq solarized-scale-outline-headlines nil)
+  (setq solarized-height-minus-1 1.0)
+  (setq solarized-height-plus-1 1.0)
+  (setq solarized-height-plus-2 1.0)
+  (setq solarized-height-plus-3 1.0)
+  (setq solarized-height-plus-4 1.0)
   (load-theme 'solarized-gruvbox-dark t))
 
 (use-package paradox
@@ -309,9 +308,9 @@
   (-leader-def
     "Pl" 'paradox-list-packages
     "PU" 'paradox-upgrade-packages)
-  :custom
-  (paradox-execute-asynchronously t)
-  (paradox-github-token t "Don't ask github token"))
+  :init
+  (setq paradox-execute-asynchronously t)
+  (setq paradox-github-token t))
 
 (use-package frame
   :ensure nil
@@ -405,13 +404,13 @@
     "TAB C"   'tab-close-other
     "TAB r"   'tab-rename
     "TAB u"   'tab-undo)
-  :custom
-  (tab-bar-tab-hints t)
-  ;; (tab-bar-select-tab-modifiers '(meta))
-  (tab-bar-show nil)
-  (tab-bar-new-tab-choice "*scratch*")
-  (tab-bar-new-tab-to 'rightmost)
-  (tab-bar-tab-post-open-functions #'-tab-bar-post-open-rename)
+  :init
+  (setq tab-bar-tab-hints t)
+  ;; (setq tab-bar-select-tab-modifiers '(meta))
+  (setq tab-bar-show nil)
+  (setq tab-bar-new-tab-choice "*scratch*")
+  (setq tab-bar-new-tab-to 'rightmost)
+  (setq tab-bar-tab-post-open-functions #'-tab-bar-post-open-rename)
   :config
   (advice-add #'tab-bar-select-tab :after #'-tab-bar-print-tabs)
   (advice-add #'tab-close          :after #'-tab-bar-print-tabs)
@@ -430,8 +429,8 @@
   (evil-window-map
    "u" 'winner-undo
    "U" 'winner-redo)
-  :custom
-  (winner-dont-bind-my-keys t "Unbind C-right/C-left")
+  :init
+  (setq winner-dont-bind-my-keys t)
   :hook
   (after-init-hook . winner-mode))
 
@@ -449,9 +448,9 @@
     "7" 'winum-select-window-7
     "8" 'winum-select-window-8
     "9" 'winum-select-window-9)
-  :custom
-  (winum-auto-setup-mode-line nil "For spaceline")
-  (winum-scope 'frame-local)
+  :init
+  (setq winum-auto-setup-mode-line nil)
+  (setq winum-scope 'frame-local)
   :config
   (winum-mode))
 
@@ -491,8 +490,8 @@
 
 (use-package uniquify
   :ensure nil
-  :custom
-  (uniquify-buffer-name-style 'forward))
+  :init
+  (setq uniquify-buffer-name-style 'forward))
 
 (use-package evil-commands
   :ensure evil
@@ -513,9 +512,9 @@
   (ibuffer-hook . -setup-ibuffer-vc))
 
 (use-package shackle
-  :custom
-  (shackle-default-size 0.3)
-  (shackle-rules '((help-mode :align below :select t)
+  :init
+  (setq shackle-default-size 0.3)
+  (setq shackle-rules '((help-mode :align below :select t)
                    (helpful-mode :align below)
                    (flycheck-error-list-mode :align below)
                    (cider-repl-mode :align below)
@@ -541,15 +540,15 @@
    "C-k" 'ivy-previous-line)
   (-leader-def
     "bb" 'ivy-switch-buffer)
-  :custom
-  (ivy-wrap t)
-  (ivy-fixed-height-minibuffer t)
-  (ivy-use-virtual-buffers t)
-  (ivy-virtual-abbreviate 'full)
-  (ivy-on-del-error-function nil)
-  (ivy-use-selectable-prompt t)
-  (ivy-initial-inputs-alist nil "Remove ^ from prompt")
-  (ivy-re-builders-alist '((counsel-rg . ivy--regex-plus)
+  :init
+  (setq ivy-wrap t)
+  (setq ivy-fixed-height-minibuffer t)
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-virtual-abbreviate 'full)
+  (setq ivy-on-del-error-function nil)
+  (setq ivy-use-selectable-prompt t)
+  (setq ivy-initial-inputs-alist nil)
+  (setq ivy-re-builders-alist '((counsel-rg . ivy--regex-plus)
                            (swiper     . ivy--regex-plus)
                            (t          . ivy--regex-fuzzy)))
   :hook
@@ -558,8 +557,8 @@
 (use-package ivy-hydra)
 
 (use-package ivy-rich
-  :custom
-  (ivy-rich-path-style 'abbrev)
+  :init
+  (setq ivy-rich-path-style 'abbrev)
   :hook
   (ivy-mode-hook . ivy-rich-mode))
 
@@ -592,9 +591,9 @@
     "hFf" 'counsel-faces
     "hFe" 'counsel-colors-emacs
     "hFw" 'counsel-colors-web)
-  :custom
-  (counsel-describe-function-function 'helpful-callable)
-  (counsel-describe-variable-function 'helpful-variable))
+  :init
+  (setq counsel-describe-function-function 'helpful-callable)
+  (setq counsel-describe-variable-function 'helpful-variable))
 
 (use-package counsel-projectile
   :general
@@ -604,27 +603,27 @@
   (after-init-hook . counsel-projectile-mode))
 
 (use-package amx
-  :custom
-  (amx-backend 'ivy))
+  :init
+  (setq amx-backend 'ivy))
 
 (use-package files
   :ensure nil
   :general
   (-leader-def
     "br" 'revert-buffer)
-  :custom
-  (require-final-newline t)
-  (make-backup-files nil "Stop creating backup~ files")
-  (auto-save-default nil "Stop creating #autosave# files")
-  (enable-local-variables :all)
-  (enable-local-eval t))
+  :init
+  (setq require-final-newline t)
+  (setq make-backup-files nil)
+  (setq auto-save-default nil)
+  (setq enable-local-variables :all)
+  (setq enable-local-eval t))
 
 (use-package autorevert
   :ensure nil
-  :custom
-  (auto-revert-verbose nil)
-  (global-auto-revert-non-file-buffers t)
-  (auto-revert-check-vc-info t)
+  :init
+  (setq auto-revert-verbose nil)
+  (setq global-auto-revert-non-file-buffers t)
+  (setq auto-revert-check-vc-info t)
   :hook
   (after-init-hook . global-auto-revert-mode))
 
@@ -640,17 +639,17 @@
 
 (use-package recentf
   :ensure nil
-  :custom
-  (recentf-max-saved-items 300)
+  :init
+  (setq recentf-max-saved-items 300)
   :hook
   (after-init-hook . recentf-mode))
 
 (use-package files
   :if (eq system-type 'darwin)
   :ensure nil
-  :custom
-  (insert-directory-program "gls")
-  (trash-directory "~/.Trash/emacs"))
+  :init
+  (setq insert-directory-program "gls")
+  (setq trash-directory "~/.Trash/emacs"))
 
 (use-package iqa
   :general
@@ -658,41 +657,41 @@
     "ed" 'iqa-find-user-init-directory
     "ee" 'iqa-find-user-init-file
     "er" 'iqa-reload-user-init-file)
-  :custom
-  (iqa-user-init-file (concat user-emacs-directory "config.org")))
+  :init
+  (setq iqa-user-init-file (concat user-emacs-directory "config.org")))
 
 (use-package cus-edit
   :ensure nil
   :general
   (-leader-def
     "oc" 'customize-group)
-  :custom
-  (custom-file null-device "Don't store customizations"))
+  :init
+  (setq custom-file null-device))
 
 (use-package epg-config
   :ensure nil
-  :custom
-  (epg-pinentry-mode 'loopback))
+  :init
+  (setq epg-pinentry-mode 'loopback))
 
 (use-package projectile
   :general
   (-leader-def
     "p" '(:keymap projectile-command-map :package projectile :wk "project"))
-  :custom
-  (projectile-project-search-path '("~/Projects"))
-  (projectile-auto-discover nil)
-  (projectile-enable-caching t)
-  (projectile-completion-system 'ivy))
+  :init
+  (setq projectile-project-search-path '("~/Projects"))
+  (setq projectile-auto-discover nil)
+  (setq projectile-enable-caching t)
+  (setq projectile-completion-system 'ivy))
 
 (use-package dired
   :ensure nil
-  :custom
-  (dired-listing-switches "-lah --group-directories-first")
-  (dired-auto-revert-buffer t)
-  (dired-dwim-target t)
-  (dired-recursive-copies 'always "Never prompt for recursive copies of a directory")
-  (dired-recursive-deletes 'always "Never prompt for recursive deletes of a directory")
-  (dired-hide-details-hide-symlink-targets nil)
+  :init
+  (setq dired-listing-switches "-lah --group-directories-first")
+  (setq dired-auto-revert-buffer t)
+  (setq dired-dwim-target t)
+  (setq dired-recursive-copies 'always)
+  (setq dired-recursive-deletes 'always)
+  (setq dired-hide-details-hide-symlink-targets nil)
   :hook
   (dired-mode-hook . dired-hide-details-mode))
 
@@ -709,24 +708,24 @@
   :general
   (:keymaps 'dired-mode-map :states 'normal
             "TAB" 'dired-subtree-toggle)
-  :custom
-  (dired-subtree-use-backgrounds nil)
+  :init
+  (setq dired-subtree-use-backgrounds nil)
   :config
   ;; for treemacs-icons-dired
   (advice-add #'dired-subtree-toggle :after #'-dired-subtree-revert))
 
 (use-package tramp
   :ensure nil
-  :custom
-  (tramp-default-method "ssh")
-  (tramp-default-proxies-alist nil))
+  :init
+  (setq tramp-default-method "ssh")
+  (setq tramp-default-proxies-alist nil))
 
 (use-package exec-path-from-shell
   :if (or (memq window-system '(mac ns x)) (daemonp))
   :demand
-  :custom
-  (exec-path-from-shell-arguments '("-l") "remove -i")
-  (exec-path-from-shell-variables '("PATH" "MANPATH" "LANG"))
+  :init
+  (setq exec-path-from-shell-arguments '("-l"))
+  (setq exec-path-from-shell-variables '("PATH" "MANPATH" "LANG"))
   :config
   (exec-path-from-shell-initialize))
 
@@ -781,9 +780,9 @@
     "SPC" 'execute-extended-command
     ":" 'eval-expression
     "tT" 'toggle-truncate-lines)
-  :custom
-  (backward-delete-char-untabify-method 'hungry)
-  (async-shell-command-buffer 'new-buffer)
+  :init
+  (setq backward-delete-char-untabify-method 'hungry)
+  (setq async-shell-command-buffer 'new-buffer)
   :hook
   (after-init-hook . column-number-mode))
 
@@ -803,19 +802,19 @@
 
 (use-package ediff
   :ensure nil
-  :custom
-  (ediff-window-setup-function 'ediff-setup-windows-plain)
-  (ediff-split-window-function 'split-window-horizontally)
-  (ediff-merge-split-window-function 'split-window-horizontally)
+  :init
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+  (setq ediff-split-window-function 'split-window-horizontally)
+  (setq ediff-merge-split-window-function 'split-window-horizontally)
   :hook
   (ediff-prepare-buffer-hook . show-all)
   (ediff-quit-hook . winner-undo))
 
 (use-package undo-tree
   :if (eq evil-undo-system 'undo-tree)
-  :custom
-  (undo-tree-auto-save-history t)
-  (undo-tree-history-directory-alist `(("." . ,temporary-file-directory)))
+  :init
+  (setq undo-tree-auto-save-history t)
+  (setq undo-tree-history-directory-alist `(("." . ,temporary-file-directory)))
   :hook
   (after-init-hook . global-undo-tree-mode))
 
@@ -880,15 +879,15 @@
   :general
   (-leader-def
     "ti" 'highlight-indent-guides-mode)
-  :custom
-  (highlight-indent-guides-method 'character)
-  (highlight-indent-guides-responsive t))
+  :init
+  (setq highlight-indent-guides-method 'character)
+  (setq highlight-indent-guides-responsive t))
 
 (use-package hl-todo
-  :custom
-  (hl-todo-highlight-punctuation ":")
-  (hl-todo-keyword-faces '(("TODO"  . hl-todo)
-                           ("FIXME" . hl-todo)))
+  :init
+  (setq hl-todo-highlight-punctuation ":")
+  (setq hl-todo-keyword-faces '(("TODO"  . hl-todo)
+                                ("FIXME" . hl-todo)))
   :hook
   (after-init-hook . global-hl-todo-mode))
 
@@ -913,18 +912,18 @@
   :general
   (-leader-def
     "tn" 'display-line-numbers-mode)
-  :custom
-  (display-line-numbers-width-start t))
+  :init
+  (setq display-line-numbers-width-start t))
 
 (use-package company
   :general
   ("M-S-SPC" 'company-complete)
   :custom-face
   (company-tooltip-selection ((t :inverse-video t)))
-  :custom
-  (company-minimum-prefix-length 1)
-  (company-idle-delay 0.3)
-  (company-selection-wrap-around t)
+  :init
+  (setq company-minimum-prefix-length 1)
+  (setq company-idle-delay 0.3)
+  (setq company-selection-wrap-around t)
   :hook
   (after-init-hook . global-company-mode))
 
@@ -939,8 +938,8 @@
   (company-statistics-mode))
 
 (use-package anzu
-  :custom
-  (anzu-cons-mode-line-p nil)
+  :init
+  (setq anzu-cons-mode-line-p nil)
   :hook
   (after-init-hook . global-anzu-mode))
 
@@ -955,10 +954,10 @@
 (use-package ispell
   :if (executable-find "hunspell")
   :ensure nil
-  :custom
-  (ispell-really-aspell nil)
-  (ispell-really-hunspell t)
-  (ispell-dictionary "ru_RU,en_US")
+  :init
+  (setq ispell-really-aspell nil)
+  (setq ispell-really-hunspell t)
+  (setq ispell-dictionary "ru_RU,en_US")
   :config
   (setq ispell-program-name "hunspell")
   ;; ispell-set-spellchecker-params has to be called
@@ -974,13 +973,13 @@
    "C-," nil
    "C-." nil
    "C-c $" nil)
-  :custom
-  (flyspell-delay 1)
-  (flyspell-use-meta-tab nil)
-  (flyspell-issue-message-flag nil)
-  (flyspell-prog-text-faces '(;; font-lock-string-face
-                              font-lock-comment-face
-                              font-lock-doc-face))
+  :init
+  (setq flyspell-delay 1)
+  (setq flyspell-use-meta-tab nil)
+  (setq flyspell-issue-message-flag nil)
+  (setq flyspell-prog-text-faces '(;; font-lock-string-face
+                                   font-lock-comment-face
+                                   font-lock-doc-face))
   :hook
   ;; (text-mode-hook . flyspell-mode)
   ;; (org-mode-hook . flyspell-mode)
@@ -994,13 +993,13 @@
 
 (use-package flyspell-correct-ivy
   :after flyspell-correct
-  :custom
-  (flyspell-correct-interface 'flyspell-correct-ivy))
+  :init
+  (setq flyspell-correct-interface 'flyspell-correct-ivy))
 
 (use-package flycheck
-  :custom
-  (flycheck-indication-mode 'right-fringe)
-  (flycheck-temp-prefix ".flycheck")
+  :init
+  (setq flycheck-indication-mode 'right-fringe)
+  (setq flycheck-temp-prefix ".flycheck")
   :hook
   (prog-mode-hook . flycheck-mode)
   :config
@@ -1056,8 +1055,8 @@
     "jW" 'avy-goto-word-1
     "jl" 'avy-goto-line
     "jL" 'avy-goto-end-of-line)
-  :custom
-  (avy-background t))
+  :init
+  (setq avy-background t))
 
 (use-package link-hint
   :general
@@ -1078,9 +1077,9 @@
   :general
   (-leader-def
     "jj" '(hydra-dumb-jump/body :wk "hydra-dumb-jump"))
-  :custom
-  (dumb-jump-selector 'ivy)
-  (dumb-jump-prefer-searcher 'rg))
+  :init
+  (setq dumb-jump-selector 'ivy)
+  (setq dumb-jump-prefer-searcher 'rg))
 
 (use-package treemacs
   :preface
@@ -1093,13 +1092,13 @@
     "ft" 'treemacs)
   :custom-face
   (treemacs-root-face ((t :inherit font-lock-constant-face :bold t :height 1.1)))
-  :custom
-  (treemacs-follow-after-init t)
-  (treemacs-no-delete-other-windows nil)
-  (treemacs-space-between-root-nodes nil)
-  (treemacs-recenter-after-file-follow 'on-distance)
-  (treemacs-recenter-after-tag-follow 'on-distance)
-  (treemacs-show-cursor t)
+  :init
+  (setq treemacs-follow-after-init t)
+  (setq treemacs-no-delete-other-windows nil)
+  (setq treemacs-space-between-root-nodes nil)
+  (setq treemacs-recenter-after-file-follow 'on-distance)
+  (setq treemacs-recenter-after-tag-follow 'on-distance)
+  (setq treemacs-show-cursor t)
   :hook
   (treemacs-mode-hook . hide-mode-line-mode)
   (treemacs-mode-hook . -hide-fringes)
@@ -1196,16 +1195,16 @@
 (use-package eshell-prompt-extras
   :after eshell
   :commands epe-theme-lambda
-  :custom
-  (eshell-highlight-prompt nil)
-  (eshell-prompt-function 'epe-theme-lambda))
+  :init
+  (setq eshell-highlight-prompt nil)
+  (setq eshell-prompt-function 'epe-theme-lambda))
 
 (use-package eshell-toggle
   :general
   ("§" 'eshell-toggle)
-  :custom
-  (eshell-toggle-use-projectile-root t)
-  (eshell-toggle-run-command nil))
+  :init
+  (setq eshell-toggle-use-projectile-root t)
+  (setq eshell-toggle-run-command nil))
 
 (use-package magit
   :commands magit-blame
@@ -1223,16 +1222,16 @@
     "gg" 'magit-status
     "gl" '-magit-status
     "gL" 'magit-log-buffer-file)
-  :custom
-  (magit-completing-read-function 'ivy-completing-read)
-  (magit-clone-default-directory "~/Projects")
-  (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
-  (magit-repository-directories `((,user-emacs-directory . 0)
-                                  (,magit-clone-default-directory . 1))))
+  :init
+  (setq magit-completing-read-function 'ivy-completing-read)
+  (setq magit-clone-default-directory "~/Projects")
+  (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
+  (setq magit-repository-directories `((,user-emacs-directory . 0)
+                                       (,magit-clone-default-directory . 1))))
 
 (use-package magit-todos
-  :custom
-  (magit-todos-keyword-suffix (rx (optional "(" (1+ (not (any ")"))) ")" ":")))
+  :init
+  (setq magit-todos-keyword-suffix (rx (optional "(" (1+ (not (any ")"))) ")" ":")))
   :hook
   (magit-mode-hook . magit-todos-mode))
 
@@ -1254,8 +1253,8 @@
 
 (use-package diff-hl
   :disabled
-  :custom
-  (diff-hl-draw-borders nil)
+  :init
+  (setq diff-hl-draw-borders nil)
   :hook
   (after-init-hook         . global-diff-hl-mode)
   (after-init-hook         . diff-hl-margin-mode)
@@ -1277,8 +1276,8 @@
                             message title)))
       (do-applescript script))
     (alert-message-notify info))
-  :custom
-  (alert-default-style 'osx-notification)
+  :init
+  (setq alert-default-style 'osx-notification)
   :config
   (alert-define-style 'osx-notification
                       :title "AppleScript notification"
@@ -1296,16 +1295,16 @@
                (appt-msg   (nth i appt-msg))
                (title (format "Appointment in %s minutes" min-to-app)))
           (alert appt-msg :title title)))))
-  :custom
-  (appt-time-msg-list nil)
-  (appt-message-warning-time 15)
-  (appt-display-interval 5)
-  (appt-display-mode-line nil)
-  (appt-disp-window-function (if (display-graphic-p)
+  :init
+  (setq appt-time-msg-list nil)
+  (setq appt-message-warning-time 15)
+  (setq appt-display-interval 5)
+  (setq appt-display-mode-line nil)
+  (setq appt-disp-window-function (if (display-graphic-p)
                                  #'-appt-alert
                                #'appt-disp-window))
-  (appt-audible nil)
-  (appt-display-diary nil)
+  (setq appt-audible nil)
+  (setq appt-display-diary nil)
   :config
   (appt-activate t))
 
@@ -1326,71 +1325,71 @@
     "On" '(-open-org-notes-file :wk "open notes.org"))
   (-local-leader-def
     "i" 'org-insert-structure-template)
-  :custom
-  (org-directory "~/Org")
-  (-org-inbox-file (concat org-directory "/inbox.org"))
-  (-org-todo-file  (concat org-directory "/todo.org"))
-  (-org-work-file  (concat org-directory "/work.org"))
-  (-org-notes-file (concat org-directory "/notes.org"))
+  :init
+  (setq org-directory "~/Org")
+  (setq -org-inbox-file (concat org-directory "/inbox.org"))
+  (setq -org-todo-file  (concat org-directory "/todo.org"))
+  (setq -org-work-file  (concat org-directory "/work.org"))
+  (setq -org-notes-file (concat org-directory "/notes.org"))
 
-  (org-startup-indented t)
-  (org-insert-heading-respect-content t)
-  (org-hide-leading-stars t)
-  (org-hide-leading-stars-before-indent-mode t)
+  (setq org-startup-indented t)
+  (setq org-insert-heading-respect-content t)
+  (setq org-hide-leading-stars t)
+  (setq org-hide-leading-stars-before-indent-mode t)
 
-  (org-agenda-files `(,-org-inbox-file ,-org-todo-file ,-org-work-file))
-  (org-agenda-inhibit-startup t)
-  (org-agenda-skip-unavailable-files t)
+  (setq org-agenda-files `(,-org-inbox-file ,-org-todo-file ,-org-work-file))
+  (setq org-agenda-inhibit-startup t)
+  (setq org-agenda-skip-unavailable-files t)
 
-  (org-archive-location (concat org-directory "/archive.org::datetree/"))
+  (setq org-archive-location (concat org-directory "/archive.org::datetree/"))
 
-  (org-refile-targets '((org-agenda-files :maxlevel . 3)))
-  (org-refile-use-outline-path 'file)
-  (org-outline-path-complete-in-steps nil)
-  (org-refile-allow-creating-parent-nodes 'confirm)
-  (org-refile-use-cache t)
+  (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
+  (setq org-refile-use-outline-path 'file)
+  (setq org-outline-path-complete-in-steps nil)
+  (setq org-refile-allow-creating-parent-nodes 'confirm)
+  (setq org-refile-use-cache t)
 
-  (org-tags-column 0)
-  (org-ellipsis "…")
-  (org-pretty-entities t)
-  (org-use-sub-superscripts '{} "Require {} for sub/super scripts")
+  (setq org-tags-column 0)
+  (setq org-ellipsis "…")
+  (setq org-pretty-entities t)
+  (setq org-use-sub-superscripts '{})
 
-  (org-todo-keywords '((sequence "TODO(t)" "IN PROGRESS(i)" "WAITING(w)" "|" "DONE(d)" "CANCELED(c)")))
-  (org-log-done 'time)
+  (setq org-todo-keywords '((sequence "TODO(t)" "IN PROGRESS(i)" "WAITING(w)" "|" "DONE(d)" "CANCELED(c)")))
+  (setq org-log-done 'time)
 
-  (org-startup-with-inline-images t)
+  (setq org-startup-with-inline-images t)
 
-  (org-catch-invisible-edits 'smart)
+  (setq org-catch-invisible-edits 'smart)
 
-  (org-fontify-whole-heading-line t))
+  (setq org-fontify-whole-heading-line t))
 
 (use-package org-archive
   :ensure nil
-  :custom
-  (org-archive-file-header-format nil))
+  :init
+  (setq org-archive-file-header-format nil))
 
 (use-package org-src
   :ensure nil
-  :custom
-  (org-src-tab-acts-natively t)
-  (org-src-window-setup 'current-window)
-  (org-edit-src-content-indentation 0))
+  :init
+  (setq org-src-tab-acts-natively t)
+  (setq org-src-window-setup 'current-window)
+  (setq org-edit-src-content-indentation 0))
 
 (use-package org-list
   :ensure nil
-  :custom
-  (org-list-allow-alphabetical t)
-  (org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))))
+  :init
+  (setq org-list-allow-alphabetical t)
+  (setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))))
 
 (use-package org-agenda
   :ensure nil
   :general
   (-leader-def
     "Oa" '(org-agenda :wk "agenda"))
-  :custom
-  (org-agenda-window-setup 'current-window)
-  (org-agenda-skip-deadline-if-done (bound-and-true-p appt-timer))
-  (org-agenda-skip-scheduled-if-done (bound-and-true-p appt-timer))
+  :init
+  (setq org-agenda-window-setup 'current-window)
+  (setq org-agenda-skip-deadline-if-done (bound-and-true-p appt-timer))
+  (setq org-agenda-skip-scheduled-if-done (bound-and-true-p appt-timer))
   :hook
   (org-agenda-finalize-hook . org-agenda-to-appt))
 
@@ -1412,29 +1411,29 @@
   (org-level-6 ((t :weight bold)))
   (org-level-7 ((t :weight bold)))
   (org-level-8 ((t :weight bold)))
-  :custom
-  (org-priority-faces '((?A . (:inherit error :weight bold))
-                        (?B . (:inherit warning :weight bold))
-                        (?C . (:inherit success :weight bold)))))
+  :init
+  (setq org-priority-faces '((?A . (:inherit error :weight bold))
+                             (?B . (:inherit warning :weight bold))
+                             (?C . (:inherit success :weight bold)))))
 
 (use-package org-bullets
   :after org
-  :custom
-  (org-bullets-bullet-list '("•"))
-  (org-bullets--keywords
-   `(("^\\*+ "
-      (0 (let* ((level (- (match-end 0) (match-beginning 0) 1)))
-           (compose-region (- (match-end 0) 2)
-                           (- (match-end 0) 1)
-                           (org-bullets-level-char level))
-           (dolist (n (number-sequence
-                       (match-beginning 0)
-                       (- (match-end 0) 3)))
-             (compose-region n (+ n 1) " "))
-           (put-text-property (match-beginning 0)
-                              (- (match-end 0) 2)
-                              'face (list :inherit 'org-hide))
-           nil)))))
+  :init
+  (setq org-bullets-bullet-list '("•"))
+  (setq org-bullets--keywords
+        `(("^\\*+ "
+           (0 (let* ((level (- (match-end 0) (match-beginning 0) 1)))
+                (compose-region (- (match-end 0) 2)
+                                (- (match-end 0) 1)
+                                (org-bullets-level-char level))
+                (dolist (n (number-sequence
+                            (match-beginning 0)
+                            (- (match-end 0) 3)))
+                  (compose-region n (+ n 1) " "))
+                (put-text-property (match-beginning 0)
+                                   (- (match-end 0) 2)
+                                   'face (list :inherit 'org-hide))
+                nil)))))
   :hook
   (org-mode-hook . org-bullets-mode))
 
@@ -1466,9 +1465,9 @@
   :after ob-core)
 
 (use-package lsp-mode
-  :custom
-  (lsp-keep-workspace-alive nil)
-  (lsp-keymap-prefix "C-c l")
+  :init
+  (setq lsp-keep-workspace-alive nil)
+  (setq lsp-keymap-prefix "C-c l")
   :hook
   (lsp-mode-hook . lsp-enable-which-key-integration))
 
@@ -1491,8 +1490,8 @@
   (dap-ui-controls-mode 1))
 
 (use-package highlight-defined
-  :custom
-  (highlight-defined-face-use-itself t)
+  :init
+  (setq highlight-defined-face-use-itself t)
   :hook
   (emacs-lisp-mode-hook . highlight-defined-mode))
 
@@ -1601,22 +1600,22 @@
 
 (use-package web-mode
   :mode "\\.html?\\'"
-  :custom
-  (web-mode-enable-block-face t)
-  (web-mode-enable-part-face t)
-  (web-mode-enable-comment-interpolation t)
-  (web-mode-enable-current-element-highlight t))
+  :init
+  (setq web-mode-enable-block-face t)
+  (setq web-mode-enable-part-face t)
+  (setq web-mode-enable-comment-interpolation t)
+  (setq web-mode-enable-current-element-highlight t))
 
 (use-package plantuml-mode
   :general
   (-local-leader-def :keymaps 'plantuml-mode-map
     "p" '(plantuml-preview :wk "preview"))
-  :custom
-  (plantuml-output-type (if (display-images-p) "png" "txt"))
-  (plantuml-default-exec-mode 'jar)
-  (plantuml-jar-path
-   (car (last (file-expand-wildcards
-               "/usr/local/Cellar/plantuml/*/libexec/plantuml.jar")))))
+  :init
+  (setq plantuml-output-type (if (display-images-p) "png" "txt"))
+  (setq plantuml-default-exec-mode 'jar)
+  (setq plantuml-jar-path
+        (car (last (file-expand-wildcards
+                    "/usr/local/Cellar/plantuml/*/libexec/plantuml.jar")))))
 
 (use-package flycheck-plantuml
   :hook
@@ -1627,10 +1626,10 @@
   :after ob-core
   :commands
   org-babel-execute:plantuml
-  :custom
-  (org-plantuml-jar-path
-   (car (last (file-expand-wildcards
-               "/usr/local/Cellar/plantuml/*/libexec/plantuml.jar")))))
+  :init
+  (setq org-plantuml-jar-path
+        (car (last (file-expand-wildcards
+                    "/usr/local/Cellar/plantuml/*/libexec/plantuml.jar")))))
 
 (use-package sql
   :ensure nil
@@ -1649,14 +1648,14 @@
     "l" '(:ignore t :wk "list")
     "la" '(sql-list-all :wk "all")
     "lt" '(sql-list-table :wk "table"))
-  :custom
-  (sql-connection-alist '((pg-local
-                           (sql-product 'postgres)
-                           (sql-port 5432)
-                           (sql-server "localhost")
-                           (sql-user "postgres")
-                           (sql-password "postgres")
-                           (sql-database "postgres")))))
+  :init
+  (setq sql-connection-alist '((pg-local
+                                (sql-product 'postgres)
+                                (sql-port 5432)
+                                (sql-server "localhost")
+                                (sql-user "postgres")
+                                (sql-password "postgres")
+                                (sql-database "postgres")))))
 
 (use-package groovy-mode)
 
@@ -1664,9 +1663,9 @@
   :general
   (-local-leader-def :keymaps 'markdown-mode-map
     "p" 'markdown-preview)
-  :custom
-  (markdown-command "pandoc")
-  (markdown-fontify-code-blocks-natively t)
+  :init
+  (setq markdown-command "pandoc")
+  (setq markdown-fontify-code-blocks-natively t)
   :config
   (add-to-list 'markdown-code-lang-modes '("clj" . clojure-mode)))
 
@@ -1697,8 +1696,8 @@
   (yaml-mode-hook . flycheck-yamllint-setup))
 
 (use-package lua-mode
-  :custom
-  (lua-indent-level 2))
+  :init
+  (setq lua-indent-level 2))
 
 (use-package sh-script
   :preface
@@ -1761,9 +1760,9 @@
   :general
   (org-mode-map
    "C-c C-r" '(:keymap verb-command-map :package verb :wk "verb"))
-  :custom
-  (verb-auto-kill-response-buffers t)
-  (verb-json-use-mode 'json-mode))
+  :init
+  (setq verb-auto-kill-response-buffers t)
+  (setq verb-json-use-mode 'json-mode))
 
 (use-package ob-verb
   :ensure verb
@@ -1784,8 +1783,8 @@
   (-local-leader-def :keymaps 'direnv-envrc-mode-map
     "a" 'direnv-allow
     "u" 'direnv-update-environment)
-  :custom
-  (direnv-always-show-summary nil)
+  :init
+  (setq direnv-always-show-summary nil)
   :hook
   (after-init-hook . direnv-mode)
   (direnv-envrc-mode-hook . -direnv-hook))
@@ -1805,18 +1804,18 @@
   (-leader-def
     "ht" 'google-translate-at-point
     "hT" 'google-translate-at-point-reverse)
-  :custom
-  (google-translate-default-target-language "ru")
-  (google-translate-default-source-language "en")
-  (google-translate-pop-up-buffer-set-focus t)
-  (google-translate-backend-method 'curl))
+  :init
+  (setq google-translate-default-target-language "ru")
+  (setq google-translate-default-source-language "en")
+  (setq google-translate-pop-up-buffer-set-focus t)
+  (setq google-translate-backend-method 'curl))
 
 (use-package olivetti
   :general
   (-leader-def
     "to" 'olivetti-mode)
-  :custom
-  (olivetti-body-width 100))
+  :init
+  (setq olivetti-body-width 100))
 
 (use-package crux
   :general
