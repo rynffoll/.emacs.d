@@ -45,8 +45,6 @@
 (use-package emacs
   :ensure nil
   :init
-  ;; https://github.com/emacs-evil/evil-surround/issues/107#issuecomment-306117178
-  (setq major-mode 'text-mode)
   (setq load-prefer-newer t)
   (setq use-dialog-box nil)
   (setq enable-recursive-minibuffers t)
@@ -725,7 +723,6 @@
   :demand
   :init
   (setq exec-path-from-shell-arguments '("-l"))
-  (setq exec-path-from-shell-variables '("PATH" "MANPATH" "LANG"))
   :config
   (exec-path-from-shell-initialize))
 
@@ -955,6 +952,7 @@
   :if (executable-find "hunspell")
   :ensure nil
   :init
+  (setenv "LANG" "en_US.UTF-8")
   (setq ispell-really-aspell nil)
   (setq ispell-really-hunspell t)
   (setq ispell-dictionary "ru_RU,en_US")
@@ -1252,7 +1250,6 @@
 (use-package gitignore-mode)
 
 (use-package diff-hl
-  :disabled
   :init
   (setq diff-hl-draw-borders nil)
   :hook
@@ -1314,14 +1311,12 @@
   (defun -open-org-directory  () (interactive) (find-file org-directory))
   (defun -open-org-inbox-file () (interactive) (find-file -org-inbox-file))
   (defun -open-org-todo-file  () (interactive) (find-file -org-todo-file))
-  (defun -open-org-work-file  () (interactive) (find-file -org-work-file))
   (defun -open-org-notes-file () (interactive) (find-file -org-notes-file))
   :general
   (-leader-def
     "O." '(-open-org-directory  :wk "open org-directory")
     "Oi" '(-open-org-inbox-file :wk "open inbox.org")
     "Ot" '(-open-org-todo-file  :wk "open todo.org")
-    "Ow" '(-open-org-work-file  :wk "open work.org")
     "On" '(-open-org-notes-file :wk "open notes.org"))
   (-local-leader-def
     "i" 'org-insert-structure-template)
@@ -1329,7 +1324,6 @@
   (setq org-directory "~/Org")
   (setq -org-inbox-file (concat org-directory "/inbox.org"))
   (setq -org-todo-file  (concat org-directory "/todo.org"))
-  (setq -org-work-file  (concat org-directory "/work.org"))
   (setq -org-notes-file (concat org-directory "/notes.org"))
 
   (setq org-startup-indented t)
@@ -1337,7 +1331,7 @@
   (setq org-hide-leading-stars t)
   (setq org-hide-leading-stars-before-indent-mode t)
 
-  (setq org-agenda-files `(,-org-inbox-file ,-org-todo-file ,-org-work-file))
+  (setq org-agenda-files `(,-org-todo-file))
   (setq org-agenda-inhibit-startup t)
   (setq org-agenda-skip-unavailable-files t)
 
@@ -1789,16 +1783,6 @@
   (after-init-hook . direnv-mode)
   (direnv-envrc-mode-hook . -direnv-hook))
 
-(use-package password-generator
-  :general
-  (-leader-def
-    "ip" '(:ignore t :wk "password-generator")
-    "ips" 'password-generator-simple
-    "ipS" 'password-generator-strong
-    "ipp" 'password-generator-paranoid
-    "ipn" 'password-generator-numeric
-    "ipP" 'password-generator-phonetic))
-
 (use-package olivetti
   :general
   (-leader-def
@@ -1821,5 +1805,7 @@
   :general
   (-leader-def
     "Pt" 'try))
+
+(use-package password-generator)
 
 (use-package string-inflection)
