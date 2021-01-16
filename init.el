@@ -1799,17 +1799,6 @@
     "ipn" 'password-generator-numeric
     "ipP" 'password-generator-phonetic))
 
-(use-package google-translate
-  :general
-  (-leader-def
-    "ht" 'google-translate-at-point
-    "hT" 'google-translate-at-point-reverse)
-  :init
-  (setq google-translate-default-target-language "ru")
-  (setq google-translate-default-source-language "en")
-  (setq google-translate-pop-up-buffer-set-focus t)
-  (setq google-translate-backend-method 'curl))
-
 (use-package olivetti
   :general
   (-leader-def
