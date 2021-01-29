@@ -1197,10 +1197,31 @@
   (setq eshell-highlight-prompt nil)
   (setq eshell-prompt-function 'epe-theme-lambda))
 
+(use-package vterm
+  :preface
+  (defun -vterm ()
+    (interactive)
+    (let ((default-directory "~"))
+      (if (get-buffer "vterm")
+          (switch-to-buffer "vterm")
+        (vterm))))
+  :general
+  (-leader-def
+    "ot" '-vterm)
+  :custom
+  (vterm-max-scrollback 10000)
+  :hook
+  (vterm-mode-hook . -disable-global-hl-line-mode))
+
 (use-package eshell-toggle
+  :preface
+  (defun -eshell-toggle-init-vterm (dir)
+    (let ((default-directory dir))
+      (vterm)))
   :general
   ("§" 'eshell-toggle)
   :init
+  (setq eshell-toggle-init-function '-eshell-toggle-init-vterm)
   (setq eshell-toggle-use-projectile-root t)
   (setq eshell-toggle-run-command nil))
 
