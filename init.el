@@ -941,6 +941,7 @@
   (after-init-hook . global-anzu-mode))
 
 (use-package evil-anzu
+  :demand
   :after anzu)
 
 (use-package hideshow

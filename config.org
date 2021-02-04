@@ -1269,6 +1269,7 @@ Highlight identifiers
   (after-init-hook . global-anzu-mode))
 
 (use-package evil-anzu
+  :demand
   :after anzu)
 #+end_src
 
