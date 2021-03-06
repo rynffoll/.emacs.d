@@ -14,6 +14,7 @@
 - [[#keyboard-layout][Keyboard Layout]]
 - [[#tty][TTY]]
 - [[#ui][UI]]
+- [[#ligatures][Ligatures]]
 - [[#icons][Icons]]
 - [[#mode-line][Mode Line]]
 - [[#theme][Theme]]
@@ -464,6 +465,28 @@ Mouse support
 (when window-system
   (scroll-bar-mode -1)
   (tool-bar-mode -1))
+#+end_src
+
+* Ligatures
+#+begin_src emacs-lisp
+(use-package ligature
+  :ensure nil
+  :if (display-graphic-p)
+  :quelpa (ligature :fetcher github :repo "mickeynp/ligature.el")
+  :config
+  (ligature-set-ligatures 'prog-mode '("-|" "-~" "---" "-<<" "-<" "--" "->" "->>" "-->" "///" "/=" "/=="
+                                       "/>" "//" "/*" "*>" "***" "*/" "<-" "<<-" "<=>" "<=" "<|" "<||"
+                                       "<|||" "<|>" "<:" "<>" "<-<" "<<<" "<==" "<<=" "<=<" "<==>" "<-|"
+                                       "<<" "<~>" "<=|" "<~~" "<~" "<$>" "<$" "<+>" "<+" "</>" "</" "<*"
+                                       "<*>" "<->" "<!--" ":>" ":<" ":::" "::" ":?" ":?>" ":=" "::=" "=>>"
+                                       "==>" "=/=" "=!=" "=>" "===" "=:=" "==" "!==" "!!" "!=" ">]" ">:"
+                                       ">>-" ">>=" ">=>" ">>>" ">-" ">=" "&&&" "&&" "|||>" "||>" "|>" "|]"
+                                       "|}" "|=>" "|->" "|=" "||-" "|-" "||=" "||" ".." ".?" ".=" ".-" "..<"
+                                       "..." "+++" "+>" "++" "[||]" "[<" "[|" "{|" "??" "?." "?=" "?:" "##"
+                                       "###" "####" "#[" "#{" "#=" "#!" "#:" "#_(" "#_" "#?" "#(" ";;" "_|_"
+                                       "__" "~~" "~~>" "~>" "~-" "~@" "$>" "^=" "]#"))
+  :hook
+  (after-init-hook . global-ligature-mode))
 #+end_src
 
 * Icons
