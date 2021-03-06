@@ -1367,6 +1367,7 @@
   (setq -org-todo-file  (concat org-directory "/todo.org"))
   (setq -org-notes-file (concat org-directory "/notes.org"))
 
+  (setq org-startup-folded t)
   (setq org-startup-indented t)
   (setq org-insert-heading-respect-content t)
   (setq org-hide-leading-stars t)
@@ -1438,6 +1439,7 @@
   (org-ellipsis ((t :underline nil)))
   (org-block-begin-line ((t :underline nil)))
   (org-block-end-line ((t :overline nil)))
+  (org-headline-done ((t :inherit org-done)))
   (org-level-1 ((t :weight bold)))
   (org-level-2 ((t :weight bold)))
   (org-level-3 ((t :weight bold)))
@@ -1447,7 +1449,7 @@
   (org-level-7 ((t :weight bold)))
   (org-level-8 ((t :weight bold)))
   :init
-  (setq org-priority-faces '((?A . (:inherit error :weight bold))
+  (setq org-priority-faces '((?A . (:inherit error   :weight bold))
                              (?B . (:inherit warning :weight bold))
                              (?C . (:inherit success :weight bold)))))
 
