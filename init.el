@@ -813,8 +813,12 @@
   (after-init-hook . global-so-long-mode))
 
 (use-package hungry-delete
+  :preface
+  (defun -disable-hungry-delete-mode ()
+    (hungry-delete-mode -1))
   :hook
-  (after-init-hook . global-hungry-delete-mode))
+  (after-init-hook . global-hungry-delete-mode)
+  (minibuffer-setup-hook . -disable-hungry-delete-mode))
 
 (use-package ediff
   :ensure nil
@@ -1296,58 +1300,13 @@
   :hook
   (after-init-hook         . global-diff-hl-mode)
   (after-init-hook         . diff-hl-margin-mode)
-  (diff-hl-mode-hook       . diff-hl-flydiff-mode)
+  ;; (diff-hl-mode-hook       . diff-hl-flydiff-mode)
   (dired-mode-hook         . diff-hl-dired-mode)
   (magit-pre-refresh-hook  . diff-hl-magit-pre-refresh)
   (magit-post-refresh-hook . diff-hl-magit-post-refresh))
 
-(use-package alert :disabled)
-
-(use-package alert
-  :disabled
-  :if (eq window-system 'ns)
-  :preface
-  (defun -osx-notification (info)
-    (let* ((title   (substring-no-properties (plist-get info :title)))
-           (message (substring-no-properties (plist-get info :message)))
-           (script  (format "display notification %S with title %S"
-                            message title)))
-      (do-applescript script))
-    (alert-message-notify info))
-  :init
-  (setq alert-default-style 'osx-notification)
-  :config
-  (alert-define-style 'osx-notification
-                      :title "AppleScript notification"
-                      :notifier #'-osx-notification))
-
-(use-package appt
-  :disabled
-  :ensure nil
-  :preface
-  (defun -appt-alert (min-to-app new-time appt-msg)
-    (let ((min-to-app (if (listp min-to-app) min-to-app `(,min-to-app)))
-          (appt-msg   (if (listp appt-msg)   appt-msg   `(,appt-msg))))
-      (dotimes (i (length appt-msg))
-        (let* ((min-to-app (nth i min-to-app))
-               (appt-msg   (nth i appt-msg))
-               (title (format "Appointment in %s minutes" min-to-app)))
-          (alert appt-msg :title title)))))
-  :init
-  (setq appt-time-msg-list nil)
-  (setq appt-message-warning-time 15)
-  (setq appt-display-interval 5)
-  (setq appt-display-mode-line nil)
-  (setq appt-disp-window-function (if (display-graphic-p)
-                                 #'-appt-alert
-                               #'appt-disp-window))
-  (setq appt-audible nil)
-  (setq appt-display-diary nil)
-  :config
-  (appt-activate t))
-
 (use-package org
-  :ensure nil
+  :ensure org-plus-contrib
   :preface
   (defun -open-org-directory  () (interactive) (find-file org-directory))
   (defun -open-org-inbox-file () (interactive) (find-file -org-inbox-file))
@@ -1371,7 +1330,6 @@
   (setq org-startup-indented t)
   (setq org-insert-heading-respect-content t)
   (setq org-hide-leading-stars t)
-  (setq org-hide-leading-stars-before-indent-mode t)
 
   (setq org-agenda-files `(,-org-todo-file))
   (setq org-agenda-inhibit-startup t)
@@ -1379,14 +1337,9 @@
 
   (setq org-archive-location (concat org-directory "/archive.org::datetree/"))
 
-  (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
-  (setq org-refile-use-outline-path 'file)
-  (setq org-outline-path-complete-in-steps nil)
-  (setq org-refile-allow-creating-parent-nodes 'confirm)
-  (setq org-refile-use-cache t)
-
   (setq org-tags-column 0)
-  (setq org-ellipsis "…")
+  ;; (setq org-ellipsis "…")
+  (setq org-ellipsis " ⌄ ")
   (setq org-pretty-entities t)
   (setq org-use-sub-superscripts '{})
 
@@ -1400,40 +1353,41 @@
   (setq org-fontify-whole-heading-line t))
 
 (use-package org-archive
-  :ensure nil
+  :ensure org-plus-contrib
   :init
   (setq org-archive-file-header-format nil))
 
-(use-package org-src
-  :ensure nil
+(use-package org-refile
+  :ensure org-plus-contrib
   :init
-  (setq org-src-tab-acts-natively t)
+  (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
+  (setq org-refile-use-outline-path 'file)
+  (setq org-outline-path-complete-in-steps nil)
+  (setq org-refile-allow-creating-parent-nodes 'confirm)
+  (setq org-refile-use-cache t))
+
+(use-package org-src
+  :ensure org-plus-contrib
+  :init
   (setq org-src-window-setup 'current-window)
   (setq org-edit-src-content-indentation 0))
 
 (use-package org-list
-  :ensure nil
+  :ensure org-plus-contrib
   :init
   (setq org-list-allow-alphabetical t)
   (setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))))
 
 (use-package org-agenda
-  :ensure nil
+  :ensure org-plus-contrib
   :general
   (-leader-def
     "Oa" '(org-agenda :wk "agenda"))
   :init
-  (setq org-agenda-window-setup 'current-window)
-  (setq org-agenda-skip-deadline-if-done (bound-and-true-p appt-timer))
-  (setq org-agenda-skip-scheduled-if-done (bound-and-true-p appt-timer))
-  :hook
-  (org-agenda-finalize-hook . org-agenda-to-appt))
-
-(when (bound-and-true-p appt-timer)
-  (run-at-time "10 sec" (* 10 60) 'org-agenda-to-appt))
+  (setq org-agenda-window-setup 'current-window))
 
 (use-package org-face
-  :ensure nil
+  :ensure org-plus-contrib
   :custom-face
   (org-tag ((t :inherit shadow)))
   (org-ellipsis ((t :underline nil)))
@@ -1479,18 +1433,18 @@
   (org-mode-hook . toc-org-enable))
 
 (use-package ob-core
-  :ensure nil
+  :ensure org-plus-contrib
   :hook
   (org-babel-after-execute-hook . org-redisplay-inline-images))
 
 (use-package ob-emacs-lisp
-  :ensure nil
+  :ensure org-plus-contrib
   :commands
   org-babel-execute:emacs-lisp
   org-babel-expand-body:emacs-lisp)
 
 (use-package ob-shell
-  :ensure nil
+  :ensure org-plus-contrib
   :commands
   org-babel-execute:sh
   org-babel-expand-body:sh
@@ -1582,6 +1536,8 @@
     "bs" 'cider-scratch
 
     "=" '(cider-format-buffer :wk "format"))
+  :init
+  (setq cider-eldoc-display-context-dependent-info t)
   :hook
   (cider-mode-hook      . cider-company-enable-fuzzy-completion)
   (cider-repl-mode-hook . cider-company-enable-fuzzy-completion))
