@@ -372,19 +372,18 @@
   :preface
   (defun -tab-bar-print-tabs (&optional ignore)
     (interactive)
-    (let* ((current-tab-index (1+ (tab-bar--current-tab-index)))
-           (tab-names (mapcar (lambda (tab) (alist-get 'name tab)) (tab-bar-tabs)))
-           (separator (propertize "|" 'face '(shadow)))
-           (active-face '(font-lock-constant-face :inverse-video t))
-           (inactivate-face '(shadow))
-           (tabs (mapconcat
-                  (lambda (name)
-                    (let* ((index (1+ (tab-bar--tab-index-by-name name)))
-                           (name-with-index (format " %d:%s " index name))
-                           (active? (= index current-tab-index))
-                           (face (if active? active-face inactivate-face)))
-                      (propertize name-with-index 'face face)))
-                  tab-names separator)))
+    (let* ((separator (propertize "|" 'face '(shadow)))
+           (tabs
+            (mapconcat
+             (lambda (tab)
+               (let* ((type (car tab))
+                      (index (1+ (tab-bar--tab-index tab)))
+                      (name (alist-get 'name tab))
+                      (face (if (equal type 'current-tab)
+                                '(font-lock-constant-face :inverse-video t)
+                              '(shadow))))
+                 (propertize (format " %d:%s " index name) 'face face)))
+             (tab-bar-tabs) separator)))
       (message tabs)))
   (defun -tab-bar-rename-or-close (name)
     (if name
@@ -429,9 +428,18 @@
   (setq tab-bar-new-tab-to 'rightmost)
   (setq tab-bar-tab-post-open-functions #'-tab-bar-post-open-rename)
   :config
-  (advice-add #'tab-bar-select-tab :after #'-tab-bar-print-tabs)
-  (advice-add #'tab-close          :after #'-tab-bar-print-tabs)
-  (advice-add #'tab-close-other    :after #'-tab-bar-print-tabs))
+  (mapcar
+   (lambda (f) (advice-add f :after #'-tab-bar-print-tabs))
+   '(tab-new
+     tab-close
+     tab-close-other
+     tab-undo
+     tab-select
+     tab-next
+     tab-previous
+     tab-recent
+     tab-move
+     tab-move-to)))
 
 (use-package window
   :ensure nil
