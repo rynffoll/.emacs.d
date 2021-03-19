@@ -935,6 +935,11 @@
   (-leader-def
     "tc" 'color-identifiers-mode))
 
+(use-package prism
+  :general
+  (-leader-def
+    "tp" 'prism-mode))
+
 (use-package display-line-numbers
   :ensure nil
   :general
