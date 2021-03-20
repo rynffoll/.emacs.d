@@ -1363,7 +1363,8 @@
 
   (setq org-catch-invisible-edits 'smart)
 
-  (setq org-fontify-whole-heading-line t))
+  (setq org-fontify-whole-heading-line t)
+  (setq org-fontify-done-headline nil))
 
 (use-package org-archive
   :ensure org-plus-contrib
@@ -1406,7 +1407,6 @@
   (org-ellipsis ((t :underline nil)))
   (org-block-begin-line ((t :underline nil)))
   (org-block-end-line ((t :overline nil)))
-  (org-headline-done ((t :inherit org-done)))
   (org-level-1 ((t :weight bold)))
   (org-level-2 ((t :weight bold)))
   (org-level-3 ((t :weight bold)))
