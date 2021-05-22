@@ -307,7 +307,7 @@
   :hook
   (after-init-hook . doom-modeline-mode)
   :config
-  (dolist (name '("*Compile-Log*"))
+  (dolist (name '("*Compile-Log*" "*Async-native-compile-log*"))
     (when-let ((buffer (get-buffer name)))
       (with-current-buffer buffer
         (doom-modeline-set-main-modeline)))))

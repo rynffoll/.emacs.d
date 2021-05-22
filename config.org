@@ -91,6 +91,12 @@ Enable lexical scope
 ;;; -*- lexical-binding: t; no-byte-compile: t -*-
 #+end_src
 
+hacks for native-comp
+#+begin_src emacs-lisp
+;; https://github.com/d12frosted/homebrew-emacs-plus/issues/323#issuecomment-805490388
+(setenv "LIBRARY_PATH" "/opt/homebrew/opt/gcc/lib/gcc/11:/opt/homebrew/opt/libgccjit/lib/gcc/11:/opt/homebrew/opt/gcc/lib/gcc/11/gcc/aarch64-apple-darwin20/11.1.0:/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib")
+#+end_src
+
 Default directory
 #+begin_src emacs-lisp
 (setq default-directory "~/")
@@ -532,7 +538,7 @@ Icons
   :hook
   (after-init-hook . doom-modeline-mode)
   :config
-  (dolist (name '("*Compile-Log*"))
+  (dolist (name '("*Compile-Log*" "*Async-native-compile-log*"))
     (when-let ((buffer (get-buffer name)))
       (with-current-buffer buffer
         (doom-modeline-set-main-modeline)))))

@@ -1,5 +1,8 @@
 ;;; -*- lexical-binding: t; no-byte-compile: t -*-
 
+;; https://github.com/d12frosted/homebrew-emacs-plus/issues/323#issuecomment-805490388
+(setenv "LIBRARY_PATH" "/opt/homebrew/opt/gcc/lib/gcc/11:/opt/homebrew/opt/libgccjit/lib/gcc/11:/opt/homebrew/opt/gcc/lib/gcc/11/gcc/aarch64-apple-darwin20/11.1.0:/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib")
+
 (setq default-directory "~/")
 
 (setq package-enable-at-startup nil)

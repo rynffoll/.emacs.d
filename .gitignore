@@ -26,3 +26,4 @@ var/
 workspace/
 amx-items
 async-bytecomp.log
+eln-cache/
