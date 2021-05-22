@@ -1152,7 +1152,10 @@
     (progn
       (treemacs-create-icon
        :icon (format "%s " (all-the-icons-octicon "repo" :v-adjust -0.1 :height 1.2))
-       :extensions (root))
+       :extensions (root-open))
+      (treemacs-create-icon
+       :icon (format "%s " (all-the-icons-octicon "repo" :v-adjust -0.1 :height 1.2))
+       :extensions (root-closed))
 
       (treemacs-create-icon
        :icon (format "%s " (all-the-icons-octicon "file-directory" :v-adjust 0))
