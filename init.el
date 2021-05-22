@@ -1627,24 +1627,13 @@
     "p" '(plantuml-preview :wk "preview"))
   :init
   (setq plantuml-output-type (if (display-images-p) "png" "txt"))
-  (setq plantuml-default-exec-mode 'jar)
-  (setq plantuml-jar-path
-        (car (last (file-expand-wildcards
-                    "/usr/local/Cellar/plantuml/*/libexec/plantuml.jar")))))
-
-(use-package flycheck-plantuml
-  :hook
-  (plantuml-mode-hook . flycheck-plantuml-setup))
+  (setq plantuml-default-exec-mode 'executable))
 
 (use-package ob-plantuml
   :ensure nil
   :after ob-core
   :commands
-  org-babel-execute:plantuml
-  :init
-  (setq org-plantuml-jar-path
-        (car (last (file-expand-wildcards
-                    "/usr/local/Cellar/plantuml/*/libexec/plantuml.jar")))))
+  org-babel-execute:plantuml)
 
 (use-package sql
   :ensure nil
@@ -1687,7 +1676,10 @@
 (use-package grip-mode
   :general
   (-local-leader-def :keymaps 'markdown-mode-map
-    "g" 'grip-mode))
+    "g" 'grip-mode)
+  :init
+  (setq grip-update-after-change nil)
+  (setq grip-preview-use-webkit t))
 
 (use-package json-mode
   :preface
@@ -1730,6 +1722,21 @@
 (use-package ssh-config-mode
   :init
   (autoload 'ssh-config-mode "ssh-config-mode" t))
+
+(use-package xwidget
+  :if (display-graphic-p)
+  :ensure nil
+  :general
+  (-leader-def
+    "ow" 'xwidget-webkit-browse-url))
+
+(use-package xwwp-follow-link-ivy
+  :if (display-graphic-p)
+  :general
+  (:keymaps 'xwidget-webkit-mode-map :states 'normal
+    "f" 'xwwp-follow-link)
+  :custom
+  (xwwp-follow-link-completion-system 'ivy))
 
 (use-package editorconfig
   :hook
