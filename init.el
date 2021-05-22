@@ -42,6 +42,10 @@
   (emacs-lisp-mode-hook . auto-compile-on-load-mode)
   (emacs-lisp-mode-hook . auto-compile-on-save-mode))
 
+(use-package gcmh
+  :hook
+  (after-init-hook . gcmh-mode))
+
 (use-package emacs
   :ensure nil
   :init

@@ -7,17 +7,8 @@
 
 (setq package-enable-at-startup nil)
 
-(defun -override-gc-setup ()
-  (setq gc-cons-threshold most-positive-fixnum
-        gc-cons-percentage 0.6))
-
-(defun -restore-gc-setup ()
-  (setq gc-cons-threshold 16777216
-        gc-cons-percentage 0.1))
-
-(-override-gc-setup)
-
-(add-hook 'emacs-startup-hook #'-restore-gc-setup)
+;; reset after init by gcmh
+(setq gc-cons-threshold most-positive-fixnum)
 
 (add-hook 'emacs-startup-hook
           #'(lambda ()
@@ -27,9 +18,6 @@
                                 (time-subtract after-init-time before-init-time)))
                        (format "%.2fs" (float-time gc-elapsed))
                        gcs-done)))
-
-(add-hook 'minibuffer-setup-hook #'-override-gc-setup)
-(add-hook 'minibuffer-exit-hook #'-restore-gc-setup)
 
 (defvar -file-name-handler-alist file-name-handler-alist)
 (setq file-name-handler-alist nil)
