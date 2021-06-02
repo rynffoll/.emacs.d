@@ -2140,6 +2140,10 @@ GO111MODULE=on go get golang.org/x/tools/gopls@latest
   :init
   (setq grip-update-after-change nil)
   (setq grip-preview-use-webkit t))
+
+(use-package markdown-toc)
+
+(use-package edit-indirect)
 #+end_src
 
 ** JSON

@@ -1684,6 +1684,10 @@
   (setq grip-update-after-change nil)
   (setq grip-preview-use-webkit t))
 
+(use-package markdown-toc)
+
+(use-package edit-indirect)
+
 (use-package json-mode
   :preface
   (defun -setup-json-mode ()
