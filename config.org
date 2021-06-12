@@ -2124,6 +2124,8 @@ GO111MODULE=on go get golang.org/x/tools/gopls@latest
 ** Markdown
 #+begin_src emacs-lisp
 (use-package markdown-mode
+  :custom-face
+  (markdown-code-face ((t :inherit default)))
   :general
   (-local-leader-def :keymaps 'markdown-mode-map
     "p" 'markdown-preview)
