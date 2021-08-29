@@ -751,8 +751,7 @@
 (use-package tramp
   :ensure nil
   :init
-  (setq tramp-default-method "ssh")
-  (setq tramp-default-proxies-alist nil))
+  (setq tramp-default-method "ssh"))
 
 (use-package exec-path-from-shell
   :if (or (memq window-system '(mac ns x)) (daemonp))
@@ -891,9 +890,16 @@
   (after-init-hook . electric-pair-mode))
 
 (use-package rainbow-delimiters
+  :disabled
   :hook
   (prog-mode-hook . rainbow-delimiters-mode)
   (cider-repl-mode-hook . rainbow-delimiters-mode))
+
+(use-package highlight-parentheses
+  :hook
+  (prog-mode-hook . highlight-parentheses-mode)
+  (cider-repl-mode-hook . highlight-parentheses-mode)
+  (minibuffer-setup-hook . highlight-parentheses-minibuffer-setup))
 
 (use-package rainbow-mode
   :general
@@ -1823,9 +1829,7 @@
 (use-package olivetti
   :general
   (-leader-def
-    "to" 'olivetti-mode)
-  :init
-  (setq olivetti-body-width 100))
+    "to" 'olivetti-mode))
 
 (use-package crux
   :general
