@@ -1263,8 +1263,9 @@
   :general
   (-leader-def
     "ot" '-vterm)
-  :custom
-  (vterm-max-scrollback 10000)
+  :init
+  (setq vterm-max-scrollback 10000)
+  (setq vterm-clear-scrollback-when-clearing t)
   :hook
   (vterm-mode-hook . -disable-global-hl-line-mode))
 
@@ -1750,8 +1751,8 @@
   :general
   (:keymaps 'xwidget-webkit-mode-map :states 'normal
     "f" 'xwwp-follow-link)
-  :custom
-  (xwwp-follow-link-completion-system 'ivy))
+  :init
+  (setq xwwp-follow-link-completion-system 'ivy))
 
 (use-package editorconfig
   :hook
