@@ -68,6 +68,7 @@
   (setq bidi-display-reordering 'left-to-right)
   (setq bidi-paragraph-direction 'left-to-right)
   (setq fast-but-imprecise-scrolling t)
+  (setq native-comp-async-report-warnings-errors nil)
   :config
   (defalias 'yes-or-no-p 'y-or-n-p))
 
