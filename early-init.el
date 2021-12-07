@@ -1,11 +1,5 @@
 ;;; -*- lexical-binding: t; no-byte-compile: t -*-
 
-(let ((arch (shell-command-to-string "arch")))
-  (when (equal arch "arm64")
-    (setenv "LIBRARY_PATH" "/opt/homebrew/opt/gcc/lib/gcc/11:/opt/homebrew/opt/libgccjit/lib/gcc/11:/opt/homebrew/opt/gcc/lib/gcc/11/gcc/aarch64-apple-darwin20/11.1.0:/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib"))
-  (when (equal arch "i386")
-    (setenv "LIBRARY_PATH" "/usr/local/opt/gcc/lib/gcc/11:/usr/local/opt/libgccjit/lib/gcc/11:/usr/local/opt/gcc/lib/gcc/11/gcc/x86_64-apple-darwin20/11.1.0:/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib")))
-
 (setq default-directory "~/")
 
 (setq package-enable-at-startup nil)

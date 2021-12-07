@@ -1323,9 +1323,7 @@
   (-local-leader-def :keymaps 'gitignore-mode-map
     "i" 'gitignore-templates-insert))
 
-(use-package gitattributes-mode)
-(use-package gitconfig-mode)
-(use-package gitignore-mode)
+(use-package git-modes)
 
 (use-package diff-hl
   :init
@@ -1339,7 +1337,7 @@
   (magit-post-refresh-hook . diff-hl-magit-post-refresh))
 
 (use-package org
-  :ensure org-plus-contrib
+  :ensure nil
   :preface
   (defun -open-org-directory  () (interactive) (find-file org-directory))
   (defun -open-org-inbox-file () (interactive) (find-file -org-inbox-file))
@@ -1376,7 +1374,17 @@
   (setq org-pretty-entities t)
   (setq org-use-sub-superscripts '{})
 
-  (setq org-todo-keywords '((sequence "TODO(t)" "IN PROGRESS(i)" "WAITING(w)" "|" "DONE(d)" "CANCELED(c)")))
+  (setq org-todo-keywords '((sequence
+                             "TODO(t)"
+                             "STARTED(s)"
+                             "NEXT(n)"
+                             "WAITING(w)"
+                             "HOLD(h)"
+                             "|"
+                             "DONE(d)"
+                             "OBSOLETE(o)"
+                             "CANCELLED(c)")))
+
   (setq org-log-done 'time)
 
   (setq org-startup-with-inline-images t)
@@ -1387,12 +1395,12 @@
   (setq org-fontify-done-headline nil))
 
 (use-package org-archive
-  :ensure org-plus-contrib
+  :ensure org
   :init
   (setq org-archive-file-header-format nil))
 
 (use-package org-refile
-  :ensure org-plus-contrib
+  :ensure org
   :init
   (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
   (setq org-refile-use-outline-path 'file)
@@ -1401,19 +1409,19 @@
   (setq org-refile-use-cache t))
 
 (use-package org-src
-  :ensure org-plus-contrib
+  :ensure org
   :init
   (setq org-src-window-setup 'current-window)
   (setq org-edit-src-content-indentation 0))
 
 (use-package org-list
-  :ensure org-plus-contrib
+  :ensure org
   :init
   (setq org-list-allow-alphabetical t)
   (setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))))
 
 (use-package org-agenda
-  :ensure org-plus-contrib
+  :ensure org
   :general
   (-leader-def
     "Oa" '(org-agenda :wk "agenda"))
@@ -1421,7 +1429,7 @@
   (setq org-agenda-window-setup 'current-window))
 
 (use-package org-face
-  :ensure org-plus-contrib
+  :ensure org
   :custom-face
   (org-tag ((t :inherit shadow)))
   (org-ellipsis ((t :underline nil)))
@@ -1466,18 +1474,18 @@
   (org-mode-hook . toc-org-enable))
 
 (use-package ob-core
-  :ensure org-plus-contrib
+  :ensure org
   :hook
   (org-babel-after-execute-hook . org-redisplay-inline-images))
 
 (use-package ob-emacs-lisp
-  :ensure org-plus-contrib
+  :ensure org
   :commands
   org-babel-execute:emacs-lisp
   org-babel-expand-body:emacs-lisp)
 
 (use-package ob-shell
-  :ensure org-plus-contrib
+  :ensure org
   :commands
   org-babel-execute:sh
   org-babel-expand-body:sh
