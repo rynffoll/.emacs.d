@@ -1824,22 +1824,22 @@ Highlight diff
 (use-package org-face
   :ensure org
   :custom-face
-  (org-tag ((t :inherit shadow)))
-  (org-ellipsis ((t :underline nil)))
+  (org-tag              ((t :inherit shadow)))
+  (org-ellipsis         ((t :underline nil)))
   (org-block-begin-line ((t :underline nil)))
-  (org-block-end-line ((t :overline nil)))
-  (org-level-1 ((t :weight bold)))
-  (org-level-2 ((t :weight bold)))
-  (org-level-3 ((t :weight bold)))
-  (org-level-4 ((t :weight bold)))
-  (org-level-5 ((t :weight bold)))
-  (org-level-6 ((t :weight bold)))
-  (org-level-7 ((t :weight bold)))
-  (org-level-8 ((t :weight bold)))
+  (org-block-end-line   ((t :overline nil)))
   :init
-  (setq org-priority-faces '((?A . (:inherit error   :weight bold))
-                             (?B . (:inherit warning :weight bold))
-                             (?C . (:inherit success :weight bold)))))
+  (setq org-priority-faces
+        '((?A . (:inherit (bold error)))
+          (?B . (:inherit (bold warning)))
+          (?C . (:inherit (bold success)))))
+  (setq org-todo-keyword-faces
+        '(("STARTED"   . (:inherit (bold font-lock-constant-face org-todo)))
+          ("NEXT"      . (:inherit (bold font-lock-constant-face org-todo)))
+          ("WAITING"   . (:inherit (bold warning org-todo)))
+          ("HOLD"      . (:inherit (bold warning org-todo)))
+          ("OBSOLETE"  . (:inherit (bold shadow org-todo)))
+          ("CANCELLED" . (:inherit (bold shadow org-todo))))))
 #+end_src
 
 Org Bullets
