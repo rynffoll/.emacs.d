@@ -8,12 +8,12 @@
 
 (add-hook 'emacs-startup-hook
           #'(lambda ()
-              (message "Emacs ready (init time = %s, gc time = %s, gc count = %d)."
-                       (format "%.2fs"
-                               (float-time
-                                (time-subtract after-init-time before-init-time)))
-                       (format "%.2fs" (float-time gc-elapsed))
-                       gcs-done)))
+              (let ((init-time (float-time (time-subtract after-init-time before-init-time)))
+                    (packages  (length package-activated-list))
+                    (gc-time   (float-time gc-elapsed))
+                    (gc-count  gcs-done))
+                (message "Emacs ready (init time = %.2fs, packages = %d, gc time = %.2fs, gc count = %d)."
+                         init-time packages gc-time gc-count))))
 
 (defvar -file-name-handler-alist file-name-handler-alist)
 (setq file-name-handler-alist nil)

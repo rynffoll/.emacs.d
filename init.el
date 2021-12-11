@@ -1687,7 +1687,7 @@
   (markdown-code-face ((t :inherit default)))
   :general
   (-local-leader-def :keymaps 'markdown-mode-map
-    "p" 'markdown-preview)
+    "." '(:keymap markdown-mode-command-map))
   :init
   (setq markdown-command "pandoc")
   (setq markdown-fontify-code-blocks-natively t)
