@@ -34,6 +34,8 @@
   :init
   (setq quelpa-use-package-inhibit-loading-quelpa t))
 
+(use-package gnu-elpa-keyring-update)
+
 (use-package auto-compile
   :init
   (setq auto-compile-display-buffer nil)

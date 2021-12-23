@@ -200,6 +200,8 @@ Setup use-package
   :demand
   :init
   (setq quelpa-use-package-inhibit-loading-quelpa t))
+
+(use-package gnu-elpa-keyring-update)
 #+end_src
 
 * Auto Compile
