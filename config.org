@@ -57,6 +57,7 @@
   - [[#babel][Babel]]
 - [[#lsp][LSP]]
 - [[#languages][Languages]]
+  - [[#tree-sitter][tree-sitter]]
   - [[#emacs-lisp][Emacs Lisp]]
   - [[#clojure][Clojure]]
   - [[#java][Java]]
@@ -1930,6 +1931,22 @@ Org Bullets
 #+end_src
 
 * Languages
+** tree-sitter
+#+begin_src emacs-lisp
+(use-package tree-sitter
+  :hook
+  (after-init-hook . global-tree-sitter-mode)
+  (tree-sitter-after-on-hook . tree-sitter-hl-mode))
+
+(use-package tree-sitter-langs)
+
+(use-package ts-fold
+  :ensure nil
+  :quelpa (ts-fold :fetcher github :repo "jcs090218/ts-fold")
+  :hook
+  (tree-sitter-after-on-hook . ts-fold-mode))
+#+end_src
+
 ** Emacs Lisp
 #+begin_src emacs-lisp
 (use-package highlight-defined

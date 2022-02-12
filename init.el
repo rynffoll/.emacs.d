@@ -1523,6 +1523,19 @@
   (dap-tooltip-mode 1)
   (dap-ui-controls-mode 1))
 
+(use-package tree-sitter
+  :hook
+  (after-init-hook . global-tree-sitter-mode)
+  (tree-sitter-after-on-hook . tree-sitter-hl-mode))
+
+(use-package tree-sitter-langs)
+
+(use-package ts-fold
+  :ensure nil
+  :quelpa (ts-fold :fetcher github :repo "jcs090218/ts-fold")
+  :hook
+  (tree-sitter-after-on-hook . ts-fold-mode))
+
 (use-package highlight-defined
   :init
   (setq highlight-defined-face-use-itself t)
