@@ -217,7 +217,7 @@
   (setq which-key-show-early-on-C-h t)
   ;; make sure which-key doesn't show normally but refreshes quickly after it is
   ;; triggered.
-  (setq which-key-idle-delay 10000)
+  (setq which-key-idle-delay 1.0)
   (setq which-key-idle-secondary-delay 0.05)
   :hook
   (after-init-hook . which-key-mode))
@@ -570,83 +570,95 @@
   :hook
   (after-init-hook . shackle-mode))
 
-(use-package ivy
+(use-package consult
   :general
-  (ivy-mode-map
-   "C-j" 'ivy-next-line
-   "C-k" 'ivy-previous-line)
+  ([remap apropos]                       'consult-apropos)
+  ([remap bookmark-jump]                 'consult-bookmark)
+  ([remap goto-line]                     'consult-goto-line)
+  ([remap imenu]                         'consult-imenu)
+  ([remap locate]                        'consult-locate)
+  ([remap load-theme]                    'consult-theme)
+  ([remap man]                           'consult-man)
+  ([remap recentf-open-files]            'consult-recent-file)
+  ([remap switch-to-buffer]              'consult-buffer)
+  ([remap switch-to-buffer-other-window] 'consult-buffer-other-window)
+  ([remap switch-to-buffer-other-frame]  'consult-buffer-other-frame)
+  ([remap yank-pop]                      'consult-yank-pop)
+  ([remap imenu]                         'consult-imenu)
   (-leader-def
-    "bb" 'ivy-switch-buffer)
+    "/." 'consult-ripgrep
+    "/b" 'consult-line)
   :init
-  (setq ivy-wrap t)
-  (setq ivy-fixed-height-minibuffer t)
-  (setq ivy-use-virtual-buffers t)
-  (setq ivy-virtual-abbreviate 'full)
-  (setq ivy-on-del-error-function nil)
-  (setq ivy-use-selectable-prompt t)
-  (setq ivy-initial-inputs-alist nil)
-  (setq ivy-re-builders-alist '((counsel-rg . ivy--regex-plus)
-                           (swiper     . ivy--regex-plus)
-                           (t          . ivy--regex-fuzzy)))
+  (setq register-preview-delay 0)
+  (setq register-preview-function #'consult-register-format)
+  (advice-add #'register-preview :override #'consult-register-window)
+  (advice-add #'completing-read-multiple :override #'consult-completing-read-multiple)
+  (setq xref-show-xrefs-function #'consult-xref)
+  (setq xref-show-definitions-function #'consult-xref)
   :hook
-  (after-init-hook . ivy-mode))
+  (completion-list-mode-hook . consult-preview-at-point-mode)
+  :config
+  (setq consult-project-root-function #'projectile-project-root))
 
-(use-package ivy-hydra)
-
-(use-package ivy-rich
-  :init
-  (setq ivy-rich-path-style 'abbrev)
-  :hook
-  (ivy-mode-hook . ivy-rich-mode))
-
-(use-package counsel
+(use-package consult-dir
   :general
-  ([remap describe-face]            'counsel-describe-face)
-  ([remap describe-function]        'counsel-describe-function)
-  ([remap describe-variable]        'counsel-describe-variable)
-  ([remap execute-extended-command] 'counsel-M-x)
-  ([remap find-file]                'counsel-find-file)
-  ([remap find-library]             'counsel-find-library)
-  ([remap imenu]                    'counsel-imenu)
-  (-leader-def
-    "." 'counsel-find-file
-
-    "oL" 'counsel-find-library
-    "oh" 'counsel-command-history
-
-    "Pp" 'counsel-package
-
-    "ff" 'counsel-find-file
-    "fr" 'counsel-recentf
-
-    "/b" 'swiper
-    "/d" 'counsel-rg
-
-    "tt" 'counsel-load-theme
-
-    "hF" '(:ignore t :wk "face")
-    "hFf" 'counsel-faces
-    "hFe" 'counsel-colors-emacs
-    "hFw" 'counsel-colors-web)
+  ([remap list-directory] 'consult-dir)
+  ([remap dired-jump]     'consult-dir-jump-file)
   :init
-  (setq counsel-describe-function-function 'helpful-callable)
-  (setq counsel-describe-variable-function 'helpful-variable))
+  (setq consult-dir-project-list-function #'consult-dir-projectile-dirs))
 
-(use-package counsel-projectile
+(use-package marginalia
   :general
-  (-leader-def
-    "/p" 'counsel-projectile-rg)
-  :hook
-  (after-init-hook . counsel-projectile-mode))
-
-(use-package amx
+  (minibuffer-local-map
+   "M-A" 'marginalia-cycle)
   :init
-  (setq amx-backend 'ivy))
+  (marginalia-mode))
+
+(use-package vertico
+  :general
+  (vertico-map
+   "C-j" 'vertico-next
+   "C-k" 'vertico-previous)
+  :init
+  (setq vertico-resize 'grow-only)
+  (setq vertico-cycle t)
+  :hook
+  (after-init-hook . vertico-mode))
+
+(use-package orderless
+  :init
+  (setq completion-styles '(orderless))
+  (setq orderless-matching-styles '(orderless-literal
+                                    orderless-flex
+                                    orderless-regexp)))
+
+(use-package embark
+  :general
+  ([remap describe-bindings] 'embark-bindings)
+  (minibuffer-local-map
+   "C-." 'embark-act)
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command)
+  :config
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
+
+(use-package embark-consult
+  :after embark consult
+  :demand t ; only necessary if you have the hook below
+  ;; if you want to have consult previews as you move around an
+  ;; auto-updating embark collect buffer
+  :hook
+  (embark-collect-mode-hook . consult-preview-at-point-mode))
 
 (use-package files
   :ensure nil
   :general
   (-leader-def
+    "." 'find-file
+    "ff" 'find-file
     "br" 'revert-buffer)
   :init
   (setq require-final-newline t)
@@ -676,6 +688,9 @@
 
 (use-package recentf
   :ensure nil
+  :general
+  (-leader-def
+    "fr" 'recentf-open-files)
   :init
   (setq recentf-max-saved-items 300)
   :hook
@@ -697,6 +712,12 @@
   :init
   (setq iqa-user-init-file (concat user-emacs-directory "config.org")))
 
+(use-package custom
+  :ensure nil
+  :general
+  (-leader-def
+    "tt" 'load-theme))
+
 (use-package cus-edit
   :ensure nil
   :general
@@ -716,9 +737,12 @@
     "p" '(:keymap projectile-command-map :package projectile :wk "project"))
   :init
   (setq projectile-project-search-path '("~/Projects"))
-  (setq projectile-auto-discover nil)
-  (setq projectile-enable-caching t)
-  (setq projectile-completion-system 'ivy))
+  :hook
+  (after-init-hook . projectile-mode))
+
+(use-package consult-projectile
+  :general
+  ([remap projectile-switch-project] 'consult-projectile))
 
 (use-package dired
   :ensure nil
@@ -777,14 +801,12 @@
   :ensure nil
   :general
   (-leader-def
-    "hd" 'describe-mode))
-
-(use-package help-fns
-  :ensure nil
-  :general
-  (-leader-def
+    "hx" 'describe-command
+    "hk" 'describe-key
+    "hv" 'describe-variable
     "hf" 'describe-function
-    "hv" 'describe-variable))
+    "hF" 'describe-face
+    "hb" 'describe-bindings))
 
 (use-package man
   :ensure nil
@@ -794,12 +816,18 @@
 
 (use-package helpful
   :general
+  ([remap describe-command]  'helpful-command)
+  ([remap describe-key]      'helpful-key)
+  ([remap describe-variable] 'helpful-variable)
+  ([remap describe-function] 'helpful-function)
   (-leader-def
-    "h." 'helpful-at-point
-    "hC" 'helpful-command
-    "hc" 'helpful-callable
-    "hk" 'helpful-key
-    "hm" 'helpful-macro))
+    "h." 'helpful-at-point))
+
+(use-package find-func
+  :ensure nil
+  :general
+  (-leader-def
+    "hl" 'find-library))
 
 (use-package delsel
   :ensure nil
@@ -812,8 +840,7 @@
   :ensure nil
   :general
   (-leader-def
-    "SPC" 'execute-extended-command
-    ":" 'eval-expression
+    ":" 'execute-extended-command
     "tT" 'toggle-truncate-lines)
   :init
   (setq backward-delete-char-untabify-method 'hungry)
@@ -1042,12 +1069,7 @@
 (use-package flyspell-correct
   :general
   (flyspell-mode-map
-   "C-;" 'flyspell-correct-at-point))
-
-(use-package flyspell-correct-ivy
-  :after flyspell-correct
-  :init
-  (setq flyspell-correct-interface 'flyspell-correct-ivy))
+   "C-;" 'flyspell-correct-wrapper))
 
 (use-package flycheck
   :init
@@ -1093,6 +1115,11 @@
       :overlay-category 'flycheck-info-overlay
       :fringe-bitmap '-flycheck-fringe-indicator
       :fringe-face 'flycheck-fringe-info)))
+
+(use-package consult-flycheck
+  :general
+  (-leader-def
+    "je" 'consult-flycheck))
 
 (use-package imenu
   :ensure nil
