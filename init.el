@@ -160,7 +160,7 @@
   (setq evil-symbol-word-search t)
   (setq evil-move-beyond-eol nil)
   (setq evil-move-cursor-back t)
-  (setq evil-undo-system 'undo-tree)
+  ;; (setq evil-undo-system 'undo-tree)
   (setq evil-want-C-i-jump nil)
   :config
   (evil-mode t)
@@ -886,6 +886,23 @@
 
 (use-package undo-fu
   :if (eq evil-undo-system 'undo-fu))
+
+(use-package vundo
+  :ensure nil
+  :quelpa (vundo :fetcher github :repo "casouri/vundo")
+  :general
+  ("C-x u" 'vundo)
+  (vundo-mode-map
+   "h" 'vundo-backward
+   "j" 'vundo-next
+   "k" 'vundo-previous
+   "l" 'vundo-forward
+   "^" 'vundo-stem-root
+   "$" 'vundo-stem-end)
+  :custom-face
+  (vundo-highlight ((t :inherit (bold success))))
+  :config
+  (setq vundo-glyph-alist vundo-unicode-symbols))
 
 (use-package ansi-color
   :preface

@@ -33,7 +33,7 @@
 - [[#help][Help]]
 - [[#editor][Editor]]
 - [[#ediff][Ediff]]
-- [[#better-undo][Better Undo]]
+- [[#undoredo][Undo/Redo]]
 - [[#highlighting][Highlighting]]
 - [[#line-numbers][Line Numbers]]
 - [[#auto-completion][Auto Completion]]
@@ -352,7 +352,7 @@ Calendar
   (setq evil-symbol-word-search t)
   (setq evil-move-beyond-eol nil)
   (setq evil-move-cursor-back t)
-  (setq evil-undo-system 'undo-tree)
+  ;; (setq evil-undo-system 'undo-tree)
   (setq evil-want-C-i-jump nil)
   :config
   (evil-mode t)
@@ -1172,7 +1172,7 @@ Use the Emacsclient as the ~$EDITOR~ of child processes
   (ediff-quit-hook . winner-undo))
 #+end_src
 
-* Better Undo
+* Undo/Redo
 #+begin_src emacs-lisp
 (use-package undo-tree
   :if (eq evil-undo-system 'undo-tree)
@@ -1184,6 +1184,23 @@ Use the Emacsclient as the ~$EDITOR~ of child processes
 
 (use-package undo-fu
   :if (eq evil-undo-system 'undo-fu))
+
+(use-package vundo
+  :ensure nil
+  :quelpa (vundo :fetcher github :repo "casouri/vundo")
+  :general
+  ("C-x u" 'vundo)
+  (vundo-mode-map
+   "h" 'vundo-backward
+   "j" 'vundo-next
+   "k" 'vundo-previous
+   "l" 'vundo-forward
+   "^" 'vundo-stem-root
+   "$" 'vundo-stem-end)
+  :custom-face
+  (vundo-highlight ((t :inherit (bold success))))
+  :config
+  (setq vundo-glyph-alist vundo-unicode-symbols))
 #+end_src
 
 * Highlighting
