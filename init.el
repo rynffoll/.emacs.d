@@ -160,7 +160,7 @@
   (setq evil-symbol-word-search t)
   (setq evil-move-beyond-eol nil)
   (setq evil-move-cursor-back t)
-  ;; (setq evil-undo-system 'undo-tree)
+  (setq evil-undo-system 'undo-redo)
   (setq evil-want-C-i-jump nil)
   :config
   (evil-mode t)
