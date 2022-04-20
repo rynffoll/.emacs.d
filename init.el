@@ -878,7 +878,7 @@
   (ediff-quit-hook . winner-undo))
 
 (use-package undo-tree
-  :if (eq evil-undo-system 'undo-tree)
+  :disabled (not (eq evil-undo-system 'undo-tree))
   :init
   (setq undo-tree-auto-save-history t)
   (setq undo-tree-history-directory-alist `(("." . ,temporary-file-directory)))
@@ -886,7 +886,7 @@
   (after-init-hook . global-undo-tree-mode))
 
 (use-package undo-fu
-  :if (eq evil-undo-system 'undo-fu))
+  :disabled (not (eq evil-undo-system 'undo-fu)))
 
 (use-package vundo
   :ensure nil
