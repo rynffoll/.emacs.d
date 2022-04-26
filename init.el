@@ -889,8 +889,6 @@
   :disabled (not (eq evil-undo-system 'undo-fu)))
 
 (use-package vundo
-  :ensure nil
-  :quelpa (vundo :fetcher github :repo "casouri/vundo")
   :general
   ("C-x u" 'vundo)
   (vundo-mode-map
@@ -900,9 +898,16 @@
    "l" 'vundo-forward
    "^" 'vundo-stem-root
    "$" 'vundo-stem-end)
+  :preface
+  (defun -setup-vundo-mode ()
+    (-disable-global-hl-line-mode)
+    (setq-local evil-default-cursor '(nil)))
+  :hook
+  (vundo-mode-hook . -setup-vundo-mode)
   :custom-face
   (vundo-highlight ((t :inherit (bold success))))
   :config
+  (setq vundo-compact-display t)
   (setq vundo-glyph-alist vundo-unicode-symbols))
 
 (use-package ansi-color
