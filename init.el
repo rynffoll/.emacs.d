@@ -1189,6 +1189,73 @@
   (defun -hide-fringes ()
     (when (display-graphic-p)
       (set-window-fringes nil 0 0)))
+  (defun -setup-treemacs-theme ()
+    (treemacs-create-theme "Icons"
+      :config
+      (progn
+        (treemacs-create-icon
+         :icon (format "%s " (all-the-icons-octicon "repo" :v-adjust -0.1 :height 1.2))
+         :extensions (root-open))
+        (treemacs-create-icon
+         :icon (format "%s " (all-the-icons-octicon "repo" :v-adjust -0.1 :height 1.2))
+         :extensions (root-closed))
+
+        (treemacs-create-icon
+         :icon (format "%s " (all-the-icons-octicon "file-directory" :v-adjust 0))
+         :extensions (dir-open))
+        (treemacs-create-icon
+         :icon (format "%s " (all-the-icons-octicon "file-directory" :v-adjust 0))
+         :extensions (dir-closed))
+
+        (treemacs-create-icon
+         :icon (format "  %s " (all-the-icons-octicon "tag" :v-adjust 0))
+         :extensions (tag-leaf))
+        (treemacs-create-icon
+         :icon (format "%s %s "
+                       (all-the-icons-octicon "chevron-down" :v-adjust 0)
+                       (all-the-icons-octicon "tag" :v-adjust 0))
+         :extensions (tag-open))
+        (treemacs-create-icon
+         :icon (format "%s %s "
+                       (all-the-icons-octicon "chevron-right" :v-adjust 0)
+                       (all-the-icons-octicon "tag" :v-adjust 0))
+         :extensions (tag-closed))
+
+        (treemacs-create-icon
+         :icon (format "%s " (all-the-icons-octicon "alert" :v-adjust 0 :face 'error))
+         :extensions (error))
+        (treemacs-create-icon
+         :icon (format "%s " (all-the-icons-octicon "stop"  :v-adjust 0 :face 'warning))
+         :extensions (warning))
+        (treemacs-create-icon
+         :icon (format "%s " (all-the-icons-octicon "info"  :v-adjust 0 :face 'success))
+         :extensions (info))
+
+        (treemacs-create-icon
+         :icon (format "%s " (all-the-icons-octicon "file-text" :v-adjust 0))
+         :extensions ("md" "markdown" "rst" "log" "org" "txt"
+                      "CONTRIBUTE" "LICENSE" "README" "CHANGELOG"))
+        (treemacs-create-icon
+         :icon (format "%s " (all-the-icons-octicon "file-zip" :v-adjust 0))
+         :extensions ("zip" "7z" "tar" "gz" "rar" "tgz"
+                      "xz" "dmg" "iso"))
+        (treemacs-create-icon
+         :icon (format "%s " (all-the-icons-octicon "file-binary" :v-adjust 0))
+         :extensions ("exe" "dll" "obj" "so" "o" "out" "elc"))
+        (treemacs-create-icon
+         :icon (format "%s " (all-the-icons-octicon "file-pdf" :v-adjust 0))
+         :extensions ("pdf"))
+        (treemacs-create-icon
+         :icon (format "%s " (all-the-icons-octicon "file-media" :v-adjust 0))
+         :extensions ("png" "jpg" "jpeg" "gif" "ico" "svg" "bmp"
+                      "mov" "avi" "mp4" "webm" "mkv"
+                      "wav" "mp3" "ogg" "midi"))
+
+        (treemacs-create-icon
+         :icon (format "%s " (all-the-icons-octicon "file-code" :v-adjust 0))
+         :extensions (fallback))))
+
+    (treemacs-load-theme "Icons"))
   :general
   (-leader-def
     "0" 'treemacs-select-window
@@ -1206,72 +1273,7 @@
   (treemacs-mode-hook . hide-mode-line-mode)
   (treemacs-mode-hook . -hide-fringes)
   :config
-  (treemacs-create-theme "Icons"
-    :config
-    (progn
-      (treemacs-create-icon
-       :icon (format "%s " (all-the-icons-octicon "repo" :v-adjust -0.1 :height 1.2))
-       :extensions (root-open))
-      (treemacs-create-icon
-       :icon (format "%s " (all-the-icons-octicon "repo" :v-adjust -0.1 :height 1.2))
-       :extensions (root-closed))
-
-      (treemacs-create-icon
-       :icon (format "%s " (all-the-icons-octicon "file-directory" :v-adjust 0))
-       :extensions (dir-open))
-      (treemacs-create-icon
-       :icon (format "%s " (all-the-icons-octicon "file-directory" :v-adjust 0))
-       :extensions (dir-closed))
-
-      (treemacs-create-icon
-       :icon (format "  %s " (all-the-icons-octicon "tag" :v-adjust 0))
-       :extensions (tag-leaf))
-      (treemacs-create-icon
-       :icon (format "%s %s "
-                     (all-the-icons-octicon "chevron-down" :v-adjust 0)
-                     (all-the-icons-octicon "tag" :v-adjust 0))
-       :extensions (tag-open))
-      (treemacs-create-icon
-       :icon (format "%s %s "
-                     (all-the-icons-octicon "chevron-right" :v-adjust 0)
-                     (all-the-icons-octicon "tag" :v-adjust 0))
-       :extensions (tag-closed))
-
-      (treemacs-create-icon
-       :icon (format "%s " (all-the-icons-octicon "alert" :v-adjust 0 :face 'error))
-       :extensions (error))
-      (treemacs-create-icon
-       :icon (format "%s " (all-the-icons-octicon "stop"  :v-adjust 0 :face 'warning))
-       :extensions (warning))
-      (treemacs-create-icon
-       :icon (format "%s " (all-the-icons-octicon "info"  :v-adjust 0 :face 'success))
-       :extensions (info))
-
-      (treemacs-create-icon
-       :icon (format "%s " (all-the-icons-octicon "file-text" :v-adjust 0))
-       :extensions ("md" "markdown" "rst" "log" "org" "txt"
-                    "CONTRIBUTE" "LICENSE" "README" "CHANGELOG"))
-      (treemacs-create-icon
-       :icon (format "%s " (all-the-icons-octicon "file-zip" :v-adjust 0))
-       :extensions ("zip" "7z" "tar" "gz" "rar" "tgz"
-                    "xz" "dmg" "iso"))
-      (treemacs-create-icon
-       :icon (format "%s " (all-the-icons-octicon "file-binary" :v-adjust 0))
-       :extensions ("exe" "dll" "obj" "so" "o" "out" "elc"))
-      (treemacs-create-icon
-       :icon (format "%s " (all-the-icons-octicon "file-pdf" :v-adjust 0))
-       :extensions ("pdf"))
-      (treemacs-create-icon
-       :icon (format "%s " (all-the-icons-octicon "file-media" :v-adjust 0))
-       :extensions ("png" "jpg" "jpeg" "gif" "ico" "svg" "bmp"
-                    "mov" "avi" "mp4" "webm" "mkv"
-                    "wav" "mp3" "ogg" "midi"))
-
-      (treemacs-create-icon
-       :icon (format "%s " (all-the-icons-octicon "file-code" :v-adjust 0))
-       :extensions (fallback))))
-
-  (treemacs-load-theme "Icons"))
+  (-setup-treemacs-theme))
 
 (use-package treemacs-evil
   :demand
@@ -1557,11 +1559,11 @@
 
 (use-package lsp-ui)
 
-(use-package lsp-ivy
-  :general
-  (lsp-command-map
-   "i" 'lsp-ivy-workspace-symbol
-   "I" 'lsp-ivy-global-workspace-symbol))
+(use-package lsp-treemacs
+  :config
+  ;; https://github.com/emacs-lsp/lsp-treemacs/issues/89
+  (with-eval-after-load 'lsp-treemacs
+    (-setup-treemacs-theme)))
 
 (use-package dap-mode
   :general
