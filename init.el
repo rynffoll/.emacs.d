@@ -891,13 +891,6 @@
 (use-package vundo
   :general
   ("C-x u" 'vundo)
-  (vundo-mode-map
-   "h" 'vundo-backward
-   "j" 'vundo-next
-   "k" 'vundo-previous
-   "l" 'vundo-forward
-   "^" 'vundo-stem-root
-   "$" 'vundo-stem-end)
   :preface
   (defun -setup-vundo-mode ()
     (-disable-global-hl-line-mode)
