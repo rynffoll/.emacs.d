@@ -1283,6 +1283,11 @@
 (use-package treemacs-magit
   :after treemacs magit)
 
+(use-package treemacs-tab-bar
+  :after treemacs tab-bar
+  :config
+  (treemacs-set-scope-type 'Tabs))
+
 (use-package em-smart
   :ensure nil
   :after eshell
