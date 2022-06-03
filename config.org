@@ -844,7 +844,8 @@ Consult
   :hook
   (completion-list-mode-hook . consult-preview-at-point-mode)
   :config
-  (setq consult-project-root-function #'projectile-project-root))
+  (autoload 'projectile-project-root "projectile")
+  (setq consult-project-function (lambda (_) (projectile-project-root))))
 
 (use-package consult-dir
   :general
