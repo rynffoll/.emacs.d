@@ -145,6 +145,8 @@
     (interactive)
     (save-buffer)
     (kill-this-buffer))
+  (defun -disable-evil-cursor ()
+    (setq-local evil-default-cursor '(nil)))
   :general
   (evil-insert-state-map
    "C-k" nil)
@@ -891,12 +893,9 @@
 (use-package vundo
   :general
   ("C-x u" 'vundo)
-  :preface
-  (defun -setup-vundo-mode ()
-    (-disable-global-hl-line-mode)
-    (setq-local evil-default-cursor '(nil)))
   :hook
-  (vundo-mode-hook . -setup-vundo-mode)
+  (vundo-mode-hook . -disable-global-hl-line-mode)
+  (vundo-mode-hook . -disable-evil-cursor)
   :custom-face
   (vundo-highlight ((t :inherit (bold success))))
   :config
@@ -1179,9 +1178,6 @@
 
 (use-package treemacs
   :preface
-  (defun -hide-fringes ()
-    (when (display-graphic-p)
-      (set-window-fringes nil 0 0)))
   (defun -setup-treemacs-theme ()
     (treemacs-create-theme "Icons"
       :config
@@ -1264,9 +1260,10 @@
   (setq treemacs-show-cursor t)
   :hook
   (treemacs-mode-hook . hide-mode-line-mode)
-  (treemacs-mode-hook . -hide-fringes)
+  (treemacs-mode-hook . -disable-evil-cursor)
   :config
-  (-setup-treemacs-theme))
+  (-setup-treemacs-theme)
+  (treemacs-fringe-indicator-mode 'only-when-focused))
 
 (use-package treemacs-evil
   :demand
