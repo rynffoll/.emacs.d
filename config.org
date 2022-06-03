@@ -1608,17 +1608,20 @@ Jump to definition
   (treemacs-root-face ((t :inherit font-lock-constant-face :bold t :height 1.1)))
   :init
   (setq treemacs-follow-after-init t)
-  (setq treemacs-no-delete-other-windows nil)
   (setq treemacs-space-between-root-nodes nil)
   (setq treemacs-recenter-after-file-follow 'on-distance)
   (setq treemacs-recenter-after-tag-follow 'on-distance)
-  (setq treemacs-show-cursor t)
   :hook
   (treemacs-mode-hook . hide-mode-line-mode)
   (treemacs-mode-hook . -disable-evil-cursor)
   :config
-  (-setup-treemacs-theme)
-  (treemacs-fringe-indicator-mode 'only-when-focused))
+  (-setup-treemacs-theme))
+
+(use-package treemacs-fringe-indicator
+  :ensure treemacs
+  :after treemacs
+  :config
+  (treemacs-fringe-indicator-mode -1))
 
 (use-package treemacs-evil
   :demand
