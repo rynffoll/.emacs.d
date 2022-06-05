@@ -74,7 +74,6 @@
   - [[#lua][Lua]]
   - [[#shell][Shell]]
   - [[#config][Config]]
-- [[#xwidget][Xwidget]]
 - [[#tools][Tools]]
   - [[#editorconfig][EditorConfig]]
   - [[#docker][Docker]]
@@ -2285,24 +2284,6 @@ SSH
 (use-package ssh-config-mode
   :init
   (autoload 'ssh-config-mode "ssh-config-mode" t))
-#+end_src
-
-* Xwidget
-#+begin_src emacs-lisp
-(use-package xwidget
-  :if (display-graphic-p)
-  :ensure nil
-  :general
-  (-leader-def
-    "ow" 'xwidget-webkit-browse-url))
-
-(use-package xwwp-follow-link-ivy
-  :if (display-graphic-p)
-  :general
-  (:keymaps 'xwidget-webkit-mode-map :states 'normal
-    "f" 'xwwp-follow-link)
-  :init
-  (setq xwwp-follow-link-completion-system 'ivy))
 #+end_src
 
 * Tools
