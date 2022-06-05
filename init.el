@@ -1174,7 +1174,7 @@
   (-leader-def
     "jj" '(hydra-dumb-jump/body :wk "hydra-dumb-jump"))
   :init
-  (setq dumb-jump-selector 'ivy)
+  (setq dumb-jump-selector 'completing-read)
   (setq dumb-jump-prefer-searcher 'rg))
 
 (use-package treemacs
