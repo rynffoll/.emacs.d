@@ -287,6 +287,7 @@
 
 (use-package all-the-icons
   :if (display-graphic-p)
+  :autoload all-the-icons-octicon
   :config
   (unless (member "all-the-icons" (font-family-list))
     (all-the-icons-install-fonts t)))
