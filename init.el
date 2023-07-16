@@ -1321,7 +1321,8 @@
   (setq vterm-max-scrollback 10000)
   (setq vterm-clear-scrollback-when-clearing t)
   :hook
-  (vterm-mode-hook . -disable-global-hl-line-mode))
+  (vterm-mode-hook . -disable-global-hl-line-mode)
+  (vterm-mode-hook . hide-mode-line-mode))
 
 (use-package eshell-toggle
   :preface
