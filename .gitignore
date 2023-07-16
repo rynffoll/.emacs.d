@@ -23,3 +23,4 @@ var/
 workspace/
 async-bytecomp.log
 eln-cache/
+.extension/

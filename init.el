@@ -1545,10 +1545,6 @@
   org-babel-execute:bash
   org-babel-expand-body:bash)
 
-(use-package ob-async
-  :demand
-  :after ob-core)
-
 (use-package lsp-mode
   :init
   (setq lsp-keep-workspace-alive nil)
@@ -1573,19 +1569,6 @@
   (dap-ui-mode 1)
   (dap-tooltip-mode 1)
   (dap-ui-controls-mode 1))
-
-(use-package tree-sitter
-  :hook
-  (after-init-hook . global-tree-sitter-mode)
-  (tree-sitter-after-on-hook . tree-sitter-hl-mode))
-
-(use-package tree-sitter-langs)
-
-(use-package ts-fold
-  :ensure nil
-  :quelpa (ts-fold :fetcher github :repo "jcs090218/ts-fold")
-  :hook
-  (tree-sitter-after-on-hook . ts-fold-mode))
 
 (use-package highlight-defined
   :init
@@ -1671,7 +1654,7 @@
   (java-mode-hook . lsp-java-boot-lens-mode))
 
 (use-package dap-java
-  :ensure nil
+  :ensure dap-mode
   :after lsp-java)
 
 (use-package go-mode
@@ -1682,6 +1665,11 @@
   :hook
   (go-mode-hook . lsp-deferred)
   (go-mode-hook . -setup-go-mode))
+
+(use-package dap-dlv-go
+  :demand
+  :ensure dap-mode
+  :after go-mode)
 
 (use-package makefile-executor
   :general

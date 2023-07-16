@@ -55,9 +55,9 @@
   - [[#faces][Faces]]
   - [[#table-of-contents][Table of Contents]]
   - [[#babel][Babel]]
-- [[#lsp][LSP]]
 - [[#languages][Languages]]
-  - [[#tree-sitter][tree-sitter]]
+  - [[#lsp][LSP]]
+  - [[#dap][DAP]]
   - [[#emacs-lisp][Emacs Lisp]]
   - [[#clojure][Clojure]]
   - [[#java][Java]]
@@ -1948,13 +1948,10 @@ Org Bullets
   org-babel-expand-body:sh
   org-babel-execute:bash
   org-babel-expand-body:bash)
-
-(use-package ob-async
-  :demand
-  :after ob-core)
 #+end_src
 
-* LSP
+* Languages
+** LSP
 #+begin_src emacs-lisp
 (use-package lsp-mode
   :init
@@ -1970,7 +1967,10 @@ Org Bullets
   ;; https://github.com/emacs-lsp/lsp-treemacs/issues/89
   (with-eval-after-load 'lsp-treemacs
     (-setup-treemacs-theme)))
+#+end_src
 
+** DAP
+#+begin_src emacs-lisp
 (use-package dap-mode
   :general
   (lsp-command-map
@@ -1980,23 +1980,6 @@ Org Bullets
   (dap-ui-mode 1)
   (dap-tooltip-mode 1)
   (dap-ui-controls-mode 1))
-#+end_src
-
-* Languages
-** tree-sitter
-#+begin_src emacs-lisp
-(use-package tree-sitter
-  :hook
-  (after-init-hook . global-tree-sitter-mode)
-  (tree-sitter-after-on-hook . tree-sitter-hl-mode))
-
-(use-package tree-sitter-langs)
-
-(use-package ts-fold
-  :ensure nil
-  :quelpa (ts-fold :fetcher github :repo "jcs090218/ts-fold")
-  :hook
-  (tree-sitter-after-on-hook . ts-fold-mode))
 #+end_src
 
 ** Emacs Lisp
@@ -2095,14 +2078,19 @@ CIDER
   (java-mode-hook . lsp-java-boot-lens-mode))
 
 (use-package dap-java
-  :ensure nil
+  :ensure dap-mode
   :after lsp-java)
 #+end_src
 
 ** Go
 Install [[https://github.com/golang/tools/tree/master/gopls#installation][gopls]]
-#+begin_src sh :tangle no
+#+begin_src sh :tangle no :results none
 go install golang.org/x/tools/gopls@latest
+#+end_src
+
+Install [[https://github.com/go-delve/delve/tree/master/Documentation/installation][dlv]]
+#+begin_src sh :tangle no :results none
+go install github.com/go-delve/delve/cmd/dlv@latest
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2114,6 +2102,11 @@ go install golang.org/x/tools/gopls@latest
   :hook
   (go-mode-hook . lsp-deferred)
   (go-mode-hook . -setup-go-mode))
+
+(use-package dap-dlv-go
+  :demand
+  :ensure dap-mode
+  :after go-mode)
 #+end_src
 
 ** Makefile
