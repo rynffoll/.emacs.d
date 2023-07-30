@@ -310,6 +310,7 @@
   :init
   (setq doom-modeline-minor-modes t)
   (setq doom-modeline-buffer-file-name-style 'buffer-name)
+  (setq doom-modeline-icon nil)
   (setq doom-modeline-modal-icon nil)
   (setq doom-modeline-buffer-encoding nil)
   (setq doom-modeline-major-mode-icon nil)
