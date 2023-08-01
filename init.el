@@ -1526,30 +1526,7 @@
   org-babel-execute:bash
   org-babel-expand-body:bash)
 
-(use-package lsp-mode
-  :init
-  (setq lsp-keep-workspace-alive nil)
-  (setq lsp-keymap-prefix "C-c l")
-  :hook
-  (lsp-mode-hook . lsp-enable-which-key-integration))
-
-(use-package lsp-ui)
-
-(use-package lsp-treemacs
-  :config
-  ;; https://github.com/emacs-lsp/lsp-treemacs/issues/89
-  (with-eval-after-load 'lsp-treemacs
-    (-setup-treemacs-theme)))
-
-(use-package dap-mode
-  :general
-  (lsp-command-map
-   "D" 'dap-hydra)
-  :config
-  (dap-mode 1)
-  (dap-ui-mode 1)
-  (dap-tooltip-mode 1)
-  (dap-ui-controls-mode 1))
+(use-package eglot)
 
 (use-package highlight-defined
   :init
@@ -1623,34 +1600,13 @@
   :hook
   (clojure-mode-hook . cider-hydra-mode))
 
-(use-package lsp-java
-  :after cc-mode
-  :hook
-  (java-mode-hook . lsp-deferred))
-
-(use-package lsp-java-boot
-  :ensure lsp-java
-  :hook
-  (lsp-mode-hook . lsp-lens-mode)
-  (java-mode-hook . lsp-java-boot-lens-mode))
-
-(use-package dap-java
-  :ensure dap-mode
-  :after lsp-java)
-
 (use-package go-mode
   :preface
   (defun -setup-go-mode ()
     (add-hook 'before-save-hook #'lsp-format-buffer t t)
     (add-hook 'before-save-hook #'lsp-organize-imports t t))
   :hook
-  (go-mode-hook . lsp-deferred)
   (go-mode-hook . -setup-go-mode))
-
-(use-package dap-dlv-go
-  :demand
-  :ensure dap-mode
-  :after go-mode)
 
 (use-package makefile-executor
   :general
@@ -1661,11 +1617,6 @@
     "el" '(makefile-executor-execute-target :wk "execute last"))
   :hook
   (makefile-mode-hook . makefile-executor-mode))
-
-(use-package js-mode
-  :ensure nil
-  :hook
-  (js-mode-hook . lsp-deferred))
 
 (use-package web-mode
   :mode "\\.html?\\'"
