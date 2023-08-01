@@ -18,7 +18,6 @@
 - [[#fonts][Fonts]]
 - [[#mode-line][Mode Line]]
 - [[#theme][Theme]]
-- [[#modernized-package-menu][Modernized Package Menu]]
 - [[#frames][Frames]]
 - [[#tabs][Tabs]]
 - [[#windows][Windows]]
@@ -98,11 +97,6 @@ Default directory
 (setq default-directory "~/")
 #+end_src
 
-Package Manager
-#+begin_src emacs-lisp
-(setq package-enable-at-startup nil)
-#+end_src
-
 GC tweaks
 #+begin_src emacs-lisp
 (setq gc-cons-threshold most-positive-fixnum)
@@ -115,21 +109,6 @@ GC tweaks
                     (gc-count  gcs-done))
                 (message "Emacs ready (init time = %.2fs, packages = %d, gc time = %.2fs, gc count = %d)."
                          init-time packages gc-time gc-count))))
-#+end_src
-
-File handler tweaks
-#+begin_src emacs-lisp
-(defvar -file-name-handler-alist file-name-handler-alist)
-(setq file-name-handler-alist nil)
-
-(add-hook 'emacs-startup-hook
-          #'(lambda ()
-              (setq file-name-handler-alist -file-name-handler-alist)))
-#+end_src
-
-Disable ~site-run-file~
-#+begin_src emacs-lisp
-(setq site-run-file nil)
 #+end_src
 
 UI
@@ -168,24 +147,16 @@ Enable lexical scope
 * Package Manager
 Setup package
 #+begin_src emacs-lisp
-(require 'package)
-(setq package-archives
-      '(("gnu"          . "https://elpa.gnu.org/packages/")
-        ("melpa-stable" . "https://stable.melpa.org/packages/")
-        ("melpa"        . "https://melpa.org/packages/")
-        ("org"          . "https://orgmode.org/elpa/")))
+(use-package package
+  :demand
+  :init
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
 
-(unless (bound-and-true-p package--initialized) ; To avoid warnings in 27
-  (setq package-enable-at-startup nil)          ; To prevent initializing twice
-  (package-initialize))
+;; (use-package gnu-elpa-keyring-update)
 #+end_src
 
 Setup use-package
 #+begin_src emacs-lisp
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
 (setq use-package-always-defer t)
 (setq use-package-always-ensure t)
 (setq use-package-hook-name-suffix nil)
@@ -193,15 +164,12 @@ Setup use-package
 (setq use-package-compute-statistics t)
 (setq use-package-expand-minimally t)
 
-(eval-when-compile
-  (require 'use-package))
+(unless (package-installed-p 'vc-use-package)
+  (package-refresh-contents)
+  (package-vc-install "https://github.com/slotThe/vc-use-package"))
 
-(use-package quelpa-use-package
-  :demand
-  :init
-  (setq quelpa-use-package-inhibit-loading-quelpa t))
-
-(use-package gnu-elpa-keyring-update)
+(use-package vc-use-package
+  :demand)
 #+end_src
 
 * Auto Compile
@@ -247,8 +215,8 @@ Setup use-package
   (setq bidi-paragraph-direction 'left-to-right)
   (setq fast-but-imprecise-scrolling t)
   (setq native-comp-async-report-warnings-errors nil)
-  :config
-  (defalias 'yes-or-no-p 'y-or-n-p))
+  (setq use-short-answers t) ;; yes-or-no -> y-or-n
+  )
 #+end_src
 
 UTF-8
@@ -478,7 +446,7 @@ Ligatures
 (use-package ligature
   :ensure nil
   :if (display-graphic-p)
-  :quelpa (ligature :fetcher github :repo "mickeynp/ligature.el")
+  :vc (:fetcher github :repo "mickeynp/ligature.el")
   :config
   (ligature-set-ligatures
    'prog-mode
@@ -555,18 +523,6 @@ Icons
   (setq solarized-height-plus-3 1.0)
   (setq solarized-height-plus-4 1.0)
   (load-theme 'solarized-gruvbox-dark t))
-#+end_src
-
-* Modernized Package Menu
-#+begin_src emacs-lisp
-(use-package paradox
-  :general
-  (-leader-def
-    "Pl" 'paradox-list-packages
-    "PU" 'paradox-upgrade-packages)
-  :init
-  (setq paradox-execute-asynchronously t)
-  (setq paradox-github-token t))
 #+end_src
 
 * Frames
@@ -2017,7 +1973,7 @@ Common
 (use-package clojure-mode-extra-font-locking)
 
 (use-package clj-refactor
-  :pin melpa-stable
+  ;; :pin melpa-stable
   :general
   (-local-leader-def :keymaps 'clojure-mode-map
     "R" '(hydra-cljr-help-menu/body :wk "refactor"))
@@ -2320,10 +2276,7 @@ SSH
 
 (use-package ansible-vault-with-editor
   :ensure nil
-  :quelpa
-  (ansible-vault-with-editor
-   :fetcher github
-   :repo "rynffoll/ansible-vault-with-editor")
+  :vc (:fetcher github :repo "rynffoll/ansible-vault-with-editor")
   :general
   (-local-leader-def :keymaps 'yaml-mode-map
     "e" '(ansible-vault-with-editor-edit :wk "edit")

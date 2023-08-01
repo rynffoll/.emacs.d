@@ -4,20 +4,12 @@
       user-login-name "rynffoll"
       user-mail-address "rynffoll@gmail.com")
 
-(require 'package)
-(setq package-archives
-      '(("gnu"          . "https://elpa.gnu.org/packages/")
-        ("melpa-stable" . "https://stable.melpa.org/packages/")
-        ("melpa"        . "https://melpa.org/packages/")
-        ("org"          . "https://orgmode.org/elpa/")))
+(use-package package
+  :demand
+  :init
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
 
-(unless (bound-and-true-p package--initialized) ; To avoid warnings in 27
-  (setq package-enable-at-startup nil)          ; To prevent initializing twice
-  (package-initialize))
-
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+;; (use-package gnu-elpa-keyring-update)
 
 (setq use-package-always-defer t)
 (setq use-package-always-ensure t)
@@ -26,15 +18,12 @@
 (setq use-package-compute-statistics t)
 (setq use-package-expand-minimally t)
 
-(eval-when-compile
-  (require 'use-package))
+(unless (package-installed-p 'vc-use-package)
+  (package-refresh-contents)
+  (package-vc-install "https://github.com/slotThe/vc-use-package"))
 
-(use-package quelpa-use-package
-  :demand
-  :init
-  (setq quelpa-use-package-inhibit-loading-quelpa t))
-
-(use-package gnu-elpa-keyring-update)
+(use-package vc-use-package
+  :demand)
 
 (use-package auto-compile
   :init
@@ -71,8 +60,8 @@
   (setq bidi-paragraph-direction 'left-to-right)
   (setq fast-but-imprecise-scrolling t)
   (setq native-comp-async-report-warnings-errors nil)
-  :config
-  (defalias 'yes-or-no-p 'y-or-n-p))
+  (setq use-short-answers t) ;; yes-or-no -> y-or-n
+  )
 
 (use-package mule
   :ensure nil
@@ -267,7 +256,7 @@
 (use-package ligature
   :ensure nil
   :if (display-graphic-p)
-  :quelpa (ligature :fetcher github :repo "mickeynp/ligature.el")
+  :vc (:fetcher github :repo "mickeynp/ligature.el")
   :config
   (ligature-set-ligatures
    'prog-mode
@@ -335,15 +324,6 @@
   (setq solarized-height-plus-3 1.0)
   (setq solarized-height-plus-4 1.0)
   (load-theme 'solarized-gruvbox-dark t))
-
-(use-package paradox
-  :general
-  (-leader-def
-    "Pl" 'paradox-list-packages
-    "PU" 'paradox-upgrade-packages)
-  :init
-  (setq paradox-execute-asynchronously t)
-  (setq paradox-github-token t))
 
 (use-package frame
   :ensure nil
@@ -1599,7 +1579,7 @@
 (use-package clojure-mode-extra-font-locking)
 
 (use-package clj-refactor
-  :pin melpa-stable
+  ;; :pin melpa-stable
   :general
   (-local-leader-def :keymaps 'clojure-mode-map
     "R" '(hydra-cljr-help-menu/body :wk "refactor"))
@@ -1833,10 +1813,7 @@
 
 (use-package ansible-vault-with-editor
   :ensure nil
-  :quelpa
-  (ansible-vault-with-editor
-   :fetcher github
-   :repo "rynffoll/ansible-vault-with-editor")
+  :vc (:fetcher github :repo "rynffoll/ansible-vault-with-editor")
   :general
   (-local-leader-def :keymaps 'yaml-mode-map
     "e" '(ansible-vault-with-editor-edit :wk "edit")

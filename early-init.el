@@ -2,8 +2,6 @@
 
 (setq default-directory "~/")
 
-(setq package-enable-at-startup nil)
-
 (setq gc-cons-threshold most-positive-fixnum)
 
 (add-hook 'emacs-startup-hook
@@ -14,15 +12,6 @@
                     (gc-count  gcs-done))
                 (message "Emacs ready (init time = %.2fs, packages = %d, gc time = %.2fs, gc count = %d)."
                          init-time packages gc-time gc-count))))
-
-(defvar -file-name-handler-alist file-name-handler-alist)
-(setq file-name-handler-alist nil)
-
-(add-hook 'emacs-startup-hook
-          #'(lambda ()
-              (setq file-name-handler-alist -file-name-handler-alist)))
-
-(setq site-run-file nil)
 
 (setq frame-inhibit-implied-resize t)
 
