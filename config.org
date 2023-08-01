@@ -54,6 +54,7 @@
   - [[#faces][Faces]]
   - [[#table-of-contents][Table of Contents]]
   - [[#babel][Babel]]
+- [[#tree-sitter][Tree-sitter]]
 - [[#languages][Languages]]
   - [[#lsp][LSP]]
   - [[#emacs-lisp][Emacs Lisp]]
@@ -1902,6 +1903,16 @@ Org Bullets
   org-babel-expand-body:sh
   org-babel-execute:bash
   org-babel-expand-body:bash)
+#+end_src
+
+* Tree-sitter
+#+begin_src emacs-lisp
+(use-package treesit-auto
+  :demand t
+  :init
+  (setq treesit-auto-install 'prompt)
+  :config
+  (global-treesit-auto-mode))
 #+end_src
 
 * Languages

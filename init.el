@@ -1526,6 +1526,13 @@
   org-babel-execute:bash
   org-babel-expand-body:bash)
 
+(use-package treesit-auto
+  :demand t
+  :init
+  (setq treesit-auto-install 'prompt)
+  :config
+  (global-treesit-auto-mode))
+
 (use-package eglot)
 
 (use-package highlight-defined
