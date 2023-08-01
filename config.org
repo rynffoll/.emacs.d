@@ -432,6 +432,14 @@ Mouse support
   (tool-bar-mode -1))
 #+end_src
 
+Smooth scrolling
+#+begin_src emacs-lisp
+(use-package pixel-scroll
+  :ensure nil
+  :config
+  (pixel-scroll-precision-mode))
+#+end_src
+
 * Fonts
 Emoji
 #+begin_src emacs-lisp

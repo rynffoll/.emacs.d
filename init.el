@@ -250,6 +250,11 @@
   (scroll-bar-mode -1)
   (tool-bar-mode -1))
 
+(use-package pixel-scroll
+  :ensure nil
+  :config
+  (pixel-scroll-precision-mode))
+
 (when (eq window-system 'ns)
   (set-fontset-font "fontset-default" 'unicode "Apple Color Emoji" nil 'prepend))
 
