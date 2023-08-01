@@ -1797,8 +1797,9 @@
   :commands
   org-babel-execute:verb)
 
-;; TODO: envrc
+;; TODO: envrc? dotenv?
 (use-package direnv
+  :disabled
   :if (executable-find "direnv")
   :preface
   (defun -direnv-hook ()
@@ -1816,6 +1817,12 @@
   :hook
   (after-init-hook . direnv-mode)
   (direnv-envrc-mode-hook . -direnv-hook))
+
+(use-package envrc
+  :demand
+  :if (executable-find "direnv")
+  :config
+  (envrc-global-mode))
 
 (use-package olivetti
   :general

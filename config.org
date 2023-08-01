@@ -76,7 +76,7 @@
   - [[#docker][Docker]]
   - [[#ansible][Ansible]]
   - [[#http][HTTP]]
-  - [[#direnv][direnv]]
+  - [[#envrc][.env(rc)]]
 - [[#utils][Utils]]
 - [[#the-end][The end]]
 
@@ -2261,10 +2261,11 @@ SSH
   org-babel-execute:verb)
 #+end_src
 
-** direnv
+** .env(rc)
 #+begin_src emacs-lisp
-;; TODO: envrc
+;; TODO: envrc? dotenv?
 (use-package direnv
+  :disabled
   :if (executable-find "direnv")
   :preface
   (defun -direnv-hook ()
@@ -2282,6 +2283,14 @@ SSH
   :hook
   (after-init-hook . direnv-mode)
   (direnv-envrc-mode-hook . -direnv-hook))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package envrc
+  :demand
+  :if (executable-find "direnv")
+  :config
+  (envrc-global-mode))
 #+end_src
 
 * Utils
