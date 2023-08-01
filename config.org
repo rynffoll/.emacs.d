@@ -752,6 +752,7 @@ Icons
 
 * Pop-ups
 #+begin_src emacs-lisp
+;; TODO: alternative?
 (use-package shackle
   :init
   (setq shackle-default-size 0.3)
@@ -1391,9 +1392,11 @@ Prism
 #+end_src
 
 * Syntax Checking
+flycheck
 #+begin_src emacs-lisp
 ;; TODO: flymake
 (use-package flycheck
+  :disabled
   :init
   (setq flycheck-indication-mode 'right-fringe)
   (setq flycheck-temp-prefix ".flycheck")
@@ -1439,9 +1442,24 @@ Prism
       :fringe-face 'flycheck-fringe-info)))
 
 (use-package consult-flycheck
+  :requires flycheck
   :general
   (-leader-def
     "je" 'consult-flycheck))
+#+end_src
+
+flymake
+#+begin_src emacs-lisp
+(use-package flymake
+  :ensure nil
+  :init
+  (setq flymake-fringe-indicator-position 'right-fringe)
+  :hook
+  (prog-mode-hook . flymake-mode))
+
+(use-package flymake-collection
+  :hook
+  (after-init-hook . flymake-collection-hook-setup))
 #+end_src
 
 * Goto

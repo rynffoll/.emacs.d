@@ -537,6 +537,7 @@
   :hook
   (ibuffer-hook . -setup-ibuffer-vc))
 
+;; TODO: alternative?
 (use-package shackle
   :init
   (setq shackle-default-size 0.3)
@@ -1077,6 +1078,7 @@
 
 ;; TODO: flymake
 (use-package flycheck
+  :disabled
   :init
   (setq flycheck-indication-mode 'right-fringe)
   (setq flycheck-temp-prefix ".flycheck")
@@ -1122,9 +1124,21 @@
       :fringe-face 'flycheck-fringe-info)))
 
 (use-package consult-flycheck
+  :requires flycheck
   :general
   (-leader-def
     "je" 'consult-flycheck))
+
+(use-package flymake
+  :ensure nil
+  :init
+  (setq flymake-fringe-indicator-position 'right-fringe)
+  :hook
+  (prog-mode-hook . flymake-mode))
+
+(use-package flymake-collection
+  :hook
+  (after-init-hook . flymake-collection-hook-setup))
 
 (use-package imenu
   :ensure nil
