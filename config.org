@@ -970,6 +970,7 @@ Encryption
 
 * Projects
 #+begin_src emacs-lisp
+;; TODO: project.el
 (use-package projectile
   :general
   (-leader-def
@@ -1300,6 +1301,7 @@ Prism
 
 * Auto Completion
 #+begin_src emacs-lisp
+;; TODO: corfu
 (use-package company
   :general
   ("M-S-SPC" 'company-complete)
@@ -1390,6 +1392,7 @@ Prism
 
 * Syntax Checking
 #+begin_src emacs-lisp
+;; TODO: flymake
 (use-package flycheck
   :init
   (setq flycheck-indication-mode 'right-fringe)
@@ -1453,6 +1456,7 @@ Imenu
 
 Avy
 #+begin_src emacs-lisp
+;; TODO: remove
 (use-package avy
   :general
   (-leader-def
@@ -1468,27 +1472,6 @@ Avy
   :general
   (-leader-def
     "ol" 'link-hint-open-link))
-#+end_src
-
-Jump to definition
-#+begin_src emacs-lisp
-(use-package dumb-jump
-  :preface
-  (defhydra hydra-dumb-jump
-    (:color blue :columns 3)
-    ("j" dumb-jump-go "go")
-    ("o" dumb-jump-go-other-window "other window")
-    ("e" dumb-jump-go-prefer-external "go external")
-    ("x" dumb-jump-go-prefer-external-other-window "go external other window")
-    ("i" dumb-jump-go-prompt "prompt")
-    ("l" dumb-jump-quick-look "quick look")
-    ("b" dumb-jump-back "back"))
-  :general
-  (-leader-def
-    "jj" '(hydra-dumb-jump/body :wk "hydra-dumb-jump"))
-  :init
-  (setq dumb-jump-selector 'completing-read)
-  (setq dumb-jump-prefer-searcher 'rg))
 #+end_src
 
 * File Tree
@@ -2262,6 +2245,7 @@ SSH
 
 ** direnv
 #+begin_src emacs-lisp
+;; TODO: envrc
 (use-package direnv
   :if (executable-find "direnv")
   :preface

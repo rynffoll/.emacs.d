@@ -721,6 +721,7 @@
   :init
   (setq epg-pinentry-mode 'loopback))
 
+;; TODO: project.el
 (use-package projectile
   :general
   (-leader-def
@@ -995,6 +996,7 @@
   :init
   (setq display-line-numbers-width-start t))
 
+;; TODO: corfu
 (use-package company
   :general
   ("M-S-SPC" 'company-complete)
@@ -1073,6 +1075,7 @@
   (flyspell-mode-map
    "C-;" 'flyspell-correct-wrapper))
 
+;; TODO: flymake
 (use-package flycheck
   :init
   (setq flycheck-indication-mode 'right-fringe)
@@ -1129,6 +1132,7 @@
   (-leader-def
     "ji" 'imenu))
 
+;; TODO: remove
 (use-package avy
   :general
   (-leader-def
@@ -1144,24 +1148,6 @@
   :general
   (-leader-def
     "ol" 'link-hint-open-link))
-
-(use-package dumb-jump
-  :preface
-  (defhydra hydra-dumb-jump
-    (:color blue :columns 3)
-    ("j" dumb-jump-go "go")
-    ("o" dumb-jump-go-other-window "other window")
-    ("e" dumb-jump-go-prefer-external "go external")
-    ("x" dumb-jump-go-prefer-external-other-window "go external other window")
-    ("i" dumb-jump-go-prompt "prompt")
-    ("l" dumb-jump-quick-look "quick look")
-    ("b" dumb-jump-back "back"))
-  :general
-  (-leader-def
-    "jj" '(hydra-dumb-jump/body :wk "hydra-dumb-jump"))
-  :init
-  (setq dumb-jump-selector 'completing-read)
-  (setq dumb-jump-prefer-searcher 'rg))
 
 (use-package treemacs
   :preface
@@ -1797,6 +1783,7 @@
   :commands
   org-babel-execute:verb)
 
+;; TODO: envrc
 (use-package direnv
   :if (executable-find "direnv")
   :preface

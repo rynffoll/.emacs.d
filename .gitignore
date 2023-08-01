@@ -1,21 +1,15 @@
 .cache/
-.dap-*
-.lsp-session*
 auto-save-list/
 bookmarks
 company-statistics-cache.el
-eclipse.jdt.ls/
 elpa/
 eshell/
-forge-database.sqlite
 history
 places
 projectile-bookmarks.eld
 projectile.cache
-quelpa/
 recentf
 request/
-tldr/
 tramp
 transient/
 url/
@@ -23,4 +17,4 @@ var/
 workspace/
 async-bytecomp.log
 eln-cache/
-.extension/
+tree-sitter/
