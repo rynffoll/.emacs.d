@@ -724,6 +724,7 @@
 
 ;; TODO: project.el
 (use-package projectile
+  :disabled
   :general
   (-leader-def
     "p" '(:keymap projectile-command-map :package projectile :wk "project"))
@@ -733,8 +734,29 @@
   (after-init-hook . projectile-mode))
 
 (use-package consult-projectile
+  :disabled
   :general
   ([remap projectile-switch-project] 'consult-projectile))
+
+(use-package project
+  :ensure nil
+  :general
+  ;; (-leader-def
+  ;;   "pp" 'project-switch-project
+  ;;   "pb" 'project-switch-to-buffer
+  ;;   "pf" 'project-find-file)
+  (-leader-def
+    "p" '(:keymap project-prefix-map :package projectile :wk "project"))
+  (:keymaps 'project-prefix-map
+	    "m" 'magit-project-status)
+  :init
+  (setq project-switch-commands
+	'((project-find-file "Find file")
+	  (project-find-regexp "Find regexp")
+	  (project-find-dir "Find directory")
+	  (magit-project-status "Magit")
+	  ;; TODO: -> vterm
+	  (project-eshell "Eshell"))))
 
 (use-package dired
   :ensure nil
