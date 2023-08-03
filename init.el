@@ -621,7 +621,8 @@
   (setq completion-styles '(orderless))
   (setq orderless-matching-styles '(orderless-literal
                                     orderless-flex
-                                    orderless-regexp)))
+                                    orderless-regexp))
+  (setq completion-category-overrides '((file (styles . (partial-completion))))))
 
 (use-package embark
   :general
@@ -643,6 +644,95 @@
   ;; auto-updating embark collect buffer
   :hook
   (embark-collect-mode-hook . consult-preview-at-point-mode))
+
+(use-package company
+  :disabled
+  :general
+  ("M-S-SPC" 'company-complete)
+  :custom-face
+  (company-tooltip-selection ((t :inverse-video t)))
+  :init
+  (setq company-minimum-prefix-length 1)
+  (setq company-idle-delay 0.3)
+  (setq company-selection-wrap-around t)
+  :hook
+  (after-init-hook . global-company-mode))
+
+(use-package company-shell
+  :disabled
+  :after company
+  :init
+  (add-to-list 'company-backends 'company-shell))
+
+(use-package company-statistics
+  :disabled
+  :after company
+  :config
+  (company-statistics-mode))
+
+(use-package corfu
+  :init
+  (setq corfu-auto t)
+  (setq corfu-cycle t)
+  :hook
+  (after-init-hook . global-corfu-mode))
+
+(use-package corfu-echo
+  :ensure corfu
+  :init
+  (corfu-echo-mode))
+
+(use-package corfu-popupinfo
+  :ensure corfu
+  :init
+  (corfu-popupinfo-mode))
+
+(use-package corfu-history
+  :ensure corfu
+  :init
+  (corfu-history-mode))
+
+(use-package corfu-terminal
+  :unless (display-graphic-p)
+  :vc (corfu-terminal :url "https://codeberg.org/akib/emacs-corfu-terminal.git")
+  :init
+  (corfu-terminal-mode t))
+
+;; Add extensions
+(use-package cape
+  ;; Bind dedicated completion commands
+  ;; Alternative prefix keys: C-c p, M-p, M-+, ...
+  :bind (("C-c p p" . completion-at-point) ;; capf
+         ("C-c p t" . complete-tag)        ;; etags
+         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+         ("C-c p h" . cape-history)
+         ("C-c p f" . cape-file)
+         ("C-c p k" . cape-keyword)
+         ("C-c p s" . cape-symbol)
+         ("C-c p a" . cape-abbrev)
+         ("C-c p l" . cape-line)
+         ("C-c p w" . cape-dict)
+         ("C-c p \\" . cape-tex)
+         ("C-c p _" . cape-tex)
+         ("C-c p ^" . cape-tex)
+         ("C-c p &" . cape-sgml)
+         ("C-c p r" . cape-rfc1345))
+  :init
+  ;; Add `completion-at-point-functions', used by `completion-at-point'.
+  ;; NOTE: The order matters!
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-elisp-block)
+  ;;(add-to-list 'completion-at-point-functions #'cape-history)
+  ;;(add-to-list 'completion-at-point-functions #'cape-keyword)
+  ;;(add-to-list 'completion-at-point-functions #'cape-tex)
+  ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
+  ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
+  ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
+  ;;(add-to-list 'completion-at-point-functions #'cape-dict)
+  ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
+  ;;(add-to-list 'completion-at-point-functions #'cape-line)
+  )
 
 (use-package files
   :ensure nil
@@ -1018,29 +1108,6 @@
     "tn" 'display-line-numbers-mode)
   :init
   (setq display-line-numbers-width-start t))
-
-;; TODO: corfu
-(use-package company
-  :general
-  ("M-S-SPC" 'company-complete)
-  :custom-face
-  (company-tooltip-selection ((t :inverse-video t)))
-  :init
-  (setq company-minimum-prefix-length 1)
-  (setq company-idle-delay 0.3)
-  (setq company-selection-wrap-around t)
-  :hook
-  (after-init-hook . global-company-mode))
-
-(use-package company-shell
-  :after company
-  :init
-  (add-to-list 'company-backends 'company-shell))
-
-(use-package company-statistics
-  :after company
-  :config
-  (company-statistics-mode))
 
 (use-package anzu
   :init
