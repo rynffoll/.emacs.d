@@ -1167,7 +1167,7 @@
 
 ;; TODO: flymake
 (use-package flycheck
-  :disabled
+  ;; :disabled
   :init
   (setq flycheck-indication-mode 'right-fringe)
   (setq flycheck-temp-prefix ".flycheck")
@@ -1219,6 +1219,7 @@
     "je" 'consult-flycheck))
 
 (use-package flymake
+  :disabled
   :ensure nil
   :init
   (setq flymake-fringe-indicator-position 'right-fringe)
