@@ -4,12 +4,7 @@
       user-login-name "rynffoll"
       user-mail-address "rynffoll@gmail.com")
 
-(use-package package
-  :demand
-  :init
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
-
-;; (use-package gnu-elpa-keyring-update)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
 (setq use-package-always-defer t)
 (setq use-package-always-ensure t)
@@ -144,13 +139,11 @@
     "j]" 'evil-jump-forward)
   :init
   (setq evil-want-keybinding nil)
-  (setq evil-split-window-below t)
-  (setq evil-vsplit-window-right t)
   (setq evil-emacs-state-cursor 'hbar)
   (setq evil-mode-line-format nil)
   (setq evil-symbol-word-search t)
-  (setq evil-move-beyond-eol nil)
-  (setq evil-move-cursor-back t)
+  ;; (setq evil-move-beyond-eol nil)
+  ;; (setq evil-move-cursor-back t)
   (setq evil-undo-system 'undo-redo)
   (setq evil-want-C-i-jump nil)
   :config
@@ -318,6 +311,8 @@
         (doom-modeline-set-main-modeline)))))
 
 (use-package solarized-theme
+  ;; :disabled
+  :demand
   :init
   (setq solarized-distinct-doc-face t)
   (setq solarized-use-variable-pitch nil)
@@ -328,7 +323,18 @@
   (setq solarized-height-plus-2 1.0)
   (setq solarized-height-plus-3 1.0)
   (setq solarized-height-plus-4 1.0)
+  :config
   (load-theme 'solarized-gruvbox-dark t))
+
+(use-package doom-themes
+  :disabled
+  :demand
+  :config
+  (load-theme 'doom-earl-grey t)
+  ;; (setq doom-themes-treemacs-theme "doom-atom")
+  ;; (setq doom-themes-treemacs-theme "doom-colors")
+  ;; (doom-themes-treemacs-config)
+  (doom-themes-org-config))
 
 (use-package frame
   :ensure nil
@@ -461,7 +467,6 @@
   (after-init-hook . winner-mode))
 
 (use-package winum
-  :demand
   :general
   (-leader-def
     "0" 'winum-select-window-0-or-10
@@ -477,8 +482,8 @@
   :init
   (setq winum-auto-setup-mode-line nil)
   (setq winum-scope 'frame-local)
-  :config
-  (winum-mode))
+  :hook
+  (after-init-hook . winum-mode))
 
 (use-package emacs
   :ensure nil
@@ -602,8 +607,8 @@
   :general
   (minibuffer-local-map
    "M-A" 'marginalia-cycle)
-  :init
-  (marginalia-mode))
+  :hook
+  (after-init-hook . marginalia-mode))
 
 (use-package vertico
   :general
@@ -620,30 +625,10 @@
   :init
   (setq completion-styles '(orderless))
   (setq orderless-matching-styles '(orderless-literal
-                                    orderless-flex
+                                    ;; orderless-flex
+                                    orderless-prefixes
                                     orderless-regexp))
   (setq completion-category-overrides '((file (styles . (partial-completion))))))
-
-(use-package embark
-  :general
-  ([remap describe-bindings] 'embark-bindings)
-  (minibuffer-local-map
-   "C-." 'embark-act)
-  :init
-  (setq prefix-help-command #'embark-prefix-help-command)
-  :config
-  (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none)))))
-
-(use-package embark-consult
-  :after embark consult
-  :demand t ; only necessary if you have the hook below
-  ;; if you want to have consult previews as you move around an
-  ;; auto-updating embark collect buffer
-  :hook
-  (embark-collect-mode-hook . consult-preview-at-point-mode))
 
 (use-package company
   :disabled
@@ -660,63 +645,68 @@
 
 (use-package company-shell
   :disabled
-  :after company
   :init
   (add-to-list 'company-backends 'company-shell))
 
 (use-package company-statistics
   :disabled
-  :after company
   :config
   (company-statistics-mode))
 
 (use-package corfu
+  :general
+  ("M-S-SPC" 'completion-at-point)
   :init
   (setq corfu-auto t)
   (setq corfu-cycle t)
+  (setq corfu-min-width 40)
   :hook
   (after-init-hook . global-corfu-mode))
 
 (use-package corfu-echo
   :ensure corfu
-  :init
-  (corfu-echo-mode))
+  :hook
+  (corfu-mode-hook . corfu-echo-mode))
+
+(use-package corfu-info
+  :ensure corfu
+  :unless (display-graphic-p)
+  :after corfu
+  :general
+  (corfu-map
+   "C-h" 'corfu-info-documentation))
 
 (use-package corfu-popupinfo
   :ensure corfu
+  :if (display-graphic-p)
+  :general
+  (corfu-map
+   "C-h" 'corfu-popupinfo-documentation)
   :init
-  (corfu-popupinfo-mode))
+  (setq corfu-popupinfo-delay nil)
+  :hook
+  (corfu-mode-hook . corfu-popupinfo-mode))
 
 (use-package corfu-history
   :ensure corfu
-  :init
-  (corfu-history-mode))
+  :hook
+  (corfu-mode-hook . corfu-history-mode))
 
 (use-package corfu-terminal
-  :unless (display-graphic-p)
   :vc (corfu-terminal :url "https://codeberg.org/akib/emacs-corfu-terminal.git")
-  :init
-  (corfu-terminal-mode t))
+  :unless (display-graphic-p)
+  :hook
+  (corfu-mode-hook . corfu-terminal-mode))
 
-;; Add extensions
+(use-package kind-icon
+  :after corfu
+  :demand
+  :init
+  (setq kind-icon-default-face 'corfu-default)
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
 (use-package cape
-  ;; Bind dedicated completion commands
-  ;; Alternative prefix keys: C-c p, M-p, M-+, ...
-  :bind (("C-c p p" . completion-at-point) ;; capf
-         ("C-c p t" . complete-tag)        ;; etags
-         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
-         ("C-c p h" . cape-history)
-         ("C-c p f" . cape-file)
-         ("C-c p k" . cape-keyword)
-         ("C-c p s" . cape-symbol)
-         ("C-c p a" . cape-abbrev)
-         ("C-c p l" . cape-line)
-         ("C-c p w" . cape-dict)
-         ("C-c p \\" . cape-tex)
-         ("C-c p _" . cape-tex)
-         ("C-c p ^" . cape-tex)
-         ("C-c p &" . cape-sgml)
-         ("C-c p r" . cape-rfc1345))
   :init
   ;; Add `completion-at-point-functions', used by `completion-at-point'.
   ;; NOTE: The order matters!
@@ -732,7 +722,7 @@
   ;;(add-to-list 'completion-at-point-functions #'cape-dict)
   ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
-  )
+)
 
 (use-package files
   :ensure nil
@@ -804,15 +794,15 @@
   :general
   (-leader-def
     "oc" 'customize-group)
-  :init
-  (setq custom-file null-device))
+  ;; :init
+  ;; (setq custom-file null-device)
+  )
 
 (use-package epg-config
   :ensure nil
   :init
   (setq epg-pinentry-mode 'loopback))
 
-;; TODO: project.el
 (use-package projectile
   :disabled
   :general
@@ -831,13 +821,9 @@
 (use-package project
   :ensure nil
   :general
-  ;; (-leader-def
-  ;;   "pp" 'project-switch-project
-  ;;   "pb" 'project-switch-to-buffer
-  ;;   "pf" 'project-find-file)
   (-leader-def
     "p" '(:keymap project-prefix-map :package projectile :wk "project"))
-  (:keymaps 'project-prefix-map
+  (project-prefix-map
 	    "m" 'magit-project-status)
   :init
   (setq project-switch-commands
@@ -1117,7 +1103,7 @@
 
 (use-package evil-anzu
   :demand
-  :after anzu)
+  :after evil anzu)
 
 (use-package hideshow
   :ensure nil
@@ -1165,7 +1151,6 @@
   (flyspell-mode-map
    "C-;" 'flyspell-correct-wrapper))
 
-;; TODO: flymake
 (use-package flycheck
   ;; :disabled
   :init
@@ -1219,7 +1204,7 @@
     "je" 'consult-flycheck))
 
 (use-package flymake
-  :disabled
+  :disabled ;; too slowly
   :ensure nil
   :init
   (setq flymake-fringe-indicator-position 'right-fringe)
@@ -1329,6 +1314,7 @@
   :custom-face
   (treemacs-root-face ((t :inherit font-lock-constant-face :bold t :height 1.1)))
   :init
+  (setq treemacs-show-cursor t)
   (setq treemacs-follow-after-init t)
   (setq treemacs-space-between-root-nodes nil)
   (setq treemacs-recenter-after-file-follow 'on-distance)
@@ -1337,7 +1323,8 @@
   (treemacs-mode-hook . hide-mode-line-mode)
   (treemacs-mode-hook . -disable-evil-cursor)
   :config
-  (-setup-treemacs-theme))
+  (when (display-graphic-p)
+    (-setup-treemacs-theme)))
 
 (use-package treemacs-fringe-indicator
   :ensure treemacs
@@ -1346,7 +1333,6 @@
   (treemacs-fringe-indicator-mode -1))
 
 (use-package treemacs-evil
-  :demand
   :after treemacs evil)
 
 (use-package treemacs-projectile
@@ -1355,7 +1341,7 @@
 (use-package treemacs-icons-dired
   :if (display-graphic-p)
   :hook
-  (dired-mode-hook . treemacs-icons-dired-mode))
+  (dired-mode-hook . treemacs-icons-dired-enable-once))
 
 (use-package treemacs-magit
   :after treemacs magit)
@@ -1409,7 +1395,7 @@
   ("§" 'eshell-toggle)
   :init
   (setq eshell-toggle-init-function '-eshell-toggle-init-vterm)
-  (setq eshell-toggle-use-projectile-root t)
+  (setq eshell-toggle-use-projectile-root nil) ;; TODO: project.el?
   (setq eshell-toggle-run-command nil))
 
 (use-package magit
@@ -1445,13 +1431,6 @@
   (-leader-def
     "gt" 'git-timemachine))
 
-(use-package gitignore-templates
-  :general
-  (-leader-def
-    "gi" 'gitignore-templates-new-file)
-  (-local-leader-def :keymaps 'gitignore-mode-map
-    "i" 'gitignore-templates-insert))
-
 (use-package git-modes)
 
 (use-package diff-hl
@@ -1460,7 +1439,7 @@
   :hook
   (after-init-hook         . global-diff-hl-mode)
   (after-init-hook         . diff-hl-margin-mode)
-  ;; (diff-hl-mode-hook       . diff-hl-flydiff-mode)
+  (diff-hl-mode-hook       . diff-hl-flydiff-mode)
   (dired-mode-hook         . diff-hl-dired-mode)
   (magit-pre-refresh-hook  . diff-hl-magit-pre-refresh)
   (magit-post-refresh-hook . diff-hl-magit-post-refresh))
@@ -1641,6 +1620,8 @@
     "R" '(:keymap erefactor-map :wk "refactor")))
 
 (use-package eros
+  :custom-face
+  (eros-result-overlay-face ((t :inherit shadow :box t)))
   :hook
   (emacs-lisp-mode-hook . eros-mode))
 
@@ -1653,7 +1634,6 @@
 (use-package clojure-mode-extra-font-locking)
 
 (use-package clj-refactor
-  ;; :pin melpa-stable
   :general
   (-local-leader-def :keymaps 'clojure-mode-map
     "R" '(hydra-cljr-help-menu/body :wk "refactor"))
@@ -1849,12 +1829,11 @@
   :mode "\\.j2\\'")
 
 (use-package company-ansible
-  :after company yaml-mode
+  :after company
   :init
   (add-to-list 'company-backends 'company-ansible))
 
 (use-package ansible-vault-with-editor
-  :ensure nil
   :vc (:fetcher github :repo "rynffoll/ansible-vault-with-editor")
   :general
   (-local-leader-def :keymaps 'yaml-mode-map
@@ -1896,10 +1875,10 @@
   (direnv-envrc-mode-hook . -direnv-hook))
 
 (use-package envrc
-  :demand
+  :disabled
   :if (executable-find "direnv")
-  :config
-  (envrc-global-mode))
+  :hook
+  (after-init-hook . envrc-global-mode))
 
 (use-package olivetti
   :general

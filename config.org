@@ -2,20 +2,34 @@
 #+property: header-args:emacs-lisp :tangle init.el
 * Table of Contents :TOC:
 - [[#early-initialization][Early Initialization]]
+  - [[#enable-lexical-scope][Enable lexical scope]]
+  - [[#default-directory][Default directory]]
+  - [[#gc-tweaks][GC tweaks]]
+  - [[#ui][UI]]
 - [[#initialization][Initialization]]
+  - [[#enable-lexical-scope-1][Enable lexical scope]]
 - [[#personal-info][Personal Info]]
 - [[#package-manager][Package Manager]]
+  - [[#setup-package][Setup package]]
+  - [[#setup-use-package][Setup use-package]]
 - [[#auto-compile][Auto Compile]]
 - [[#gc][GC]]
 - [[#defaults][Defaults]]
+  - [[#utf-8][UTF-8]]
+  - [[#calendar][Calendar]]
 - [[#async][Async]]
 - [[#general][General]]
 - [[#evil][Evil]]
 - [[#which-key][Which-key]]
 - [[#keyboard-layout][Keyboard Layout]]
 - [[#tty][TTY]]
-- [[#ui][UI]]
+  - [[#mouse-support][Mouse support]]
+- [[#ui-1][UI]]
+  - [[#smooth-scrolling][Smooth scrolling]]
 - [[#fonts][Fonts]]
+  - [[#emoji][Emoji]]
+  - [[#ligatures][Ligatures]]
+  - [[#icons][Icons]]
 - [[#mode-line][Mode Line]]
 - [[#theme][Theme]]
 - [[#frames][Frames]]
@@ -24,8 +38,17 @@
 - [[#buffers][Buffers]]
 - [[#pop-ups][Pop-ups]]
 - [[#completion][Completion]]
+  - [[#consult][consult]]
+  - [[#marginalia][marginalia]]
+  - [[#vertico][vertico]]
+  - [[#orderless][orderless]]
+  - [[#company][Company]]
+  - [[#corfu][Corfu]]
+  - [[#cape][cape]]
 - [[#files][Files]]
 - [[#projects][Projects]]
+  - [[#projectile][Projectile]]
+  - [[#projectel][Project.el]]
 - [[#dired][Dired]]
 - [[#tramp][Tramp]]
 - [[#environment-variables][Environment Variables]]
@@ -33,16 +56,35 @@
 - [[#editor][Editor]]
 - [[#ediff][Ediff]]
 - [[#undoredo][Undo/Redo]]
+  - [[#undo-tree][undo-tree]]
+  - [[#undo-fu][undo-fu]]
+  - [[#vundo][vundo]]
 - [[#highlighting][Highlighting]]
+  - [[#highlight-compilation][Highlight compilation]]
+  - [[#highlight-current-line][Highlight current line]]
+  - [[#parentheses][Parentheses]]
+  - [[#colorize-color-names][Colorize color names]]
+  - [[#highlight-special-symbols][Highlight special symbols]]
+  - [[#highlight-symbols][Highlight symbols]]
+  - [[#highlight-identifiers][Highlight identifiers]]
+  - [[#prism][Prism]]
 - [[#line-numbers][Line Numbers]]
 - [[#search][Search]]
 - [[#folding][Folding]]
 - [[#spell-checking][Spell Checking]]
 - [[#syntax-checking][Syntax Checking]]
+  - [[#flycheck][flycheck]]
+  - [[#flymake][flymake]]
 - [[#goto][Goto]]
 - [[#file-tree][File Tree]]
 - [[#terminal][Terminal]]
+  - [[#eshell][Eshell]]
+  - [[#vterm][vterm]]
+  - [[#quick-access-to-shell][Quick access to shell]]
 - [[#git][Git]]
+  - [[#magit][Magit]]
+  - [[#git-stuff][Git stuff]]
+  - [[#highlight-diff][Highlight diff]]
 - [[#org][Org]]
   - [[#common][Common]]
   - [[#archive][Archive]]
@@ -69,7 +111,8 @@
   - [[#yaml][YAML]]
   - [[#lua][Lua]]
   - [[#shell][Shell]]
-  - [[#config][Config]]
+  - [[#vimrc][Vimrc]]
+  - [[#ssh][SSH]]
 - [[#tools][Tools]]
   - [[#editorconfig][EditorConfig]]
   - [[#docker][Docker]]
@@ -84,17 +127,17 @@
 :header-args:emacs-lisp: :tangle early-init.el
 :END:
 
-Enable lexical scope
+** Enable lexical scope
 #+begin_src emacs-lisp
 ;;; -*- lexical-binding: t; no-byte-compile: t -*-
 #+end_src
 
-Default directory
+** Default directory
 #+begin_src emacs-lisp
 (setq default-directory "~/")
 #+end_src
 
-GC tweaks
+** GC tweaks
 #+begin_src emacs-lisp
 (setq gc-cons-threshold most-positive-fixnum)
 
@@ -108,7 +151,7 @@ GC tweaks
                          init-time packages gc-time gc-count))))
 #+end_src
 
-UI
+** UI
 #+begin_src emacs-lisp
 (setq frame-inhibit-implied-resize t)
 
@@ -134,7 +177,7 @@ UI
 #+end_src
 
 * Initialization
-Enable lexical scope
+** Enable lexical scope
 #+begin_src emacs-lisp
 ;;; -*- lexical-binding: t; -*-
 #+end_src
@@ -147,17 +190,12 @@ Enable lexical scope
 #+end_src
 
 * Package Manager
-Setup package
+** Setup package
 #+begin_src emacs-lisp
-(use-package package
-  :demand
-  :init
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
-
-;; (use-package gnu-elpa-keyring-update)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 #+end_src
 
-Setup use-package
+** Setup use-package
 #+begin_src emacs-lisp
 (setq use-package-always-defer t)
 (setq use-package-always-ensure t)
@@ -221,7 +259,7 @@ Setup use-package
   )
 #+end_src
 
-UTF-8
+** UTF-8
 #+begin_src emacs-lisp
 (use-package mule
   :ensure nil
@@ -244,7 +282,7 @@ UTF-8
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 #+end_src
 
-Calendar
+** Calendar
 #+begin_src emacs-lisp
 (use-package calendar
   :ensure nil
@@ -316,13 +354,11 @@ Calendar
     "j]" 'evil-jump-forward)
   :init
   (setq evil-want-keybinding nil)
-  (setq evil-split-window-below t)
-  (setq evil-vsplit-window-right t)
   (setq evil-emacs-state-cursor 'hbar)
   (setq evil-mode-line-format nil)
   (setq evil-symbol-word-search t)
-  (setq evil-move-beyond-eol nil)
-  (setq evil-move-cursor-back t)
+  ;; (setq evil-move-beyond-eol nil)
+  ;; (setq evil-move-cursor-back t)
   (setq evil-undo-system 'undo-redo)
   (setq evil-want-C-i-jump nil)
   :config
@@ -411,7 +447,7 @@ Calendar
 #+end_src
 
 * TTY
-Mouse support
+** Mouse support
 #+begin_src emacs-lisp
 (use-package xt-mouse
   :unless (display-graphic-p)
@@ -436,7 +472,7 @@ Mouse support
   (tool-bar-mode -1))
 #+end_src
 
-Smooth scrolling
+** Smooth scrolling
 #+begin_src emacs-lisp
 (use-package pixel-scroll
   :ensure nil
@@ -445,13 +481,13 @@ Smooth scrolling
 #+end_src
 
 * Fonts
-Emoji
+** Emoji
 #+begin_src emacs-lisp
 (when (eq window-system 'ns)
   (set-fontset-font "fontset-default" 'unicode "Apple Color Emoji" nil 'prepend))
 #+end_src
 
-Ligatures
+** Ligatures
 #+begin_src emacs-lisp
 (use-package ligature
   :ensure nil
@@ -475,7 +511,7 @@ Ligatures
   (after-init-hook . global-ligature-mode))
 #+end_src
 
-Icons
+** Icons
 #+begin_src emacs-lisp
 (use-package all-the-icons
   :if (display-graphic-p)
@@ -522,6 +558,8 @@ Icons
 * Theme
 #+begin_src emacs-lisp
 (use-package solarized-theme
+  ;; :disabled
+  :demand
   :init
   (setq solarized-distinct-doc-face t)
   (setq solarized-use-variable-pitch nil)
@@ -532,7 +570,18 @@ Icons
   (setq solarized-height-plus-2 1.0)
   (setq solarized-height-plus-3 1.0)
   (setq solarized-height-plus-4 1.0)
+  :config
   (load-theme 'solarized-gruvbox-dark t))
+
+(use-package doom-themes
+  :disabled
+  :demand
+  :config
+  (load-theme 'doom-earl-grey t)
+  ;; (setq doom-themes-treemacs-theme "doom-atom")
+  ;; (setq doom-themes-treemacs-theme "doom-colors")
+  ;; (doom-themes-treemacs-config)
+  (doom-themes-org-config))
 #+end_src
 
 * Frames
@@ -674,7 +723,6 @@ Icons
   (after-init-hook . winner-mode))
 
 (use-package winum
-  :demand
   :general
   (-leader-def
     "0" 'winum-select-window-0-or-10
@@ -690,8 +738,8 @@ Icons
   :init
   (setq winum-auto-setup-mode-line nil)
   (setq winum-scope 'frame-local)
-  :config
-  (winum-mode))
+  :hook
+  (after-init-hook . winum-mode))
 #+end_src
 
 * Buffers
@@ -782,7 +830,7 @@ Icons
 #+end_src
 
 * Completion
-Consult
+** consult
 #+begin_src emacs-lisp
 (use-package consult
   :general
@@ -822,17 +870,17 @@ Consult
   (setq consult-dir-project-list-function #'consult-dir-projectile-dirs))
 #+end_src
 
-Minibuffer
+** marginalia
 #+begin_src emacs-lisp
 (use-package marginalia
   :general
   (minibuffer-local-map
    "M-A" 'marginalia-cycle)
-  :init
-  (marginalia-mode))
+  :hook
+  (after-init-hook . marginalia-mode))
 #+end_src
 
-Vertico
+** vertico
 #+begin_src emacs-lisp
 (use-package vertico
   :general
@@ -846,42 +894,19 @@ Vertico
   (after-init-hook . vertico-mode))
 #+end_src
 
-Orderless
+** orderless
 #+begin_src emacs-lisp
 (use-package orderless
   :init
   (setq completion-styles '(orderless))
   (setq orderless-matching-styles '(orderless-literal
-                                    orderless-flex
+                                    ;; orderless-flex
+                                    orderless-prefixes
                                     orderless-regexp))
   (setq completion-category-overrides '((file (styles . (partial-completion))))))
 #+end_src
 
-Embark
-#+begin_src emacs-lisp
-(use-package embark
-  :general
-  ([remap describe-bindings] 'embark-bindings)
-  (minibuffer-local-map
-   "C-." 'embark-act)
-  :init
-  (setq prefix-help-command #'embark-prefix-help-command)
-  :config
-  (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none)))))
-
-(use-package embark-consult
-  :after embark consult
-  :demand t ; only necessary if you have the hook below
-  ;; if you want to have consult previews as you move around an
-  ;; auto-updating embark collect buffer
-  :hook
-  (embark-collect-mode-hook . consult-preview-at-point-mode))
-#+end_src
-
-Company
+** Company
 #+begin_src emacs-lisp
 (use-package company
   :disabled
@@ -898,66 +923,74 @@ Company
 
 (use-package company-shell
   :disabled
-  :after company
   :init
   (add-to-list 'company-backends 'company-shell))
 
 (use-package company-statistics
   :disabled
-  :after company
   :config
   (company-statistics-mode))
 #+end_src
 
-Corfu
+** Corfu
 #+begin_src emacs-lisp
 (use-package corfu
+  :general
+  ("M-S-SPC" 'completion-at-point)
   :init
   (setq corfu-auto t)
   (setq corfu-cycle t)
+  (setq corfu-min-width 40)
   :hook
   (after-init-hook . global-corfu-mode))
 
 (use-package corfu-echo
   :ensure corfu
-  :init
-  (corfu-echo-mode))
+  :hook
+  (corfu-mode-hook . corfu-echo-mode))
+
+(use-package corfu-info
+  :ensure corfu
+  :unless (display-graphic-p)
+  :after corfu
+  :general
+  (corfu-map
+   "C-h" 'corfu-info-documentation))
 
 (use-package corfu-popupinfo
   :ensure corfu
+  :if (display-graphic-p)
+  :general
+  (corfu-map
+   "C-h" 'corfu-popupinfo-documentation)
   :init
-  (corfu-popupinfo-mode))
+  (setq corfu-popupinfo-delay nil)
+  :hook
+  (corfu-mode-hook . corfu-popupinfo-mode))
 
 (use-package corfu-history
   :ensure corfu
-  :init
-  (corfu-history-mode))
+  :hook
+  (corfu-mode-hook . corfu-history-mode))
 
 (use-package corfu-terminal
-  :unless (display-graphic-p)
   :vc (corfu-terminal :url "https://codeberg.org/akib/emacs-corfu-terminal.git")
-  :init
-  (corfu-terminal-mode t))
+  :unless (display-graphic-p)
+  :hook
+  (corfu-mode-hook . corfu-terminal-mode))
 
-;; Add extensions
+(use-package kind-icon
+  :after corfu
+  :demand
+  :init
+  (setq kind-icon-default-face 'corfu-default)
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+#+end_src
+
+** cape
+#+begin_src emacs-lisp
 (use-package cape
-  ;; Bind dedicated completion commands
-  ;; Alternative prefix keys: C-c p, M-p, M-+, ...
-  :bind (("C-c p p" . completion-at-point) ;; capf
-         ("C-c p t" . complete-tag)        ;; etags
-         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
-         ("C-c p h" . cape-history)
-         ("C-c p f" . cape-file)
-         ("C-c p k" . cape-keyword)
-         ("C-c p s" . cape-symbol)
-         ("C-c p a" . cape-abbrev)
-         ("C-c p l" . cape-line)
-         ("C-c p w" . cape-dict)
-         ("C-c p \\" . cape-tex)
-         ("C-c p _" . cape-tex)
-         ("C-c p ^" . cape-tex)
-         ("C-c p &" . cape-sgml)
-         ("C-c p r" . cape-rfc1345))
   :init
   ;; Add `completion-at-point-functions', used by `completion-at-point'.
   ;; NOTE: The order matters!
@@ -973,7 +1006,7 @@ Corfu
   ;;(add-to-list 'completion-at-point-functions #'cape-dict)
   ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
-  )
+)
 #+end_src
 
 * Files
@@ -1057,8 +1090,9 @@ Customize
   :general
   (-leader-def
     "oc" 'customize-group)
-  :init
-  (setq custom-file null-device))
+  ;; :init
+  ;; (setq custom-file null-device)
+  )
 #+end_src
 
 Encryption
@@ -1070,8 +1104,8 @@ Encryption
 #+end_src
 
 * Projects
+** Projectile
 #+begin_src emacs-lisp
-;; TODO: project.el
 (use-package projectile
   :disabled
   :general
@@ -1088,17 +1122,14 @@ Encryption
   ([remap projectile-switch-project] 'consult-projectile))
 #+end_src
 
+** Project.el
 #+begin_src emacs-lisp
 (use-package project
   :ensure nil
   :general
-  ;; (-leader-def
-  ;;   "pp" 'project-switch-project
-  ;;   "pb" 'project-switch-to-buffer
-  ;;   "pf" 'project-find-file)
   (-leader-def
     "p" '(:keymap project-prefix-map :package projectile :wk "project"))
-  (:keymaps 'project-prefix-map
+  (project-prefix-map
 	    "m" 'magit-project-status)
   :init
   (setq project-switch-commands
@@ -1265,6 +1296,7 @@ Use the Emacsclient as the ~$EDITOR~ of child processes
 #+end_src
 
 * Undo/Redo
+** undo-tree
 #+begin_src emacs-lisp
 (use-package undo-tree
   :disabled (not (eq evil-undo-system 'undo-tree))
@@ -1273,10 +1305,16 @@ Use the Emacsclient as the ~$EDITOR~ of child processes
   (setq undo-tree-history-directory-alist `(("." . ,temporary-file-directory)))
   :hook
   (after-init-hook . global-undo-tree-mode))
+#+end_src
 
+** undo-fu
+#+begin_src emacs-lisp
 (use-package undo-fu
   :disabled (not (eq evil-undo-system 'undo-fu)))
+#+end_src
 
+** vundo
+#+begin_src emacs-lisp
 (use-package vundo
   :general
   ("C-x u" 'vundo)
@@ -1291,7 +1329,7 @@ Use the Emacsclient as the ~$EDITOR~ of child processes
 #+end_src
 
 * Highlighting
-Highlight compilation
+** Highlight compilation
 #+begin_src emacs-lisp
 (use-package ansi-color
   :preface
@@ -1305,7 +1343,7 @@ Highlight compilation
   (compilation-filter-hook . endless/colorize-compilation))
 #+end_src
 
-Highlight current line
+** Highlight current line
 #+begin_src emacs-lisp
 (use-package hl-line
   :ensure nil
@@ -1319,7 +1357,7 @@ Highlight current line
   (after-init-hook . global-hl-line-mode))
 #+end_src
 
-Parentheses
+** Parentheses
 #+begin_src emacs-lisp
 (use-package paren
   :ensure nil
@@ -1344,7 +1382,7 @@ Parentheses
   (minibuffer-setup-hook . highlight-parentheses-minibuffer-setup))
 #+end_src
 
-Colorize color names
+** Colorize color names
 #+begin_src emacs-lisp
 (use-package rainbow-mode
   :general
@@ -1354,7 +1392,7 @@ Colorize color names
   (css-mode-hook . rainbow-mode))
 #+end_src
 
-Highlight special symbols
+** Highlight special symbols
 #+begin_src emacs-lisp
 (use-package whitespace
   :ensure nil
@@ -1375,7 +1413,7 @@ Highlight special symbols
   (setq highlight-indent-guides-responsive t))
 #+end_src
 
-Highlight symbols
+** Highlight symbols
 #+begin_src emacs-lisp
 (use-package hl-todo
   :init
@@ -1397,7 +1435,7 @@ Highlight symbols
     "/hu" 'unhighlight-regexp))
 #+end_src
 
-Highlight identifiers
+** Highlight identifiers
 #+begin_src emacs-lisp
 (use-package color-identifiers-mode
   :general
@@ -1405,7 +1443,7 @@ Highlight identifiers
     "tc" 'color-identifiers-mode))
 #+end_src
 
-Prism
+** Prism
 #+begin_src emacs-lisp
 (use-package prism
   :general
@@ -1434,7 +1472,7 @@ Prism
 
 (use-package evil-anzu
   :demand
-  :after anzu)
+  :after evil anzu)
 #+end_src
 
 * Folding
@@ -1490,9 +1528,8 @@ Prism
 #+end_src
 
 * Syntax Checking
-flycheck
+** flycheck
 #+begin_src emacs-lisp
-;; TODO: flymake
 (use-package flycheck
   ;; :disabled
   :init
@@ -1546,10 +1583,10 @@ flycheck
     "je" 'consult-flycheck))
 #+end_src
 
-flymake
+** flymake
 #+begin_src emacs-lisp
 (use-package flymake
-  :disabled
+  :disabled ;; too slowly
   :ensure nil
   :init
   (setq flymake-fringe-indicator-position 'right-fringe)
@@ -1669,6 +1706,7 @@ Avy
   :custom-face
   (treemacs-root-face ((t :inherit font-lock-constant-face :bold t :height 1.1)))
   :init
+  (setq treemacs-show-cursor t)
   (setq treemacs-follow-after-init t)
   (setq treemacs-space-between-root-nodes nil)
   (setq treemacs-recenter-after-file-follow 'on-distance)
@@ -1677,7 +1715,8 @@ Avy
   (treemacs-mode-hook . hide-mode-line-mode)
   (treemacs-mode-hook . -disable-evil-cursor)
   :config
-  (-setup-treemacs-theme))
+  (when (display-graphic-p)
+    (-setup-treemacs-theme)))
 
 (use-package treemacs-fringe-indicator
   :ensure treemacs
@@ -1686,7 +1725,6 @@ Avy
   (treemacs-fringe-indicator-mode -1))
 
 (use-package treemacs-evil
-  :demand
   :after treemacs evil)
 
 (use-package treemacs-projectile
@@ -1695,7 +1733,7 @@ Avy
 (use-package treemacs-icons-dired
   :if (display-graphic-p)
   :hook
-  (dired-mode-hook . treemacs-icons-dired-mode))
+  (dired-mode-hook . treemacs-icons-dired-enable-once))
 
 (use-package treemacs-magit
   :after treemacs magit)
@@ -1707,7 +1745,7 @@ Avy
 #+end_src
 
 * Terminal
-Eshell
+** Eshell
 #+begin_src emacs-lisp
 (use-package em-smart
   :ensure nil
@@ -1727,7 +1765,7 @@ Eshell
   (setq eshell-prompt-function 'epe-theme-lambda))
 #+end_src
 
-Emacs libvterm integration
+** vterm
 #+begin_src emacs-lisp
 (use-package vterm
   :preface
@@ -1748,7 +1786,7 @@ Emacs libvterm integration
   (vterm-mode-hook . hide-mode-line-mode))
 #+end_src
 
-Quick access to shell
+** Quick access to shell
 #+begin_src emacs-lisp
 (use-package eshell-toggle
   :preface
@@ -1759,12 +1797,12 @@ Quick access to shell
   ("§" 'eshell-toggle)
   :init
   (setq eshell-toggle-init-function '-eshell-toggle-init-vterm)
-  (setq eshell-toggle-use-projectile-root t)
+  (setq eshell-toggle-use-projectile-root nil) ;; TODO: project.el?
   (setq eshell-toggle-run-command nil))
 #+end_src
 
 * Git
-Magit
+** Magit
 #+begin_src emacs-lisp
 (use-package magit
   :commands magit-blame
@@ -1795,24 +1833,17 @@ Magit
   (magit-mode-hook . magit-todos-mode))
 #+end_src
 
-Git stuff
+** Git stuff
 #+begin_src emacs-lisp
 (use-package git-timemachine
   :general
   (-leader-def
     "gt" 'git-timemachine))
 
-(use-package gitignore-templates
-  :general
-  (-leader-def
-    "gi" 'gitignore-templates-new-file)
-  (-local-leader-def :keymaps 'gitignore-mode-map
-    "i" 'gitignore-templates-insert))
-
 (use-package git-modes)
 #+end_src
 
-Highlight diff
+** Highlight diff
 #+begin_src emacs-lisp
 (use-package diff-hl
   :init
@@ -1820,7 +1851,7 @@ Highlight diff
   :hook
   (after-init-hook         . global-diff-hl-mode)
   (after-init-hook         . diff-hl-margin-mode)
-  ;; (diff-hl-mode-hook       . diff-hl-flydiff-mode)
+  (diff-hl-mode-hook       . diff-hl-flydiff-mode)
   (dired-mode-hook         . diff-hl-dired-mode)
   (magit-pre-refresh-hook  . diff-hl-magit-pre-refresh)
   (magit-post-refresh-hook . diff-hl-magit-post-refresh))
@@ -2027,11 +2058,10 @@ Bob -> Alice : Hello World!
 * Tree-sitter
 #+begin_src emacs-lisp
 (use-package treesit-auto
-  :demand t
   :init
   (setq treesit-auto-install 'prompt)
-  :config
-  (global-treesit-auto-mode))
+  :hook
+  (after-init-hook . global-treesit-auto-mode))
 #+end_src
 
 * Languages
@@ -2058,6 +2088,8 @@ Bob -> Alice : Hello World!
     "R" '(:keymap erefactor-map :wk "refactor")))
 
 (use-package eros
+  :custom-face
+  (eros-result-overlay-face ((t :inherit shadow :box t)))
   :hook
   (emacs-lisp-mode-hook . eros-mode))
 #+end_src
@@ -2074,7 +2106,6 @@ Common
 (use-package clojure-mode-extra-font-locking)
 
 (use-package clj-refactor
-  ;; :pin melpa-stable
   :general
   (-local-leader-def :keymaps 'clojure-mode-map
     "R" '(hydra-cljr-help-menu/body :wk "refactor"))
@@ -2124,12 +2155,12 @@ CIDER
 
 ** Go
 Install [[https://github.com/golang/tools/tree/master/gopls#installation][gopls]]
-#+begin_src sh :tangle no :results none
+#+begin_src sh :tangle no :results silent
 go install golang.org/x/tools/gopls@latest
 #+end_src
 
 Install [[https://github.com/go-delve/delve/tree/master/Documentation/installation][dlv]]
-#+begin_src sh :tangle no :results none
+#+begin_src sh :tangle no :results silent
 go install github.com/go-delve/delve/cmd/dlv@latest
 #+end_src
 
@@ -2287,13 +2318,12 @@ go install github.com/go-delve/delve/cmd/dlv@latest
   (sh-mode-hook . flymake-shellcheck-load))
 #+end_src
 
-** Config
-Vimrc
+** Vimrc
 #+begin_src emacs-lisp
 (use-package vimrc-mode)
 #+end_src
 
-SSH
+** SSH
 #+begin_src emacs-lisp
 (use-package ssh-config-mode
   :init
@@ -2333,12 +2363,11 @@ SSH
   :mode "\\.j2\\'")
 
 (use-package company-ansible
-  :after company yaml-mode
+  :after company
   :init
   (add-to-list 'company-backends 'company-ansible))
 
 (use-package ansible-vault-with-editor
-  :ensure nil
   :vc (:fetcher github :repo "rynffoll/ansible-vault-with-editor")
   :general
   (-local-leader-def :keymaps 'yaml-mode-map
@@ -2389,10 +2418,10 @@ SSH
 
 #+begin_src emacs-lisp
 (use-package envrc
-  :demand
+  :disabled
   :if (executable-find "direnv")
-  :config
-  (envrc-global-mode))
+  :hook
+  (after-init-hook . envrc-global-mode))
 #+end_src
 
 * Utils
