@@ -3,18 +3,21 @@
 * Table of Contents :TOC:
 - [[#early-initialization][Early Initialization]]
   - [[#enable-lexical-scope][Enable lexical scope]]
-  - [[#default-directory][Default directory]]
+  - [[#defaults][Defaults]]
+  - [[#disable-early-package-initialization][Disable early package initialization]]
   - [[#gc-tweaks][GC tweaks]]
+  - [[#file-handler-tweaks][File handler tweaks]]
   - [[#ui][UI]]
 - [[#initialization][Initialization]]
   - [[#enable-lexical-scope-1][Enable lexical scope]]
 - [[#personal-info][Personal Info]]
 - [[#package-manager][Package Manager]]
-  - [[#setup-package][Setup package]]
-  - [[#setup-use-package][Setup use-package]]
-- [[#auto-compile][Auto Compile]]
+  - [[#initialize][Initialize]]
+  - [[#use-package][use-package]]
+  - [[#vc-use-package][vc-use-package]]
 - [[#gc][GC]]
-- [[#defaults][Defaults]]
+- [[#auto-compile][Auto Compile]]
+- [[#defaults-1][Defaults]]
   - [[#utf-8][UTF-8]]
   - [[#calendar][Calendar]]
 - [[#async][Async]]
@@ -26,7 +29,6 @@
   - [[#mouse-support][Mouse support]]
 - [[#ui-1][UI]]
   - [[#smooth-scrolling][Smooth scrolling]]
-- [[#fonts][Fonts]]
   - [[#emoji][Emoji]]
   - [[#ligatures][Ligatures]]
   - [[#icons][Icons]]
@@ -46,6 +48,10 @@
   - [[#corfu][Corfu]]
   - [[#cape][cape]]
 - [[#files][Files]]
+  - [[#macos][macOS]]
+  - [[#quick-access-to-init-files][Quick access to init files]]
+  - [[#customize][Customize]]
+  - [[#encryption][Encryption]]
 - [[#projects][Projects]]
   - [[#projectile][Projectile]]
   - [[#projectel][Project.el]]
@@ -132,9 +138,24 @@
 ;;; -*- lexical-binding: t; no-byte-compile: t -*-
 #+end_src
 
-** Default directory
+** Defaults
 #+begin_src emacs-lisp
 (setq default-directory "~/")
+
+(setq load-prefer-newer t)
+(setq enable-recursive-minibuffers t)
+(setq indent-tabs-mode nil)
+(setq create-lockfiles nil)
+(setq ring-bell-function 'ignore)
+(setq delete-by-moving-to-trash t)
+(setq read-process-output-max (* 1024 1024))
+(setq native-comp-async-report-warnings-errors nil)
+(setq use-short-answers t) ;; yes-or-no -> y-or-n
+#+end_src
+
+** Disable early package initialization
+#+begin_src emacs-lisp
+(setq package-enable-at-startup nil)
 #+end_src
 
 ** GC tweaks
@@ -151,29 +172,69 @@
                          init-time packages gc-time gc-count))))
 #+end_src
 
+** File handler tweaks
+#+begin_src emacs-lisp
+(defvar -file-name-handler-alist file-name-handler-alist)
+(setq file-name-handler-alist nil)
+
+(add-hook 'emacs-startup-hook
+          #'(lambda ()
+              (setq file-name-handler-alist -file-name-handler-alist)))
+#+end_src
+
 ** UI
 #+begin_src emacs-lisp
+(setq inhibit-startup-screen t)
+(setq inhibit-startup-message t)
+
+(setq initial-scratch-message nil)
+
 (setq frame-inhibit-implied-resize t)
+(setq frame-resize-pixelwise t)
+(setq window-resize-pixelwise t)
+
+(setq inhibit-compacting-font-caches t)
+
+(setq use-dialog-box nil)
+
+(setq scroll-step 1)
+(setq scroll-preserve-screen-position t)
+(setq scroll-margin 0)
+(setq scroll-conservatively 101)
+(setq fast-but-imprecise-scrolling t)
+
+(setq bidi-inhibit-bpa t)
+(setq bidi-display-reordering 'left-to-right)
+(setq bidi-paragraph-direction 'left-to-right)
+
+(tooltip-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
 
 (add-to-list 'default-frame-alist '(left . 0.5))
 (add-to-list 'default-frame-alist '(top . 0.5))
 (add-to-list 'default-frame-alist '(width . 0.75))
 (add-to-list 'default-frame-alist '(height . 0.9))
-(add-to-list 'default-frame-alist '(menu-bar-lines . 0))
-(add-to-list 'default-frame-alist '(tool-bar-lines . 0))
-(add-to-list 'default-frame-alist '(vertical-scroll-bars))
-(add-to-list 'default-frame-alist '(internal-border-width . 0))
+;; (add-to-list 'default-frame-alist '(menu-bar-lines . 0))
+;; (add-to-list 'default-frame-alist '(tool-bar-lines . 0))
+;; (add-to-list 'default-frame-alist '(vertical-scroll-bars))
+;; (add-to-list 'default-frame-alist '(internal-border-width . 0))
 (add-to-list 'default-frame-alist '(tabs
                                     (current-tab
                                      (name . "main")
                                      (explicit-name . t))))
 (add-to-list 'default-frame-alist '(font . "JetBrains Mono 14"))
+#+end_src
 
-(setq ns-use-proxy-icon nil)
-(setq frame-title-format nil)
-;; (add-to-list 'default-frame-alist '(undecorated-round . t))
-(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-(add-to-list 'default-frame-alist '(ns-appearance . dark))
+*** macOS
+#+begin_src emacs-lisp
+(when (featurep 'ns)
+  (setq ns-use-proxy-icon nil)
+  (setq frame-title-format nil)
+  ;; (add-to-list 'default-frame-alist '(undecorated-round . t))
+  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+  (add-to-list 'default-frame-alist '(ns-appearance . dark)))
 #+end_src
 
 * Initialization
@@ -190,12 +251,14 @@
 #+end_src
 
 * Package Manager
-** Setup package
+** Initialize
 #+begin_src emacs-lisp
+(package-initialize)
+
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 #+end_src
 
-** Setup use-package
+** use-package
 #+begin_src emacs-lisp
 (setq use-package-always-defer t)
 (setq use-package-always-ensure t)
@@ -203,13 +266,20 @@
 (setq use-package-enable-imenu-support t)
 (setq use-package-compute-statistics t)
 (setq use-package-expand-minimally t)
+#+end_src
 
+** vc-use-package
+#+begin_src emacs-lisp
 (unless (package-installed-p 'vc-use-package)
   (package-refresh-contents)
   (package-vc-install "https://github.com/slotThe/vc-use-package"))
+#+end_src
 
-(use-package vc-use-package
-  :demand)
+* GC
+#+begin_src emacs-lisp
+(use-package gcmh
+  :hook
+  (after-init-hook . gcmh-mode))
 #+end_src
 
 * Auto Compile
@@ -223,42 +293,7 @@
   (emacs-lisp-mode-hook . auto-compile-on-save-mode))
 #+end_src
 
-* GC
-#+begin_src emacs-lisp
-(use-package gcmh
-  :hook
-  (after-init-hook . gcmh-mode))
-#+end_src
-
 * Defaults
-#+begin_src emacs-lisp
-(use-package emacs
-  :ensure nil
-  :init
-  (setq load-prefer-newer t)
-  (setq use-dialog-box nil)
-  (setq enable-recursive-minibuffers t)
-  (setq indent-tabs-mode nil)
-  (setq create-lockfiles nil)
-  (setq frame-resize-pixelwise t)
-  (setq window-resize-pixelwise t)
-  (setq inhibit-compacting-font-caches t)
-  (setq scroll-step 1)
-  (setq scroll-preserve-screen-position t)
-  (setq scroll-margin 0)
-  (setq scroll-conservatively 101)
-  (setq ring-bell-function 'ignore)
-  (setq delete-by-moving-to-trash t)
-  (setq read-process-output-max (* 1024 1024))
-  (setq bidi-inhibit-bpa t)
-  (setq bidi-display-reordering 'left-to-right)
-  (setq bidi-paragraph-direction 'left-to-right)
-  (setq fast-but-imprecise-scrolling t)
-  (setq native-comp-async-report-warnings-errors nil)
-  (setq use-short-answers t) ;; yes-or-no -> y-or-n
-  )
-#+end_src
-
 ** UTF-8
 #+begin_src emacs-lisp
 (use-package mule
@@ -457,21 +492,6 @@
 #+end_src
 
 * UI
-#+begin_src emacs-lisp
-(use-package startup
-  :ensure nil
-  :init
-  (setq inhibit-startup-screen t)
-  (setq initial-scratch-message nil))
-
-(tooltip-mode -1)
-(menu-bar-mode -1)
-
-(when window-system
-  (scroll-bar-mode -1)
-  (tool-bar-mode -1))
-#+end_src
-
 ** Smooth scrolling
 #+begin_src emacs-lisp
 (use-package pixel-scroll
@@ -480,7 +500,6 @@
   (pixel-scroll-precision-mode))
 #+end_src
 
-* Fonts
 ** Emoji
 #+begin_src emacs-lisp
 (when (eq window-system 'ns)
@@ -1046,16 +1065,20 @@
 
 (use-package recentf
   :ensure nil
+  ;; :defer 2
   :general
   (-leader-def
     "fr" 'recentf-open-files)
   :init
   (setq recentf-max-saved-items 300)
   :hook
-  (after-init-hook . recentf-mode))
+  (after-init-hook . recentf-mode)
+  ;; :config
+  ;; (recentf-mode)
+  )
 #+end_src
 
-macOS tweaks
+** macOS
 #+begin_src emacs-lisp
 (use-package files
   :if (eq system-type 'darwin)
@@ -1065,7 +1088,7 @@ macOS tweaks
   (setq trash-directory "~/.Trash/emacs"))
 #+end_src
 
-Quick access to init files
+** Quick access to init files
 #+begin_src emacs-lisp
 (use-package iqa
   :general
@@ -1077,7 +1100,7 @@ Quick access to init files
   (setq iqa-user-init-file (concat user-emacs-directory "config.org")))
 #+end_src
 
-Customize
+** Customize
 #+begin_src emacs-lisp
 (use-package custom
   :ensure nil
@@ -1090,12 +1113,11 @@ Customize
   :general
   (-leader-def
     "oc" 'customize-group)
-  ;; :init
-  ;; (setq custom-file null-device)
-  )
+  :init
+  (setq custom-file null-device))
 #+end_src
 
-Encryption
+** Encryption
 #+begin_src emacs-lisp
 (use-package epg-config
   :ensure nil
@@ -1488,6 +1510,7 @@ Use the Emacsclient as the ~$EDITOR~ of child processes
 (use-package ispell
   :if (executable-find "hunspell")
   :ensure nil
+  :after flyspell
   :init
   (setenv "LANG" "en_US.UTF-8")
   (setq ispell-really-aspell nil)

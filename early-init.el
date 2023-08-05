@@ -2,6 +2,18 @@
 
 (setq default-directory "~/")
 
+(setq load-prefer-newer t)
+(setq enable-recursive-minibuffers t)
+(setq indent-tabs-mode nil)
+(setq create-lockfiles nil)
+(setq ring-bell-function 'ignore)
+(setq delete-by-moving-to-trash t)
+(setq read-process-output-max (* 1024 1024))
+(setq native-comp-async-report-warnings-errors nil)
+(setq use-short-answers t) ;; yes-or-no -> y-or-n
+
+(setq package-enable-at-startup nil)
+
 (setq gc-cons-threshold most-positive-fixnum)
 
 (add-hook 'emacs-startup-hook
@@ -13,24 +25,58 @@
                 (message "Emacs ready (init time = %.2fs, packages = %d, gc time = %.2fs, gc count = %d)."
                          init-time packages gc-time gc-count))))
 
+(defvar -file-name-handler-alist file-name-handler-alist)
+(setq file-name-handler-alist nil)
+
+(add-hook 'emacs-startup-hook
+          #'(lambda ()
+              (setq file-name-handler-alist -file-name-handler-alist)))
+
+(setq inhibit-startup-screen t)
+(setq inhibit-startup-message t)
+
+(setq initial-scratch-message nil)
+
 (setq frame-inhibit-implied-resize t)
+(setq frame-resize-pixelwise t)
+(setq window-resize-pixelwise t)
+
+(setq inhibit-compacting-font-caches t)
+
+(setq use-dialog-box nil)
+
+(setq scroll-step 1)
+(setq scroll-preserve-screen-position t)
+(setq scroll-margin 0)
+(setq scroll-conservatively 101)
+(setq fast-but-imprecise-scrolling t)
+
+(setq bidi-inhibit-bpa t)
+(setq bidi-display-reordering 'left-to-right)
+(setq bidi-paragraph-direction 'left-to-right)
+
+(tooltip-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
 
 (add-to-list 'default-frame-alist '(left . 0.5))
 (add-to-list 'default-frame-alist '(top . 0.5))
 (add-to-list 'default-frame-alist '(width . 0.75))
 (add-to-list 'default-frame-alist '(height . 0.9))
-(add-to-list 'default-frame-alist '(menu-bar-lines . 0))
-(add-to-list 'default-frame-alist '(tool-bar-lines . 0))
-(add-to-list 'default-frame-alist '(vertical-scroll-bars))
-(add-to-list 'default-frame-alist '(internal-border-width . 0))
+;; (add-to-list 'default-frame-alist '(menu-bar-lines . 0))
+;; (add-to-list 'default-frame-alist '(tool-bar-lines . 0))
+;; (add-to-list 'default-frame-alist '(vertical-scroll-bars))
+;; (add-to-list 'default-frame-alist '(internal-border-width . 0))
 (add-to-list 'default-frame-alist '(tabs
                                     (current-tab
                                      (name . "main")
                                      (explicit-name . t))))
 (add-to-list 'default-frame-alist '(font . "JetBrains Mono 14"))
 
-(setq ns-use-proxy-icon nil)
-(setq frame-title-format nil)
-;; (add-to-list 'default-frame-alist '(undecorated-round . t))
-(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-(add-to-list 'default-frame-alist '(ns-appearance . dark))
+(when (featurep 'ns)
+  (setq ns-use-proxy-icon nil)
+  (setq frame-title-format nil)
+  ;; (add-to-list 'default-frame-alist '(undecorated-round . t))
+  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+  (add-to-list 'default-frame-alist '(ns-appearance . dark)))

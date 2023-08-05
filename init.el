@@ -4,6 +4,8 @@
       user-login-name "rynffoll"
       user-mail-address "rynffoll@gmail.com")
 
+(package-initialize)
+
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
 (setq use-package-always-defer t)
@@ -17,8 +19,9 @@
   (package-refresh-contents)
   (package-vc-install "https://github.com/slotThe/vc-use-package"))
 
-(use-package vc-use-package
-  :demand)
+(use-package gcmh
+  :hook
+  (after-init-hook . gcmh-mode))
 
 (use-package auto-compile
   :init
@@ -27,36 +30,6 @@
   :hook
   (emacs-lisp-mode-hook . auto-compile-on-load-mode)
   (emacs-lisp-mode-hook . auto-compile-on-save-mode))
-
-(use-package gcmh
-  :hook
-  (after-init-hook . gcmh-mode))
-
-(use-package emacs
-  :ensure nil
-  :init
-  (setq load-prefer-newer t)
-  (setq use-dialog-box nil)
-  (setq enable-recursive-minibuffers t)
-  (setq indent-tabs-mode nil)
-  (setq create-lockfiles nil)
-  (setq frame-resize-pixelwise t)
-  (setq window-resize-pixelwise t)
-  (setq inhibit-compacting-font-caches t)
-  (setq scroll-step 1)
-  (setq scroll-preserve-screen-position t)
-  (setq scroll-margin 0)
-  (setq scroll-conservatively 101)
-  (setq ring-bell-function 'ignore)
-  (setq delete-by-moving-to-trash t)
-  (setq read-process-output-max (* 1024 1024))
-  (setq bidi-inhibit-bpa t)
-  (setq bidi-display-reordering 'left-to-right)
-  (setq bidi-paragraph-direction 'left-to-right)
-  (setq fast-but-imprecise-scrolling t)
-  (setq native-comp-async-report-warnings-errors nil)
-  (setq use-short-answers t) ;; yes-or-no -> y-or-n
-  )
 
 (use-package mule
   :ensure nil
@@ -229,19 +202,6 @@
   :ensure nil
   :hook
   (after-init-hook . xterm-mouse-mode))
-
-(use-package startup
-  :ensure nil
-  :init
-  (setq inhibit-startup-screen t)
-  (setq initial-scratch-message nil))
-
-(tooltip-mode -1)
-(menu-bar-mode -1)
-
-(when window-system
-  (scroll-bar-mode -1)
-  (tool-bar-mode -1))
 
 (use-package pixel-scroll
   :ensure nil
@@ -759,13 +719,17 @@
 
 (use-package recentf
   :ensure nil
+  ;; :defer 2
   :general
   (-leader-def
     "fr" 'recentf-open-files)
   :init
   (setq recentf-max-saved-items 300)
   :hook
-  (after-init-hook . recentf-mode))
+  (after-init-hook . recentf-mode)
+  ;; :config
+  ;; (recentf-mode)
+  )
 
 (use-package files
   :if (eq system-type 'darwin)
@@ -794,9 +758,8 @@
   :general
   (-leader-def
     "oc" 'customize-group)
-  ;; :init
-  ;; (setq custom-file null-device)
-  )
+  :init
+  (setq custom-file null-device))
 
 (use-package epg-config
   :ensure nil
@@ -1113,6 +1076,7 @@
 (use-package ispell
   :if (executable-find "hunspell")
   :ensure nil
+  :after flyspell
   :init
   (setenv "LANG" "en_US.UTF-8")
   (setq ispell-really-aspell nil)
