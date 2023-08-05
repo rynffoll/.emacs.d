@@ -58,6 +58,8 @@
 - [[#dired][Dired]]
 - [[#tramp][Tramp]]
 - [[#environment-variables][Environment Variables]]
+  - [[#path-from-users-shell][~$PATH~ from user's shell]]
+  - [[#use-the-emacsclient-as-the-editor-of-child-processes][Use the Emacsclient as the ~$EDITOR~ of child processes]]
 - [[#help][Help]]
 - [[#editor][Editor]]
 - [[#ediff][Ediff]]
@@ -1206,7 +1208,7 @@
 #+end_src
 
 * Environment Variables
-~$PATH~ from user's shell
+** ~$PATH~ from user's shell
 #+begin_src emacs-lisp
 (use-package exec-path-from-shell
   :if (or (memq window-system '(mac ns x)) (daemonp))
@@ -1217,7 +1219,7 @@
   (exec-path-from-shell-initialize))
 #+end_src
 
-Use the Emacsclient as the ~$EDITOR~ of child processes
+** Use the Emacsclient as the ~$EDITOR~ of child processes
 #+begin_src emacs-lisp
 (use-package with-editor
   :general
@@ -2052,13 +2054,13 @@ Org Bullets
   :init
   (setq org-babel-load-languages
         '((emacs-lisp . t)
-          (shell . t)
-          (plantuml . t)))
+          (shell      . t)
+          (plantuml   . t)))
   :hook
   (org-babel-after-execute-hook . org-redisplay-inline-images))
 #+end_src
 
-PlantUML
+*** PlantUML
 #+begin_src emacs-lisp
 (use-package ob-plantuml
   :ensure nil
@@ -2066,6 +2068,23 @@ PlantUML
   (setq org-plantuml-exec-mode 'plantuml))
 #+end_src
 
+*** Verb
+#+begin_src emacs-lisp
+(use-package verb
+  ;; :after org
+  :general
+  (org-mode-map
+   "C-c C-r" '(:keymap verb-command-map :package verb :wk "verb"))
+  :init
+  (setq verb-auto-kill-response-buffers t)
+  (setq verb-json-use-mode 'json-mode)
+  :config
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((verb . t))))
+#+end_src
+
+*** tests :verb:
 #+begin_src emacs-lisp :tangle no :results silent
 (message "Hello World!")
 #+end_src
@@ -2076,6 +2095,10 @@ echo "Hello World!"
 
 #+begin_src plantuml :tangle no :results verbatim silent
 Bob -> Alice : Hello World!
+#+end_src
+
+#+begin_src verb :tangle no :op send get-body :results silent
+get https://github.com/status
 #+end_src
 
 * Tree-sitter
@@ -2400,22 +2423,6 @@ go install github.com/go-delve/delve/cmd/dlv@latest
 #+end_src
 
 ** HTTP
-[[https://github.com/federicotdn/verb#usage-guide][Verb - Usage Guide]]
-#+begin_src emacs-lisp
-(use-package verb
-  :general
-  (org-mode-map
-   "C-c C-r" '(:keymap verb-command-map :package verb :wk "verb"))
-  :init
-  (setq verb-auto-kill-response-buffers t)
-  (setq verb-json-use-mode 'json-mode))
-
-;; (use-package ob-verb
-;;   :ensure verb
-;;   :after ob-core
-;;   :commands
-;;   org-babel-execute:verb)
-#+end_src
 
 ** .env(rc)
 #+begin_src emacs-lisp

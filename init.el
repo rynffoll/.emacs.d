@@ -1550,8 +1550,8 @@
   :init
   (setq org-babel-load-languages
         '((emacs-lisp . t)
-          (shell . t)
-          (plantuml . t)))
+          (shell      . t)
+          (plantuml   . t)))
   :hook
   (org-babel-after-execute-hook . org-redisplay-inline-images))
 
@@ -1559,6 +1559,19 @@
   :ensure nil
   :init
   (setq org-plantuml-exec-mode 'plantuml))
+
+(use-package verb
+  ;; :after org
+  :general
+  (org-mode-map
+   "C-c C-r" '(:keymap verb-command-map :package verb :wk "verb"))
+  :init
+  (setq verb-auto-kill-response-buffers t)
+  (setq verb-json-use-mode 'json-mode)
+  :config
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((verb . t))))
 
 (use-package treesit-auto
   :init
@@ -1804,20 +1817,6 @@
     "e" '(ansible-vault-with-editor-edit :wk "edit")
     "E" '(ansible-vault-with-editor-encrypt :wk "encrypt")
     "D" '(ansible-vault-with-editor-decrypt :wk "decrypt")))
-
-(use-package verb
-  :general
-  (org-mode-map
-   "C-c C-r" '(:keymap verb-command-map :package verb :wk "verb"))
-  :init
-  (setq verb-auto-kill-response-buffers t)
-  (setq verb-json-use-mode 'json-mode))
-
-;; (use-package ob-verb
-;;   :ensure verb
-;;   :after ob-core
-;;   :commands
-;;   org-babel-execute:verb)
 
 (use-package direnv
   :if (executable-find "direnv")
