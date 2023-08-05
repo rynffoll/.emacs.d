@@ -1503,6 +1503,7 @@
   (setq org-pretty-entities t)
   (setq org-use-sub-superscripts '{})
 
+  (setq org-use-fast-todo-selection 'expert)
   (setq org-todo-keywords '((sequence
                              "TODO(t)"
                              "STARTED(s)"
@@ -1557,7 +1558,7 @@
   :init
   (setq org-agenda-window-setup 'current-window))
 
-(use-package org-face
+(use-package org-faces
   :ensure org
   :custom-face
   (org-tag              ((t :inherit shadow)))
@@ -1578,7 +1579,6 @@
           ("CANCELLED" . (:inherit (bold shadow org-todo))))))
 
 (use-package org-bullets
-  :after org
   :init
   (setq org-bullets-bullet-list '("•"))
   (setq org-bullets--keywords
@@ -1604,29 +1604,24 @@
 
 (use-package ob-core
   :ensure org
+  :init
+  (setq org-babel-load-languages
+        '((emacs-lisp . t)
+          (shell . t)
+          (plantuml . t)))
   :hook
   (org-babel-after-execute-hook . org-redisplay-inline-images))
 
-(use-package ob-emacs-lisp
-  :ensure org
-  :commands
-  org-babel-execute:emacs-lisp
-  org-babel-expand-body:emacs-lisp)
-
-(use-package ob-shell
-  :ensure org
-  :commands
-  org-babel-execute:sh
-  org-babel-expand-body:sh
-  org-babel-execute:bash
-  org-babel-expand-body:bash)
+(use-package ob-plantuml
+  :ensure nil
+  :init
+  (setq org-plantuml-exec-mode 'plantuml))
 
 (use-package treesit-auto
-  :demand t
   :init
   (setq treesit-auto-install 'prompt)
-  :config
-  (global-treesit-auto-mode))
+  :hook
+  (after-init-hook . global-treesit-auto-mode))
 
 (use-package eglot)
 
@@ -1735,12 +1730,6 @@
   :init
   (setq plantuml-output-type (if (display-images-p) "png" "txt"))
   (setq plantuml-default-exec-mode 'executable))
-
-(use-package ob-plantuml
-  :ensure nil
-  :after ob-core
-  :commands
-  org-babel-execute:plantuml)
 
 (use-package sql
   :ensure nil
@@ -1881,15 +1870,13 @@
   (setq verb-auto-kill-response-buffers t)
   (setq verb-json-use-mode 'json-mode))
 
-(use-package ob-verb
-  :ensure verb
-  :after ob-core
-  :commands
-  org-babel-execute:verb)
+;; (use-package ob-verb
+;;   :ensure verb
+;;   :after ob-core
+;;   :commands
+;;   org-babel-execute:verb)
 
-;; TODO: envrc? dotenv?
 (use-package direnv
-  :disabled
   :if (executable-find "direnv")
   :preface
   (defun -direnv-hook ()
