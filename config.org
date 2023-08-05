@@ -124,8 +124,13 @@ UI
                                     (current-tab
                                      (name . "main")
                                      (explicit-name . t))))
-;; (add-to-list 'default-frame-alist '(fullscreen . fullboth))
 (add-to-list 'default-frame-alist '(font . "JetBrains Mono 14"))
+
+(setq ns-use-proxy-icon nil)
+(setq frame-title-format nil)
+;; (add-to-list 'default-frame-alist '(undecorated-round . t))
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+(add-to-list 'default-frame-alist '(ns-appearance . dark))
 #+end_src
 
 * Initialization
