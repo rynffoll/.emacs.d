@@ -1352,6 +1352,8 @@
   (vterm-mode-hook . hide-mode-line-mode))
 
 (use-package eshell-toggle
+  ;; TODO: return to upstream after merging https://github.com/4DA/eshell-toggle/pull/18
+  :vc (:fetcher github :repo "CsBigDataHub/eshell-toggle")
   :preface
   (defun -eshell-toggle-init-vterm (dir)
     (let ((default-directory dir))
@@ -1361,6 +1363,7 @@
   :init
   (setq eshell-toggle-init-function '-eshell-toggle-init-vterm)
   (setq eshell-toggle-use-projectile-root nil) ;; TODO: project.el?
+  (setq eshell-toggle-use-project-root t)
   (setq eshell-toggle-run-command nil))
 
 (use-package magit
