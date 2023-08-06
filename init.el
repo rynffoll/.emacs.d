@@ -1608,6 +1608,14 @@
   :hook
   (emacs-lisp-mode-hook . eros-mode))
 
+(use-package package-lint)
+
+(use-package flycheck-package
+  :after flycheck
+  :demand
+  :config
+  (flycheck-package-setup))
+
 (use-package flycheck-clj-kondo)
 
 (use-package clojure-mode
