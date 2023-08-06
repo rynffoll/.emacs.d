@@ -1890,8 +1890,4 @@
 
 (use-package string-inflection)
 
-(when-let* ((local-dir (concat user-emacs-directory "local"))
-            ((file-exists-p local-dir))
-            (files (directory-files-recursively
-                    local-dir "\\.el$")))
-  (mapc 'load files))
+(add-to-list 'load-path (concat user-emacs-directory "site-lisp"))

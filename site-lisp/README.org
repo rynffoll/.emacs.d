@@ -1,0 +1,2 @@
+* ~/site-lisp/~
+~default.el~: Private configuration

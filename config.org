@@ -132,7 +132,7 @@
   - [[#http][HTTP]]
   - [[#envrc][.env(rc)]]
 - [[#utils][Utils]]
-- [[#local-scripts][Local Scripts]]
+- [[#private-configuration][Private Configuration]]
 - [[#the-end][The end]]
 
 * Early Initialization
@@ -2515,14 +2515,11 @@ go install github.com/go-delve/delve/cmd/dlv@latest
 (use-package string-inflection)
 #+end_src
 
-* Local Scripts
-Loading host specific scripts from ~~/.emacs.d/local~
+* Private Configuration
+Loading private configuration from ~~/.emacs.d/site-lisp/default.el~
+[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html][50.4 The Emacs Initialization File]]
 #+begin_src emacs-lisp
-(when-let* ((local-dir (concat user-emacs-directory "local"))
-            ((file-exists-p local-dir))
-            (files (directory-files-recursively
-                    local-dir "\\.el$")))
-  (mapc 'load files))
+(add-to-list 'load-path (concat user-emacs-directory "site-lisp"))
 #+end_src
 
 * The end
