@@ -1788,6 +1788,19 @@
   :init
   (autoload 'ssh-config-mode "ssh-config-mode" t))
 
+(use-package xwidget
+  :if (display-graphic-p)
+  :ensure nil
+  :general
+  (-leader-def
+    "ow" 'xwidget-webkit-browse-url))
+
+(use-package xwwp
+  :if (display-graphic-p)
+  :general
+  (:keymaps 'xwidget-webkit-mode-map :states 'normal
+            "f" 'xwwp-follow-link))
+
 (use-package editorconfig
   :hook
   (after-init-hook . editorconfig-mode))
