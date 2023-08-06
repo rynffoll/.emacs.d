@@ -364,6 +364,7 @@
            (inhibit-quit t)
            (name (with-local-quit (read-string prompt))))
       (-tab-bar-rename-or-close name)))
+  ;; projectile
   (defun -tab-bar-post-open-projectile (tab)
     (let* ((inhibit-quit t)
            (project (with-local-quit (projectile-switch-project)))
@@ -375,12 +376,25 @@
     (interactive)
     (let* ((tab-bar-tab-post-open-functions #'-tab-bar-post-open-projectile))
       (tab-new)))
+  ;; project
+  (defun -tab-bar-post-open-project (tab)
+    (let* ((inhibit-quit t)
+           (project (and (with-local-quit (call-interactively 'project-switch-project))
+                         (project-current)))
+           (name (when project
+                   (project-name project))))
+      (-tab-bar-rename-or-close name)))
+  (defun -tab-bar-project ()
+    (interactive)
+    (let* ((tab-bar-tab-post-open-functions #'-tab-bar-post-open-project))
+      (tab-new)))
   :general
   (-leader-def
     "TAB TAB" '-tab-bar-print-tabs
     "TAB ."   'tab-bar-select-tab-by-name
     "TAB n"   'tab-new
-    "TAB p"   '-tab-bar-projectile
+    ;; "TAB p"   '-tab-bar-projectile
+    "TAB p"   '-tab-bar-project
     "TAB ["   'tab-previous
     "TAB ]"   'tab-next
     "TAB c"   'tab-close
@@ -778,7 +792,7 @@
   :ensure nil
   :general
   (-leader-def
-    "p" '(:keymap project-prefix-map :package projectile :wk "project"))
+    "p" '(:keymap project-prefix-map :package project :wk "project"))
   (:keymaps 'project-prefix-map
             "m" 'magit-project-status
             "b" 'consult-project-buffer)
@@ -1292,7 +1306,7 @@
   :after treemacs evil)
 
 (use-package treemacs-projectile
-  :after treemacs projectile)
+  :after treemacs)
 
 (use-package treemacs-icons-dired
   :if (display-graphic-p)
