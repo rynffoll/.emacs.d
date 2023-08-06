@@ -2,4 +2,6 @@
 ;;; For more information see (info "(emacs) Directory Variables")
 
 ((magit-status-mode
-  (magit-todos-exclude-globs . ("init.el" "config.org"))))
+  (magit-todos-exclude-globs . (".git/"
+				"init.el"
+				"early-init.el"))))
