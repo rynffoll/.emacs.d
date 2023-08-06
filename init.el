@@ -1756,15 +1756,10 @@
   :hook
   (json-mode-hook . -setup-json-mode))
 
-(use-package yaml-mode
-  :mode "Procfile\\'"
+(use-package yaml-ts-mode
   :hook
-  (yaml-mode-hook . flycheck-mode)
-  (yaml-mode-hook . highlight-indent-guides-mode))
-
-(use-package flycheck-yamllint
-  :hook
-  (yaml-mode-hook . flycheck-yamllint-setup))
+  (yaml-ts-mode-hook . flycheck-mode)
+  (yaml-ts-mode-hook . highlight-indent-guides-mode))
 
 (use-package lua-mode
   :init
@@ -1818,7 +1813,7 @@
 (use-package ansible-vault-with-editor
   :vc (:fetcher github :repo "rynffoll/ansible-vault-with-editor")
   :general
-  (-local-leader-def :keymaps 'yaml-mode-map
+  (-local-leader-def :keymaps 'yaml-ts-mode-map
     "e" '(ansible-vault-with-editor-edit :wk "edit")
     "E" '(ansible-vault-with-editor-encrypt :wk "encrypt")
     "D" '(ansible-vault-with-editor-decrypt :wk "decrypt")))
