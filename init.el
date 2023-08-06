@@ -676,10 +676,15 @@
 (use-package kind-icon
   :after corfu
   :demand
+  :preface
+  (defun -kind-icon-reset-cache (theme)
+    (call-interactively 'kind-icon-reset-cache))
   :init
   (setq kind-icon-default-face 'corfu-default)
+  (setq kind-icon-use-icons nil)
   :config
-  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
+  (advice-add #'disable-theme :before #'-kind-icon-reset-cache))
 
 (use-package cape
   :init
