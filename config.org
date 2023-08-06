@@ -106,8 +106,8 @@
   - [[#faces][Faces]]
   - [[#table-of-contents][Table of Contents]]
   - [[#babel][Babel]]
-- [[#tree-sitter][Tree-sitter]]
 - [[#languages][Languages]]
+  - [[#tree-sitter][Tree-sitter]]
   - [[#lsp][LSP]]
   - [[#emacs-lisp][Emacs Lisp]]
   - [[#clojure][Clojure]]
@@ -2114,7 +2114,8 @@ Bob -> Alice : Hello World!
 get https://github.com/status
 #+end_src
 
-* Tree-sitter
+* Languages
+** Tree-sitter
 #+begin_src emacs-lisp
 (use-package treesit-auto
   :init
@@ -2123,7 +2124,6 @@ get https://github.com/status
   (after-init-hook . global-treesit-auto-mode))
 #+end_src
 
-* Languages
 ** LSP
 #+begin_src emacs-lisp
 (use-package eglot
