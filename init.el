@@ -540,7 +540,6 @@
   ([remap switch-to-buffer-other-window] 'consult-buffer-other-window)
   ([remap switch-to-buffer-other-frame]  'consult-buffer-other-frame)
   ([remap yank-pop]                      'consult-yank-pop)
-  ([remap imenu]                         'consult-imenu)
   (-leader-def
     "/." 'consult-ripgrep
     "/b" 'consult-line)
@@ -548,25 +547,23 @@
   (setq register-preview-delay 0)
   (setq register-preview-function #'consult-register-format)
   (advice-add #'register-preview :override #'consult-register-window)
-  (setq xref-show-xrefs-function #'consult-xref)
-  (setq xref-show-definitions-function #'consult-xref)
   :hook
-  (completion-list-mode-hook . consult-preview-at-point-mode)
-  :config
-  (autoload 'projectile-project-root "projectile")
-  (setq consult-project-function (lambda (_) (projectile-project-root))))
+  (completion-list-mode-hook . consult-preview-at-point-mode))
+
+(use-package consult-xref
+  :ensure consult
+  :init
+  (setq xref-show-xrefs-function #'consult-xref)
+  (setq xref-show-definitions-function #'consult-xref))
 
 (use-package consult-dir
   :general
-  ([remap list-directory] 'consult-dir)
-  ([remap dired-jump]     'consult-dir-jump-file)
-  :init
-  (setq consult-dir-project-list-function #'consult-dir-projectile-dirs))
+  ([remap list-directory] 'consult-dir))
 
 (use-package marginalia
   :general
-  (minibuffer-local-map
-   "M-A" 'marginalia-cycle)
+  (:keymaps 'minibuffer-local-map
+            "M-A" 'marginalia-cycle)
   :hook
   (after-init-hook . marginalia-mode))
 
@@ -719,17 +716,13 @@
 
 (use-package recentf
   :ensure nil
-  ;; :defer 2
   :general
   (-leader-def
     "fr" 'recentf-open-files)
   :init
   (setq recentf-max-saved-items 300)
   :hook
-  (after-init-hook . recentf-mode)
-  ;; :config
-  ;; (recentf-mode)
-  )
+  (after-init-hook . recentf-mode))
 
 (use-package files
   :if (eq system-type 'darwin)
@@ -786,16 +779,15 @@
   :general
   (-leader-def
     "p" '(:keymap project-prefix-map :package projectile :wk "project"))
-  (project-prefix-map
-	    "m" 'magit-project-status)
+  (:keymaps 'project-prefix-map
+            "m" 'magit-project-status
+            "b" 'consult-project-buffer)
   :init
   (setq project-switch-commands
-	'((project-find-file "Find file")
-	  (project-find-regexp "Find regexp")
-	  (project-find-dir "Find directory")
-	  (magit-project-status "Magit")
-	  ;; TODO: -> vterm
-	  (project-eshell "Eshell"))))
+        '((project-find-file "Find file")
+          (project-find-regexp "Find regexp")
+          (project-find-dir "Find directory")
+          (magit-project-status "Magit"))))
 
 (use-package dired
   :ensure nil
@@ -1421,8 +1413,6 @@
     "Oi" '(-open-org-inbox-file :wk "open inbox.org")
     "Ot" '(-open-org-todo-file  :wk "open todo.org")
     "On" '(-open-org-notes-file :wk "open notes.org"))
-  (-local-leader-def
-    "i" 'org-insert-structure-template)
   :init
   (setq org-directory "~/Org")
   (setq -org-inbox-file (concat org-directory "/inbox.org"))
@@ -1579,7 +1569,9 @@
   :hook
   (after-init-hook . global-treesit-auto-mode))
 
-(use-package eglot)
+(use-package eglot
+  :init
+  (setq eglot-autoshutdown t))
 
 (use-package highlight-defined
   :init
@@ -1654,13 +1646,12 @@
   :hook
   (clojure-mode-hook . cider-hydra-mode))
 
-(use-package go-mode
-  :preface
-  (defun -setup-go-mode ()
-    (add-hook 'before-save-hook #'lsp-format-buffer t t)
-    (add-hook 'before-save-hook #'lsp-organize-imports t t))
+(use-package go-mode)
+
+(use-package go-ts-mode
+  :ensure nil
   :hook
-  (go-mode-hook . -setup-go-mode))
+  (go-ts-mode-hook . eglot-ensure))
 
 (use-package makefile-executor
   :general
