@@ -4,9 +4,11 @@
       user-login-name "rynffoll"
       user-mail-address "rynffoll@gmail.com")
 
-(package-initialize)
+(setq package-archives '(("gnu"    . "https://elpa.gnu.org/packages/")
+                         ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+                         ("melpa"  . "https://melpa.org/packages/")))
 
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
 
 (setq use-package-always-defer t)
 (setq use-package-always-ensure t)
@@ -18,6 +20,8 @@
 (unless (package-installed-p 'vc-use-package)
   (package-refresh-contents)
   (package-vc-install "https://github.com/slotThe/vc-use-package"))
+
+(use-package gnu-elpa-keyring-update)
 
 (use-package gcmh
   :hook
