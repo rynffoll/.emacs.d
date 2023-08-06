@@ -8,6 +8,7 @@
   - [[#gc-tweaks][GC tweaks]]
   - [[#file-handler-tweaks][File handler tweaks]]
   - [[#ui][UI]]
+    - [[#macos][macOS]]
 - [[#initialization][Initialization]]
   - [[#enable-lexical-scope-1][Enable lexical scope]]
 - [[#personal-info][Personal Info]]
@@ -49,7 +50,7 @@
   - [[#corfu][Corfu]]
   - [[#cape][cape]]
 - [[#files][Files]]
-  - [[#macos][macOS]]
+  - [[#macos-1][macOS]]
   - [[#quick-access-to-init-files][Quick access to init files]]
   - [[#customize][Customize]]
   - [[#encryption][Encryption]]
@@ -106,6 +107,10 @@
   - [[#faces][Faces]]
   - [[#table-of-contents][Table of Contents]]
   - [[#babel][Babel]]
+    - [[#plantuml][PlantUML]]
+    - [[#verb][Verb]]
+    - [[#grpc][gRPC]]
+    - [[#tests][tests]]
 - [[#languages][Languages]]
   - [[#tree-sitter][Tree-sitter]]
   - [[#lsp][LSP]]
@@ -114,7 +119,7 @@
   - [[#go][Go]]
   - [[#makefile][Makefile]]
   - [[#web][Web]]
-  - [[#plantuml][PlantUML]]
+  - [[#plantuml-1][PlantUML]]
   - [[#sql][SQL]]
   - [[#groovy][Groovy]]
   - [[#markdown][Markdown]]
@@ -2061,6 +2066,8 @@ Org Bullets
 ** Table of Contents
 #+begin_src emacs-lisp
 (use-package toc-org
+  :init
+  (setq toc-org-max-depth 4)
   :hook
   (org-mode-hook . toc-org-enable))
 #+end_src

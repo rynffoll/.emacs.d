@@ -1552,6 +1552,8 @@
   (org-mode-hook . org-bullets-mode))
 
 (use-package toc-org
+  :init
+  (setq toc-org-max-depth 4)
   :hook
   (org-mode-hook . toc-org-enable))
 
