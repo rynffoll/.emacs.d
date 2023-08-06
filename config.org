@@ -13,6 +13,7 @@
 - [[#personal-info][Personal Info]]
 - [[#package-manager][Package Manager]]
   - [[#initialize][Initialize]]
+  - [[#melpa][MELPA]]
   - [[#use-package][use-package]]
   - [[#vc-use-package][vc-use-package]]
 - [[#gc][GC]]
@@ -84,6 +85,8 @@
   - [[#flycheck][flycheck]]
   - [[#flymake][flymake]]
 - [[#goto][Goto]]
+  - [[#imenu][Imenu]]
+  - [[#avy][Avy]]
 - [[#file-tree][File Tree]]
 - [[#terminal][Terminal]]
   - [[#eshell][Eshell]]
@@ -129,6 +132,7 @@
   - [[#http][HTTP]]
   - [[#envrc][.env(rc)]]
 - [[#utils][Utils]]
+- [[#local-scripts][Local Scripts]]
 - [[#the-end][The end]]
 
 * Early Initialization
@@ -257,7 +261,10 @@
 ** Initialize
 #+begin_src emacs-lisp
 (package-initialize)
+#+end_src
 
+** MELPA
+#+begin_src emacs-lisp
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 #+end_src
 
@@ -1626,7 +1633,7 @@
 #+end_src
 
 * Goto
-Imenu
+** Imenu
 #+begin_src emacs-lisp
 (use-package imenu
   :ensure nil
@@ -1635,9 +1642,8 @@ Imenu
     "ji" 'imenu))
 #+end_src
 
-Avy
+** Avy
 #+begin_src emacs-lisp
-;; TODO: remove
 (use-package avy
   :general
   (-leader-def
@@ -2503,6 +2509,16 @@ go install github.com/go-delve/delve/cmd/dlv@latest
 (use-package password-generator)
 
 (use-package string-inflection)
+#+end_src
+
+* Local Scripts
+Loading host specific scripts from ~~/.emacs.d/local~
+#+begin_src emacs-lisp
+(when-let* ((local-dir (concat user-emacs-directory "local"))
+            ((file-exists-p local-dir))
+            (files (directory-files-recursively
+                    local-dir "\\.el$")))
+  (mapc 'load files))
 #+end_src
 
 * The end

@@ -1186,7 +1186,6 @@
   (-leader-def
     "ji" 'imenu))
 
-;; TODO: remove
 (use-package avy
   :general
   (-leader-def
@@ -1886,3 +1885,9 @@
 (use-package password-generator)
 
 (use-package string-inflection)
+
+(when-let* ((local-dir (concat user-emacs-directory "local"))
+            ((file-exists-p local-dir))
+            (files (directory-files-recursively
+                    local-dir "\\.el$")))
+  (mapc 'load files))

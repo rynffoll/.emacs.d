@@ -19,3 +19,4 @@ async-bytecomp.log
 eln-cache/
 tree-sitter/
 projects
+local/
