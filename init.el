@@ -179,13 +179,6 @@
   (evil-traces-use-diff-faces))
 
 (use-package which-key
-  :init
-  ;; Allow C-h to trigger which-key before it is done automatically
-  (setq which-key-show-early-on-C-h t)
-  ;; make sure which-key doesn't show normally but refreshes quickly after it is
-  ;; triggered.
-  (setq which-key-idle-delay 1.0)
-  (setq which-key-idle-secondary-delay 0.05)
   :hook
   (after-init-hook . which-key-mode))
 
