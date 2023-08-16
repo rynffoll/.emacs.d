@@ -1906,7 +1906,7 @@ Install fonts
   (setq diff-hl-draw-borders nil)
   :hook
   (after-init-hook         . global-diff-hl-mode)
-  (after-init-hook         . diff-hl-margin-mode)
+  ;; (after-init-hook         . diff-hl-margin-mode)
   (diff-hl-mode-hook       . diff-hl-flydiff-mode)
   (dired-mode-hook         . diff-hl-dired-mode)
   (magit-pre-refresh-hook  . diff-hl-magit-pre-refresh)
