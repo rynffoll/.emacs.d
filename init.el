@@ -114,6 +114,11 @@
   (-leader-def
     "j[" 'evil-jump-backward
     "j]" 'evil-jump-forward)
+  :custom-face
+  (evil-ex-substitute-matches
+   ((t (:inherit diff-removed :foreground unspecified :background unspecified :strike-through t))))
+  (evil-ex-substitute-replacement
+   ((t (:inherit diff-added :foreground unspecified :background unspecified :underline nil))))
   :init
   (setq evil-want-keybinding nil)
   (setq evil-emacs-state-cursor 'hbar)
@@ -167,6 +172,7 @@
   (after-init-hook . global-evil-mc-mode))
 
 (use-package evil-traces
+  :disabled
   :hook
   (after-init-hook . evil-traces-mode)
   :config
@@ -246,8 +252,8 @@
 (use-package faces
   :ensure nil
   :custom-face
-  (mode-line ((t :inherit mode-line :box nil :underline nil :overline nil)))
-  (mode-line-inactive ((t :inherit mode-line-inactive :box nil :underline nil :overline nil))))
+  (mode-line ((t (:inherit mode-line :box nil :underline nil :overline nil))))
+  (mode-line-inactive ((t (:inherit mode-line-inactive :box nil :underline nil :overline nil)))))
 
 (use-package hide-mode-line
   :hook
@@ -276,6 +282,7 @@
 
 (use-package solarized-theme
   ;; :disabled
+  :vc (:fetcher github :repo "bbatsov/solarized-emacs")
   :demand
   :init
   (setq solarized-distinct-doc-face t)
@@ -610,7 +617,7 @@
   :general
   ("M-S-SPC" 'company-complete)
   :custom-face
-  (company-tooltip-selection ((t :inverse-video t)))
+  (company-tooltip-selection ((t (:inverse-video t))))
   :init
   (setq company-minimum-prefix-length 1)
   (setq company-idle-delay 0.3)
@@ -957,7 +964,7 @@
   (vundo-mode-hook . -disable-global-hl-line-mode)
   (vundo-mode-hook . -disable-evil-cursor)
   :custom-face
-  (vundo-highlight ((t :inherit (bold success))))
+  (vundo-highlight ((t (:inherit (bold success)))))
   :config
   (setq vundo-compact-display t)
   (setq vundo-glyph-alist vundo-unicode-symbols))
@@ -1285,7 +1292,7 @@
     "0" 'treemacs-select-window
     "ft" 'treemacs)
   :custom-face
-  (treemacs-root-face ((t :inherit font-lock-constant-face :bold t :height 1.1)))
+  (treemacs-root-face ((t (:inherit font-lock-constant-face :bold t :height 1.1))))
   :init
   (setq treemacs-show-cursor t)
   (setq treemacs-follow-after-init t)
@@ -1514,10 +1521,10 @@
 (use-package org-faces
   :ensure org
   :custom-face
-  (org-tag              ((t :inherit shadow)))
-  (org-ellipsis         ((t :underline nil)))
-  (org-block-begin-line ((t :underline nil)))
-  (org-block-end-line   ((t :overline nil)))
+  (org-tag              ((t (:inherit shadow))))
+  (org-ellipsis         ((t (:underline nil))))
+  (org-block-begin-line ((t (:underline nil))))
+  (org-block-end-line   ((t (:overline nil))))
   :init
   (setq org-priority-faces
         '((?A . (:inherit (bold error)))
@@ -1612,7 +1619,7 @@
 
 (use-package eros
   :custom-face
-  (eros-result-overlay-face ((t :inherit shadow :box t)))
+  (eros-result-overlay-face ((t (:inherit shadow :box t))))
   :hook
   (emacs-lisp-mode-hook . eros-mode))
 
@@ -1739,7 +1746,7 @@
 
 (use-package markdown-mode
   :custom-face
-  (markdown-code-face ((t :inherit default)))
+  (markdown-code-face ((t (:inherit default))))
   :general
   (-local-leader-def :keymaps 'markdown-mode-map
     "." '(:keymap markdown-mode-command-map))
