@@ -1779,7 +1779,9 @@
 
 (use-package lua-mode
   :init
-  (setq lua-indent-level 2))
+  (setq lua-indent-level 2)
+  :hook
+  (lua-mode-hook . eglot-ensure))
 
 (use-package sh-script
   :preface

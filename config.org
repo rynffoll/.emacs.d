@@ -2387,7 +2387,9 @@ go install github.com/go-delve/delve/cmd/dlv@latest
 #+begin_src emacs-lisp
 (use-package lua-mode
   :init
-  (setq lua-indent-level 2))
+  (setq lua-indent-level 2)
+  :hook
+  (lua-mode-hook . eglot-ensure))
 #+end_src
 
 ** Shell
