@@ -275,7 +275,6 @@
 
 (use-package solarized-theme
   ;; :disabled
-  :vc (:fetcher github :repo "bbatsov/solarized-emacs")
   :demand
   :init
   (setq solarized-distinct-doc-face t)
