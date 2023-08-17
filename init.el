@@ -939,7 +939,7 @@
   (ediff-quit-hook . winner-undo))
 
 (use-package undo-tree
-  :disabled (not (eq evil-undo-system 'undo-tree))
+  :disabled
   :init
   (setq undo-tree-auto-save-history t)
   (setq undo-tree-history-directory-alist `(("." . ,temporary-file-directory)))
@@ -947,7 +947,7 @@
   (after-init-hook . global-undo-tree-mode))
 
 (use-package undo-fu
-  :disabled (not (eq evil-undo-system 'undo-fu)))
+  :disabled)
 
 (use-package vundo
   :general
@@ -956,7 +956,9 @@
   (vundo-mode-hook . -disable-global-hl-line-mode)
   (vundo-mode-hook . -disable-evil-cursor)
   :custom-face
-  (vundo-highlight ((t (:inherit (bold success)))))
+  (vundo-highlight ((t (:inherit success :foreground unspecified))))
+  (vundo-last-saved ((t (:inherit error :foreground unspecified))))
+  (vundo-saved ((t (:inherit warning :foreground unspecified))))
   :config
   (setq vundo-compact-display t)
   (setq vundo-glyph-alist vundo-unicode-symbols))
