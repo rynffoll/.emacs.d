@@ -462,6 +462,28 @@
   :hook
   (after-init-hook . winum-mode))
 
+(use-package shackle
+  :init
+  (setq shackle-default-size 0.3)
+  (setq shackle-rules '((help-mode :align below :select t)
+                        (helpful-mode :align below)
+                        (flycheck-error-list-mode :align below)
+                        (cider-repl-mode :align below)
+                        (ansible-doc-module-mode :align below)
+                        ("*Pack*" :align below)
+                        ("\\*Async Shell Command\\*.*" :regexp t :ignore t)
+                        (Man-mode :align below :select t)
+                        ("\\*Man.*\\*" :regexp t :align below :select t)
+                        ("*lsp-help*" :align below)
+                        ("*Warnings*" :align below)
+                        ("*Compile-Log*" :align below)
+                        (compilation-mode :align below)
+                        ("*company-documentation*" :align below)
+                        ("*Go REPL*" :align below)
+                        ("\\*docker-compose .*\\*" :regexp t :align below)
+                        (comint-mode :align below)))
+  :hook
+  (after-init-hook . shackle-mode))
 (use-package emacs
   :ensure nil
   :preface
@@ -518,30 +540,6 @@
       (ibuffer-do-sort-by-alphabetic)))
   :hook
   (ibuffer-hook . -setup-ibuffer-vc))
-
-;; TODO: alternative?
-(use-package shackle
-  :init
-  (setq shackle-default-size 0.3)
-  (setq shackle-rules '((help-mode :align below :select t)
-                        (helpful-mode :align below)
-                        (flycheck-error-list-mode :align below)
-                        (cider-repl-mode :align below)
-                        (ansible-doc-module-mode :align below)
-                        ("*Pack*" :align below)
-                        ("\\*Async Shell Command\\*.*" :regexp t :ignore t)
-                        (Man-mode :align below :select t)
-                        ("\\*Man.*\\*" :regexp t :align below :select t)
-                        ("*lsp-help*" :align below)
-                        ("*Warnings*" :align below)
-                        ("*Compile-Log*" :align below)
-                        (compilation-mode :align below)
-                        ("*company-documentation*" :align below)
-                        ("*Go REPL*" :align below)
-                        ("\\*docker-compose .*\\*" :regexp t :align below)
-                        (comint-mode :align below)))
-  :hook
-  (after-init-hook . shackle-mode))
 
 (use-package consult
   :general

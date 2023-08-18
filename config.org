@@ -34,13 +34,13 @@
   - [[#emoji][Emoji]]
   - [[#ligatures][Ligatures]]
   - [[#icons][Icons]]
-- [[#mode-line][Mode Line]]
-- [[#theme][Theme]]
+  - [[#mode-line][Mode Line]]
+  - [[#theme][Theme]]
 - [[#frames][Frames]]
 - [[#tabs][Tabs]]
 - [[#windows][Windows]]
+  - [[#pop-ups][Pop-ups]]
 - [[#buffers][Buffers]]
-- [[#pop-ups][Pop-ups]]
 - [[#completion][Completion]]
   - [[#consult][consult]]
   - [[#marginalia][marginalia]]
@@ -107,9 +107,9 @@
   - [[#faces][Faces]]
   - [[#table-of-contents][Table of Contents]]
   - [[#babel][Babel]]
+    - [[#core][Core]]
     - [[#plantuml][PlantUML]]
     - [[#verb][Verb]]
-    - [[#grpc][gRPC]]
     - [[#tests][tests]]
 - [[#languages][Languages]]
   - [[#tree-sitter][Tree-sitter]]
@@ -563,8 +563,7 @@ Install fonts
 (all-the-icons-install-fonts)
 #+end_src
 
-* Mode Line
-# TODO: move to UI section
+** Mode Line
 #+begin_src emacs-lisp
 (use-package faces
   :ensure nil
@@ -598,7 +597,7 @@ Install fonts
         (doom-modeline-set-main-modeline)))))
 #+end_src
 
-* Theme
+** Theme
 #+begin_src emacs-lisp
 (use-package solarized-theme
   ;; :disabled
@@ -799,6 +798,31 @@ Install fonts
   (after-init-hook . winum-mode))
 #+end_src
 
+** Pop-ups
+#+begin_src emacs-lisp
+(use-package shackle
+  :init
+  (setq shackle-default-size 0.3)
+  (setq shackle-rules '((help-mode :align below :select t)
+                        (helpful-mode :align below)
+                        (flycheck-error-list-mode :align below)
+                        (cider-repl-mode :align below)
+                        (ansible-doc-module-mode :align below)
+                        ("*Pack*" :align below)
+                        ("\\*Async Shell Command\\*.*" :regexp t :ignore t)
+                        (Man-mode :align below :select t)
+                        ("\\*Man.*\\*" :regexp t :align below :select t)
+                        ("*lsp-help*" :align below)
+                        ("*Warnings*" :align below)
+                        ("*Compile-Log*" :align below)
+                        (compilation-mode :align below)
+                        ("*company-documentation*" :align below)
+                        ("*Go REPL*" :align below)
+                        ("\\*docker-compose .*\\*" :regexp t :align below)
+                        (comint-mode :align below)))
+  :hook
+  (after-init-hook . shackle-mode))
+#+end_src
 * Buffers
 #+begin_src emacs-lisp
 (use-package emacs
@@ -857,33 +881,6 @@ Install fonts
       (ibuffer-do-sort-by-alphabetic)))
   :hook
   (ibuffer-hook . -setup-ibuffer-vc))
-#+end_src
-
-* Pop-ups
-#+begin_src emacs-lisp
-;; TODO: alternative?
-(use-package shackle
-  :init
-  (setq shackle-default-size 0.3)
-  (setq shackle-rules '((help-mode :align below :select t)
-                        (helpful-mode :align below)
-                        (flycheck-error-list-mode :align below)
-                        (cider-repl-mode :align below)
-                        (ansible-doc-module-mode :align below)
-                        ("*Pack*" :align below)
-                        ("\\*Async Shell Command\\*.*" :regexp t :ignore t)
-                        (Man-mode :align below :select t)
-                        ("\\*Man.*\\*" :regexp t :align below :select t)
-                        ("*lsp-help*" :align below)
-                        ("*Warnings*" :align below)
-                        ("*Compile-Log*" :align below)
-                        (compilation-mode :align below)
-                        ("*company-documentation*" :align below)
-                        ("*Go REPL*" :align below)
-                        ("\\*docker-compose .*\\*" :regexp t :align below)
-                        (comint-mode :align below)))
-  :hook
-  (after-init-hook . shackle-mode))
 #+end_src
 
 * Completion
@@ -2080,6 +2077,7 @@ Org Bullets
 #+end_src
 
 ** Babel
+*** Core
 #+begin_src emacs-lisp
 (use-package ob-core
   :ensure org
