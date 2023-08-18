@@ -484,6 +484,53 @@
                         (comint-mode :align below)))
   :hook
   (after-init-hook . shackle-mode))
+
+(use-package popper
+  :general
+  ("C-`"   'popper-toggle-latest)
+  ("M-`"   'popper-cycle)
+  ("M-~"   'popper-cycle-backwards)
+  ("C-M-`" 'popper-toggle-type)
+  :init
+  (setq popper-reference-buffers
+        '("\\*Messages\\*"
+          "Output\\*$"
+          "\\*Async Shell Command\\*"
+          "\\*[Wo]Man.*\\*$"
+          
+          help-mode
+          helpful-mode
+          
+          compilation-mode
+          comint-mode
+          
+          flymake-diagnostics-buffer-mode
+          flycheck-error-list-mode
+          flycheck-verify-mode
+          
+          cider-repl-mode
+          ansible-doc-module-mode
+          
+          "^\\*vterm.*\\*$"  vterm-mode
+          ))
+  
+  (setq popper-group-function nil)
+  ;; (setq popper-group-function 'popper-group-by-project)
+  (setq popper-window-height 15)
+  (setq popper-mode-line '(:eval (propertize " POP " 'face 'region)))
+  (setq popper-mode-line
+        '(:eval (propertize " POP " 'face 'doom-modeline-bar)))
+  :hook
+  (after-init-hook . popper-mode))
+
+(use-package popper-echo
+  :ensure popper
+  :init
+  (setq popper-echo-dispatch-actions t)
+  (setq popper-echo-lines 3)
+  :hook
+  (after-init-hook . popper-echo-mode))
+
 (use-package emacs
   :ensure nil
   :preface
