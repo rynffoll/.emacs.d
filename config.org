@@ -789,6 +789,7 @@ Install fonts
 ** Pop-ups
 #+begin_src emacs-lisp
 (use-package shackle
+  :disabled
   :init
   (setq shackle-default-size 0.3)
   (setq shackle-rules '((help-mode :align below :select t)
@@ -814,6 +815,7 @@ Install fonts
 
 #+begin_src emacs-lisp
 (use-package popper
+  :disabled
   :general
   ("C-`"   'popper-toggle-latest)
   ("M-`"   'popper-cycle)
@@ -852,6 +854,7 @@ Install fonts
   (after-init-hook . popper-mode))
 
 (use-package popper-echo
+  :disabled
   :ensure popper
   :init
   (setq popper-echo-dispatch-actions t)
