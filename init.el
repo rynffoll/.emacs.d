@@ -27,14 +27,6 @@
   :hook
   (after-init-hook . gcmh-mode))
 
-(use-package auto-compile
-  :init
-  (setq auto-compile-display-buffer nil)
-  (setq auto-compile-use-mode-line nil)
-  :hook
-  (emacs-lisp-mode-hook . auto-compile-on-load-mode)
-  (emacs-lisp-mode-hook . auto-compile-on-save-mode))
-
 (use-package mule
   :ensure nil
   :init

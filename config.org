@@ -18,7 +18,6 @@
   - [[#gnu-elpa-keyring-update][gnu-elpa-keyring-update]]
   - [[#vc-use-package][vc-use-package]]
 - [[#gc][GC]]
-- [[#auto-compile][Auto Compile]]
 - [[#defaults-1][Defaults]]
   - [[#utf-8][UTF-8]]
   - [[#calendar][Calendar]]
@@ -299,17 +298,6 @@
 (use-package gcmh
   :hook
   (after-init-hook . gcmh-mode))
-#+end_src
-
-* Auto Compile
-#+begin_src emacs-lisp
-(use-package auto-compile
-  :init
-  (setq auto-compile-display-buffer nil)
-  (setq auto-compile-use-mode-line nil)
-  :hook
-  (emacs-lisp-mode-hook . auto-compile-on-load-mode)
-  (emacs-lisp-mode-hook . auto-compile-on-save-mode))
 #+end_src
 
 * Defaults
