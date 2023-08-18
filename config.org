@@ -9,6 +9,7 @@
   - [[#file-handler-tweaks][File handler tweaks]]
   - [[#ui][UI]]
     - [[#macos][macOS]]
+  - [[#disable-writing-customization-to-initel][Disable writing customization to ~init.el~]]
 - [[#initialization][Initialization]]
   - [[#enable-lexical-scope-1][Enable lexical scope]]
 - [[#personal-info][Personal Info]]
@@ -246,6 +247,11 @@
   ;; (add-to-list 'default-frame-alist '(undecorated-round . t))
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . dark)))
+#+end_src
+
+** Disable writing customization to ~init.el~
+#+begin_src emacs-lisp
+(setq custom-file null-device)
 #+end_src
 
 * Initialization
@@ -587,6 +593,12 @@ Install fonts
 
 ** Theme
 #+begin_src emacs-lisp
+(use-package custom
+  :ensure nil
+  :general
+  (-leader-def
+    "tt" 'load-theme))
+
 (use-package solarized-theme
   ;; :disabled
   :demand
@@ -1170,19 +1182,11 @@ Install fonts
 
 ** Customize
 #+begin_src emacs-lisp
-(use-package custom
-  :ensure nil
-  :general
-  (-leader-def
-    "tt" 'load-theme))
-
 (use-package cus-edit
   :ensure nil
   :general
   (-leader-def
-    "oc" 'customize-group)
-  :init
-  (setq custom-file null-device))
+    "oc" 'customize-group))
 #+end_src
 
 ** Encryption

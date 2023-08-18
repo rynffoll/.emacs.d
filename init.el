@@ -265,6 +265,12 @@
       (with-current-buffer buffer
         (doom-modeline-set-main-modeline)))))
 
+(use-package custom
+  :ensure nil
+  :general
+  (-leader-def
+    "tt" 'load-theme))
+
 (use-package solarized-theme
   ;; :disabled
   :demand
@@ -797,19 +803,11 @@
   :init
   (setq iqa-user-init-file (concat user-emacs-directory "config.org")))
 
-(use-package custom
-  :ensure nil
-  :general
-  (-leader-def
-    "tt" 'load-theme))
-
 (use-package cus-edit
   :ensure nil
   :general
   (-leader-def
-    "oc" 'customize-group)
-  :init
-  (setq custom-file null-device))
+    "oc" 'customize-group))
 
 (use-package epg-config
   :ensure nil
