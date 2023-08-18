@@ -17,11 +17,11 @@
 (setq use-package-compute-statistics t)
 (setq use-package-expand-minimally t)
 
+(use-package gnu-elpa-keyring-update)
+
 (unless (package-installed-p 'vc-use-package)
   (package-refresh-contents)
   (package-vc-install "https://github.com/slotThe/vc-use-package"))
-
-(use-package gnu-elpa-keyring-update)
 
 (use-package gcmh
   :hook
@@ -845,6 +845,7 @@
             "m" 'magit-project-status
             "b" 'consult-project-buffer)
   :init
+  (setq project-kill-buffers-display-buffer-list t)
   (setq project-switch-commands
         '((project-find-file "Find file")
           (project-find-regexp "Find regexp")
@@ -1830,11 +1831,12 @@
   (lua-mode-hook . eglot-ensure))
 
 (use-package sh-script
-  :preface
-  (defun -setup-sh-mode ()
-    (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p t t))
+  :ensure nil)
+
+(use-package executable
+  :ensure nil
   :hook
-  (sh-mode-hook . -setup-sh-mode))
+  (after-save-hook . executable-make-buffer-file-executable-if-script-p))
 
 (use-package flymake-shellcheck
   :hook

@@ -15,8 +15,8 @@
 - [[#package-manager][Package Manager]]
   - [[#initialize][Initialize]]
   - [[#use-package][use-package]]
-  - [[#vc-use-package][vc-use-package]]
   - [[#gnu-elpa-keyring-update][gnu-elpa-keyring-update]]
+  - [[#vc-use-package][vc-use-package]]
 - [[#gc][GC]]
 - [[#auto-compile][Auto Compile]]
 - [[#defaults-1][Defaults]]
@@ -282,16 +282,16 @@
 (setq use-package-expand-minimally t)
 #+end_src
 
+** gnu-elpa-keyring-update
+#+begin_src emacs-lisp
+(use-package gnu-elpa-keyring-update)
+#+end_src
+
 ** vc-use-package
 #+begin_src emacs-lisp
 (unless (package-installed-p 'vc-use-package)
   (package-refresh-contents)
   (package-vc-install "https://github.com/slotThe/vc-use-package"))
-#+end_src
-
-** gnu-elpa-keyring-update
-#+begin_src emacs-lisp
-(use-package gnu-elpa-keyring-update)
 #+end_src
 
 * GC
@@ -1232,6 +1232,7 @@ Install fonts
             "m" 'magit-project-status
             "b" 'consult-project-buffer)
   :init
+  (setq project-kill-buffers-display-buffer-list t)
   (setq project-switch-commands
         '((project-find-file "Find file")
           (project-find-regexp "Find regexp")
@@ -2443,11 +2444,12 @@ go install github.com/go-delve/delve/cmd/dlv@latest
 ** Shell
 #+begin_src emacs-lisp
 (use-package sh-script
-  :preface
-  (defun -setup-sh-mode ()
-    (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p t t))
+  :ensure nil)
+
+(use-package executable
+  :ensure nil
   :hook
-  (sh-mode-hook . -setup-sh-mode))
+  (after-save-hook . executable-make-buffer-file-executable-if-script-p))
 
 (use-package flymake-shellcheck
   :hook
