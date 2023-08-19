@@ -1915,6 +1915,11 @@
   :hook
   (after-init-hook . envrc-global-mode))
 
+(use-package focus
+  :general
+  (-leader-def
+    "tf" 'focus-mode))
+
 (use-package olivetti
   :general
   (-leader-def
@@ -1931,10 +1936,7 @@
   (-leader-def
     "/D" 'deadgrep))
 
-(use-package try
-  :general
-  (-leader-def
-    "Pt" 'try))
+(use-package try)
 
 (use-package password-generator)
 
