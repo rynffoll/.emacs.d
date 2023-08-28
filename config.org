@@ -22,6 +22,7 @@
 - [[#defaults-1][Defaults]]
   - [[#utf-8][UTF-8]]
   - [[#calendar][Calendar]]
+  - [[#compile][Compile]]
 - [[#async][Async]]
 - [[#general][General]]
 - [[#evil][Evil]]
@@ -73,7 +74,6 @@
   - [[#undo-fu][undo-fu]]
   - [[#vundo][vundo]]
 - [[#highlighting][Highlighting]]
-  - [[#highlight-compilation][Highlight compilation]]
   - [[#highlight-current-line][Highlight current line]]
   - [[#parentheses][Parentheses]]
   - [[#colorize-color-names][Colorize color names]]
@@ -340,6 +340,25 @@
   :init
   (setq calendar-date-style 'iso)
   (setq calendar-week-start-day 1))
+#+end_src
+
+** Compile
+#+begin_src emacs-lisp
+(use-package compile
+  :ensure nil
+  :init
+  (setq compilation-scroll-output 'first-error))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package ansi-color
+  :ensure nil
+  :preface
+  (defun -ansi-color-apply-on-compilation-buffer ()
+    (with-silent-modifications
+      (ansi-color-apply-on-region compilation-filter-start (point))))
+  :hook
+  (compilation-filter-hook . -ansi-color-apply-on-compilation-buffer))
 #+end_src
 
 * Async
@@ -1435,20 +1454,6 @@ Install fonts
 #+end_src
 
 * Highlighting
-** Highlight compilation
-#+begin_src emacs-lisp
-(use-package ansi-color
-  :preface
-  ;; http://endlessparentheses.com/ansi-colors-in-the-compilation-buffer-output.html
-  (defun endless/colorize-compilation ()
-    "Colorize from `compilation-filter-start' to `point'."
-    (let ((inhibit-read-only t))
-      (ansi-color-apply-on-region
-       compilation-filter-start (point))))
-  :hook
-  (compilation-filter-hook . endless/colorize-compilation))
-#+end_src
-
 ** Highlight current line
 #+begin_src emacs-lisp
 (use-package hl-line

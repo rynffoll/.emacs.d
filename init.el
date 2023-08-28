@@ -53,6 +53,20 @@
   (setq calendar-date-style 'iso)
   (setq calendar-week-start-day 1))
 
+(use-package compile
+  :ensure nil
+  :init
+  (setq compilation-scroll-output 'first-error))
+
+(use-package ansi-color
+  :ensure nil
+  :preface
+  (defun -ansi-color-apply-on-compilation-buffer ()
+    (with-silent-modifications
+      (ansi-color-apply-on-region compilation-filter-start (point))))
+  :hook
+  (compilation-filter-hook . -ansi-color-apply-on-compilation-buffer))
+
 (use-package async
   :hook
   (after-init-hook . async-bytecomp-package-mode)
@@ -1001,17 +1015,6 @@
   :config
   (setq vundo-compact-display t)
   (setq vundo-glyph-alist vundo-unicode-symbols))
-
-(use-package ansi-color
-  :preface
-  ;; http://endlessparentheses.com/ansi-colors-in-the-compilation-buffer-output.html
-  (defun endless/colorize-compilation ()
-    "Colorize from `compilation-filter-start' to `point'."
-    (let ((inhibit-read-only t))
-      (ansi-color-apply-on-region
-       compilation-filter-start (point))))
-  :hook
-  (compilation-filter-hook . endless/colorize-compilation))
 
 (use-package hl-line
   :ensure nil
