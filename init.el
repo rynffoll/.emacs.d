@@ -1352,6 +1352,7 @@
   :after treemacs evil)
 
 (use-package treemacs-projectile
+  :disabled
   :after treemacs)
 
 (use-package treemacs-icons-dired
