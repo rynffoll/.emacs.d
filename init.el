@@ -263,7 +263,6 @@
   (after-init-hook . minions-mode))
 
 (use-package doom-modeline
-  :disabled
   :init
   (setq doom-modeline-minor-modes t)
   (setq doom-modeline-buffer-file-name-style 'buffer-name)
@@ -281,6 +280,7 @@
         (doom-modeline-set-main-modeline)))))
 
 (use-package mini-echo
+  :disabled
   :vc (:fetcher github :repo "liuyinz/mini-echo.el")
   :init
   (setq mini-echo-default-segments
