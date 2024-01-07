@@ -132,6 +132,7 @@
   - [[#shell][Shell]]
   - [[#vimrc][Vimrc]]
   - [[#ssh][SSH]]
+  - [[#protobuf][Protobuf]]
 - [[#xwidget][Xwidget]]
 - [[#tools][Tools]]
   - [[#editorconfig][EditorConfig]]
@@ -2508,6 +2509,12 @@ go install github.com/go-delve/delve/cmd/dlv@latest
 (use-package ssh-config-mode
   :init
   (autoload 'ssh-config-mode "ssh-config-mode" t))
+#+end_src
+
+** Protobuf
+#+begin_src emacs-lisp
+(use-package protobuf-ts-mode
+  :mode "\\.proto\\'")
 #+end_src
 
 * Xwidget

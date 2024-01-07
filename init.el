@@ -1864,6 +1864,9 @@
   :init
   (autoload 'ssh-config-mode "ssh-config-mode" t))
 
+(use-package protobuf-ts-mode
+  :mode "\\.proto\\'")
+
 (use-package xwidget
   :if (display-graphic-p)
   :ensure nil
