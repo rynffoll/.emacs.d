@@ -644,7 +644,10 @@ mini-echo
   :general
   (-leader-def
     "tt" 'load-theme))
+#+end_src
 
+[[https://github.com/bbatsov/solarized-emacs][solarized-theme]]
+#+begin_src emacs-lisp
 (use-package solarized-theme
   ;; :disabled
   :demand
@@ -660,7 +663,10 @@ mini-echo
   (setq solarized-height-plus-4 1.0)
   :config
   (load-theme 'solarized-gruvbox-dark t))
+#+end_src
 
+[[https://github.com/doomemacs/themes][doom-themes]]
+#+begin_src emacs-lisp
 (use-package doom-themes
   :disabled
   :demand
@@ -1169,7 +1175,8 @@ mini-echo
   (-leader-def
     "." 'find-file
     "ff" 'find-file
-    "br" 'revert-buffer)
+    "br" 'revert-buffer
+    "eR" 'restart-emacs)
   :init
   (setq require-final-newline t)
   (setq make-backup-files nil)

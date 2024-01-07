@@ -778,7 +778,8 @@
   (-leader-def
     "." 'find-file
     "ff" 'find-file
-    "br" 'revert-buffer)
+    "br" 'revert-buffer
+    "eR" 'restart-emacs)
   :init
   (setq require-final-newline t)
   (setq make-backup-files nil)
