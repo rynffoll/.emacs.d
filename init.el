@@ -1642,7 +1642,7 @@
    "C-c C-r" '(:keymap verb-command-map :package verb :wk "verb"))
   :init
   (setq verb-auto-kill-response-buffers t)
-  (setq verb-json-use-mode 'json-mode)
+  (setq verb-json-use-mode 'json-ts-mode)
   :config
   (org-babel-do-load-languages
    'org-babel-load-languages
@@ -1693,7 +1693,9 @@
   :config
   (require 'flycheck-clj-kondo))
 
-(use-package clojure-mode-extra-font-locking)
+(use-package clojure-ts-mode
+  :init
+  (setq clojure-ts-comment-macro-font-lock-body t))
 
 (use-package clj-refactor
   :general
@@ -1739,10 +1741,9 @@
   :hook
   (clojure-mode-hook . cider-hydra-mode))
 
-(use-package go-mode)
-
 (use-package go-ts-mode
   :ensure nil
+  :mode "\\.go\\'"
   :hook
   (go-ts-mode-hook . eglot-ensure))
 
@@ -1824,18 +1825,14 @@
 
 (use-package edit-indirect)
 
-(use-package json-mode
-  :preface
-  (defun -setup-json-mode ()
-    (setq flycheck-checker 'json-jq
-          js-indent-level 2))
+(use-package json-ts-mode
+  :ensure nil
   :general
-  (-local-leader-def :keymaps 'json-mode-map
-    "=" '(json-pretty-print-buffer :wk "format"))
-  :hook
-  (json-mode-hook . -setup-json-mode))
+  (-local-leader-def :keymaps 'json-ts-mode-map
+    "=" '(json-pretty-print-buffer :wk "format")))
 
 (use-package yaml-ts-mode
+  :ensure nil
   :hook
   (yaml-ts-mode-hook . flycheck-mode)
   (yaml-ts-mode-hook . highlight-indent-guides-mode))
