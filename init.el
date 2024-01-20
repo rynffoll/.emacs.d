@@ -591,13 +591,6 @@
     "bb" 'switch-to-buffer
     "bK" 'kill-buffer-and-window))
 
-(use-package ibuffer
-  :ensure nil
-  :general
-  ([remap list-buffers] 'ibuffer)
-  (-leader-def
-    "bi" 'ibuffer))
-
 (use-package uniquify
   :ensure nil
   :init
@@ -611,6 +604,13 @@
     "bn" 'evil-buffer-new
     "b]" 'evil-next-buffer
     "b[" 'evil-prev-buffer))
+
+(use-package ibuffer
+  :ensure nil
+  :general
+  ([remap list-buffers] 'ibuffer)
+  (-leader-def
+    "bi" 'ibuffer))
 
 (use-package ibuffer-vc
   :preface

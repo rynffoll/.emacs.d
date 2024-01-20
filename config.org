@@ -45,6 +45,8 @@
   - [[#winum][winum]]
   - [[#pop-ups][Pop-ups]]
 - [[#buffers][Buffers]]
+  - [[#common][Common]]
+  - [[#ibuffer][Ibuffer]]
 - [[#completion][Completion]]
   - [[#consult][consult]]
   - [[#marginalia][marginalia]]
@@ -101,7 +103,7 @@
   - [[#git-stuff][Git stuff]]
   - [[#highlight-diff][Highlight diff]]
 - [[#org][Org]]
-  - [[#common][Common]]
+  - [[#common-1][Common]]
   - [[#archive][Archive]]
   - [[#refile][Refile]]
   - [[#code-blocks][Code Blocks]]
@@ -936,6 +938,7 @@ mini-echo
 #+end_src
 
 * Buffers
+** Common
 #+begin_src emacs-lisp
 (use-package emacs
   :ensure nil
@@ -964,13 +967,6 @@ mini-echo
     "bb" 'switch-to-buffer
     "bK" 'kill-buffer-and-window))
 
-(use-package ibuffer
-  :ensure nil
-  :general
-  ([remap list-buffers] 'ibuffer)
-  (-leader-def
-    "bi" 'ibuffer))
-
 (use-package uniquify
   :ensure nil
   :init
@@ -984,6 +980,16 @@ mini-echo
     "bn" 'evil-buffer-new
     "b]" 'evil-next-buffer
     "b[" 'evil-prev-buffer))
+#+end_src
+
+** Ibuffer
+#+begin_src emacs-lisp
+(use-package ibuffer
+  :ensure nil
+  :general
+  ([remap list-buffers] 'ibuffer)
+  (-leader-def
+    "bi" 'ibuffer))
 
 (use-package ibuffer-vc
   :preface
