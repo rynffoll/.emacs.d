@@ -1687,32 +1687,25 @@
   :config
   (flycheck-package-setup))
 
-(use-package flycheck-clj-kondo)
-
-(use-package clojure-mode
-  :config
-  (require 'flycheck-clj-kondo))
-
-(use-package clojure-ts-mode
-  :init
-  (setq clojure-ts-comment-macro-font-lock-body t))
-
-(use-package clj-refactor
-  :general
-  (-local-leader-def :keymaps 'clojure-mode-map
-    "R" '(hydra-cljr-help-menu/body :wk "refactor"))
-  :hook
-  (clojure-mode-hook . clj-refactor-mode))
+(use-package clojure-mode)
+(use-package clojure-ts-mode)
 
 (use-package eldoc
   :ensure nil
   :hook
-  (clojure-mode-hook . eldoc-mode)
+  (clojure-ts-mode-hook . eldoc-mode)
   (cider-repl-mode-hook . eldoc-mode))
+
+(use-package flycheck-clj-kondo
+  :preface
+  (defun -setup-flycheck-clj-kondo ()
+    (require 'flycheck-clj-kondo))
+  :hook
+  (clojure-ts-mode-hook . -setup-flycheck-clj-kondo))
 
 (use-package cider
   :general
-  (-local-leader-def :keymaps 'clojure-mode-map
+  (-local-leader-def :keymaps 'clojure-ts-mode-map
     "c" '(:ignore t           :wk "connect")
     "cc" '(cider-jack-in      :wk "jack-in")
     "cj" '(cider-jack-in-clj  :wk "jack-in-clj")
@@ -1733,13 +1726,20 @@
 
 (use-package cider-hydra
   :general
-  (-local-leader-def :keymaps 'clojure-mode-map
+  (-local-leader-def :keymaps 'clojure-ts-mode-map
     "d" '(cider-hydra-doc/body  :wk "doc")
     "e" '(cider-hydra-eval/body :wk "eval")
     "t" '(cider-hydra-test/body :wk "test")
     "r" '(cider-hydra-repl/body :wk "repl"))
   :hook
-  (clojure-mode-hook . cider-hydra-mode))
+  (clojure-ts-mode-hook . cider-hydra-mode))
+
+(use-package clj-refactor
+  :general
+  (-local-leader-def :keymaps 'clojure-ts-mode-map
+    "R" '(hydra-cljr-help-menu/body :wk "refactor"))
+  :hook
+  (clojure-ts-mode-hook . clj-refactor-mode))
 
 (use-package go-ts-mode
   :ensure nil
