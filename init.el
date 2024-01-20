@@ -1757,6 +1757,21 @@
   :hook
   (makefile-mode-hook . makefile-executor-mode))
 
+(use-package just-mode)
+
+(use-package justl
+  :general
+  (:keymaps 'justl-mode-map :states 'normal
+            "?" 'justl-help-popup
+            "e" 'justl-exec-recipe
+            "E" 'justl-exec-eshell
+            "w" 'justl--exec-recipe-with-args
+            "W" 'justl-no-exec-eshell)
+  (-local-leader-def :keymaps 'just-mode-map
+    "e" '(:ignore t :wk "eval")
+    "e." 'justl
+    "ee" 'justl-exec-recipe-in-dir))
+
 (use-package web-mode
   :mode "\\.html?\\'"
   :init
