@@ -47,6 +47,7 @@
 - [[#buffers][Buffers]]
   - [[#common][Common]]
   - [[#ibuffer][Ibuffer]]
+  - [[#persistent-scratch][persistent-scratch]]
 - [[#completion][Completion]]
   - [[#consult][consult]]
   - [[#marginalia][marginalia]]
@@ -1000,6 +1001,13 @@ mini-echo
       (ibuffer-do-sort-by-alphabetic)))
   :hook
   (ibuffer-hook . -setup-ibuffer-vc))
+#+end_src
+
+** persistent-scratch
+#+begin_src emacs-lisp
+(use-package persistent-scratch
+  :hook
+  (after-init-hook . persistent-scratch-setup-default))
 #+end_src
 
 * Completion

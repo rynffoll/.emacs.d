@@ -621,6 +621,10 @@
   :hook
   (ibuffer-hook . -setup-ibuffer-vc))
 
+(use-package persistent-scratch
+  :hook
+  (after-init-hook . persistent-scratch-setup-default))
+
 (use-package consult
   :general
   ([remap apropos]                       'consult-apropos)

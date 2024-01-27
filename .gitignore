@@ -20,3 +20,4 @@ eln-cache/
 tree-sitter/
 projects
 site-lisp/
+.persistent-scratch
