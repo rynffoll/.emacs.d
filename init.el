@@ -78,7 +78,7 @@
     :states '(normal visual insert emacs motion)
     :keymaps 'override
     :prefix "SPC"
-    :global-prefix "M-SPC")
+    :global-prefix "M-S-SPC")
   (general-create-definer -local-leader-def
     :states '(normal visual insert emacs motion)
     :keymaps 'override
@@ -1435,6 +1435,8 @@
       (vterm)))
   :general
   ("§" 'eshell-toggle)
+  (-leader-def
+    "`" 'eshell-toggle)
   :init
   (setq eshell-toggle-init-function '-eshell-toggle-init-vterm)
   (setq eshell-toggle-use-projectile-root nil) ;; TODO: project.el?
