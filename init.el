@@ -1437,7 +1437,7 @@
     "`" 'eshell-toggle)
   :init
   (setq eshell-toggle-init-function '-eshell-toggle-init-vterm)
-  (setq eshell-toggle-use-projectile-root nil) ;; TODO: project.el?
+  (setq eshell-toggle-find-project-root-package 'project)
   (setq eshell-toggle-run-command nil))
 
 (use-package magit
