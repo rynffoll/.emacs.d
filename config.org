@@ -612,13 +612,9 @@ doom-modeline
   (setq doom-modeline-buffer-encoding nil)
   (setq doom-modeline-major-mode-icon nil)
   (setq doom-modeline-buffer-modification-icon nil)
+  (setq doom-modeline-workspace-name nil)
   :hook
-  (after-init-hook . doom-modeline-mode)
-  :config
-  (dolist (name '("*Compile-Log*" "*Async-native-compile-log*"))
-    (when-let ((buffer (get-buffer name)))
-      (with-current-buffer buffer
-        (doom-modeline-set-main-modeline)))))
+  (after-init-hook . doom-modeline-mode))
 #+end_src
 
 mini-echo
@@ -728,91 +724,50 @@ mini-echo
 #+begin_src emacs-lisp
 (use-package tab-bar
   :ensure nil
-  :preface
-  (defun -tab-bar-print-tabs (&optional ignore)
-    (interactive)
-    (let* ((separator (propertize "|" 'face '(shadow)))
-           (tabs
-            (mapconcat
-             (lambda (tab)
-               (let* ((type (car tab))
-                      (index (1+ (tab-bar--tab-index tab)))
-                      (name (alist-get 'name tab))
-                      (face (if (equal type 'current-tab)
-                                '(font-lock-constant-face :inverse-video t)
-                              '(shadow))))
-                 (propertize (format " %d:%s " index name) 'face face)))
-             (tab-bar-tabs) separator)))
-      (message tabs)))
-  (defun -tab-bar-rename-or-close (name)
-    (if name
-        (tab-rename name)
-      (progn
-        (tab-close)
-        (setq quit-flag nil))))
-  (defun -tab-bar-post-open-rename (tab)
-    (let* ((index (1+ (tab-bar--current-tab-index)))
-           (prompt (format "%d:" index))
-           (inhibit-quit t)
-           (name (with-local-quit (read-string prompt))))
-      (-tab-bar-rename-or-close name)))
-  ;; projectile
-  (defun -tab-bar-post-open-projectile (tab)
-    (let* ((inhibit-quit t)
-           (project (with-local-quit (projectile-switch-project)))
-           (name (when project
-                   (file-name-nondirectory
-                    (directory-file-name project)))))
-      (-tab-bar-rename-or-close name)))
-  (defun -tab-bar-projectile ()
-    (interactive)
-    (let* ((tab-bar-tab-post-open-functions #'-tab-bar-post-open-projectile))
-      (tab-new)))
-  ;; project
-  (defun -tab-bar-post-open-project (tab)
-    (let* ((inhibit-quit t)
-           (project (and (with-local-quit (call-interactively 'project-switch-project))
-                         (project-current)))
-           (name (when project
-                   (project-name project))))
-      (-tab-bar-rename-or-close name)))
-  (defun -tab-bar-project ()
-    (interactive)
-    (let* ((tab-bar-tab-post-open-functions #'-tab-bar-post-open-project))
-      (tab-new)))
   :general
   (-leader-def
-    "TAB TAB" '-tab-bar-print-tabs
+    "TAB" '(:keymap tab-prefix-map :package projectile :wk "tab-bar"))
+  :init
+  (setq tab-bar-show 1)
+  (setq tab-bar-format '(tab-bar-format-tabs-groups
+                         tab-bar-separator))
+  (setq tab-bar-close-button-show nil)
+  (setq tab-bar-new-tab-choice "*scratch*")
+  (setq tab-bar-new-tab-to 'rightmost)
+  (setq tab-bar-tab-post-open-functions #'tab-bar-ext-post-open-rename)
+  (setq tab-bar-tab-hints nil)
+  (setq tab-bar-select-tab-modifiers (when tab-bar-tab-hints '(super)))
+  ;; :config
+  ;; (mapcar
+  ;;  (lambda (f) (advice-add f :after #'tab-bar-ext-print-tabs))
+  ;;  '(tab-new
+  ;;    tab-close
+  ;;    tab-close-other
+  ;;    tab-undo
+  ;;    tab-select
+  ;;    tab-next
+  ;;    tab-previous
+  ;;    tab-recent
+  ;;    tab-move
+  ;;    tab-move-to))
+  )
+
+(use-package tab-bar-ext
+  :vc (:fetcher github :repo "rynffoll/tab-bar-ext")
+  :general
+  (-leader-def
+    ;; "TAB TAB" 'tab-bar-ext-print-tabs
     "TAB ."   'tab-bar-select-tab-by-name
     "TAB n"   'tab-new
-    ;; "TAB p"   '-tab-bar-projectile
-    "TAB p"   '-tab-bar-project
+    ;;   ;; "TAB p"   'tab-bar-ext-projectile
+    "TAB p"   'tab-bar-ext-project
     "TAB ["   'tab-previous
     "TAB ]"   'tab-next
     "TAB c"   'tab-close
     "TAB C"   'tab-close-other
-    "TAB r"   'tab-rename
-    "TAB u"   'tab-undo)
-  :init
-  (setq tab-bar-tab-hints t)
-  ;; (setq tab-bar-select-tab-modifiers '(meta))
-  (setq tab-bar-show nil)
-  (setq tab-bar-new-tab-choice "*scratch*")
-  (setq tab-bar-new-tab-to 'rightmost)
-  (setq tab-bar-tab-post-open-functions #'-tab-bar-post-open-rename)
-  :config
-  (mapcar
-   (lambda (f) (advice-add f :after #'-tab-bar-print-tabs))
-   '(tab-new
-     tab-close
-     tab-close-other
-     tab-undo
-     tab-select
-     tab-next
-     tab-previous
-     tab-recent
-     tab-move
-     tab-move-to)))
+    ;;   "TAB r"   'tab-rename
+    ;;   "TAB u"   'tab-undo
+    ))
 #+end_src
 
 * Windows
