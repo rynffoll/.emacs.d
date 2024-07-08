@@ -647,11 +647,21 @@ mini-echo
     "tt" 'load-theme))
 #+end_src
 
+#+begin_src emacs-lisp
+(use-package emacs
+  :ensure nil
+  :init
+  (setq modus-themes-org-blocks 'gray-background)
+  :config
+  (require-theme 'modus-themes) ; `require-theme' is ONLY for the built-in Modus themes
+  (load-theme 'modus-operandi t))
+#+end_src
+
 [[https://github.com/bbatsov/solarized-emacs][solarized-theme]]
 #+begin_src emacs-lisp
 (use-package solarized-theme
   ;; :disabled
-  :demand
+  ;; :demand
   :init
   (setq solarized-distinct-doc-face t)
   (setq solarized-use-variable-pitch nil)
@@ -669,10 +679,10 @@ mini-echo
 [[https://github.com/doomemacs/themes][doom-themes]]
 #+begin_src emacs-lisp
 (use-package doom-themes
-  :disabled
-  :demand
+  ;; :disabled
+  ;; :demand
   :config
-  (load-theme 'doom-earl-grey t)
+  ;; (load-theme 'doom-earl-grey t)
   ;; (setq doom-themes-treemacs-theme "doom-atom")
   ;; (setq doom-themes-treemacs-theme "doom-colors")
   ;; (doom-themes-treemacs-config)

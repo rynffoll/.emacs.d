@@ -299,9 +299,17 @@
   (-leader-def
     "tt" 'load-theme))
 
+(use-package emacs
+  :ensure nil
+  :init
+  (setq modus-themes-org-blocks 'gray-background)
+  :config
+  (require-theme 'modus-themes) ; `require-theme' is ONLY for the built-in Modus themes
+  (load-theme 'modus-operandi t))
+
 (use-package solarized-theme
   ;; :disabled
-  :demand
+  ;; :demand
   :init
   (setq solarized-distinct-doc-face t)
   (setq solarized-use-variable-pitch nil)
@@ -316,10 +324,10 @@
   (load-theme 'solarized-gruvbox-dark t))
 
 (use-package doom-themes
-  :disabled
-  :demand
+  ;; :disabled
+  ;; :demand
   :config
-  (load-theme 'doom-earl-grey t)
+  ;; (load-theme 'doom-earl-grey t)
   ;; (setq doom-themes-treemacs-theme "doom-atom")
   ;; (setq doom-themes-treemacs-theme "doom-colors")
   ;; (doom-themes-treemacs-config)
