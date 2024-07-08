@@ -368,6 +368,15 @@
   :general
   (-leader-def
     "TAB" '(:keymap tab-prefix-map :package projectile :wk "tab-bar"))
+  (tab-prefix-map
+   "." 'tab-bar-select-tab-by-name
+   "n" 'tab-new
+   "[" 'tab-previous
+   "]" 'tab-next
+   ">" 'tab-bar-move-tab
+   "<" 'tab-bar-move-tab-backward
+   "c" 'tab-close
+   "C" 'tab-close-other)
   :init
   (setq tab-bar-show 1)
   (setq tab-bar-format '(tab-bar-format-tabs-groups
@@ -377,7 +386,15 @@
   (setq tab-bar-new-tab-to 'rightmost)
   (setq tab-bar-tab-post-open-functions #'tab-bar-ext-post-open-rename)
   (setq tab-bar-tab-hints nil)
-  (setq tab-bar-select-tab-modifiers (when tab-bar-tab-hints '(super)))
+  (setq tab-bar-select-tab-modifiers (when tab-bar-tab-hints '(super))))
+
+(use-package tab-bar-ext
+  :vc (:fetcher github :repo "rynffoll/tab-bar-ext")
+  :after tab-bar project
+  :general
+  (tab-prefix-map
+   ;; "TAB" 'tab-bar-ext-print-tabs
+   "p" 'tab-bar-ext-project)
   ;; :config
   ;; (mapcar
   ;;  (lambda (f) (advice-add f :after #'tab-bar-ext-print-tabs))
@@ -392,23 +409,6 @@
   ;;    tab-move
   ;;    tab-move-to))
   )
-
-(use-package tab-bar-ext
-  :vc (:fetcher github :repo "rynffoll/tab-bar-ext")
-  :general
-  (-leader-def
-    ;; "TAB TAB" 'tab-bar-ext-print-tabs
-    "TAB ."   'tab-bar-select-tab-by-name
-    "TAB n"   'tab-new
-    ;;   ;; "TAB p"   'tab-bar-ext-projectile
-    "TAB p"   'tab-bar-ext-project
-    "TAB ["   'tab-previous
-    "TAB ]"   'tab-next
-    "TAB c"   'tab-close
-    "TAB C"   'tab-close-other
-    ;;   "TAB r"   'tab-rename
-    ;;   "TAB u"   'tab-undo
-    ))
 
 (use-package window
   :ensure nil
