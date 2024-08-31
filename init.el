@@ -181,6 +181,7 @@
   (evil-traces-use-diff-faces))
 
 (use-package which-key
+  :ensure nil
   :hook
   (after-init-hook . which-key-mode))
 
