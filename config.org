@@ -923,7 +923,7 @@ mini-echo
   :ensure nil
   :general
   (-leader-def
-    "bk" 'kill-this-buffer
+    "bk" 'kill-current-buffer
 
     "tde" 'toggle-debug-on-error
     "tdq" 'toggle-debug-on-quit))
