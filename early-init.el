@@ -64,15 +64,19 @@
 (add-to-list 'default-frame-alist '(top . 0.5))
 (add-to-list 'default-frame-alist '(width . 0.75))
 (add-to-list 'default-frame-alist '(height . 0.9))
+
 ;; (add-to-list 'default-frame-alist '(menu-bar-lines . 0))
 ;; (add-to-list 'default-frame-alist '(tool-bar-lines . 0))
 ;; (add-to-list 'default-frame-alist '(vertical-scroll-bars))
 ;; (add-to-list 'default-frame-alist '(internal-border-width . 0))
+
 (add-to-list 'default-frame-alist '(tabs
                                     (current-tab
                                      (name . "main")
                                      (explicit-name . t))))
-(add-to-list 'default-frame-alist '(font . "JetBrains Mono 14"))
+
+(add-to-list 'default-frame-alist '(font . "JetBrains Mono Medium 14"))
+;; (add-to-list 'default-frame-alist '(font . "Iosevka Medium 14"))
 
 (when (featurep 'ns)
   (setq ns-use-proxy-icon nil)
