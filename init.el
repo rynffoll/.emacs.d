@@ -19,10 +19,6 @@
 
 (use-package gnu-elpa-keyring-update)
 
-(unless (package-installed-p 'vc-use-package)
-  (package-refresh-contents)
-  (package-vc-install "https://github.com/slotThe/vc-use-package"))
-
 (use-package gcmh
   :hook
   (after-init-hook . gcmh-mode))
@@ -282,7 +278,6 @@
 
 (use-package mini-echo
   :disabled
-  :vc (:fetcher github :repo "liuyinz/mini-echo.el")
   :init
   (setq mini-echo-default-segments
         '(:long ("major-mode" "buffer-name" "vcs" "buffer-position"
@@ -402,7 +397,7 @@
   (setq tab-bar-select-tab-modifiers (when tab-bar-tab-hints '(super))))
 
 (use-package tab-bar-ext
-  :vc (:fetcher github :repo "rynffoll/tab-bar-ext")
+  :vc (:url "https://github.com/rynffoll/tab-bar-ext" :rev :newest)
   :after tab-bar project
   :general
   (tab-prefix-map
@@ -717,7 +712,6 @@
   (corfu-mode-hook . corfu-history-mode))
 
 (use-package corfu-terminal
-  :vc (corfu-terminal :url "https://codeberg.org/akib/emacs-corfu-terminal.git")
   :unless (display-graphic-p)
   :hook
   (corfu-mode-hook . corfu-terminal-mode))
@@ -1892,7 +1886,7 @@
   (add-to-list 'company-backends 'company-ansible))
 
 (use-package ansible-vault-with-editor
-  :vc (:fetcher github :repo "rynffoll/ansible-vault-with-editor")
+  :vc (:url "https://github.com/rynffoll/ansible-vault-with-editor" :rev :newest)
   :general
   (-local-leader-def :keymaps 'yaml-ts-mode-map
     "e" '(ansible-vault-with-editor-edit :wk "edit")
