@@ -2534,6 +2534,7 @@ go install github.com/go-delve/delve/cmd/dlv@latest
 ** EditorConfig
 #+begin_src emacs-lisp
 (use-package editorconfig
+  :ensure nil
   :hook
   (after-init-hook . editorconfig-mode))
 #+end_src

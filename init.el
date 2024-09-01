@@ -1859,6 +1859,7 @@
             "f" 'xwwp-follow-link))
 
 (use-package editorconfig
+  :ensure nil
   :hook
   (after-init-hook . editorconfig-mode))
 
