@@ -648,14 +648,24 @@ mini-echo
     "tt" 'load-theme))
 #+end_src
 
+[[https://protesilaos.com/emacs/modus-themes][modus-themes]]
 #+begin_src emacs-lisp
 (use-package emacs
+  :disabled
   :ensure nil
   :init
   (setq modus-themes-org-blocks 'gray-background)
   :config
   (require-theme 'modus-themes) ; `require-theme' is ONLY for the built-in Modus themes
-  (load-theme 'modus-operandi t))
+  (load-theme 'modus-operandi :no-confirm))
+#+end_src
+
+[[https://protesilaos.com/emacs/ef-themes][ef-themes]]
+#+begin_src emacs-lisp
+(use-package ef-themes
+  :demand
+  :config
+  (load-theme 'ef-melissa-light :no-confirm))
 #+end_src
 
 [[https://github.com/bbatsov/solarized-emacs][solarized-theme]]
@@ -674,7 +684,7 @@ mini-echo
   (setq solarized-height-plus-3 1.0)
   (setq solarized-height-plus-4 1.0)
   :config
-  (load-theme 'solarized-gruvbox-dark t))
+  (load-theme 'solarized-gruvbox-dark :no-confirm))
 #+end_src
 
 [[https://github.com/doomemacs/themes][doom-themes]]
@@ -683,7 +693,7 @@ mini-echo
   ;; :disabled
   ;; :demand
   :config
-  ;; (load-theme 'doom-earl-grey t)
+  (load-theme 'doom-earl-grey :no-confirm)
   ;; (setq doom-themes-treemacs-theme "doom-atom")
   ;; (setq doom-themes-treemacs-theme "doom-colors")
   ;; (doom-themes-treemacs-config)

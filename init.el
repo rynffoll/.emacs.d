@@ -301,12 +301,18 @@
     "tt" 'load-theme))
 
 (use-package emacs
+  :disabled
   :ensure nil
   :init
   (setq modus-themes-org-blocks 'gray-background)
   :config
   (require-theme 'modus-themes) ; `require-theme' is ONLY for the built-in Modus themes
-  (load-theme 'modus-operandi t))
+  (load-theme 'modus-operandi :no-confirm))
+
+(use-package ef-themes
+  :demand
+  :config
+  (load-theme 'ef-melissa-light :no-confirm))
 
 (use-package solarized-theme
   ;; :disabled
@@ -322,13 +328,13 @@
   (setq solarized-height-plus-3 1.0)
   (setq solarized-height-plus-4 1.0)
   :config
-  (load-theme 'solarized-gruvbox-dark t))
+  (load-theme 'solarized-gruvbox-dark :no-confirm))
 
 (use-package doom-themes
   ;; :disabled
   ;; :demand
   :config
-  ;; (load-theme 'doom-earl-grey t)
+  (load-theme 'doom-earl-grey :no-confirm)
   ;; (setq doom-themes-treemacs-theme "doom-atom")
   ;; (setq doom-themes-treemacs-theme "doom-colors")
   ;; (doom-themes-treemacs-config)
