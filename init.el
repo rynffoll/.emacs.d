@@ -886,6 +886,10 @@
   ;; for treemacs-icons-dired
   (advice-add #'dired-subtree-toggle :after #'-dired-subtree-revert))
 
+(use-package diredfl
+  :hook
+  (after-init-hook . diredfl-global-mode))
+
 (use-package tramp
   :ensure nil
   :init

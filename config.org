@@ -1327,6 +1327,13 @@ mini-echo
   (advice-add #'dired-subtree-toggle :after #'-dired-subtree-revert))
 #+end_src
 
+[[https://github.com/purcell/diredfl][diredfl]]
+#+begin_src emacs-lisp
+(use-package diredfl
+  :hook
+  (after-init-hook . diredfl-global-mode))
+#+end_src
+
 * Tramp
 #+begin_src emacs-lisp
 (use-package tramp
