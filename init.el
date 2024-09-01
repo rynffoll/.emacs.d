@@ -863,10 +863,14 @@
   :hook
   (dired-mode-hook . dired-hide-details-mode))
 
-(use-package dired-hide-dotfiles
+(use-package dired-x
+  :ensure nil
+  :after dired
   :general
   (:keymaps 'dired-mode-map :states 'normal
-            "M-." 'dired-hide-dotfiles-mode))
+            "M-." 'dired-omit-mode)
+  :init
+  (setq dired-omit-files (rx (seq bol "."))))
 
 (use-package dired-subtree
   :preface

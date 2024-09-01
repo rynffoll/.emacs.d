@@ -1300,11 +1300,18 @@ mini-echo
   :hook
   (dired-mode-hook . dired-hide-details-mode))
 
-(use-package dired-hide-dotfiles
+(use-package dired-x
+  :ensure nil
+  :after dired
   :general
   (:keymaps 'dired-mode-map :states 'normal
-            "M-." 'dired-hide-dotfiles-mode))
+            "M-." 'dired-omit-mode)
+  :init
+  (setq dired-omit-files (rx (seq bol "."))))
+#+end_src
 
+[[https://github.com/Fuco1/dired-hacks][dired-hacks]]
+#+begin_src emacs-lisp
 (use-package dired-subtree
   :preface
   (defun -dired-subtree-revert ()
