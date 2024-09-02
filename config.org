@@ -34,6 +34,8 @@
   - [[#emoji][Emoji]]
   - [[#ligatures][Ligatures]]
   - [[#icons][Icons]]
+    - [[#all-the-icons][all-the-icons]]
+    - [[#nerd-icons][nerd-icons]]
   - [[#mode-line][Mode Line]]
   - [[#theme][Theme]]
 - [[#frames][Frames]]
@@ -93,7 +95,7 @@
 - [[#goto][Goto]]
   - [[#imenu][Imenu]]
   - [[#avy][Avy]]
-- [[#file-tree][File Tree]]
+- [[#treemacs][Treemacs]]
 - [[#terminal][Terminal]]
   - [[#eshell][Eshell]]
   - [[#vterm][vterm]]
@@ -572,6 +574,7 @@
 #+end_src
 
 ** Icons
+*** all-the-icons
 #+begin_src emacs-lisp
 (use-package all-the-icons
   :if (display-graphic-p)
@@ -584,6 +587,19 @@
 Install fonts
 #+begin_src emacs-lisp :tangle no :results silent
 (all-the-icons-install-fonts)
+#+end_src
+
+*** nerd-icons
+#+begin_src emacs-lisp
+(use-package nerd-icons
+  :if (display-graphic-p)
+  :init
+  (setq nerd-icons-color-icons t))
+#+end_src
+
+Install fonts
+#+begin_src emacs-lisp :tangle no :results silent
+(nerd-icons-install-fonts)
 #+end_src
 
 ** Mode Line
@@ -977,6 +993,11 @@ mini-echo
       (ibuffer-do-sort-by-alphabetic)))
   :hook
   (ibuffer-hook . -setup-ibuffer-vc))
+
+(use-package nerd-icons-ibuffer
+  :if (display-graphic-p)
+  :hook
+  (ibuffer-mode-hook . nerd-icons-ibuffer-mode))
 #+end_src
 
 ** persistent-scratch
@@ -1032,6 +1053,16 @@ mini-echo
             "M-A" 'marginalia-cycle)
   :hook
   (after-init-hook . marginalia-mode))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package nerd-icons-completion
+  :if (display-graphic-p)
+  :after marginalia
+  :config
+  (nerd-icons-completion-mode)
+  :hook
+  ('marginalia-mode-hook . nerd-icons-completion-marginalia-setup))
 #+end_src
 
 ** vertico
@@ -1133,6 +1164,8 @@ mini-echo
   (corfu-mode-hook . corfu-terminal-mode))
 
 (use-package kind-icon
+  ;; :disabled
+  :unless (display-graphic-p)
   :after corfu
   :demand
   :preface
@@ -1144,6 +1177,13 @@ mini-echo
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
   (advice-add #'disable-theme :before #'-kind-icon-reset-cache))
+
+(use-package nerd-icons-corfu
+  :if (display-graphic-p)
+  :after corfu
+  :demand
+  :config
+  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 #+end_src
 
 ** cape
@@ -1329,9 +1369,19 @@ mini-echo
 
 [[https://github.com/purcell/diredfl][diredfl]]
 #+begin_src emacs-lisp
+;; TODO: conflict w/ treemacs-icons-dired + dired-subtree
 (use-package diredfl
+  :disabled
   :hook
   (after-init-hook . diredfl-global-mode))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package nerd-icons-dired
+  :disabled
+  :if (display-graphic-p)
+  :hook
+  (dired-mode-hook . nerd-icons-dired-mode))
 #+end_src
 
 * Tramp
@@ -1775,7 +1825,7 @@ mini-echo
     "ol" 'link-hint-open-link))
 #+end_src
 
-* File Tree
+* Treemacs
 #+begin_src emacs-lisp
 (use-package treemacs
   :preface
@@ -1790,68 +1840,68 @@ mini-echo
          :icon (format "%s " (all-the-icons-octicon "repo" :v-adjust -0.1 :height 1.2))
          :extensions (root-closed))
 
-        (treemacs-create-icon
-         :icon (format "%s " (all-the-icons-octicon "file-directory" :v-adjust 0))
-         :extensions (dir-open))
-        (treemacs-create-icon
-         :icon (format "%s " (all-the-icons-octicon "file-directory" :v-adjust 0))
-         :extensions (dir-closed))
+	(treemacs-create-icon
+	 :icon (format "%s " (all-the-icons-octicon "file-directory" :v-adjust 0))
+	 :extensions (dir-open))
+	(treemacs-create-icon
+	 :icon (format "%s " (all-the-icons-octicon "file-directory" :v-adjust 0))
+	 :extensions (dir-closed))
 
-        (treemacs-create-icon
-         :icon (format "  %s " (all-the-icons-octicon "tag" :v-adjust 0))
-         :extensions (tag-leaf))
-        (treemacs-create-icon
-         :icon (format "%s %s "
-                       (all-the-icons-octicon "chevron-down" :v-adjust 0)
-                       (all-the-icons-octicon "tag" :v-adjust 0))
-         :extensions (tag-open))
-        (treemacs-create-icon
-         :icon (format "%s %s "
-                       (all-the-icons-octicon "chevron-right" :v-adjust 0)
-                       (all-the-icons-octicon "tag" :v-adjust 0))
-         :extensions (tag-closed))
+	(treemacs-create-icon
+	 :icon (format "  %s " (all-the-icons-octicon "tag" :v-adjust 0))
+	 :extensions (tag-leaf))
+	(treemacs-create-icon
+	 :icon (format "%s %s "
+		       (all-the-icons-octicon "chevron-down" :v-adjust 0)
+		       (all-the-icons-octicon "tag" :v-adjust 0))
+	 :extensions (tag-open))
+	(treemacs-create-icon
+	 :icon (format "%s %s "
+		       (all-the-icons-octicon "chevron-right" :v-adjust 0)
+		       (all-the-icons-octicon "tag" :v-adjust 0))
+	 :extensions (tag-closed))
 
-        (treemacs-create-icon
-         :icon (format "%s " (all-the-icons-octicon "alert" :v-adjust 0 :face 'error))
-         :extensions (error))
-        (treemacs-create-icon
-         :icon (format "%s " (all-the-icons-octicon "stop"  :v-adjust 0 :face 'warning))
-         :extensions (warning))
-        (treemacs-create-icon
-         :icon (format "%s " (all-the-icons-octicon "info"  :v-adjust 0 :face 'success))
-         :extensions (info))
+	(treemacs-create-icon
+	 :icon (format "%s " (all-the-icons-octicon "alert" :v-adjust 0 :face 'error))
+	 :extensions (error))
+	(treemacs-create-icon
+	 :icon (format "%s " (all-the-icons-octicon "stop"  :v-adjust 0 :face 'warning))
+	 :extensions (warning))
+	(treemacs-create-icon
+	 :icon (format "%s " (all-the-icons-octicon "info"  :v-adjust 0 :face 'success))
+	 :extensions (info))
 
-        (treemacs-create-icon
-         :icon (format "%s " (all-the-icons-octicon "file-text" :v-adjust 0))
-         :extensions ("md" "markdown" "rst" "log" "org" "txt"
-                      "CONTRIBUTE" "LICENSE" "README" "CHANGELOG"))
-        (treemacs-create-icon
-         :icon (format "%s " (all-the-icons-octicon "file-zip" :v-adjust 0))
-         :extensions ("zip" "7z" "tar" "gz" "rar" "tgz"
-                      "xz" "dmg" "iso"))
-        (treemacs-create-icon
-         :icon (format "%s " (all-the-icons-octicon "file-binary" :v-adjust 0))
-         :extensions ("exe" "dll" "obj" "so" "o" "out" "elc"))
-        (treemacs-create-icon
-         :icon (format "%s " (all-the-icons-octicon "file-pdf" :v-adjust 0))
-         :extensions ("pdf"))
-        (treemacs-create-icon
-         :icon (format "%s " (all-the-icons-octicon "file-media" :v-adjust 0))
-         :extensions ("png" "jpg" "jpeg" "gif" "ico" "svg" "bmp"
-                      "mov" "avi" "mp4" "webm" "mkv"
-                      "wav" "mp3" "ogg" "midi"))
+	(treemacs-create-icon
+	 :icon (format "%s " (all-the-icons-octicon "file-text" :v-adjust 0))
+	 :extensions ("md" "markdown" "rst" "log" "org" "txt"
+		      "CONTRIBUTE" "LICENSE" "README" "CHANGELOG"))
+	(treemacs-create-icon
+	 :icon (format "%s " (all-the-icons-octicon "file-zip" :v-adjust 0))
+	 :extensions ("zip" "7z" "tar" "gz" "rar" "tgz"
+		      "xz" "dmg" "iso"))
+	(treemacs-create-icon
+	 :icon (format "%s " (all-the-icons-octicon "file-binary" :v-adjust 0))
+	 :extensions ("exe" "dll" "obj" "so" "o" "out" "elc"))
+	(treemacs-create-icon
+	 :icon (format "%s " (all-the-icons-octicon "file-pdf" :v-adjust 0))
+	 :extensions ("pdf"))
+	(treemacs-create-icon
+	 :icon (format "%s " (all-the-icons-octicon "file-media" :v-adjust 0))
+	 :extensions ("png" "jpg" "jpeg" "gif" "ico" "svg" "bmp"
+		      "mov" "avi" "mp4" "webm" "mkv"
+		      "wav" "mp3" "ogg" "midi"))
 
-        (treemacs-create-icon
-         :icon (format "%s " (all-the-icons-octicon "file-code" :v-adjust 0))
-         :extensions (fallback))))
+	(treemacs-create-icon
+	 :icon (format "%s " (all-the-icons-octicon "file-code" :v-adjust 0))
+	 :extensions (fallback))))
 
     (treemacs-load-theme "Icons"))
   :general
   (-leader-def
     "0" 'treemacs-select-window
     "ft" 'treemacs)
-  :custom-face
-  (treemacs-root-face ((t (:inherit font-lock-constant-face :bold t :height 1.1))))
+  (:keymaps 'justl-mode-map :states 'normal
+            "gr" 'treemacs-refresh)
   :init
   (setq treemacs-show-cursor t)
   (setq treemacs-follow-after-init t)
@@ -1861,10 +1911,13 @@ mini-echo
   :hook
   (treemacs-mode-hook . hide-mode-line-mode)
   (treemacs-mode-hook . -disable-evil-cursor)
-  :config
-  (when (display-graphic-p)
-    (-setup-treemacs-theme)))
+  ;; :config
+  ;; (when (display-graphic-p)
+  ;;   (-setup-treemacs-theme))
+  )
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package treemacs-fringe-indicator
   :ensure treemacs
   :after treemacs
@@ -1890,6 +1943,25 @@ mini-echo
   :after treemacs tab-bar
   :config
   (treemacs-set-scope-type 'Tabs))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package treemacs-nerd-icons
+  :if (display-graphic-p)
+  :after treemacs
+  :demand
+  :config
+  (treemacs-modify-theme "nerd-icons"
+    :config
+    (treemacs-create-icon
+     :icon (format "%s%s%s%s"
+                   treemacs-nerd-icons-tab
+                   treemacs-nerd-icons-tab
+                   (nerd-icons-faicon "nf-fa-folder"  :face 'treemacs-nerd-icons-file-face)
+                   treemacs-nerd-icons-tab)
+     :extensions (dir-closed dir-open)
+     :fallback 'same-as-icon))
+  (treemacs-load-theme "nerd-icons"))
 #+end_src
 
 * Terminal
