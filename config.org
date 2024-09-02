@@ -667,7 +667,7 @@ mini-echo
 [[https://protesilaos.com/emacs/modus-themes][modus-themes]]
 #+begin_src emacs-lisp
 (use-package emacs
-  :disabled
+  ;; :disabled
   :ensure nil
   :init
   (setq modus-themes-org-blocks 'gray-background)
@@ -679,6 +679,7 @@ mini-echo
 [[https://protesilaos.com/emacs/ef-themes][ef-themes]]
 #+begin_src emacs-lisp
 (use-package ef-themes
+  :disabled
   :demand
   :config
   (load-theme 'ef-melissa-light :no-confirm))

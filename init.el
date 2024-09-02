@@ -306,7 +306,7 @@
     "tt" 'load-theme))
 
 (use-package emacs
-  :disabled
+  ;; :disabled
   :ensure nil
   :init
   (setq modus-themes-org-blocks 'gray-background)
@@ -315,6 +315,7 @@
   (load-theme 'modus-operandi :no-confirm))
 
 (use-package ef-themes
+  :disabled
   :demand
   :config
   (load-theme 'ef-melissa-light :no-confirm))
