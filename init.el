@@ -253,7 +253,7 @@
 (use-package nerd-icons
   :if (display-graphic-p)
   :init
-  (setq nerd-icons-color-icons t))
+  (setq nerd-icons-color-icons nil))
 
 (use-package faces
   :ensure nil

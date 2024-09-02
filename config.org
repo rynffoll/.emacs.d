@@ -594,7 +594,7 @@ Install fonts
 (use-package nerd-icons
   :if (display-graphic-p)
   :init
-  (setq nerd-icons-color-icons t))
+  (setq nerd-icons-color-icons nil))
 #+end_src
 
 Install fonts
