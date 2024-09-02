@@ -1909,6 +1909,7 @@ mini-echo
   (setq treemacs-space-between-root-nodes nil)
   (setq treemacs-recenter-after-file-follow 'on-distance)
   (setq treemacs-recenter-after-tag-follow 'on-distance)
+  (setq treemacs-text-scale (if (display-graphic-p) -1 nil))
   :hook
   (treemacs-mode-hook . hide-mode-line-mode)
   (treemacs-mode-hook . -disable-evil-cursor)
