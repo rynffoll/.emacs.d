@@ -420,6 +420,8 @@
   (tab-prefix-map
    ;; "TAB" 'tab-bar-ext-print-tabs
    "p" 'tab-bar-ext-project)
+  :init
+  (setq tab-bar-ext-project-group nil)
   ;; :config
   ;; (mapcar
   ;;  (lambda (f) (advice-add f :after #'tab-bar-ext-print-tabs))
