@@ -919,15 +919,28 @@
 
 ;; TODO: conflict w/ treemacs-icons-dired + dired-subtree
 (use-package diredfl
-  :disabled
+  ;; :disabled
+  :preface
+  (defun -toggle-diredfl-mode ()
+    (if dired-hide-details-mode
+        (diredfl-mode -1)
+      (diredfl-mode +1)))
   :hook
-  (after-init-hook . diredfl-global-mode))
+  (dired-hide-details-mode-hook . -toggle-diredfl-mode))
+;; (after-init-hook . diredfl-global-mode))
 
 (use-package nerd-icons-dired
   :disabled
   :if (and -with-icons (display-graphic-p))
   :hook
   (dired-mode-hook . nerd-icons-dired-mode))
+
+(use-package dired-git-info
+  :general
+  (:keymaps 'dired-mode-map :states 'normal
+            ")" 'dired-git-info-mode)
+  :init
+  (setq dgi-auto-hide-details-p nil))
 
 (use-package tramp
   :ensure nil
