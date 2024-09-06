@@ -197,6 +197,7 @@
   (evil-insert-state-map "C-х" 'evil-normal-state)
   (evil-visual-state-map "C-х" 'evil-exit-visual-state)
   :init
+  (setq reverse-im-cache-file (locate-user-emacs-file "reverse-im-cache.el"))
   (setq reverse-im-char-fold t)
   (setq reverse-im-read-char-advice-function #'reverse-im-read-char-exclude)
   (setq reverse-im-input-methods '("russian-computer"))
