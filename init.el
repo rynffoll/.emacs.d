@@ -318,6 +318,13 @@
   (require-theme 'modus-themes) ; `require-theme' is ONLY for the built-in Modus themes
   (load-theme 'modus-operandi :no-confirm))
 
+(use-package modus-themes
+  :ensure nil
+  :init
+  (setq modus-themes-common-palette-overrides
+        `((bg-region bg-ochre)
+          (fg-region unspecified))))
+
 (use-package ef-themes
   :disabled
   :demand
