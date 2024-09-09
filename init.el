@@ -416,7 +416,8 @@
   (setq tab-bar-new-tab-to 'rightmost)
   (setq tab-bar-tab-post-open-functions #'tab-bar-ext-post-open-rename)
   (setq tab-bar-tab-hints nil)
-  (setq tab-bar-select-tab-modifiers (when tab-bar-tab-hints '(super))))
+  (setq tab-bar-select-tab-modifiers (when tab-bar-tab-hints '(super)))
+  (setq tab-bar-new-tab-group nil))
 
 (use-package tab-bar-ext
   :vc (:url "https://github.com/rynffoll/tab-bar-ext" :rev :newest)
@@ -426,7 +427,7 @@
    ;; "TAB" 'tab-bar-ext-print-tabs
    "p" 'tab-bar-ext-project)
   :init
-  (setq tab-bar-ext-project-group nil)
+  (setq tab-bar-ext-project-group t)
   ;; :config
   ;; (mapcar
   ;;  (lambda (f) (advice-add f :after #'tab-bar-ext-print-tabs))
