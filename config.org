@@ -676,17 +676,15 @@ mini-echo
   ;; :disabled
   :ensure nil
   :init
-  (setq modus-themes-org-blocks 'gray-background)
+  (setq modus-themes-common-palette-overrides
+        '((bg-region bg-ochre)
+          (fg-region unspecified)
+          (bg-prose-block-delimiter bg-inactive)
+          (fg-prose-block-delimiter fg-dim)
+          (bg-prose-block-contents bg-dim)))
   :config
   (require-theme 'modus-themes) ; `require-theme' is ONLY for the built-in Modus themes
   (load-theme 'modus-operandi :no-confirm))
-
-(use-package modus-themes
-  :ensure nil
-  :init
-  (setq modus-themes-common-palette-overrides
-        `((bg-region bg-ochre)
-          (fg-region unspecified))))
 #+end_src
 
 [[https://protesilaos.com/emacs/ef-themes][ef-themes]]
