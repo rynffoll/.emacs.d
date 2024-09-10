@@ -2049,4 +2049,6 @@
 
 (use-package string-inflection)
 
+(use-package show-font)
+
 (add-to-list 'load-path (concat user-emacs-directory "site-lisp"))
