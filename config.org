@@ -825,6 +825,14 @@ mini-echo
   )
 #+end_src
 
+#+begin_src emacs-lisp
+(use-package tab-line
+  :ensure nil
+  :init
+  (setq tab-line-close-button-show nil)
+  (setq tab-line-new-button-show nil))
+#+end_src
+
 * Windows
 ** window
 #+begin_src emacs-lisp

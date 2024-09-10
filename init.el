@@ -446,6 +446,12 @@
   ;;    tab-move-to))
   )
 
+(use-package tab-line
+  :ensure nil
+  :init
+  (setq tab-line-close-button-show nil)
+  (setq tab-line-new-button-show nil))
+
 (use-package window
   :ensure nil
   :general
