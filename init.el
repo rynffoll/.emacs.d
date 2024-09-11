@@ -265,9 +265,7 @@
   (mode-line ((t (:inherit mode-line :box nil :underline nil :overline nil))))
   (mode-line-inactive ((t (:inherit mode-line-inactive :box nil :underline nil :overline nil)))))
 
-(use-package hide-mode-line
-  :hook
-  (dired-sidebar-mode-hook . hide-mode-line-mode))
+(use-package hide-mode-line)
 
 (use-package minions
   :hook
@@ -427,24 +425,9 @@
   :after tab-bar project
   :general
   (tab-prefix-map
-   ;; "TAB" 'tab-bar-ext-print-tabs
    "p" 'tab-bar-ext-project)
   :init
-  (setq tab-bar-ext-project-group t)
-  ;; :config
-  ;; (mapcar
-  ;;  (lambda (f) (advice-add f :after #'tab-bar-ext-print-tabs))
-  ;;  '(tab-new
-  ;;    tab-close
-  ;;    tab-close-other
-  ;;    tab-undo
-  ;;    tab-select
-  ;;    tab-next
-  ;;    tab-previous
-  ;;    tab-recent
-  ;;    tab-move
-  ;;    tab-move-to))
-  )
+  (setq tab-bar-ext-project-group t))
 
 (use-package tab-line
   :ensure nil
@@ -931,10 +914,10 @@
   :init
   (setq dired-subtree-use-backgrounds nil)
   :config
-  ;; for treemacs-icons-dired
-  (advice-add #'dired-subtree-toggle :after #'-dired-subtree-revert))
+  (when -with-icons
+    ;; for treemacs-icons-dired
+    (advice-add #'dired-subtree-toggle :after #'-dired-subtree-revert)))
 
-;; TODO: conflict w/ treemacs-icons-dired + dired-subtree
 (use-package diredfl
   ;; :disabled
   :preface
@@ -943,8 +926,8 @@
         (diredfl-mode -1)
       (diredfl-mode +1)))
   :hook
-  (dired-hide-details-mode-hook . -toggle-diredfl-mode))
-;; (after-init-hook . diredfl-global-mode))
+  ;; (dired-hide-details-mode-hook . -toggle-diredfl-mode)
+  (after-init-hook . diredfl-global-mode))
 
 (use-package nerd-icons-dired
   :disabled
