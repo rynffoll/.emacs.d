@@ -19,10 +19,6 @@
 
 (use-package gnu-elpa-keyring-update)
 
-(use-package gcmh
-  :hook
-  (after-init-hook . gcmh-mode))
-
 (use-package mule
   :ensure nil
   :init
@@ -62,6 +58,10 @@
       (ansi-color-apply-on-region compilation-filter-start (point))))
   :hook
   (compilation-filter-hook . -ansi-color-apply-on-compilation-buffer))
+
+(use-package gcmh
+  :hook
+  (emacs-startup-hook . gcmh-mode))
 
 (use-package async
   :hook
@@ -219,7 +219,6 @@
   (set-fontset-font "fontset-default" 'unicode "Apple Color Emoji" nil 'prepend))
 
 (use-package ligature
-  :ensure nil
   :if (display-graphic-p)
   :config
   ;; https://github.com/mickeynp/ligature.el/wiki#jetbrains-mono
@@ -512,6 +511,7 @@
           "\\*Async Shell Command\\*"
           "\\*[Wo]Man.*\\*$"
 	  "\\*Warnings\\*"
+	  "\\*Compile-Log\\*"
           
           help-mode
           helpful-mode

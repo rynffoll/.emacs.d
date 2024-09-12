@@ -17,11 +17,11 @@
   - [[#initialize][Initialize]]
   - [[#use-package][use-package]]
   - [[#gnu-elpa-keyring-update][gnu-elpa-keyring-update]]
-- [[#gc][GC]]
 - [[#defaults-1][Defaults]]
   - [[#utf-8][UTF-8]]
   - [[#calendar][Calendar]]
   - [[#compile][Compile]]
+- [[#gc][GC]]
 - [[#async][Async]]
 - [[#general][General]]
 - [[#evil][Evil]]
@@ -143,7 +143,6 @@
   - [[#editorconfig][EditorConfig]]
   - [[#docker][Docker]]
   - [[#ansible][Ansible]]
-  - [[#http][HTTP]]
   - [[#envrc][.env(rc)]]
 - [[#utils][Utils]]
 - [[#private-configuration][Private Configuration]]
@@ -264,7 +263,7 @@
 
 ** Disable writing customization to ~init.el~
 #+begin_src emacs-lisp
-(setq custom-file null-device)
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 #+end_src
 
 * Initialization
@@ -303,13 +302,6 @@
 ** gnu-elpa-keyring-update
 #+begin_src emacs-lisp
 (use-package gnu-elpa-keyring-update)
-#+end_src
-
-* GC
-#+begin_src emacs-lisp
-(use-package gcmh
-  :hook
-  (after-init-hook . gcmh-mode))
 #+end_src
 
 * Defaults
@@ -362,6 +354,13 @@
       (ansi-color-apply-on-region compilation-filter-start (point))))
   :hook
   (compilation-filter-hook . -ansi-color-apply-on-compilation-buffer))
+#+end_src
+
+* GC
+#+begin_src emacs-lisp
+(use-package gcmh
+  :hook
+  (emacs-startup-hook . gcmh-mode))
 #+end_src
 
 * Async
@@ -548,7 +547,6 @@
 ** Ligatures
 #+begin_src emacs-lisp
 (use-package ligature
-  :ensure nil
   :if (display-graphic-p)
   :config
   ;; https://github.com/mickeynp/ligature.el/wiki#jetbrains-mono
@@ -907,6 +905,7 @@ mini-echo
           "\\*Async Shell Command\\*"
           "\\*[Wo]Man.*\\*$"
 	  "\\*Warnings\\*"
+	  "\\*Compile-Log\\*"
           
           help-mode
           helpful-mode
@@ -2696,8 +2695,6 @@ go install github.com/go-delve/delve/cmd/dlv@latest
     "E" '(ansible-vault-with-editor-encrypt :wk "encrypt")
     "D" '(ansible-vault-with-editor-decrypt :wk "decrypt")))
 #+end_src
-
-** HTTP
 
 ** .env(rc)
 #+begin_src emacs-lisp

@@ -85,4 +85,4 @@
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . dark)))
 
-(setq custom-file null-device)
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
