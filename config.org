@@ -867,23 +867,21 @@ mini-echo
   :disabled
   :init
   (setq shackle-default-size 0.3)
-  (setq shackle-rules '((help-mode :align below :select t)
-                        (helpful-mode :align below)
-                        (flycheck-error-list-mode :align below)
-                        (cider-repl-mode :align below)
-                        (ansible-doc-module-mode :align below)
-                        ("*Pack*" :align below)
-                        ("\\*Async Shell Command\\*.*" :regexp t :ignore t)
-                        (Man-mode :align below :select t)
-                        ("\\*Man.*\\*" :regexp t :align below :select t)
-                        ("*lsp-help*" :align below)
-                        ("*Warnings*" :align below)
-                        ("*Compile-Log*" :align below)
-                        (compilation-mode :align below)
-                        ("*company-documentation*" :align below)
-                        ("*Go REPL*" :align below)
-                        ("\\*docker-compose .*\\*" :regexp t :align below)
-                        (comint-mode :align below)))
+  (setq shackle-rules
+        '((help-mode :align below :select t)
+          (helpful-mode :align below)
+          (flycheck-error-list-mode :align below)
+          (cider-repl-mode :align below)
+          (ansible-doc-module-mode :align below)
+          ("\\*Async Shell Command\\*.*" :regexp t :ignore t)
+          (Man-mode :align below :select t)
+          ("\\*Man.*\\*" :regexp t :align below :select t)
+          ("*Warnings*" :align below)
+          ("*Compile-Log*" :align below)
+          (compilation-mode :align below)
+          ("\\*vc-git :.*" :regexp t :align below :ignore t :select t)
+          ("\\*docker-compose .*\\*" :regexp t :align below)
+          (comint-mode :align below)))
   :hook
   (after-init-hook . shackle-mode))
 #+end_src
@@ -904,8 +902,9 @@ mini-echo
           "Output\\*$"
           "\\*Async Shell Command\\*"
           "\\*[Wo]Man.*\\*$"
-	  "\\*Warnings\\*"
-	  "\\*Compile-Log\\*"
+          "\\*Warnings\\*"
+          "\\*Compile-Log\\*"
+          "\\*vc-git : .*"
           
           help-mode
           helpful-mode
@@ -918,11 +917,9 @@ mini-echo
           flycheck-verify-mode
           
           cider-repl-mode
-          ansible-doc-module-mode
-          
-          "^\\*vterm.*\\*$"  vterm-mode
-          ))
+          ansible-doc-module-mode))
   (setq popper-mode-line '(:eval (propertize " POP " 'face '(region bold))))
+  (setq popper-window-height 0.4)
   :hook
   (after-init-hook . popper-mode))
 
