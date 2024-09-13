@@ -1798,6 +1798,10 @@
   :hook
   (go-ts-mode-hook . eglot-ensure))
 
+(use-package go-mod-ts-mode
+  :ensure go-ts-mode
+  :mode "go\\.mod\\'")
+
 (use-package makefile-executor
   :general
   (-local-leader-def :keymaps 'makefile-mode-map

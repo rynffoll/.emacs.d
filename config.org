@@ -2457,6 +2457,10 @@ go install github.com/go-delve/delve/cmd/dlv@latest
   :mode "\\.go\\'"
   :hook
   (go-ts-mode-hook . eglot-ensure))
+
+(use-package go-mod-ts-mode
+  :ensure go-ts-mode
+  :mode "go\\.mod\\'")
 #+end_src
 
 ** Makefile
