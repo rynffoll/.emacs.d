@@ -1,13 +1,10 @@
 .cache/
 auto-save-list/
 bookmarks
-company-statistics-cache.el
 elpa/
 eshell/
 history
 places
-projectile-bookmarks.eld
-projectile.cache
 recentf
 request/
 tramp
@@ -22,3 +19,5 @@ projects
 site-lisp/
 .persistent-scratch
 reverse-im-cache.el
+custom.el
+undo-fu-session/
