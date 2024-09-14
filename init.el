@@ -485,7 +485,7 @@
   (after-init-hook . winum-mode))
 
 (use-package shackle
-  :disabled
+  ;; :disabled
   :init
   (setq shackle-default-size 0.3)
   (setq shackle-rules
@@ -497,7 +497,7 @@
           ("\\*Async Shell Command\\*.*" :regexp t :ignore t)
           (Man-mode :align below :select t)
           ("\\*Man.*\\*" :regexp t :align below :select t)
-          ("*Warnings*" :align below)
+          ;; ("*Warnings*" :align below)
           ("*Compile-Log*" :align below)
           (compilation-mode :align below)
           ("\\*vc-git :.*" :regexp t :align below :ignore t :select t)
@@ -516,12 +516,15 @@
   ("C-M-`" 'popper-toggle-type)
   ("C-M-§" 'popper-toggle-type)
   :init
+  (setq popper-mode-line '(:eval (propertize " POP " 'face '(region bold))))
+  (setq popper-display-control nil) ;; for shackle
+  (setq popper-window-height 0.3)
   (setq popper-reference-buffers
         '("\\*Messages\\*"
           "Output\\*$"
           "\\*Async Shell Command\\*"
           "\\*[Wo]Man.*\\*$"
-          "\\*Warnings\\*"
+          ;; "\\*Warnings\\*"
           "\\*Compile-Log\\*"
           "\\*vc-git : .*"
           
@@ -537,8 +540,6 @@
           
           cider-repl-mode
           ansible-doc-module-mode))
-  (setq popper-mode-line '(:eval (propertize " POP " 'face '(region bold))))
-  (setq popper-window-height 0.4)
   :hook
   (after-init-hook . popper-mode))
 
