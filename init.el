@@ -399,7 +399,7 @@
   :ensure nil
   :general
   (-leader-def
-    "TAB" '(:keymap tab-prefix-map :package projectile :wk "tab-bar"))
+    "TAB" '(:keymap tab-prefix-map :wk "tab-bar"))
   (tab-prefix-map
    "." 'tab-bar-select-tab-by-name
    "n" 'tab-new
@@ -843,21 +843,6 @@
   :ensure nil
   :init
   (setq epg-pinentry-mode 'loopback))
-
-(use-package projectile
-  :disabled
-  :general
-  (-leader-def
-    "p" '(:keymap projectile-command-map :package projectile :wk "project"))
-  :init
-  (setq projectile-project-search-path '("~/Projects"))
-  :hook
-  (after-init-hook . projectile-mode))
-
-(use-package consult-projectile
-  :disabled
-  :general
-  ([remap projectile-switch-project] 'consult-projectile))
 
 (use-package project
   :ensure nil
@@ -1404,10 +1389,6 @@
 
 (use-package treemacs-evil
   :after treemacs evil)
-
-(use-package treemacs-projectile
-  :disabled
-  :after treemacs)
 
 (use-package treemacs-icons-dired
   :if (and -with-icons (display-graphic-p))

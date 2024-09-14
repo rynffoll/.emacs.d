@@ -62,8 +62,6 @@
   - [[#customize][Customize]]
   - [[#encryption][Encryption]]
 - [[#projects][Projects]]
-  - [[#projectile][Projectile]]
-  - [[#projectel][Project.el]]
 - [[#dired][Dired]]
 - [[#tramp][Tramp]]
 - [[#environment-variables][Environment Variables]]
@@ -776,7 +774,7 @@ mini-echo
   :ensure nil
   :general
   (-leader-def
-    "TAB" '(:keymap tab-prefix-map :package projectile :wk "tab-bar"))
+    "TAB" '(:keymap tab-prefix-map :wk "tab-bar"))
   (tab-prefix-map
    "." 'tab-bar-select-tab-by-name
    "n" 'tab-new
@@ -1286,25 +1284,6 @@ mini-echo
 #+end_src
 
 * Projects
-** Projectile
-#+begin_src emacs-lisp
-(use-package projectile
-  :disabled
-  :general
-  (-leader-def
-    "p" '(:keymap projectile-command-map :package projectile :wk "project"))
-  :init
-  (setq projectile-project-search-path '("~/Projects"))
-  :hook
-  (after-init-hook . projectile-mode))
-
-(use-package consult-projectile
-  :disabled
-  :general
-  ([remap projectile-switch-project] 'consult-projectile))
-#+end_src
-
-** Project.el
 #+begin_src emacs-lisp
 (use-package project
   :ensure nil
@@ -1949,10 +1928,6 @@ mini-echo
 
 (use-package treemacs-evil
   :after treemacs evil)
-
-(use-package treemacs-projectile
-  :disabled
-  :after treemacs)
 
 (use-package treemacs-icons-dired
   :if (and -with-icons (display-graphic-p))
