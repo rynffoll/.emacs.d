@@ -142,7 +142,6 @@
   :demand
   :after evil
   :init
-  (setq evil-collection-company-use-tng nil)
   (setq evil-collection-magit-want-horizontal-movement t)
   :config
   (evil-collection-init))
@@ -688,29 +687,6 @@
                                     orderless-prefixes
                                     orderless-regexp))
   (setq completion-category-overrides '((file (styles . (partial-completion))))))
-
-(use-package company
-  :disabled
-  :general
-  ("M-S-SPC" 'company-complete)
-  :custom-face
-  (company-tooltip-selection ((t (:inverse-video t))))
-  :init
-  (setq company-minimum-prefix-length 1)
-  (setq company-idle-delay 0.3)
-  (setq company-selection-wrap-around t)
-  :hook
-  (after-init-hook . global-company-mode))
-
-(use-package company-shell
-  :disabled
-  :init
-  (add-to-list 'company-backends 'company-shell))
-
-(use-package company-statistics
-  :disabled
-  :config
-  (company-statistics-mode))
 
 (use-package corfu
   :general
@@ -1794,10 +1770,7 @@
 
     "=" '(cider-format-buffer :wk "format"))
   :init
-  (setq cider-eldoc-display-context-dependent-info t)
-  :hook
-  (cider-mode-hook      . cider-company-enable-fuzzy-completion)
-  (cider-repl-mode-hook . cider-company-enable-fuzzy-completion))
+  (setq cider-eldoc-display-context-dependent-info t))
 
 (use-package cider-hydra
   :general
@@ -1994,11 +1967,6 @@
 
 (use-package jinja2-mode
   :mode "\\.j2\\'")
-
-(use-package company-ansible
-  :after company
-  :init
-  (add-to-list 'company-backends 'company-ansible))
 
 (use-package ansible-vault-with-editor
   :vc (:url "https://github.com/rynffoll/ansible-vault-with-editor" :rev :newest)
