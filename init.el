@@ -1070,6 +1070,10 @@
 (use-package undo-fu
   :disabled)
 
+(use-package undo-fu-session
+  :hook
+  (org-mode-hook . undo-fu-session-mode))
+
 (use-package vundo
   :general
   ("C-x u" 'vundo)

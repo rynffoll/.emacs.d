@@ -76,6 +76,7 @@
 - [[#undoredo][Undo/Redo]]
   - [[#undo-tree][undo-tree]]
   - [[#undo-fu][undo-fu]]
+  - [[#undo-fu-session][undo-fu-session]]
   - [[#vundo][vundo]]
 - [[#highlighting][Highlighting]]
   - [[#highlight-current-line][Highlight current line]]
@@ -1558,6 +1559,13 @@ mini-echo
 #+begin_src emacs-lisp
 (use-package undo-fu
   :disabled)
+#+end_src
+
+** undo-fu-session
+#+begin_src emacs-lisp
+(use-package undo-fu-session
+  :hook
+  (org-mode-hook . undo-fu-session-mode))
 #+end_src
 
 ** vundo
