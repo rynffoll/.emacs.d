@@ -417,19 +417,29 @@
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-new-tab-choice "*scratch*")
   (setq tab-bar-new-tab-to 'rightmost)
-  (setq tab-bar-tab-post-open-functions #'tab-bar-ext-post-open-rename)
-  (setq tab-bar-tab-hints nil)
-  (setq tab-bar-select-tab-modifiers (when tab-bar-tab-hints '(super)))
-  (setq tab-bar-new-tab-group nil))
+  ;;(setq tab-bar-tab-post-open-functions #'tab-bar-ext-post-open-rename)
+  ;; (setq tab-bar-new-tab-group nil)
+  )
 
-(use-package tab-bar-ext
-  :vc (:url "https://github.com/rynffoll/tab-bar-ext" :rev :newest)
-  :after tab-bar project
-  :general
-  (tab-prefix-map
-   "p" 'tab-bar-ext-project)
+;; (use-package tab-bar-ext
+;;   :disabled
+;;   :vc (:url "https://github.com/rynffoll/tab-bar-ext" :rev :newest)
+;;   :after tab-bar project
+;;   :general
+;;   (tab-prefix-map
+;;    "p" 'tab-bar-ext-project)
+;;   :init
+;;   (setq tab-bar-ext-project-group t))
+
+(use-package project-tab-groups
+  :hook
+  (after-init-hook . project-tab-groups-mode))
+
+(use-package vim-tab-bar
   :init
-  (setq tab-bar-ext-project-group t))
+  (setq vim-tab-bar-show-groups t)
+  :hook
+  (after-init-hook . vim-tab-bar-mode))
 
 (use-package tab-line
   :ensure nil
@@ -832,12 +842,18 @@
   (setq trash-directory "~/.Trash/emacs"))
 
 (use-package iqa
+  :preface
+  (defun -iqa-find-file-project (f)
+    (let ((default-directory user-emacs-directory))
+      (project-current t)
+      (find-file f)))
   :general
   (-leader-def
     "ed" 'iqa-find-user-init-directory
     "ee" 'iqa-find-user-init-file
     "er" 'iqa-reload-user-init-file)
   :init
+  (setq iqa-find-file-function #'-iqa-find-file-project)
   (setq iqa-user-init-file (concat user-emacs-directory "config.org")))
 
 (use-package cus-edit

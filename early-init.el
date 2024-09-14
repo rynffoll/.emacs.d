@@ -70,10 +70,10 @@
 ;; (add-to-list 'default-frame-alist '(vertical-scroll-bars))
 ;; (add-to-list 'default-frame-alist '(internal-border-width . 0))
 
-(add-to-list 'default-frame-alist '(tabs
-                                    (current-tab
-                                     (name . "main")
-                                     (explicit-name . t))))
+;; (add-to-list 'default-frame-alist '(tabs
+;;                                     (current-tab
+;;                                      (name . "main")
+;;                                      (explicit-name . t))))
 
 (add-to-list 'default-frame-alist '(font . "JetBrains Mono Medium 14"))
 ;; (add-to-list 'default-frame-alist '(font . "Iosevka Medium 14"))
