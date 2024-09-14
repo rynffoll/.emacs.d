@@ -1737,6 +1737,8 @@
   (clojure-ts-mode-hook . -setup-flycheck-clj-kondo))
 
 (use-package cider
+  :custom-face
+  (cider-result-overlay-face ((t (:inherit shadow :box t))))
   :general
   (-local-leader-def :keymaps 'clojure-ts-mode-map
     "c" '(:ignore t           :wk "connect")
