@@ -1122,6 +1122,10 @@
   (cider-repl-mode-hook . highlight-parentheses-mode)
   (minibuffer-setup-hook . highlight-parentheses-minibuffer-setup))
 
+(use-package paren-face
+  :hook
+  (after-init-hook . global-paren-face-mode))
+
 (use-package rainbow-mode
   :general
   (-leader-def
