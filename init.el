@@ -80,6 +80,9 @@
     :keymaps 'override
     :prefix "SPC m"
     :global-prefix "M-,")
+  (general-define-key
+   :states '(normal visual)
+   "," (general-simulate-key "SPC m" :which-key "local leader"))
   (-leader-def
     ""    '(nil :wk "leader")
     "o"   '(:ignore t :wk "open")
