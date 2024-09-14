@@ -911,6 +911,11 @@
   :hook
   (dired-mode-hook . dired-hide-details-mode))
 
+(use-package dired-aux
+  :ensure nil
+  :init
+  (setq dired-vc-rename-file t))
+
 (use-package dired-x
   :ensure nil
   :after dired
@@ -1109,12 +1114,6 @@
   :ensure nil
   :hook
   (after-init-hook . electric-pair-mode))
-
-(use-package rainbow-delimiters
-  :disabled
-  :hook
-  (prog-mode-hook . rainbow-delimiters-mode)
-  (cider-repl-mode-hook . rainbow-delimiters-mode))
 
 (use-package highlight-parentheses
   :hook
