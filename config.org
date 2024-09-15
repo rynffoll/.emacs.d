@@ -1609,7 +1609,7 @@ mini-echo
     "ti" 'highlight-indent-guides-mode)
   :init
   (setq highlight-indent-guides-method 'character)
-  (setq highlight-indent-guides-responsive t))
+  (setq highlight-indent-guides-responsive 'top))
 #+end_src
 
 ** Highlight symbols
@@ -1676,10 +1676,23 @@ mini-echo
 
 * Folding
 #+begin_src emacs-lisp
+(use-package outline
+  :ensure nil
+  :init
+  (setq outline-blank-line t))
+#+end_src
+
+#+begin_src emacs-lisp
 (use-package hideshow
   :ensure nil
   :hook
   (prog-mode-hook . hs-minor-mode))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package outline-indent
+  :hook
+  (yaml-ts-mode-hook . outline-indent-minor-mode))
 #+end_src
 
 * Spell Checking

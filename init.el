@@ -1109,7 +1109,7 @@
     "ti" 'highlight-indent-guides-mode)
   :init
   (setq highlight-indent-guides-method 'character)
-  (setq highlight-indent-guides-responsive t))
+  (setq highlight-indent-guides-responsive 'top))
 
 (use-package hl-todo
   :init
@@ -1158,10 +1158,19 @@
   :demand
   :after evil anzu)
 
+(use-package outline
+  :ensure nil
+  :init
+  (setq outline-blank-line t))
+
 (use-package hideshow
   :ensure nil
   :hook
   (prog-mode-hook . hs-minor-mode))
+
+(use-package outline-indent
+  :hook
+  (yaml-ts-mode-hook . outline-indent-minor-mode))
 
 (use-package ispell
   :if (executable-find "hunspell")
