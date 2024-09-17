@@ -1729,7 +1729,6 @@
   :config
   (flycheck-package-setup))
 
-(use-package clojure-mode)
 (use-package clojure-ts-mode)
 
 (use-package eldoc
@@ -1763,7 +1762,9 @@
 
     "=" '(cider-format-buffer :wk "format"))
   :init
-  (setq cider-eldoc-display-context-dependent-info t))
+  (setq cider-eldoc-display-context-dependent-info t)
+  :hook
+  (clojure-ts-mode-hook . cider-mode))
 
 (use-package cider-hydra
   :general
