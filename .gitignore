@@ -16,7 +16,7 @@ async-bytecomp.log
 eln-cache/
 tree-sitter/
 projects
-site-lisp/
+site-lisp/default.el
 .persistent-scratch
 reverse-im-cache.el
 custom.el

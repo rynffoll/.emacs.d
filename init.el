@@ -313,21 +313,18 @@
   :ensure nil
   :init
   (setq modus-themes-common-palette-overrides
-        '((bg-region bg-cyan-intense)
+        '(;; (bg-region bg-cyan-intense)
           (fg-region unspecified)
           (bg-prose-block-delimiter bg-inactive)
           (fg-prose-block-delimiter fg-dim)
-          (bg-prose-block-contents bg-dim)
-          (bg-tab-bar bg-main)
-          (bg-tab-current bg-cyan-intense)
-          (bg-tab-other bg-inactive)))
+          (bg-prose-block-contents bg-dim)))
   :config
   (require-theme 'modus-themes) ; `require-theme' is ONLY for the built-in Modus themes
   (load-theme 'modus-operandi :no-confirm))
 
 (use-package ef-themes
-  :disabled
-  :demand
+  ;; :disabled
+  ;; :demand
   :config
   (load-theme 'ef-melissa-light :no-confirm))
 
@@ -415,30 +412,18 @@
                          tab-bar-separator))
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-new-tab-choice "*scratch*")
-  (setq tab-bar-new-tab-to 'rightmost)
-  ;;(setq tab-bar-tab-post-open-functions #'tab-bar-ext-post-open-rename)
-  ;; (setq tab-bar-new-tab-group nil)
-  )
+  :hook
+  (after-init-hook . tab-bar-history-mode))
 
-;; (use-package tab-bar-ext
-;;   :disabled
-;;   :vc (:url "https://github.com/rynffoll/tab-bar-ext" :rev :newest)
-;;   :after tab-bar project
-;;   :general
-;;   (tab-prefix-map
-;;    "p" 'tab-bar-ext-project)
-;;   :init
-;;   (setq tab-bar-ext-project-group t))
+(use-package tab-bar-theme
+  :ensure nil
+  :load-path "site-lisp/tab-bar-theme"
+  :hook
+  (after-init-hook . tab-bar-theme-mode))
 
 (use-package project-tab-groups
   :hook
   (after-init-hook . project-tab-groups-mode))
-
-(use-package vim-tab-bar
-  :init
-  (setq vim-tab-bar-show-groups t)
-  :hook
-  (after-init-hook . vim-tab-bar-mode))
 
 (use-package tab-line
   :ensure nil
