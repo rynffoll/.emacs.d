@@ -604,6 +604,41 @@
   :hook
   (after-init-hook . persistent-scratch-setup-default))
 
+(use-package desktop
+  :ensure nil
+  :general
+  (-leader-def
+    "eDs" 'desktop-save
+    "eDr" 'desktop-read)
+  :init
+  (setq desktop-path `(,user-emacs-directory))
+  :config
+  (dolist (mode '(magit-mode
+                  git-commit-mode))
+    (add-to-list 'desktop-modes-not-to-save mode))
+  :hook
+  (after-init-hook . desktop-save-mode))
+
+(use-package savehist
+  :ensure nil
+  :hook
+  (after-init-hook . savehist-mode))
+
+(use-package saveplace
+  :ensure nil
+  :hook
+  (after-init-hook . save-place-mode))
+
+(use-package recentf
+  :ensure nil
+  :general
+  (-leader-def
+    "fr" 'recentf-open-files)
+  :init
+  (setq recentf-max-saved-items 300)
+  :hook
+  (after-init-hook . recentf-mode))
+
 (use-package consult
   :general
   ([remap apropos]                       'consult-apropos)
@@ -776,26 +811,6 @@
   :hook
   (after-init-hook . global-auto-revert-mode))
 
-(use-package savehist
-  :ensure nil
-  :hook
-  (after-init-hook . savehist-mode))
-
-(use-package saveplace
-  :ensure nil
-  :hook
-  (after-init-hook . save-place-mode))
-
-(use-package recentf
-  :ensure nil
-  :general
-  (-leader-def
-    "fr" 'recentf-open-files)
-  :init
-  (setq recentf-max-saved-items 300)
-  :hook
-  (after-init-hook . recentf-mode))
-
 (use-package files
   :if (eq system-type 'darwin)
   :ensure nil
@@ -805,14 +820,17 @@
 
 (use-package iqa
   :preface
-  (defun -iqa-find-file-project (f)
-    (let ((default-directory user-emacs-directory))
+  ;; for integration with project-tab-groups
+  (defun -iqa-find-file-project (file)
+    (let* ((dir (file-name-directory file))
+           (default-directory dir))
       (project-current t)
-      (find-file f)))
+      (find-file file)))
   :general
   (-leader-def
     "ed" 'iqa-find-user-init-directory
     "ee" 'iqa-find-user-init-file
+    "ec" 'iqa-find-user-custom-file
     "er" 'iqa-reload-user-init-file)
   :init
   (setq iqa-find-file-function #'-iqa-find-file-project)
