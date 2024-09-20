@@ -605,6 +605,7 @@
   (after-init-hook . persistent-scratch-setup-default))
 
 (use-package desktop
+  :disabled
   :ensure nil
   :general
   (-leader-def

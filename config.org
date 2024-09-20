@@ -1012,6 +1012,7 @@ mini-echo
 * History
 #+begin_src emacs-lisp
 (use-package desktop
+  :disabled
   :ensure nil
   :general
   (-leader-def
