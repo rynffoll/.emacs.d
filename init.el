@@ -796,12 +796,8 @@
   (setq require-final-newline t)
   (setq make-backup-files nil)
   (setq auto-save-default nil)
-  (setq enable-local-variables t)
-  ;; (setq enable-local-variables :all)
-  (setq enable-local-eval t)
-  ;; (setq enable-local-eval 'maybe)
-  :config
-  (put 'magit-todos-exclude-globs 'safe-local-variable #'listp))
+  (setq enable-local-variables :all)
+  (setq enable-local-eval t))
 
 (use-package autorevert
   :ensure nil
