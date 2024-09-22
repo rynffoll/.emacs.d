@@ -1628,6 +1628,7 @@
   (org-block-begin-line ((t (:underline nil))))
   (org-block-end-line   ((t (:overline nil))))
   :init
+  (setq org-fontify-quote-and-verse-blocks t)
   (setq org-priority-faces
         '((?A . (:inherit (bold error)))
           (?B . (:inherit (bold warning)))
