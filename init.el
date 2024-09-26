@@ -1935,6 +1935,7 @@
 
 (use-package xwwp
   :if (display-graphic-p)
+  :after xwidget
   :general
   (:keymaps 'xwidget-webkit-mode-map :states 'normal
             "f" 'xwwp-follow-link))
