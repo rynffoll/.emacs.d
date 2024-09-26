@@ -865,7 +865,7 @@ mini-echo
 ** Pop-ups
 #+begin_src emacs-lisp
 (use-package shackle
-  ;; :disabled
+  :disabled
   :init
   (setq shackle-default-size 0.3)
   (setq shackle-rules
@@ -889,7 +889,7 @@ mini-echo
 
 #+begin_src emacs-lisp
 (use-package popper
-  ;; :disabled
+  :disabled
   :general
   ("C-`"   'popper-toggle-latest)
   ("C-§"   'popper-toggle-latest)
@@ -926,7 +926,7 @@ mini-echo
   (after-init-hook . popper-mode))
 
 (use-package popper-echo
-  ;; :disabled
+  :disabled
   :ensure popper
   :init
   (setq popper-echo-dispatch-actions t)

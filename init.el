@@ -469,7 +469,7 @@
   (after-init-hook . winum-mode))
 
 (use-package shackle
-  ;; :disabled
+  :disabled
   :init
   (setq shackle-default-size 0.3)
   (setq shackle-rules
@@ -491,7 +491,7 @@
   (after-init-hook . shackle-mode))
 
 (use-package popper
-  ;; :disabled
+  :disabled
   :general
   ("C-`"   'popper-toggle-latest)
   ("C-§"   'popper-toggle-latest)
@@ -528,7 +528,7 @@
   (after-init-hook . popper-mode))
 
 (use-package popper-echo
-  ;; :disabled
+  :disabled
   :ensure popper
   :init
   (setq popper-echo-dispatch-actions t)
