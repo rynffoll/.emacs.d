@@ -1555,10 +1555,12 @@
 
   (setq org-archive-location (concat org-directory "/archive.org::datetree/"))
 
+  (setq org-auto-align-tags nil)
   (setq org-tags-column 0)
   ;; (setq org-ellipsis "…")
   (setq org-ellipsis " ⌄ ")
   (setq org-pretty-entities t)
+  (setq org-hide-emphasis-markers t)
   (setq org-use-sub-superscripts '{})
 
   (setq org-use-fast-todo-selection 'expert)
@@ -1614,7 +1616,8 @@
   (-leader-def
     "Oa" '(org-agenda :wk "agenda"))
   :init
-  (setq org-agenda-window-setup 'current-window))
+  (setq org-agenda-window-setup 'current-window)
+  (setq org-agenda-tags-column 0))
 
 (use-package org-faces
   :ensure org
