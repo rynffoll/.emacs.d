@@ -256,9 +256,13 @@
     (all-the-icons-install-fonts t)))
 
 (use-package nerd-icons
+  :disabled (not -with-icons)
   :if (and -with-icons (display-graphic-p))
   :init
-  (setq nerd-icons-color-icons nil))
+  (setq nerd-icons-color-icons nil)
+  :config
+  (unless (member "Symbols Nerd Font Mono" (font-family-list))
+    (nerd-icons-install-fonts)))
 
 (use-package faces
   :ensure nil
@@ -596,6 +600,7 @@
   (ibuffer-hook . -setup-ibuffer-vc))
 
 (use-package nerd-icons-ibuffer
+  :disabled (not -with-icons)
   :if (and -with-icons (display-graphic-p))
   :hook
   (ibuffer-mode-hook . nerd-icons-ibuffer-mode))
@@ -682,6 +687,7 @@
   (after-init-hook . marginalia-mode))
 
 (use-package nerd-icons-completion
+  :disabled (not -with-icons)
   :if (and -with-icons (display-graphic-p))
   :after marginalia
   :config
@@ -754,8 +760,7 @@
   (corfu-mode-hook . corfu-terminal-mode))
 
 (use-package kind-icon
-  ;; :disabled
-  :unless (display-graphic-p)
+  :unless -with-icons
   :after corfu
   :demand
   :preface
@@ -763,12 +768,15 @@
     (call-interactively 'kind-icon-reset-cache))
   :init
   (setq kind-icon-default-face 'corfu-default)
+  (setq kind-icon-blend-background t)
   (setq kind-icon-use-icons nil)
+  (setq kind-icon-extra-space nil)
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
   (advice-add #'disable-theme :before #'-kind-icon-reset-cache))
 
 (use-package nerd-icons-corfu
+  :disabled (not -with-icons)
   :if (and -with-icons (display-graphic-p))
   :after corfu
   :demand
@@ -1413,6 +1421,7 @@
   (treemacs-set-scope-type 'Tabs))
 
 (use-package treemacs-nerd-icons
+  :disabled (not -with-icons)
   :if (and -with-icons (display-graphic-p))
   :after treemacs
   :demand
