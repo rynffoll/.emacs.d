@@ -290,23 +290,6 @@
   :hook
   (after-init-hook . doom-modeline-mode))
 
-(use-package mini-echo
-  :disabled
-  :init
-  (setq mini-echo-default-segments
-        '(:long ("major-mode" "buffer-name" "vcs" "buffer-position"
-                 "buffer-size" "flycheck" "process" "selection-info"
-                 "narrow" "macro" "profiler")
-          :short ("buffer-name-short" "buffer-position" "process"
-                  "profiler" "selection-info" "narrow" "macro")))
-  (setq mini-echo-separator "｜")
-  (setq mini-echo-ellipsis "…")
-  (setq mini-echo-right-padding 1)
-  (setq mini-echo-buffer-status-style 'color)
-  (setq mini-echo-position-format "%l:%c %p")
-  :hook
-  (after-init-hook . mini-echo-mode))
-
 (use-package custom
   :ensure nil
   :general
