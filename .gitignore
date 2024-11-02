@@ -25,3 +25,4 @@ undo-fu-session/
 /.emacs*.desktop.lock
 quelpa/
 dirvish/
+/dape-breakpoints
