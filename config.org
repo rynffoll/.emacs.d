@@ -2412,6 +2412,16 @@ cargo install --path .
   :vc (:url "https://github.com/dolmens/eglot-hierarchy" :rev :newest))
 #+end_src
 
+#+begin_src emacs-lisp
+(use-package flycheck-eglot
+  :demand
+  :after flycheck eglot
+  :init
+  (setq flycheck-eglot-exclusive nil)
+  :config
+  (global-flycheck-eglot-mode))
+#+end_src
+
 ** DAP
 #+begin_src emacs-lisp
 (use-package dape

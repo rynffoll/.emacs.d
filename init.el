@@ -1755,6 +1755,14 @@
 (use-package eglot-hierarchy
   :vc (:url "https://github.com/dolmens/eglot-hierarchy" :rev :newest))
 
+(use-package flycheck-eglot
+  :demand
+  :after flycheck eglot
+  :init
+  (setq flycheck-eglot-exclusive nil)
+  :config
+  (global-flycheck-eglot-mode))
+
 (use-package dape
   :custom-face
   (dape-breakpoint-face ((t (:inherit error))))
