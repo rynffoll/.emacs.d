@@ -867,7 +867,8 @@
 (use-package dired-aux
   :ensure nil
   :init
-  (setq dired-vc-rename-file t))
+  (setq dired-vc-rename-file t)
+  (setq dired-create-destination-dirs 'ask))
 
 (use-package dired-x
   :ensure nil
@@ -939,18 +940,49 @@
   :general
   (-leader-def
     "0" 'dirvish-side
-    "ft" 'dirvish-side)
+    "ft" 'dirvish-side
+    "fd" 'drivish)
+  ;; TODO: + evil-collection
   (:keymaps 'dirvish-mode-map :states 'normal
-            "q" 'dirvish-quit
+            "?"   'dirvish-dispatch
+            "q"   'dirvish-quit
+            "b"   'dirvish-quick-access
+            "f"   'dirvish-file-info-menu
+            "p"   'dirvish-yank
+            "S"   'dirvish-quicksort
+            "F"   'dirvish-layout-toggle
+            "z"   'dirvish-history-jump
+            "gh"  'dirvish-subtree-up
+            "gl"  'dirvish-subtree-toggle
             "TAB" 'dirvish-subtree-toggle
-            "?" 'dirvish-dispatch)
+            "h"   'dired-up-directory
+            "l"   'dired-find-file
+            "[h"  'dirvish-history-go-backward
+            "]h"  'dirvish-history-go-forward
+            "[e"  'dirvish-emerge-next-group
+            "]e"  'dirvish-emerge-previous-group
+            "M-e" 'dirvish-emerge-menu
+            "M-n" 'dirvish-narrow
+            "M-m" 'dirvish-mark-menu
+            "M-s" 'dirvish-setup-menu
+            "y"    '(:ignore t :wk "yank")
+            "yl"   'dirvish-copy-file-true-path
+            "yn"   'dirvish-copy-file-name
+            "yp"   'dirvish-copy-file-path
+            "yr"   'dirvish-copy-remote-path
+            "yy"   'dired-do-copy
+            "s"    '(:ignore t :wk "symlinks")
+            "ss"   'dirvish-symlink
+            "sS"   'dirvish-relative-symlink
+            "sh"   'dirvish-hardlink)
   :custom-face
   (dirvish-hl-line ((t (:inherit hl-line))))
   :init
-  (setq dirvish-mode-line-height (+ (frame-char-height) 4)) ;; see `doom-modeline-height'
+  (setq dirvish-mode-line-height   (+ (frame-char-height) 4)) ;; see `doom-modeline-height'
   (setq dirvish-header-line-height (+ (frame-char-height) 4)) ;; see `doom-modeline-height'
   (setq dirvish-attributes nil)
-  (setq dirvish-path-separators '(" ~" " /" "/"))
+  (setq dirvish-path-separators '("  ~" "  " "/"))
+  (setq dirvish-reuse-session nil)
   :hook
   (after-init-hook . dirvish-override-dired-mode)
   :config
