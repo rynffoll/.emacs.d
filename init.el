@@ -1743,6 +1743,15 @@
   :init
   (setq eglot-autoshutdown t))
 
+(use-package eglot-booster
+  :if (executable-find "emacs-lsp-booster")
+  :vc (:url "https://github.com/jdtsmith/eglot-booster" :rev :newest)
+  ;; :after eglot
+  :init
+  (setq eglot-booster-no-remote-boost t)
+  :hook
+  (after-init-hook . eglot-booster-mode))
+
 (use-package dape
   :custom-face
   (dape-breakpoint-face ((t (:inherit error))))

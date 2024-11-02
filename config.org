@@ -2386,6 +2386,27 @@ Install grammars
   (setq eglot-autoshutdown t))
 #+end_src
 
+https://github.com/blahgeek/emacs-lsp-booster
+#+begin_src sh :tangle no :results silent
+# TODO: elisp function for this using /tmp?
+# like vterm-module-compile
+
+git clone https://github.com/blahgeek/emacs-lsp-booster ~/tmp/emacs-lsp-booster
+cd ~/tmp/emacs-lsp-booster
+cargo install --path .
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package eglot-booster
+  :if (executable-find "emacs-lsp-booster")
+  :vc (:url "https://github.com/jdtsmith/eglot-booster" :rev :newest)
+  ;; :after eglot
+  :init
+  (setq eglot-booster-no-remote-boost t)
+  :hook
+  (after-init-hook . eglot-booster-mode))
+#+end_src
+
 ** DAP
 #+begin_src emacs-lisp
 (use-package dape
