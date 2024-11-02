@@ -23,3 +23,5 @@ tree-sitter/
 undo-fu-session/
 /.emacs*.desktop
 /.emacs*.desktop.lock
+quelpa/
+dirvish/

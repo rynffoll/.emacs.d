@@ -278,6 +278,7 @@
 
 (use-package doom-modeline
   :init
+  (setq doom-modeline-bar-width 2)
   (setq doom-modeline-minor-modes t)
   (setq doom-modeline-buffer-file-name-style 'buffer-name)
   (setq doom-modeline-icon nil)
@@ -892,7 +893,11 @@
   (:keymaps 'dired-mode-map :states 'normal
             "M-." 'dired-omit-mode)
   :init
-  (setq dired-omit-files (rx (seq bol "."))))
+  ;; (setq dired-omit-files (rx (seq bol ".")))
+  (setq dired-omit-files "^\\.\\.?$")
+  (setq dired-omit-extensions nil)
+  :hook
+  (dired-mode-hook . dired-omit-mode))
 
 (use-package dired-subtree
   :preface
@@ -916,6 +921,8 @@
     (if dired-hide-details-mode
         (diredfl-mode -1)
       (diredfl-mode +1)))
+  :custom-face
+  (diredfl-dir-name ((t (:bold t))))
   :hook
   ;; (dired-hide-details-mode-hook . -toggle-diredfl-mode)
   (after-init-hook . diredfl-global-mode))
@@ -932,6 +939,54 @@
             ")" 'dired-git-info-mode)
   :init
   (setq dgi-auto-hide-details-p nil))
+
+;; Back to `quelpa' because `package-vc' doesn't support keyword like `:files'
+(use-package quelpa-use-package
+  :demand
+  :init
+  (setq quelpa-use-package-inhibit-loading-quelpa t))
+
+(use-package dirvish
+  ;; :vc (:url "https://github.com/hlissner/dirvish" :rev :newest)
+  :ensure nil
+  :quelpa (dirvish
+           :fetcher github
+           :repo "hlissner/dirvish"
+           :files ("*.el" "extensions/*.el"))
+  :general
+  (-leader-def
+    "0" 'dirvish-side
+    "ft" 'dirvish-side)
+  (:keymaps 'dirvish-mode-map :states 'normal
+            "q" 'dirvish-quit
+            "TAB" 'dirvish-subtree-toggle
+            "?" 'dirvish-dispatch)
+  :custom-face
+  (dirvish-hl-line ((t (:inherit hl-line))))
+  :init
+  (setq dirvish-mode-line-height (+ (frame-char-height) 4)) ;; see `doom-modeline-height'
+  (setq dirvish-header-line-height (+ (frame-char-height) 4)) ;; see `doom-modeline-height'
+  (setq dirvish-attributes nil)
+  (setq dirvish-path-separators '(" ~" " /" "/"))
+  :hook
+  (after-init-hook . dirvish-override-dired-mode)
+  :config
+  (with-eval-after-load 'winum
+    (defun winum-assign-0-to-dirvish-side ()
+      (when (and (functionp 'dirvish-side--session-visible-p)
+                 (eq (selected-window) (dirvish-side--session-visible-p))
+                 (eq (selected-window) (frame-first-window)))
+        0))
+    (add-to-list 'winum-assign-functions #'winum-assign-0-to-dirvish-side))
+  ;; TODO: contribute to upstream
+  (dirvish-define-mode-line winum
+    "A `winum-mode' indicator."
+    (and (bound-and-true-p winum-mode)
+         (let ((num (winum-get-number-string)))
+           (propertize (format " %s " num)
+                       'face 'winum-face))))
+  (setq dirvish-mode-line-format
+        '(:left (winum sort) :right (omit yank index))))
 
 (use-package tramp
   :ensure nil
@@ -1309,6 +1364,7 @@
     "ol" 'link-hint-open-link))
 
 (use-package treemacs
+  :disabled
   ;; :preface
   ;; (defun -setup-treemacs-theme ()
   ;;   (treemacs-create-theme "Icons"
