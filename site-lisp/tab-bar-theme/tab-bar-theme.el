@@ -32,7 +32,7 @@
 
 
 ;;;###autoload
-(defun tab-bar-theme--apply (&optional theme)
+(defun tab-bar-theme--apply (&optional _theme)
   "Apply faces to current theme."
   (let* ((bg-tab-inactive (face-attribute 'mode-line-inactive :background))
 	 (fg-tab-inactive (face-attribute 'mode-line-inactive :foreground))
