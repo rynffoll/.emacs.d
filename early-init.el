@@ -75,9 +75,9 @@
 ;;                                      (name . "main")
 ;;                                      (explicit-name . t))))
 
-;; (add-to-list 'default-frame-alist '(font . "JetBrains Mono Medium 14"))
+(add-to-list 'default-frame-alist '(font . "JetBrains Mono Medium 14"))
 ;; (add-to-list 'default-frame-alist '(font . "Iosevka Medium 14"))
-(add-to-list 'default-frame-alist '(font . "Martian Mono Condensed 14"))
+;; (add-to-list 'default-frame-alist '(font . "Martian Mono Condensed 14"))
 
 (when (featurep 'ns)
   (setq ns-use-proxy-icon nil)
