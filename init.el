@@ -1769,6 +1769,26 @@
   :init
   (setq eglot-autoshutdown t))
 
+(use-package dape
+  :custom-face
+  (dape-breakpoint-face ((t (:inherit error))))
+  :init
+  (setq dape-key-prefix (kbd "C-x C-a"))
+  (setq dape-inlay-hints t)
+  ;; (setq dape-buffer-window-arrangement 'right)
+  (setq dape-buffer-window-arrangement 'gud)
+  (setq dape-info-hide-mode-line nil)
+  :config
+  (dape-breakpoint-global-mode)
+  :hook
+  (kill-emacs-hook . dape-breakpoint-save)
+  (after-init-hook . dape-breakpoint-load))
+
+(use-package repeat
+  :ensure nil
+  :config
+  (repeat-mode))
+
 (use-package highlight-defined
   :init
   (setq highlight-defined-face-use-itself t)

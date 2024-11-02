@@ -123,6 +123,7 @@
 - [[#languages][Languages]]
   - [[#tree-sitter][Tree-sitter]]
   - [[#lsp][LSP]]
+  - [[#dap][DAP]]
   - [[#emacs-lisp][Emacs Lisp]]
   - [[#clojure][Clojure]]
   - [[#go][Go]]
@@ -2413,6 +2414,29 @@ Install grammars
 (use-package eglot
   :init
   (setq eglot-autoshutdown t))
+#+end_src
+
+** DAP
+#+begin_src emacs-lisp
+(use-package dape
+  :custom-face
+  (dape-breakpoint-face ((t (:inherit error))))
+  :init
+  (setq dape-key-prefix (kbd "C-x C-a"))
+  (setq dape-inlay-hints t)
+  ;; (setq dape-buffer-window-arrangement 'right)
+  (setq dape-buffer-window-arrangement 'gud)
+  (setq dape-info-hide-mode-line nil)
+  :config
+  (dape-breakpoint-global-mode)
+  :hook
+  (kill-emacs-hook . dape-breakpoint-save)
+  (after-init-hook . dape-breakpoint-load))
+
+(use-package repeat
+  :ensure nil
+  :config
+  (repeat-mode))
 #+end_src
 
 ** Emacs Lisp
