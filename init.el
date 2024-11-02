@@ -1014,25 +1014,15 @@
   :ensure nil
   :general
   (-leader-def
-    "hx" 'describe-command
-    "hk" 'describe-key
-    "hv" 'describe-variable
-    "hf" 'describe-function
-    "hF" 'describe-face
-    "hb" 'describe-bindings))
-
-(use-package man
-  :ensure nil
-  :general
-  (-leader-def
-    "hM" 'man))
+    "h" '(:keymap help-map :package help :wk "help")))
 
 (use-package helpful
   :general
-  ([remap describe-command]  'helpful-command)
-  ([remap describe-key]      'helpful-key)
-  ([remap describe-variable] 'helpful-variable)
-  ([remap describe-function] 'helpful-function)
+  ([remap describe-command]             'helpful-command)
+  ([remap describe-key]                 'helpful-key)
+  ([remap describe-variable]            'helpful-variable)
+  ([remap describe-function]            'helpful-callable)
+  ([remap Info-goto-emacs-command-node] 'helpful-function)
   (-leader-def
     "h." 'helpful-at-point))
 
@@ -1040,7 +1030,8 @@
   :ensure nil
   :general
   (-leader-def
-    "hl" 'find-library))
+    "fl" 'find-library))
+
 
 (use-package delsel
   :ensure nil
