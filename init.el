@@ -1752,6 +1752,9 @@
   :hook
   (after-init-hook . eglot-booster-mode))
 
+(use-package eglot-hierarchy
+  :vc (:url "https://github.com/dolmens/eglot-hierarchy" :rev :newest))
+
 (use-package dape
   :custom-face
   (dape-breakpoint-face ((t (:inherit error))))

@@ -2407,6 +2407,11 @@ cargo install --path .
   (after-init-hook . eglot-booster-mode))
 #+end_src
 
+#+begin_src emacs-lisp
+(use-package eglot-hierarchy
+  :vc (:url "https://github.com/dolmens/eglot-hierarchy" :rev :newest))
+#+end_src
+
 ** DAP
 #+begin_src emacs-lisp
 (use-package dape
