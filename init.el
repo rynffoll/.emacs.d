@@ -1846,12 +1846,6 @@
 
 (use-package clojure-ts-mode)
 
-(use-package eldoc
-  :ensure nil
-  :hook
-  (clojure-ts-mode-hook . eldoc-mode)
-  (cider-repl-mode-hook . eldoc-mode))
-
 (use-package flycheck-clj-kondo
   :preface
   (defun -setup-flycheck-clj-kondo ()
@@ -1911,10 +1905,7 @@
 (use-package makefile-executor
   :general
   (-local-leader-def :keymaps 'makefile-mode-map
-    "e" '(:ignore t :wk "eval")
-    "ee" '(makefile-executor-execute-target :wk "execute")
-    "eb" '(makefile-executor-execute-target :wk "execute in dedicated buffer")
-    "el" '(makefile-executor-execute-target :wk "execute last"))
+    "e" 'makefile-executor-execute-target)
   :hook
   (makefile-mode-hook . makefile-executor-mode))
 

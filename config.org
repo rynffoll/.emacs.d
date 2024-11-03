@@ -167,7 +167,6 @@
 
 (setq load-prefer-newer t)
 (setq enable-recursive-minibuffers t)
-(setq indent-tabs-mode nil)
 (setq create-lockfiles nil)
 (setq ring-bell-function 'ignore)
 (setq delete-by-moving-to-trash t)
@@ -267,6 +266,8 @@
 
 ** Disable writing customization to ~init.el~
 #+begin_src emacs-lisp
+;; (setq custom-file null-device)
+;; Fix: Error in post-command-hook (vertico--exhibit): (error "Maximum buffer size exceeded")
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 #+end_src
 
@@ -2513,12 +2514,6 @@ cargo install --path .
 Common
 #+begin_src emacs-lisp
 (use-package clojure-ts-mode)
-
-(use-package eldoc
-  :ensure nil
-  :hook
-  (clojure-ts-mode-hook . eldoc-mode)
-  (cider-repl-mode-hook . eldoc-mode))
 #+end_src
 
 clj-kondo
@@ -2601,10 +2596,7 @@ go install github.com/go-delve/delve/cmd/dlv@latest
 (use-package makefile-executor
   :general
   (-local-leader-def :keymaps 'makefile-mode-map
-    "e" '(:ignore t :wk "eval")
-    "ee" '(makefile-executor-execute-target :wk "execute")
-    "eb" '(makefile-executor-execute-target :wk "execute in dedicated buffer")
-    "el" '(makefile-executor-execute-target :wk "execute last"))
+    "e" 'makefile-executor-execute-target)
   :hook
   (makefile-mode-hook . makefile-executor-mode))
 #+end_src

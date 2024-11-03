@@ -4,7 +4,6 @@
 
 (setq load-prefer-newer t)
 (setq enable-recursive-minibuffers t)
-(setq indent-tabs-mode nil)
 (setq create-lockfiles nil)
 (setq ring-bell-function 'ignore)
 (setq delete-by-moving-to-trash t)
@@ -86,4 +85,6 @@
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . dark)))
 
+;; (setq custom-file null-device)
+;; Fix: Error in post-command-hook (vertico--exhibit): (error "Maximum buffer size exceeded")
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
