@@ -1070,6 +1070,10 @@
   (-leader-def
     "fl" 'find-library))
 
+(use-package emacs
+  :ensure nil
+  :init
+  (setq-default tab-width 4))
 
 (use-package delsel
   :ensure nil
@@ -1918,6 +1922,8 @@
 (use-package go-ts-mode
   :ensure nil
   :mode "\\.go\\'"
+  :init
+  (setq go-ts-mode-indent-offset 4)
   :hook
   (go-ts-mode-hook . eglot-ensure))
 
