@@ -1630,11 +1630,43 @@
   (setq diff-hl-draw-borders nil)
   :hook
   (after-init-hook         . global-diff-hl-mode)
-  ;; (after-init-hook         . diff-hl-margin-mode)
   (diff-hl-mode-hook       . diff-hl-flydiff-mode)
-  (dired-mode-hook         . diff-hl-dired-mode)
   (magit-pre-refresh-hook  . diff-hl-magit-pre-refresh)
   (magit-post-refresh-hook . diff-hl-magit-post-refresh))
+
+(use-package diff-hl-dired
+  :ensure diff-hl
+  :config
+  ;; FIXME: dirty hack to override bitmap functions
+  (defun diff-hl-dired-highlight-items (alist)
+    "Highlight ALIST containing (FILE . TYPE) elements."
+    (dolist (pair alist)
+      (let ((file (car pair))
+            (type (cdr pair)))
+        (save-excursion
+          (goto-char (point-min))
+          (when (and type (dired-goto-file-1
+                           file (expand-file-name file) nil))
+            (let* (;; (diff-hl-fringe-bmp-function 'diff-hl-fringe-bmp-from-type)
+                   ;; (diff-hl-fringe-face-function 'diff-hl-dired-face-from-type)
+                   (diff-hl-fringe-bmp-function '(lambda (_type pos) 'diff-hl-bmp-empty))
+                   (o (diff-hl-add-highlighting type 'single)))
+              (overlay-put o 'modification-hooks '(diff-hl-overlay-modified))
+              (overlay-put o 'diff-hl-dired-type type)
+              ))))))
+  :hook
+  (dired-mode-hook         . diff-hl-dired-mode))
+
+(use-package diff-hl-margin
+  :ensure diff-hl
+  :unless (display-graphic-p)
+  :init
+  (setq diff-hl-margin-symbols-alist '((insert . " ")
+                                       (delete . " ")
+                                       (change . " ")
+                                       (unknown . " ")))
+  :hook
+  (after-init-hook         . diff-hl-margin-mode))
 
 (use-package org
   :ensure nil
