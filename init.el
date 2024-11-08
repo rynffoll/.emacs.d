@@ -1700,8 +1700,8 @@
 
   (setq org-auto-align-tags nil)
   (setq org-tags-column 0)
-  ;; (setq org-ellipsis "…")
-  (setq org-ellipsis " ⌄ ")
+  (setq org-ellipsis "…")
+  ;; (setq org-ellipsis " ⌄ ")
   (setq org-pretty-entities t)
   (setq org-hide-emphasis-markers t)
   (setq org-use-sub-superscripts '{})
