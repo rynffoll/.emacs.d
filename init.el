@@ -1844,6 +1844,10 @@
   (after-init-hook . global-treesit-auto-mode))
 
 (use-package eglot
+  :general
+  (-local-leader-def :keymaps 'eglot-mode-map
+	;; TODO: + moar bindings
+    "=" 'eglot-format)
   :init
   (setq eglot-autoshutdown t))
 
@@ -1876,6 +1880,7 @@
   ;; (setq dape-buffer-window-arrangement 'right)
   (setq dape-buffer-window-arrangement 'gud)
   (setq dape-info-hide-mode-line nil)
+  (setq dape-breakpoint-margin-string "●")
   :config
   (dape-breakpoint-global-mode)
   :hook

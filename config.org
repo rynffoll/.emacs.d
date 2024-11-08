@@ -2492,6 +2492,10 @@ Install grammars
 ** LSP
 #+begin_src emacs-lisp
 (use-package eglot
+  :general
+  (-local-leader-def :keymaps 'eglot-mode-map
+	;; TODO: + moar bindings
+    "=" 'eglot-format)
   :init
   (setq eglot-autoshutdown t))
 #+end_src
@@ -2543,6 +2547,7 @@ cargo install --path .
   ;; (setq dape-buffer-window-arrangement 'right)
   (setq dape-buffer-window-arrangement 'gud)
   (setq dape-info-hide-mode-line nil)
+  (setq dape-breakpoint-margin-string "●")
   :config
   (dape-breakpoint-global-mode)
   :hook
