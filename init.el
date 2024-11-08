@@ -872,6 +872,8 @@
   (setq dired-recursive-copies 'always)
   (setq dired-recursive-deletes 'always)
   (setq dired-hide-details-hide-symlink-targets nil)
+  (setq dired-mouse-drag-files t)
+  (setq mouse-drag-and-drop-region-cross-program t)
   :hook
   (dired-mode-hook . dired-hide-details-mode))
 
@@ -891,6 +893,7 @@
   ;; (setq dired-omit-files (rx (seq bol ".")))
   (setq dired-omit-files "^\\.\\.?$")
   (setq dired-omit-extensions nil)
+  (setq dired-omit-verbose nil)
   :hook
   (dired-mode-hook . dired-omit-mode))
 
@@ -948,6 +951,15 @@
            :fetcher github
            :repo "hlissner/dirvish"
            :files ("*.el" "extensions/*.el"))
+  :preface
+  (defun winum-assign-0-to-dirvish-side ()
+    (when (and (functionp 'dirvish-side--session-visible-p)
+               (eq (selected-window) (dirvish-side--session-visible-p))
+               (eq (selected-window) (frame-first-window)))
+      0))
+  (defun +dired--init-fringes (dir buffer setup)
+    (when diff-hl-dired-mode
+      (set-window-fringes nil 8 1)))
   :general
   (-leader-def
     "0" 'dirvish-side
@@ -991,6 +1003,7 @@
   :init
   (setq dirvish-mode-line-height   (+ (frame-char-height) 4)) ;; see `doom-modeline-height'
   (setq dirvish-header-line-height (+ (frame-char-height) 4)) ;; see `doom-modeline-height'
+  ;; (setq dirvish-attributes '(vc-state)) ;; back to `diff-hl-dir-mode'
   (setq dirvish-attributes nil)
   (setq dirvish-path-separators '("  ~" "  " "/"))
   (setq dirvish-reuse-session nil)
@@ -998,21 +1011,18 @@
   (after-init-hook . dirvish-override-dired-mode)
   :config
   (with-eval-after-load 'winum
-    (defun winum-assign-0-to-dirvish-side ()
-      (when (and (functionp 'dirvish-side--session-visible-p)
-                 (eq (selected-window) (dirvish-side--session-visible-p))
-                 (eq (selected-window) (frame-first-window)))
-        0))
-    (add-to-list 'winum-assign-functions #'winum-assign-0-to-dirvish-side))
-  ;; TODO: contribute to upstream
-  (dirvish-define-mode-line winum
-    "A `winum-mode' indicator."
-    (and (bound-and-true-p winum-mode)
-         (let ((num (winum-get-number-string)))
-           (propertize (format " %s " num)
-                       'face 'winum-face))))
-  (setq dirvish-mode-line-format
-        '(:left (winum sort) :right (omit yank index))))
+    (add-to-list 'winum-assign-functions #'winum-assign-0-to-dirvish-side)
+    ;; TODO: contribute to upstream
+    (dirvish-define-mode-line winum
+      "A `winum-mode' indicator."
+      (and (bound-and-true-p winum-mode)
+           (let ((num (winum-get-number-string)))
+             (propertize (format " %s " num)
+                         'face 'winum-face))))
+    (setq dirvish-mode-line-format
+          '(:left (winum sort) :right (omit yank))))
+  ;; https://github.com/doomemacs/doomemacs/blob/master/modules/emacs/dired/config.el#L109
+  (advice-add 'dirvish-data-for-dir :before #'+dired--init-fringes))
 
 (use-package tramp
   :ensure nil
