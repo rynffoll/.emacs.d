@@ -120,6 +120,7 @@
     - [[#core][Core]]
     - [[#plantuml][PlantUML]]
     - [[#verb][Verb]]
+    - [[#chatgpt-shell][chatgpt-shell]]
     - [[#tests][tests]]
 - [[#languages][Languages]]
   - [[#tree-sitter][Tree-sitter]]
@@ -148,6 +149,9 @@
   - [[#docker][Docker]]
   - [[#ansible][Ansible]]
   - [[#envrc][.env(rc)]]
+- [[#ai-assistants][AI assistants]]
+  - [[#chats][Chats]]
+  - [[#github-copilot][GitHub Copilot]]
 - [[#utils][Utils]]
 - [[#private-configuration][Private Configuration]]
 - [[#the-end][The end]]
@@ -396,6 +400,7 @@
    "," (general-simulate-key "SPC m" :which-key "local leader"))
   (-leader-def
     ""    '(nil :wk "leader")
+    "a"   '(:ignore t :wk "assistant")
     "o"   '(:ignore t :wk "open")
     "O"   '(:ignore t :wk "org")
     "p"   '(:ignore t :wk "project")
@@ -2444,7 +2449,6 @@ Org Bullets
 *** Verb
 #+begin_src emacs-lisp
 (use-package verb
-  ;; :after org
   :general
   (org-mode-map
    "C-c C-r" '(:keymap verb-command-map :package verb :wk "verb"))
@@ -2457,7 +2461,15 @@ Org Bullets
    '((verb . t))))
 #+end_src
 
-*** tests :verb:
+*** chatgpt-shell
+#+begin_src emacs-lisp
+(use-package ob-chatgpt-shell
+  :autoload ob-chatgpt-shell-setup
+  :init
+  (ob-chatgpt-shell-setup))
+#+end_src
+
+*** tests
 #+begin_src emacs-lisp :tangle no :results silent
 (message "Hello World!")
 #+end_src
@@ -2472,6 +2484,10 @@ Bob -> Alice : Hello World!
 
 #+begin_src verb :tangle no :op send get-body :results silent
 get https://github.com/status
+#+end_src
+
+#+begin_src chatgpt-shell :results silent
+Hello World!
 #+end_src
 
 * Languages
@@ -2933,6 +2949,88 @@ go install github.com/go-delve/delve/cmd/dlv@latest
   :if (executable-find "direnv")
   :hook
   (after-init-hook . envrc-global-mode))
+#+end_src
+
+* AI assistants
+** Chats
+Storing in =~/.authinfo= or ==~/.authinfo.gpg=.
+By default, =api.openai.com= is used as =HOST= and =apikey= as =USER=.
+#+begin_src authinfo :tangle no :results silent
+# ChatGPT
+machine api.openai.com login apikey password TOKEN
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package gptel
+  :preface
+  (defun -gptel-send-back-evil-normal-state (&optional _result)
+    "Switch to normal state after calling `gptel-send`."
+    (evil-normal-state))
+  :general
+  (-leader-def
+    "a." 'gptel-menu
+    "ac" 'gptel)
+  :init
+  (setq gptel-default-mode 'org-mode)
+  (setq gptel-prompt-prefix-alist
+        '((markdown-mode . "### ")
+          ;; (org-mode . "*** ")
+          (org-mode . "* ")
+          (text-mode . "### ")))
+  (setq gptel-org-branching-context t)
+  :config
+  (advice-add 'gptel-send :after #'-gptel-send-back-evil-normal-state)
+  :hook
+  (gptel-mode-hook . toggle-truncate-lines)
+  (gptel-mode-hook . toggle-word-wrap))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package chatgpt-shell
+  :preface
+  (defun -chatgpt-shell-openai-key ()
+    (auth-source-pick-first-password :host "api.openai.com"))
+  :general
+  (-leader-def
+    "as" 'chatgpt-shell)
+  :init
+  (setq chatgpt-shell-openai-key #'-chatgpt-shell-openai-key)
+  :config
+  (add-to-list 'chatgpt-shell-model-versions "gpt-4o-mini"))
+#+end_src
+
+** GitHub Copilot
+#+begin_src emacs-lisp
+(use-package copilot
+  :vc ( :url "https://github.com/copilot-emacs/copilot.el"
+        :rev :newest
+        :branch "main")
+  :general
+  (-leader-def
+    "aC" '(:ignore t :wk "copilot")
+    "aCm" 'copilot-mode
+    "aCD" 'copilot-diagnose)
+  (copilot-completion-map
+   "TAB" 'copilot-accept-completion
+   "C-TAB" 'copilot-accept-completion-by-word
+   "C-j" 'copilot-next-completion
+   "C-k" 'copilot-previous-completion)
+  :hook
+  (prog-mode-hook . copilot-mode))
+#+end_src
+
+Install server
+#+begin_src emacs-lisp :tangle no :results silent
+(copilot-install-server)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package copilot-chat
+  :general
+  (-leader-def
+    "aCc" 'copilot-chat-display)
+  :init
+  (setq copilot-chat-frontend 'shell-maker))
 #+end_src
 
 * Utils

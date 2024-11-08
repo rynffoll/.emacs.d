@@ -85,6 +85,7 @@
    "," (general-simulate-key "SPC m" :which-key "local leader"))
   (-leader-def
     ""    '(nil :wk "leader")
+    "a"   '(:ignore t :wk "assistant")
     "o"   '(:ignore t :wk "open")
     "O"   '(:ignore t :wk "org")
     "p"   '(:ignore t :wk "project")
@@ -1825,7 +1826,6 @@
   (setq org-plantuml-exec-mode 'plantuml))
 
 (use-package verb
-  ;; :after org
   :general
   (org-mode-map
    "C-c C-r" '(:keymap verb-command-map :package verb :wk "verb"))
@@ -1836,6 +1836,11 @@
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((verb . t))))
+
+(use-package ob-chatgpt-shell
+  :autoload ob-chatgpt-shell-setup
+  :init
+  (ob-chatgpt-shell-setup))
 
 (use-package treesit-auto
   :init
@@ -2180,6 +2185,65 @@
   :if (executable-find "direnv")
   :hook
   (after-init-hook . envrc-global-mode))
+
+(use-package gptel
+  :preface
+  (defun -gptel-send-back-evil-normal-state (&optional _result)
+    "Switch to normal state after calling `gptel-send`."
+    (evil-normal-state))
+  :general
+  (-leader-def
+    "a." 'gptel-menu
+    "ac" 'gptel)
+  :init
+  (setq gptel-default-mode 'org-mode)
+  (setq gptel-prompt-prefix-alist
+        '((markdown-mode . "### ")
+          ;; (org-mode . "*** ")
+          (org-mode . "* ")
+          (text-mode . "### ")))
+  (setq gptel-org-branching-context t)
+  :config
+  (advice-add 'gptel-send :after #'-gptel-send-back-evil-normal-state)
+  :hook
+  (gptel-mode-hook . toggle-truncate-lines)
+  (gptel-mode-hook . toggle-word-wrap))
+
+(use-package chatgpt-shell
+  :preface
+  (defun -chatgpt-shell-openai-key ()
+    (auth-source-pick-first-password :host "api.openai.com"))
+  :general
+  (-leader-def
+    "as" 'chatgpt-shell)
+  :init
+  (setq chatgpt-shell-openai-key #'-chatgpt-shell-openai-key)
+  :config
+  (add-to-list 'chatgpt-shell-model-versions "gpt-4o-mini"))
+
+(use-package copilot
+  :vc ( :url "https://github.com/copilot-emacs/copilot.el"
+        :rev :newest
+        :branch "main")
+  :general
+  (-leader-def
+    "aC" '(:ignore t :wk "copilot")
+    "aCm" 'copilot-mode
+    "aCD" 'copilot-diagnose)
+  (copilot-completion-map
+   "TAB" 'copilot-accept-completion
+   "C-TAB" 'copilot-accept-completion-by-word
+   "C-j" 'copilot-next-completion
+   "C-k" 'copilot-previous-completion)
+  :hook
+  (prog-mode-hook . copilot-mode))
+
+(use-package copilot-chat
+  :general
+  (-leader-def
+    "aCc" 'copilot-chat-display)
+  :init
+  (setq copilot-chat-frontend 'shell-maker))
 
 (use-package focus
   :general
