@@ -1215,6 +1215,8 @@ doom-modeline
 ** cape
 #+begin_src emacs-lisp
 (use-package cape
+  :general
+  ("C-c p" 'cape-prefix-map)
   :init
   ;; Add `completion-at-point-functions', used by `completion-at-point'.
   ;; NOTE: The order matters!
