@@ -2170,6 +2170,13 @@
   (gptel-mode-hook . toggle-truncate-lines)
   (gptel-mode-hook . toggle-word-wrap))
 
+(use-package gptel-quick
+  :vc ( :url "https://github.com/karthink/gptel-quick"
+        :rev :newest)
+  :general
+  (-leder-def
+   "a?" 'gptel-quick))
+
 (use-package chatgpt-shell
   :preface
   (defun -chatgpt-shell-openai-key ()

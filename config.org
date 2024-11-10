@@ -2960,6 +2960,13 @@ machine api.openai.com login apikey password TOKEN
   :hook
   (gptel-mode-hook . toggle-truncate-lines)
   (gptel-mode-hook . toggle-word-wrap))
+
+(use-package gptel-quick
+  :vc ( :url "https://github.com/karthink/gptel-quick"
+        :rev :newest)
+  :general
+  (-leder-def
+   "a?" 'gptel-quick))
 #+end_src
 
 #+begin_src emacs-lisp
