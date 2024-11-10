@@ -2216,7 +2216,7 @@
   :init
   (setq copilot-chat-frontend 'shell-maker)
   :hook
-  (git-commit-setup-hook . copilot-chat-insert-commit-message))
+  (git-commit-mode-hook . copilot-chat-insert-commit-message))
 
 (use-package focus
   :general
