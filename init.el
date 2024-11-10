@@ -93,6 +93,7 @@
     "F"   '(:ignore t :wk "frame")
     "TAB" '(:ignore t :wk "tab")
     "b"   '(:ignore t :wk "buffer")
+	"S"   '(:ignore t :wk "session")
     "f"   '(:ignore t :wk "file")
     "e"   '(:ignore t :wk "emacs")
     "g"   '(:ignore t :wk "git")
@@ -605,22 +606,6 @@
   :hook
   (after-init-hook . persistent-scratch-setup-default))
 
-(use-package desktop
-  :disabled
-  :ensure nil
-  :general
-  (-leader-def
-    "eDs" 'desktop-save
-    "eDr" 'desktop-read)
-  :init
-  (setq desktop-path `(,user-emacs-directory))
-  :config
-  (dolist (mode '(magit-mode
-                  git-commit-mode))
-    (add-to-list 'desktop-modes-not-to-save mode))
-  :hook
-  (after-init-hook . desktop-save-mode))
-
 (use-package savehist
   :ensure nil
   :hook
@@ -640,6 +625,45 @@
   (setq recentf-max-saved-items 300)
   :hook
   (after-init-hook . recentf-mode))
+
+(use-package desktop
+  :disabled
+  :ensure nil
+  :general
+  (-leader-def
+    "Ss" 'desktop-save
+    "Sr" 'desktop-read)
+  :init
+  (setq desktop-path `(,user-emacs-directory))
+  :config
+  (dolist (mode '(git-commit-mode))
+    (add-to-list 'desktop-modes-not-to-save mode))
+  :hook
+  (after-init-hook . desktop-save-mode))
+
+(use-package easysession
+  ;; :disabled
+  :preface
+  (defun -easysession-load-ask ()
+    (interactive)
+    (when (y-or-n-p "Restore previous session?")
+      (easysession-load)))
+  ;; FIXME: hack to restore tab-bar
+  (defun -easysession-restore-tab-bar ()
+    (when (cdr (funcall tab-bar-tabs-function))
+      (let ((tab-bar-show t))
+        (tab-bar-mode +1))))
+  :general
+  (-leader-def
+    "Ss" 'easysession-save
+    "Sr" 'easysession-load)
+  :init
+  (setq easysession-save-interval (* 10 60))
+  ;; (add-hook 'emacs-startup-hook #'easysession-load 102)
+  (add-hook 'emacs-startup-hook #'-easysession-load-ask 102)
+  (add-hook 'emacs-startup-hook #'easysession-save-mode 102)
+  :hook
+  (easysession-after-load-hook . -easysession-restore-tab-bar))
 
 (use-package consult
   :general
@@ -1704,8 +1728,8 @@
   (setq org-ellipsis "…")
   ;; (setq org-ellipsis " ⌄ ")
   (setq org-pretty-entities t)
-  (setq org-hide-emphasis-markers t)
-  (setq org-use-sub-superscripts '{})
+  ;; (setq org-hide-emphasis-markers nil)
+  ;; (setq org-use-sub-superscripts '{})
 
   (setq org-use-fast-todo-selection 'expert)
   (setq org-todo-keywords '((sequence
@@ -2235,6 +2259,8 @@
    "C-TAB" 'copilot-accept-completion-by-word
    "C-j" 'copilot-next-completion
    "C-k" 'copilot-previous-completion)
+  :init
+  (setq copilot-indent-offset-warning-disable t)
   :hook
   (prog-mode-hook . copilot-mode))
 

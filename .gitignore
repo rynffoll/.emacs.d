@@ -26,3 +26,5 @@ undo-fu-session/
 quelpa/
 dirvish/
 /dape-breakpoints
+easysession/
+/.chatgpt-shell.el
