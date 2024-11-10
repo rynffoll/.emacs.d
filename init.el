@@ -1034,8 +1034,7 @@
   (setq dirvish-attributes nil)
   (setq dirvish-path-separators '("  ~" "  " "/"))
   (setq dirvish-reuse-session nil)
-  :hook
-  (after-init-hook . dirvish-override-dired-mode)
+  (setq dirvish-subtree-prefix "  ")
   :config
   (with-eval-after-load 'winum
     (add-to-list 'winum-assign-functions #'winum-assign-0-to-dirvish-side)
@@ -1049,7 +1048,9 @@
     (setq dirvish-mode-line-format
           '(:left (winum sort) :right (omit yank))))
   ;; https://github.com/doomemacs/doomemacs/blob/master/modules/emacs/dired/config.el#L109
-  (advice-add 'dirvish-data-for-dir :before #'+dired--init-fringes))
+  (advice-add 'dirvish-data-for-dir :before #'+dired--init-fringes)
+  :hook
+  (after-init-hook . dirvish-override-dired-mode))
 
 (use-package tramp
   :ensure nil
