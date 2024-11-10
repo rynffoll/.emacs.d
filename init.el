@@ -2213,7 +2213,9 @@
   (-leader-def
     "aCc" 'copilot-chat-display)
   :init
-  (setq copilot-chat-frontend 'shell-maker))
+  (setq copilot-chat-frontend 'shell-maker)
+  :hook
+  (git-commit-setup-hook . copilot-chat-insert-commit-message))
 
 (use-package focus
   :general
