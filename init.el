@@ -2174,8 +2174,8 @@
   :vc ( :url "https://github.com/karthink/gptel-quick"
         :rev :newest)
   :general
-  (-leder-def
-   "a?" 'gptel-quick))
+  (-leader-def
+    "a?" 'gptel-quick))
 
 (use-package chatgpt-shell
   :preface

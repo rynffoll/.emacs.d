@@ -2965,8 +2965,8 @@ machine api.openai.com login apikey password TOKEN
   :vc ( :url "https://github.com/karthink/gptel-quick"
         :rev :newest)
   :general
-  (-leder-def
-   "a?" 'gptel-quick))
+  (-leader-def
+    "a?" 'gptel-quick))
 #+end_src
 
 #+begin_src emacs-lisp
