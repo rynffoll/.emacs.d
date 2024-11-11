@@ -35,50 +35,50 @@
 (defun tab-bar-theme--apply (&optional _theme)
   "Apply faces to current theme."
   (let* ((bg-tab-inactive (face-attribute 'mode-line-inactive :background))
-	 (fg-tab-inactive (face-attribute 'mode-line-inactive :foreground))
-	 (bg-tab-active   (face-attribute 'default :background))
-	 (fg-tab-active   (face-attribute 'default :foreground))
-	 (box-line-width  3))
-    (custom-set-faces
+		 (fg-tab-inactive (face-attribute 'mode-line-inactive :foreground))
+		 (bg-tab-active   (face-attribute 'default :background))
+		 (fg-tab-active   (face-attribute 'default :foreground))
+		 (box-line-width  3))
+	(custom-set-faces
 
      `(tab-bar
        ((t ( :inherit unspecified
-	     :background ,bg-tab-inactive
-	     :foreground ,fg-tab-inactive
-	     :box (:line-width ,box-line-width :color ,bg-tab-inactive :style nil)))))
+			 :background ,bg-tab-inactive
+			 :foreground ,fg-tab-inactive
+			 :box (:line-width ,box-line-width :color ,bg-tab-inactive :style nil)))))
 
      `(tab-bar-tab
        ((t ( :inherit unspecified
-	     :background ,bg-tab-active
-	     :foreground ,fg-tab-active
-	     :overline t
-	     :box (:line-width ,box-line-width :color ,bg-tab-active :style nil)))))
+			 :background ,bg-tab-active
+			 :foreground ,fg-tab-active
+			 :overline t
+			 :box (:line-width ,box-line-width :color ,bg-tab-active :style nil)))))
 
      `(tab-bar-tab-inactive
        ((t ( :inherit unspecified
-	     :background ,bg-tab-inactive
-	     :foreground ,fg-tab-inactive
-	     :box (:line-width ,box-line-width :color ,bg-tab-inactive :style nil)))))
+			 :background ,bg-tab-inactive
+			 :foreground ,fg-tab-inactive
+			 :box (:line-width ,box-line-width :color ,bg-tab-inactive :style nil)))))
 
      `(tab-bar-tab-ungrouped
        ((t ( :inherit unspecified
-	     :background ,bg-tab-inactive
-	     :foreground ,fg-tab-inactive
-	     :box (:line-width ,box-line-width :color ,bg-tab-inactive :style nil)))))
+			 :background ,bg-tab-inactive
+			 :foreground ,fg-tab-inactive
+			 :box (:line-width ,box-line-width :color ,bg-tab-inactive :style nil)))))
 
      `(tab-bar-tab-group-inactive
        ((t ( :inherit unspecified
-	     :background ,bg-tab-inactive
-	     :foreground ,fg-tab-inactive
-	     :weight bold
-	     :box (:line-width ,box-line-width :color ,bg-tab-inactive :style nil)))))
+			 :background ,bg-tab-inactive
+			 :foreground ,fg-tab-inactive
+			 :weight bold
+			 :box (:line-width ,box-line-width :color ,bg-tab-inactive :style nil)))))
 
      `(tab-bar-tab-group-current
        ((t ( :inherit unspecified
-	     :background ,bg-tab-inactive
-	     :foreground ,fg-tab-active
-	     :weight bold
-	     :box (:line-width ,box-line-width :color ,bg-tab-inactive :style nil))))))))
+			 :background ,bg-tab-inactive
+			 :foreground ,fg-tab-active
+			 :weight bold
+			 :box (:line-width ,box-line-width :color ,bg-tab-inactive :style nil))))))))
 
 ;;;###autoload
 (define-minor-mode tab-bar-theme-mode
