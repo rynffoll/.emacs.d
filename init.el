@@ -2208,7 +2208,8 @@
   :init
   (setq copilot-indent-offset-warning-disable t)
   :hook
-  (prog-mode-hook . copilot-mode))
+  (prog-mode-hook . copilot-mode)
+  (git-commit-mode-hook . copilot-mode))
 
 (use-package copilot-chat
   :general

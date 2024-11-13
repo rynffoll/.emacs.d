@@ -3004,7 +3004,8 @@ machine api.openai.com login apikey password TOKEN
   :init
   (setq copilot-indent-offset-warning-disable t)
   :hook
-  (prog-mode-hook . copilot-mode))
+  (prog-mode-hook . copilot-mode)
+  (git-commit-mode-hook . copilot-mode))
 #+end_src
 
 Install server
