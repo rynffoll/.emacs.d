@@ -53,11 +53,11 @@
 (use-package ansi-color
   :ensure nil
   :preface
-  (defun -ansi-color-apply-on-compilation-buffer ()
+  (defun +ansi-color-apply-on-compilation-buffer ()
     (with-silent-modifications
       (ansi-color-apply-on-region compilation-filter-start (point))))
   :hook
-  (compilation-filter-hook . -ansi-color-apply-on-compilation-buffer))
+  (compilation-filter-hook . +ansi-color-apply-on-compilation-buffer))
 
 (use-package gcmh
   :hook
@@ -70,12 +70,12 @@
 
 (use-package general
   :config
-  (general-create-definer -leader-def
+  (general-create-definer +leader-def
     :states '(normal visual insert emacs motion)
     :keymaps 'override
     :prefix "SPC"
     :global-prefix "M-S-SPC")
-  (general-create-definer -local-leader-def
+  (general-create-definer +local-leader-def
     :states '(normal visual insert emacs motion)
     :keymaps 'override
     :prefix "SPC m"
@@ -83,7 +83,7 @@
   (general-define-key
    :states '(normal visual)
    "," (general-simulate-key "SPC m" :which-key "local leader"))
-  (-leader-def
+  (+leader-def
     ""    '(nil :wk "leader")
     "a"   '(:ignore t :wk "assistant")
     "o"   '(:ignore t :wk "open")
@@ -103,22 +103,22 @@
     "t"   '(:ignore t :wk "toggle")
     "i"   '(:ignore t :wk "insert")
     "q"   '(:ignore t :wk "quit"))
-  (-local-leader-def
+  (+local-leader-def
     ""    '(nil :wk "local leader")))
 
 (use-package evil
   :demand
   :preface
-  (defun -save-and-kill-buffer ()
+  (defun +save-and-kill-buffer ()
     (interactive)
     (save-buffer)
     (kill-this-buffer))
-  (defun -disable-evil-cursor ()
+  (defun +disable-evil-cursor ()
     (setq-local evil-default-cursor '(nil)))
   :general
   (evil-insert-state-map
    "C-k" nil)
-  (-leader-def
+  (+leader-def
     "j[" 'evil-jump-backward
     "j]" 'evil-jump-forward)
   :custom-face
@@ -138,7 +138,7 @@
   :config
   (evil-mode t)
   (evil-ex-define-cmd "q" 'kill-this-buffer)
-  (evil-ex-define-cmd "wq" '-save-and-kill-buffer))
+  (evil-ex-define-cmd "wq" '+save-and-kill-buffer))
 
 (use-package evil-collection
   :demand
@@ -218,12 +218,12 @@
 ;; https://www.reddit.com/r/emacs/comments/3u0d0u/how_do_i_make_the_vertical_window_divider_more/
 (unless (display-graphic-p)
   (with-eval-after-load 'disp-table
-    (defun -update-window-divider ()
+    (defun +update-window-divider ()
       (let ((display-table (or buffer-display-table
                                standard-display-table))
             (divider (make-glyph-code ?│)))
         (set-display-table-slot display-table 'vertical-border divider)))
-    (add-hook 'window-configuration-change-hook '-update-window-divider)))
+    (add-hook 'window-configuration-change-hook #'+update-window-divider)))
 
 (use-package pixel-scroll
   :ensure nil
@@ -258,19 +258,19 @@
   :hook
   (after-init-hook . global-ligature-mode))
 
-(defvar -with-icons nil)
+(defvar +with-icons nil)
 
 (use-package all-the-icons
   :disabled
-  :if (and -with-icons (display-graphic-p))
+  :if (and +with-icons (display-graphic-p))
   :autoload all-the-icons-octicon
   :config
   (unless (member "all-the-icons" (font-family-list))
     (all-the-icons-install-fonts t)))
 
 (use-package nerd-icons
-  :disabled (not -with-icons)
-  :if (and -with-icons (display-graphic-p))
+  :disabled (not +with-icons)
+  :if (and +with-icons (display-graphic-p))
   :init
   (setq nerd-icons-color-icons nil)
   :config
@@ -306,7 +306,7 @@
 (use-package custom
   :ensure nil
   :general
-  (-leader-def
+  (+leader-def
     "tt" 'load-theme))
 
 (use-package emacs
@@ -358,7 +358,7 @@
 (use-package frame
   :ensure nil
   :general
-  (-leader-def
+  (+leader-def
     "Ff" 'select-frame-by-name
     "Fn" 'make-frame-command
     "Fc" 'delete-frame
@@ -374,7 +374,7 @@
   :if (eq window-system 'ns)
   :ensure nil
   :general
-  (-leader-def
+  (+leader-def
     "F[" 'ns-prev-frame
     "F]" 'ns-next-frame))
 
@@ -396,7 +396,7 @@
 (use-package tab-bar
   :ensure nil
   :general
-  (-leader-def
+  (+leader-def
     "TAB" '(:keymap tab-prefix-map :wk "tab-bar"))
   (tab-prefix-map
    "." 'tab-bar-select-tab-by-name
@@ -452,7 +452,7 @@
 
 (use-package winum
   :general
-  (-leader-def
+  (+leader-def
     "0" 'winum-select-window-0-or-10
     "1" 'winum-select-window-1
     "2" 'winum-select-window-2
@@ -542,10 +542,10 @@
 (use-package emacs
   :ensure nil
   :preface
-  (defun -switch-to-scratch () (interactive) (switch-to-buffer "*scratch*"))
-  (defun -switch-to-messages () (interactive) (switch-to-buffer "*Messages*"))
+  (defun +switch-to-scratch () (interactive) (switch-to-buffer "*scratch*"))
+  (defun +switch-to-messages () (interactive) (switch-to-buffer "*Messages*"))
   :general
-  (-leader-def
+  (+leader-def
     "bs" '(-switch-to-scratch :wk "open scratch")
     "bm" '(-switch-to-messages :wk "open messages")
     "bR" 'rename-buffer))
@@ -553,7 +553,7 @@
 (use-package menu-bar
   :ensure nil
   :general
-  (-leader-def
+  (+leader-def
     "bk" 'kill-current-buffer
 
     "tde" 'toggle-debug-on-error
@@ -562,7 +562,7 @@
 (use-package window
   :ensure nil
   :general
-  (-leader-def
+  (+leader-def
     "bb" 'switch-to-buffer
     "bK" 'kill-buffer-and-window))
 
@@ -575,7 +575,7 @@
   :ensure evil
   :after evil
   :general
-  (-leader-def
+  (+leader-def
     "bn" 'evil-buffer-new
     "b]" 'evil-next-buffer
     "b[" 'evil-prev-buffer))
@@ -584,21 +584,21 @@
   :ensure nil
   :general
   ([remap list-buffers] 'ibuffer)
-  (-leader-def
+  (+leader-def
     "bi" 'ibuffer))
 
 (use-package ibuffer-vc
   :preface
-  (defun -setup-ibuffer-vc ()
+  (defun +setup-ibuffer-vc ()
     (ibuffer-vc-set-filter-groups-by-vc-root)
     (unless (eq ibuffer-sorting-mode 'alphabetic)
       (ibuffer-do-sort-by-alphabetic)))
   :hook
-  (ibuffer-hook . -setup-ibuffer-vc))
+  (ibuffer-hook . +setup-ibuffer-vc))
 
 (use-package nerd-icons-ibuffer
-  :disabled (not -with-icons)
-  :if (and -with-icons (display-graphic-p))
+  :disabled (not +with-icons)
+  :if (and +with-icons (display-graphic-p))
   :hook
   (ibuffer-mode-hook . nerd-icons-ibuffer-mode))
 
@@ -619,7 +619,7 @@
 (use-package recentf
   :ensure nil
   :general
-  (-leader-def
+  (+leader-def
     "fr" 'recentf-open-files)
   :init
   (setq recentf-max-saved-items 300)
@@ -630,7 +630,7 @@
   :disabled
   :ensure nil
   :general
-  (-leader-def
+  (+leader-def
     "Ss" 'desktop-save
     "Sr" 'desktop-read)
   :init
@@ -644,26 +644,26 @@
 (use-package easysession
   ;; :disabled
   :preface
-  (defun -easysession-load-ask ()
+  (defun +easysession-load-ask ()
     (interactive)
     (when (y-or-n-p "Restore previous session?")
       (easysession-load)))
   ;; FIXME: hack to restore tab-bar
-  (defun -easysession-restore-tab-bar ()
+  (defun +easysession-restore-tab-bar ()
     (when (cdr (funcall tab-bar-tabs-function))
       (let ((tab-bar-show t))
         (tab-bar-mode +1))))
   :general
-  (-leader-def
+  (+leader-def
     "Ss" 'easysession-save
     "Sr" 'easysession-load)
   :init
   (setq easysession-save-interval (* 10 60))
   ;; (add-hook 'emacs-startup-hook #'easysession-load 102)
-  (add-hook 'emacs-startup-hook #'-easysession-load-ask 102)
+  (add-hook 'emacs-startup-hook #'+easysession-load-ask 102)
   (add-hook 'emacs-startup-hook #'easysession-save-mode 102)
   :hook
-  (easysession-after-load-hook . -easysession-restore-tab-bar))
+  (easysession-after-load-hook . +easysession-restore-tab-bar))
 
 (use-package consult
   :general
@@ -679,7 +679,7 @@
   ([remap switch-to-buffer-other-window] 'consult-buffer-other-window)
   ([remap switch-to-buffer-other-frame]  'consult-buffer-other-frame)
   ([remap yank-pop]                      'consult-yank-pop)
-  (-leader-def
+  (+leader-def
     "/." 'consult-ripgrep
     "/b" 'consult-line)
   :init
@@ -707,8 +707,8 @@
   (after-init-hook . marginalia-mode))
 
 (use-package nerd-icons-completion
-  :disabled (not -with-icons)
-  :if (and -with-icons (display-graphic-p))
+  :disabled (not +with-icons)
+  :if (and +with-icons (display-graphic-p))
   :after marginalia
   :config
   (nerd-icons-completion-mode)
@@ -780,11 +780,11 @@
   (corfu-mode-hook . corfu-terminal-mode))
 
 (use-package kind-icon
-  :unless -with-icons
+  :unless +with-icons
   :after corfu
   :demand
   :preface
-  (defun -kind-icon-reset-cache (theme)
+  (defun +kind-icon-reset-cache (theme)
     (call-interactively 'kind-icon-reset-cache))
   :init
   (setq kind-icon-default-face 'corfu-default)
@@ -793,11 +793,11 @@
   (setq kind-icon-extra-space nil)
   :config
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter)
-  (advice-add #'disable-theme :before #'-kind-icon-reset-cache))
+  (advice-add #'disable-theme :before #'+kind-icon-reset-cache))
 
 (use-package nerd-icons-corfu
-  :disabled (not -with-icons)
-  :if (and -with-icons (display-graphic-p))
+  :disabled (not +with-icons)
+  :if (and +with-icons (display-graphic-p))
   :after corfu
   :demand
   :config
@@ -817,7 +817,7 @@
 (use-package files
   :ensure nil
   :general
-  (-leader-def
+  (+leader-def
     "." 'find-file
     "ff" 'find-file
     "br" 'revert-buffer
@@ -848,25 +848,25 @@
 (use-package iqa
   :preface
   ;; for integration with project-tab-groups
-  (defun -iqa-find-file-project (file)
+  (defun +iqa-find-file-project (file)
     (let* ((dir (file-name-directory file))
            (default-directory dir))
       (project-current t)
       (find-file file)))
   :general
-  (-leader-def
+  (+leader-def
     "ed" 'iqa-find-user-init-directory
     "ee" 'iqa-find-user-init-file
     "ec" 'iqa-find-user-custom-file
     "er" 'iqa-reload-user-init-file)
   :init
-  (setq iqa-find-file-function #'-iqa-find-file-project)
+  (setq iqa-find-file-function #'+iqa-find-file-project)
   (setq iqa-user-init-file (concat user-emacs-directory "config.org")))
 
 (use-package cus-edit
   :ensure nil
   :general
-  (-leader-def
+  (+leader-def
     "oc" 'customize-group))
 
 (use-package epg-config
@@ -877,7 +877,7 @@
 (use-package project
   :ensure nil
   :general
-  (-leader-def
+  (+leader-def
     "p" '(:keymap project-prefix-map :package project :wk "project"))
   (:keymaps 'project-prefix-map
             "m" 'magit-project-status
@@ -926,7 +926,7 @@
 
 (use-package dired-subtree
   :preface
-  (defun -dired-subtree-revert ()
+  (defun +dired-subtree-revert ()
     (call-interactively 'revert-buffer)
     (recenter))
   :general
@@ -935,26 +935,26 @@
   :init
   (setq dired-subtree-use-backgrounds nil)
   :config
-  (when -with-icons
+  (when +with-icons
     ;; for treemacs-icons-dired
-    (advice-add #'dired-subtree-toggle :after #'-dired-subtree-revert)))
+    (advice-add #'dired-subtree-toggle :after #'+dired-subtree-revert)))
 
 (use-package diredfl
   ;; :disabled
   :preface
-  (defun -toggle-diredfl-mode ()
+  (defun +toggle-diredfl-mode ()
     (if dired-hide-details-mode
         (diredfl-mode -1)
       (diredfl-mode +1)))
   :custom-face
   (diredfl-dir-name ((t (:bold t))))
   :hook
-  ;; (dired-hide-details-mode-hook . -toggle-diredfl-mode)
+  ;; (dired-hide-details-mode-hook . +toggle-diredfl-mode)
   (after-init-hook . diredfl-global-mode))
 
 (use-package nerd-icons-dired
   :disabled
-  :if (and -with-icons (display-graphic-p))
+  :if (and +with-icons (display-graphic-p))
   :hook
   (dired-mode-hook . nerd-icons-dired-mode))
 
@@ -988,7 +988,7 @@
     (when diff-hl-dired-mode
       (set-window-fringes nil 8 1)))
   :general
-  (-leader-def
+  (+leader-def
     "0" 'dirvish-side
     "ft" 'dirvish-side
     "fd" 'drivish)
@@ -1077,7 +1077,7 @@
 (use-package help
   :ensure nil
   :general
-  (-leader-def
+  (+leader-def
     "h" '(:keymap help-map :package help :wk "help")))
 
 (use-package helpful
@@ -1087,13 +1087,13 @@
   ([remap describe-variable]            'helpful-variable)
   ([remap describe-function]            'helpful-callable)
   ([remap Info-goto-emacs-command-node] 'helpful-function)
-  (-leader-def
+  (+leader-def
     "h." 'helpful-at-point))
 
 (use-package find-func
   :ensure nil
   :general
-  (-leader-def
+  (+leader-def
     "fl" 'find-library))
 
 (use-package emacs
@@ -1112,7 +1112,7 @@
 (use-package simple
   :ensure nil
   :general
-  (-leader-def
+  (+leader-def
     ":" 'execute-extended-command
     "tT" 'toggle-truncate-lines)
   :init
@@ -1133,11 +1133,11 @@
 
 (use-package hungry-delete
   :preface
-  (defun -disable-hungry-delete-mode ()
+  (defun +disable-hungry-delete-mode ()
     (hungry-delete-mode -1))
   :hook
   (after-init-hook . global-hungry-delete-mode)
-  (minibuffer-setup-hook . -disable-hungry-delete-mode))
+  (minibuffer-setup-hook . +disable-hungry-delete-mode))
 
 (use-package ediff
   :ensure nil
@@ -1168,8 +1168,8 @@
   :general
   ("C-x u" 'vundo)
   :hook
-  (vundo-mode-hook . -disable-global-hl-line-mode)
-  (vundo-mode-hook . -disable-evil-cursor)
+  (vundo-mode-hook . +disable-global-hl-line-mode)
+  (vundo-mode-hook . +disable-evil-cursor)
   :custom-face
   (vundo-highlight ((t (:inherit success :foreground unspecified))))
   (vundo-last-saved ((t (:inherit error :foreground unspecified))))
@@ -1181,10 +1181,10 @@
 (use-package hl-line
   :ensure nil
   :preface
-  (defun -disable-global-hl-line-mode ()
+  (defun +disable-global-hl-line-mode ()
     (setq-local global-hl-line-mode nil))
   :general
-  (-leader-def
+  (+leader-def
     "tl" 'global-hl-line-mode)
   :hook
   (after-init-hook . global-hl-line-mode))
@@ -1211,7 +1211,7 @@
 
 (use-package rainbow-mode
   :general
-  (-leader-def
+  (+leader-def
     "tr" 'rainbow-mode)
   :hook
   (css-mode-hook . rainbow-mode))
@@ -1219,7 +1219,7 @@
 (use-package whitespace
   :ensure nil
   :general
-  (-leader-def
+  (+leader-def
     "tw" 'whitespace-mode))
 
 (use-package page-break-lines
@@ -1228,7 +1228,7 @@
 
 (use-package highlight-indent-guides
   :general
-  (-leader-def
+  (+leader-def
     "ti" 'highlight-indent-guides-mode)
   :init
   (setq highlight-indent-guides-method 'character)
@@ -1245,7 +1245,7 @@
 (use-package hi-lock
   :ensure nil
   :general
-  (-leader-def
+  (+leader-def
     "/h" '(:ignore t :wh "highlight")
     "/h." 'highlight-symbol-at-point
     "/hp" 'highlight-phrase
@@ -1255,18 +1255,18 @@
 
 (use-package color-identifiers-mode
   :general
-  (-leader-def
+  (+leader-def
     "tc" 'color-identifiers-mode))
 
 (use-package prism
   :general
-  (-leader-def
+  (+leader-def
     "tp" 'prism-mode))
 
 (use-package display-line-numbers
   :ensure nil
   :general
-  (-leader-def
+  (+leader-def
     "tn" 'display-line-numbers-mode)
   :init
   (setq display-line-numbers-width-start t))
@@ -1313,7 +1313,7 @@
 
 (use-package flyspell
   :general
-  (-leader-def
+  (+leader-def
     "ts" 'flyspell-mode)
   (flyspell-mode-map
    "C-," nil
@@ -1341,7 +1341,7 @@
   ;; :disabled
   :preface
   ;; https://www.flycheck.org/en/latest/user/error-reports.html#fringe-and-margin-icons
-  (defun -flycheck-set-indication-mode ()
+  (defun +flycheck-set-indication-mode ()
     (pcase flycheck-indication-mode
       (`left-margin
        (setq left-margin-width (max 1 left-margin-width)))
@@ -1355,10 +1355,10 @@
   (setq flycheck-temp-prefix ".flycheck")
   :hook
   (after-init-hook . global-flycheck-mode)
-  (flycheck-mode-hook . -flycheck-set-indication-mode)
+  (flycheck-mode-hook . +flycheck-set-indication-mode)
   :config
   ;; (when (display-graphic-p)
-  ;;   (define-fringe-bitmap '-flycheck-fringe-indicator
+  ;;   (define-fringe-bitmap '+flycheck-fringe-indicator
   ;;     (vector #b00000000
   ;;             #b00000000
   ;;             #b00000000
@@ -1380,26 +1380,26 @@
   ;;   (flycheck-define-error-level 'error
   ;;     :severity 2
   ;;     :overlay-category 'flycheck-error-overlay
-  ;;     :fringe-bitmap '-flycheck-fringe-indicator
+  ;;     :fringe-bitmap '+flycheck-fringe-indicator
   ;;     :fringe-face 'flycheck-fringe-error)
 
   ;;   (flycheck-define-error-level 'warning
   ;;     :severity 1
   ;;     :overlay-category 'flycheck-warning-overlay
-  ;;     :fringe-bitmap '-flycheck-fringe-indicator
+  ;;     :fringe-bitmap '+flycheck-fringe-indicator
   ;;     :fringe-face 'flycheck-fringe-warning)
 
   ;;   (flycheck-define-error-level 'info
   ;;     :severity 0
   ;;     :overlay-category 'flycheck-info-overlay
-  ;;     :fringe-bitmap '-flycheck-fringe-indicator
+  ;;     :fringe-bitmap '+flycheck-fringe-indicator
   ;;     :fringe-face 'flycheck-fringe-info))
   (flycheck-redefine-standard-error-levels "!" 'exclamation-mark))
 
 (use-package consult-flycheck
   :requires flycheck
   :general
-  (-leader-def
+  (+leader-def
     "je" 'consult-flycheck))
 
 (use-package flymake
@@ -1417,12 +1417,12 @@
 (use-package imenu
   :ensure nil
   :general
-  (-leader-def
+  (+leader-def
     "ji" 'imenu))
 
 (use-package avy
   :general
-  (-leader-def
+  (+leader-def
     "jc" 'avy-goto-char
     "jw" 'avy-goto-word-0
     "jW" 'avy-goto-word-1
@@ -1433,13 +1433,13 @@
 
 (use-package link-hint
   :general
-  (-leader-def
+  (+leader-def
     "ol" 'link-hint-open-link))
 
 (use-package treemacs
   :disabled
   :general
-  (-leader-def
+  (+leader-def
     "0" 'treemacs-select-window
     "ft" 'treemacs)
   (:keymaps 'justl-mode-map :states 'normal
@@ -1450,10 +1450,10 @@
   (setq treemacs-space-between-root-nodes nil)
   (setq treemacs-recenter-after-file-follow 'on-distance)
   (setq treemacs-recenter-after-tag-follow 'on-distance)
-  (setq treemacs-no-png-images (not -with-icons))
+  (setq treemacs-no-png-images (not +with-icons))
   :hook
   (treemacs-mode-hook . hide-mode-line-mode)
-  (treemacs-mode-hook . -disable-evil-cursor))
+  (treemacs-mode-hook . +disable-evil-cursor))
 
 (use-package treemacs-theme
   :disabled
@@ -1474,7 +1474,7 @@
   :after treemacs evil)
 
 (use-package treemacs-icons-dired
-  :if (and -with-icons (display-graphic-p))
+  :if (and +with-icons (display-graphic-p))
   :hook
   (dired-mode-hook . treemacs-icons-dired-enable-once))
 
@@ -1487,8 +1487,8 @@
   (treemacs-set-scope-type 'Tabs))
 
 (use-package treemacs-nerd-icons
-  :disabled (not -with-icons)
-  :if (and -with-icons (display-graphic-p))
+  :disabled (not +with-icons)
+  :if (and +with-icons (display-graphic-p))
   :after treemacs
   :demand
   :config
@@ -1523,51 +1523,51 @@
 
 (use-package vterm
   :preface
-  (defun -vterm ()
+  (defun +vterm ()
     (interactive)
     (let ((default-directory "~"))
       (if (get-buffer "vterm")
           (switch-to-buffer "vterm")
         (vterm))))
   :general
-  (-leader-def
-    "ot" '-vterm)
+  (+leader-def
+    "ot" '+vterm)
   :init
   (setq vterm-max-scrollback 10000)
   (setq vterm-clear-scrollback-when-clearing t)
   :hook
-  (vterm-mode-hook . -disable-global-hl-line-mode)
+  (vterm-mode-hook . +disable-global-hl-line-mode)
   (vterm-mode-hook . hide-mode-line-mode))
 
 (use-package eshell-toggle
   :preface
-  (defun -eshell-toggle-init-vterm (dir)
+  (defun +eshell-toggle-init-vterm (dir)
     (let ((default-directory dir))
       (vterm)))
   :general
   ("§" 'eshell-toggle)
-  (-leader-def
+  (+leader-def
     "`" 'eshell-toggle)
   :init
-  (setq eshell-toggle-init-function '-eshell-toggle-init-vterm)
+  (setq eshell-toggle-init-function '+eshell-toggle-init-vterm)
   (setq eshell-toggle-find-project-root-package 'project)
   (setq eshell-toggle-run-command nil))
 
 (use-package magit
   :commands magit-blame
   :preface
-  (defun -magit-status ()
+  (defun +magit-status ()
     (interactive)
     (let ((current-prefix-arg '(4)))
       (call-interactively #'magit-status)))
   :general
-  (-leader-def
+  (+leader-def
     "g." 'magit-dispatch
     "gI" 'magit-init
     "gb" 'magit-blame
     "gc" 'magit-clone
     "gg" 'magit-status
-    "gl" '-magit-status
+    "gl" '+magit-status
     "gL" 'magit-log-buffer-file)
   :init
   (setq magit-clone-default-directory "~/Projects/")
@@ -1584,7 +1584,7 @@
 
 (use-package git-timemachine
   :general
-  (-leader-def
+  (+leader-def
     "gt" 'git-timemachine))
 
 (use-package git-modes)
@@ -1635,28 +1635,28 @@
 (use-package org
   :ensure nil
   :preface
-  (defun -open-org-directory  () (interactive) (find-file org-directory))
-  (defun -open-org-inbox-file () (interactive) (find-file -org-inbox-file))
-  (defun -open-org-todo-file  () (interactive) (find-file -org-todo-file))
-  (defun -open-org-notes-file () (interactive) (find-file -org-notes-file))
+  (defun +open-org-directory  () (interactive) (find-file org-directory))
+  (defun +open-org-inbox-file () (interactive) (find-file +org-inbox-file))
+  (defun +open-org-todo-file  () (interactive) (find-file +org-todo-file))
+  (defun +open-org-notes-file () (interactive) (find-file +org-notes-file))
   :general
-  (-leader-def
+  (+leader-def
     "O." '(-open-org-directory  :wk "open org-directory")
     "Oi" '(-open-org-inbox-file :wk "open inbox.org")
     "Ot" '(-open-org-todo-file  :wk "open todo.org")
     "On" '(-open-org-notes-file :wk "open notes.org"))
   :init
   (setq org-directory "~/Org")
-  (setq -org-inbox-file (concat org-directory "/inbox.org"))
-  (setq -org-todo-file  (concat org-directory "/todo.org"))
-  (setq -org-notes-file (concat org-directory "/notes.org"))
+  (setq +org-inbox-file (concat org-directory "/inbox.org"))
+  (setq +org-todo-file  (concat org-directory "/todo.org"))
+  (setq +org-notes-file (concat org-directory "/notes.org"))
 
   (setq org-startup-folded t)
   (setq org-startup-indented t)
   (setq org-insert-heading-respect-content t)
   (setq org-hide-leading-stars t)
 
-  (setq org-agenda-files `(,-org-todo-file))
+  (setq org-agenda-files `(,+org-todo-file))
   (setq org-agenda-inhibit-startup t)
   (setq org-agenda-skip-unavailable-files t)
 
@@ -1720,7 +1720,7 @@
 (use-package org-agenda
   :ensure org
   :general
-  (-leader-def
+  (+leader-def
     "Oa" '(org-agenda :wk "agenda"))
   :init
   (setq org-agenda-window-setup 'current-window)
@@ -1813,7 +1813,7 @@
 
 (use-package eglot
   :general
-  (-local-leader-def :keymaps 'eglot-mode-map
+  (+local-leader-def :keymaps 'eglot-mode-map
 	;; TODO: + moar bindings
     "=" 'eglot-format)
   :init
@@ -1872,7 +1872,7 @@
 
 (use-package erefactor
   :general
-  (-local-leader-def :keymaps 'emacs-lisp-mode-map
+  (+local-leader-def :keymaps 'emacs-lisp-mode-map
     "R" '(:keymap erefactor-map :wk "refactor")))
 
 (use-package eros
@@ -1893,16 +1893,16 @@
 
 (use-package flycheck-clj-kondo
   :preface
-  (defun -setup-flycheck-clj-kondo ()
+  (defun +setup-flycheck-clj-kondo ()
     (require 'flycheck-clj-kondo))
   :hook
-  (clojure-ts-mode-hook . -setup-flycheck-clj-kondo))
+  (clojure-ts-mode-hook . +setup-flycheck-clj-kondo))
 
 (use-package cider
   :custom-face
   (cider-result-overlay-face ((t (:inherit shadow :box t))))
   :general
-  (-local-leader-def :keymaps 'clojure-ts-mode-map
+  (+local-leader-def :keymaps 'clojure-ts-mode-map
     "c" '(:ignore t           :wk "connect")
     "cc" '(cider-jack-in      :wk "jack-in")
     "cj" '(cider-jack-in-clj  :wk "jack-in-clj")
@@ -1922,7 +1922,7 @@
 
 (use-package cider-hydra
   :general
-  (-local-leader-def :keymaps 'clojure-ts-mode-map
+  (+local-leader-def :keymaps 'clojure-ts-mode-map
     "d" '(cider-hydra-doc/body  :wk "doc")
     "e" '(cider-hydra-eval/body :wk "eval")
     "t" '(cider-hydra-test/body :wk "test")
@@ -1932,7 +1932,7 @@
 
 (use-package clj-refactor
   :general
-  (-local-leader-def :keymaps 'clojure-ts-mode-map
+  (+local-leader-def :keymaps 'clojure-ts-mode-map
     "R" '(hydra-cljr-help-menu/body :wk "refactor"))
   :hook
   (clojure-ts-mode-hook . clj-refactor-mode))
@@ -1951,7 +1951,7 @@
 
 (use-package makefile-executor
   :general
-  (-local-leader-def :keymaps 'makefile-mode-map
+  (+local-leader-def :keymaps 'makefile-mode-map
     "e" 'makefile-executor-execute-target)
   :hook
   (makefile-mode-hook . makefile-executor-mode))
@@ -1966,7 +1966,7 @@
             "E" 'justl-exec-eshell
             "w" 'justl--exec-recipe-with-args
             "W" 'justl-no-exec-eshell)
-  (-local-leader-def :keymaps 'just-mode-map
+  (+local-leader-def :keymaps 'just-mode-map
     "e" '(:ignore t :wk "eval")
     "e." 'justl
     "ee" 'justl-exec-recipe-in-dir))
@@ -1981,7 +1981,7 @@
 
 (use-package plantuml-mode
   :general
-  (-local-leader-def :keymaps 'plantuml-mode-map
+  (+local-leader-def :keymaps 'plantuml-mode-map
     "p" '(plantuml-preview :wk "preview"))
   :init
   (setq plantuml-output-type (if (display-images-p) "png" "txt"))
@@ -1990,7 +1990,7 @@
 (use-package sql
   :ensure nil
   :general
-  (-local-leader-def :keymaps 'sql-mode-map
+  (+local-leader-def :keymaps 'sql-mode-map
     "c" '(:ignore t :wk "connect")
     "cc" '(sql-connect :wk "connect")
 
@@ -2019,7 +2019,7 @@
   :custom-face
   (markdown-code-face ((t (:inherit default))))
   :general
-  (-local-leader-def :keymaps 'markdown-mode-map
+  (+local-leader-def :keymaps 'markdown-mode-map
     "." '(:keymap markdown-mode-command-map))
   :init
   (setq markdown-command "pandoc")
@@ -2029,7 +2029,7 @@
 
 (use-package grip-mode
   :general
-  (-local-leader-def :keymaps 'markdown-mode-map
+  (+local-leader-def :keymaps 'markdown-mode-map
     "g" 'grip-mode)
   :init
   (setq grip-update-after-change nil)
@@ -2042,7 +2042,7 @@
 (use-package json-ts-mode
   :ensure nil
   :general
-  (-local-leader-def :keymaps 'json-ts-mode-map
+  (+local-leader-def :keymaps 'json-ts-mode-map
     "=" '(json-pretty-print-buffer :wk "format")))
 
 (use-package yaml-ts-mode
@@ -2082,7 +2082,7 @@
   :if (display-graphic-p)
   :ensure nil
   :general
-  (-leader-def
+  (+leader-def
     "ow" 'xwidget-webkit-browse-url))
 
 (use-package xwwp
@@ -2099,18 +2099,18 @@
 
 (use-package docker
   :general
-  (-leader-def
+  (+leader-def
     "od" 'docker))
 
 (use-package dockerfile-mode
   :general
-  (-local-leader-def :keymaps 'dockerfile-mode-map
+  (+local-leader-def :keymaps 'dockerfile-mode-map
     "b" 'dockerfile-build-buffer
     "B" 'dockerfile-build-no-cache-buffer))
 
 (use-package docker-compose-mode
   :general
-  (-local-leader-def :keymaps 'docker-compose-mode-map
+  (+local-leader-def :keymaps 'docker-compose-mode-map
     "." 'docker-compose))
 
 (use-package jinja2-mode
@@ -2119,7 +2119,7 @@
 (use-package ansible-vault-with-editor
   :vc (:url "https://github.com/rynffoll/ansible-vault-with-editor" :rev :newest)
   :general
-  (-local-leader-def :keymaps 'yaml-ts-mode-map
+  (+local-leader-def :keymaps 'yaml-ts-mode-map
     "e" '(ansible-vault-with-editor-edit :wk "edit")
     "E" '(ansible-vault-with-editor-encrypt :wk "encrypt")
     "D" '(ansible-vault-with-editor-decrypt :wk "decrypt")))
@@ -2127,21 +2127,21 @@
 (use-package direnv
   :if (executable-find "direnv")
   :preface
-  (defun -direnv-hook ()
+  (defun +direnv-hook ()
     (add-hook
      'after-save-hook
      (lambda ()
        (call-interactively 'direnv-update-environment))
      nil t))
   :general
-  (-local-leader-def :keymaps 'direnv-envrc-mode-map
+  (+local-leader-def :keymaps 'direnv-envrc-mode-map
     "a" 'direnv-allow
     "u" 'direnv-update-environment)
   :init
   (setq direnv-always-show-summary nil)
   :hook
   (after-init-hook . direnv-mode)
-  (direnv-envrc-mode-hook . -direnv-hook))
+  (direnv-envrc-mode-hook . +direnv-hook))
 
 (use-package envrc
   :disabled
@@ -2151,11 +2151,11 @@
 
 (use-package gptel
   :preface
-  (defun -gptel-send-back-evil-normal-state (&optional _result)
+  (defun +gptel-send-back-evil-normal-state (&optional _result)
     "Switch to normal state after calling `gptel-send`."
     (evil-normal-state))
   :general
-  (-leader-def
+  (+leader-def
     "a." 'gptel-menu
     "ac" 'gptel)
   :init
@@ -2167,7 +2167,7 @@
           (text-mode . "### ")))
   (setq gptel-org-branching-context t)
   :config
-  (advice-add 'gptel-send :after #'-gptel-send-back-evil-normal-state)
+  (advice-add 'gptel-send :after #'+gptel-send-back-evil-normal-state)
   :hook
   (gptel-mode-hook . toggle-truncate-lines)
   (gptel-mode-hook . toggle-word-wrap))
@@ -2176,18 +2176,18 @@
   :vc ( :url "https://github.com/karthink/gptel-quick"
         :rev :newest)
   :general
-  (-leader-def
+  (+leader-def
     "a?" 'gptel-quick))
 
 (use-package chatgpt-shell
   :preface
-  (defun -chatgpt-shell-openai-key ()
+  (defun +chatgpt-shell-openai-key ()
     (auth-source-pick-first-password :host "api.openai.com"))
   :general
-  (-leader-def
+  (+leader-def
     "as" 'chatgpt-shell)
   :init
-  (setq chatgpt-shell-openai-key #'-chatgpt-shell-openai-key)
+  (setq chatgpt-shell-openai-key #'+chatgpt-shell-openai-key)
   :config
   (add-to-list 'chatgpt-shell-model-versions "gpt-4o-mini"))
 
@@ -2196,7 +2196,7 @@
         :rev :newest
         :branch "main")
   :general
-  (-leader-def
+  (+leader-def
     "aC" '(:ignore t :wk "copilot")
     "aCm" 'copilot-mode
     "aCD" 'copilot-diagnose)
@@ -2212,7 +2212,7 @@
 
 (use-package copilot-chat
   :general
-  (-leader-def
+  (+leader-def
     "aCc" 'copilot-chat-display)
   :init
   (setq copilot-chat-frontend 'shell-maker)
@@ -2221,23 +2221,23 @@
 
 (use-package focus
   :general
-  (-leader-def
+  (+leader-def
     "tf" 'focus-mode))
 
 (use-package olivetti
   :general
-  (-leader-def
+  (+leader-def
     "to" 'olivetti-mode))
 
 (use-package crux
   :general
-  (-leader-def
+  (+leader-def
     "fR" 'crux-rename-file-and-buffer
     "fD" 'crux-delete-file-and-buffer))
 
 (use-package deadgrep
   :general
-  (-leader-def
+  (+leader-def
     "/D" 'deadgrep))
 
 (use-package try)

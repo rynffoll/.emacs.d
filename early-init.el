@@ -24,12 +24,12 @@
                 (message "Emacs ready (init time = %.2fs, packages = %d, gc time = %.2fs, gc count = %d)."
                          init-time packages gc-time gc-count))))
 
-(defvar -file-name-handler-alist file-name-handler-alist)
+(defvar +file-name-handler-alist file-name-handler-alist)
 (setq file-name-handler-alist nil)
 
 (add-hook 'emacs-startup-hook
           #'(lambda ()
-              (setq file-name-handler-alist -file-name-handler-alist)))
+              (setq file-name-handler-alist +file-name-handler-alist)))
 
 (setq inhibit-startup-screen t)
 (setq inhibit-startup-message t)
