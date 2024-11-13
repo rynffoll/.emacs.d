@@ -546,8 +546,8 @@
   (defun +switch-to-messages () (interactive) (switch-to-buffer "*Messages*"))
   :general
   (+leader-def
-    "bs" '(-switch-to-scratch :wk "open scratch")
-    "bm" '(-switch-to-messages :wk "open messages")
+    "bs" '(+switch-to-scratch :wk "open scratch")
+    "bm" '(+switch-to-messages :wk "open messages")
     "bR" 'rename-buffer))
 
 (use-package menu-bar
@@ -1641,10 +1641,10 @@
   (defun +open-org-notes-file () (interactive) (find-file +org-notes-file))
   :general
   (+leader-def
-    "O." '(-open-org-directory  :wk "open org-directory")
-    "Oi" '(-open-org-inbox-file :wk "open inbox.org")
-    "Ot" '(-open-org-todo-file  :wk "open todo.org")
-    "On" '(-open-org-notes-file :wk "open notes.org"))
+    "O." '(+open-org-directory  :wk "open org-directory")
+    "Oi" '(+open-org-inbox-file :wk "open inbox.org")
+    "Ot" '(+open-org-todo-file  :wk "open todo.org")
+    "On" '(+open-org-notes-file :wk "open notes.org"))
   :init
   (setq org-directory "~/Org")
   (setq +org-inbox-file (concat org-directory "/inbox.org"))
