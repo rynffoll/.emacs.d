@@ -1046,7 +1046,7 @@
              (propertize (format " %s " num)
                          'face 'winum-face))))
     (setq dirvish-mode-line-format
-          '(:left (winum sort) :right (omit yank))))
+      '(:left (winum sort) :right (omit yank))))
   ;; https://github.com/doomemacs/doomemacs/blob/master/modules/emacs/dired/config.el#L109
   (advice-add 'dirvish-data-for-dir :before #'+dired--init-fringes)
   :hook
@@ -1099,7 +1099,8 @@
 (use-package emacs
   :ensure nil
   :init
-  (setq-default tab-width 4))
+  (setq-default tab-width 4)
+  (setq-default indent-tabs-mode nil))
 
 (use-package delsel
   :ensure nil
