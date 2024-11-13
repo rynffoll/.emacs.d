@@ -29,55 +29,54 @@
   "Tab Bar Theme."
   :group 'tab-bar)
 
+(defcustom tab-bar-theme-height 3
+  "Height of tab bar."
+  :type 'integer
+  :group 'tab-bar-theme)
+
 
 ;;;###autoload
 (defun tab-bar-theme--apply (&optional _theme)
   "Apply faces to current theme."
-  (let* ((bg-tab-inactive (face-attribute 'mode-line-inactive :background))
-         (fg-tab-inactive (face-attribute 'mode-line-inactive :foreground))
-         (bg-tab-active   (face-attribute 'default :background))
-         (fg-tab-active   (face-attribute 'default :foreground))
-         (box-line-width  3))
+  (let* ((bg-inactive (face-attribute 'mode-line-inactive :background))
+         (fg-inactive (face-attribute 'mode-line-inactive :foreground))
+         (bg-active   (face-attribute 'default :background))
+         (fg-active   (face-attribute 'default :foreground))
+         (height      tab-bar-theme-height))
     (custom-set-faces
-
      `(tab-bar
        ((t ( :inherit unspecified
-             :background ,bg-tab-inactive
-             :foreground ,fg-tab-inactive
-             :box (:line-width ,box-line-width :color ,bg-tab-inactive :style nil)))))
-
+             :background ,bg-inactive
+             :foreground ,fg-inactive
+             :box (:line-width ,height :color ,bg-inactive  :style nil)))))
      `(tab-bar-tab
        ((t ( :inherit unspecified
-             :background ,bg-tab-active
-             :foreground ,fg-tab-active
+             :background ,bg-active
+             :foreground ,fg-active
              :overline t
-             :box (:line-width ,box-line-width :color ,bg-tab-active :style nil)))))
-
+             :box (:line-width ,height :color ,bg-active :style nil)))))
      `(tab-bar-tab-inactive
        ((t ( :inherit unspecified
-             :background ,bg-tab-inactive
-             :foreground ,fg-tab-inactive
-             :box (:line-width ,box-line-width :color ,bg-tab-inactive :style nil)))))
-
+             :background ,bg-inactive
+             :foreground ,fg-inactive
+             :box (:line-width ,height :color ,bg-inactive :style nil)))))
      `(tab-bar-tab-ungrouped
        ((t ( :inherit unspecified
-             :background ,bg-tab-inactive
-             :foreground ,fg-tab-inactive
-             :box (:line-width ,box-line-width :color ,bg-tab-inactive :style nil)))))
-
+             :background ,bg-inactive
+             :foreground ,fg-inactive
+             :box (:line-width ,height :color ,bg-inactive :style nil)))))
      `(tab-bar-tab-group-inactive
        ((t ( :inherit unspecified
-             :background ,bg-tab-inactive
-             :foreground ,fg-tab-inactive
+             :background ,bg-inactive
+             :foreground ,fg-inactive
              :weight bold
-             :box (:line-width ,box-line-width :color ,bg-tab-inactive :style nil)))))
-
+             :box (:line-width ,height :color ,bg-inactive :style nil)))))
      `(tab-bar-tab-group-current
        ((t ( :inherit unspecified
-             :background ,bg-tab-inactive
-             :foreground ,fg-tab-active
+             :background ,bg-inactive
+             :foreground ,fg-active
              :weight bold
-             :box (:line-width ,box-line-width :color ,bg-tab-inactive :style nil))))))))
+             :box (:line-width ,height :color ,bg-inactive :style nil))))))))
 
 ;;;###autoload
 (define-minor-mode tab-bar-theme-mode
@@ -85,10 +84,10 @@
   :global t :group 'tab-bar-theme
   (cond
    (tab-bar-theme-mode
-	(tab-bar-theme--apply)
-	(add-hook 'enable-theme-functions #'tab-bar-theme--apply))
+    (tab-bar-theme--apply)
+    (add-hook 'enable-theme-functions #'tab-bar-theme--apply))
    (t
-	(remove-hook 'enable-theme-functions #'tab-bar-theme--apply))))
+    (remove-hook 'enable-theme-functions #'tab-bar-theme--apply))))
 
 (provide 'tab-bar-theme)
 ;;; tab-bar-theme.el ends here
