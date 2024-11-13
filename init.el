@@ -2214,10 +2214,10 @@
   :general
   (+leader-def
     "aCc" 'copilot-chat-display)
+  (+local-leader-def
+    "Ci" 'copilot-chat-insert-commit-message)
   :init
-  (setq copilot-chat-frontend 'shell-maker)
-  :hook
-  (git-commit-mode-hook . copilot-chat-insert-commit-message))
+  (setq copilot-chat-frontend 'shell-maker))
 
 (use-package focus
   :general
