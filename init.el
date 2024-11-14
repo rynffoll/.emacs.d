@@ -1805,9 +1805,16 @@
   :init
   (ob-chatgpt-shell-setup))
 
+(use-package treesit
+  :ensure nil
+  :init
+  (setq treesit-font-lock-level 4))
+
 (use-package treesit-auto
   :init
   (setq treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
   :hook
   (after-init-hook . global-treesit-auto-mode))
 
