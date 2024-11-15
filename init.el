@@ -2240,7 +2240,7 @@
   :general
   (+leader-def
     "aCc" 'copilot-chat-display)
-  (+local-leader-def
+  (+local-leader-def :keymaps 'git-commit-mode-map
     "Ci" 'copilot-chat-insert-commit-message)
   :init
   (setq copilot-chat-frontend 'shell-maker))
