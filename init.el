@@ -1821,8 +1821,21 @@
 (use-package eglot
   :general
   (+local-leader-def :keymaps 'eglot-mode-map
-	;; TODO: + moar bindings
-    "=" 'eglot-format)
+    "=" 'eglot-format
+    "a" '(:ignore t :wk "code")
+    "a." 'eglot-code-actions
+    "ao" 'eglot-code-action-organize-imports
+    "ae" 'eglot-code-action-extract
+    "ai" 'eglot-code-action-inline
+    "aq" 'eglot-code-action-quickfix
+    "R" '(:ignore t :wk "refactor")
+    "Rr" 'eglot-rename
+    "Re" 'eglot-code-action-extract
+    "Ri" 'eglot-code-action-inline
+    "F" '(:ignore t :wk "find")
+    "Fd" 'eglot-find-declaration
+    "Ft" 'eglot-find-typeDefinition
+    "Fr" 'eglot-find-references)
   :init
   (setq eglot-autoshutdown t))
 
@@ -1836,7 +1849,12 @@
   (after-init-hook . eglot-booster-mode))
 
 (use-package eglot-hierarchy
-  :vc (:url "https://github.com/dolmens/eglot-hierarchy" :rev :newest))
+  :vc (:url "https://github.com/dolmens/eglot-hierarchy" :rev :newest)
+  :general
+  (+local-leader-def :keymaps 'eglot-mode-map
+    "H" '(:ignore t :wk "hierarchy")
+    "Hc" 'eglot-hierarchy-call-hierarchy
+    "Ht" 'eglot-hierarchy-type-hierarchy))
 
 (use-package flycheck-eglot
   :demand
