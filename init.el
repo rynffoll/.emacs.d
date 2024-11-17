@@ -1856,6 +1856,11 @@
     "Hc" 'eglot-hierarchy-call-hierarchy
     "Ht" 'eglot-hierarchy-type-hierarchy))
 
+(use-package consult-eglot
+  :general
+  (+local-leader-def :keymaps 'eglot-mode-map
+    "Fs" 'consult-eglot-symbols))
+
 (use-package flycheck-eglot
   :demand
   :after flycheck eglot

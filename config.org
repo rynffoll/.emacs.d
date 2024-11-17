@@ -2549,6 +2549,13 @@ cargo install +-path .
 #+end_src
 
 #+begin_src emacs-lisp
+(use-package consult-eglot
+  :general
+  (+local-leader-def :keymaps 'eglot-mode-map
+    "Fs" 'consult-eglot-symbols))
+#+end_src
+
+#+begin_src emacs-lisp
 (use-package flycheck-eglot
   :demand
   :after flycheck eglot
