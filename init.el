@@ -1442,8 +1442,6 @@
   (+leader-def
     "0" 'treemacs-select-window
     "ft" 'treemacs)
-  (:keymaps 'justl-mode-map :states 'normal
-            "gr" 'treemacs-refresh)
   :init
   (setq treemacs-show-cursor t)
   (setq treemacs-follow-after-init t)
@@ -1804,6 +1802,24 @@
   :autoload ob-chatgpt-shell-setup
   :init
   (ob-chatgpt-shell-setup))
+
+(use-package deft
+  :general
+  (+leader-def
+    "Od" 'deft)
+  (:keymaps 'deft-mode-map :states 'normal
+            "gr"  'deft-refresh)
+  :init
+  (setq deft-directory (concat org-directory "/deft/"))
+  (setq deft-default-extension "org")
+  (setq deft-use-filter-string-for-filename t)
+  (setq deft-auto-save-interval -1) ;; disable
+  (setq deft-file-naming-rules
+        '((noslash . "-")
+          (nospace . "-")
+          (case-fn . downcase)))
+  :config
+  (deft-setup))
 
 (use-package treesit
   :ensure nil

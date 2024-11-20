@@ -125,6 +125,7 @@
     - [[#verb][Verb]]
     - [[#chatgpt-shell][chatgpt-shell]]
     - [[#tests][tests]]
+- [[#notes][Notes]]
 - [[#languages][Languages]]
   - [[#tree-sitter][Tree-sitter]]
   - [[#lsp][LSP]]
@@ -2017,8 +2018,6 @@ doom-modeline
   (+leader-def
     "0" 'treemacs-select-window
     "ft" 'treemacs)
-  (:keymaps 'justl-mode-map :states 'normal
-            "gr" 'treemacs-refresh)
   :init
   (setq treemacs-show-cursor t)
   (setq treemacs-follow-after-init t)
@@ -2467,6 +2466,27 @@ get https://github.com/status
 
 #+begin_src chatgpt-shell :results silent
 Hello World!
+#+end_src
+
+* Notes
+#+begin_src emacs-lisp
+(use-package deft
+  :general
+  (+leader-def
+    "Od" 'deft)
+  (:keymaps 'deft-mode-map :states 'normal
+            "gr"  'deft-refresh)
+  :init
+  (setq deft-directory (concat org-directory "/deft/"))
+  (setq deft-default-extension "org")
+  (setq deft-use-filter-string-for-filename t)
+  (setq deft-auto-save-interval -1) ;; disable
+  (setq deft-file-naming-rules
+        '((noslash . "-")
+          (nospace . "-")
+          (case-fn . downcase)))
+  :config
+  (deft-setup))
 #+end_src
 
 * Languages
