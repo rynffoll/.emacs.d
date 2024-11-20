@@ -3035,8 +3035,12 @@ machine api.openai.com login apikey password TOKEN
     "as" 'chatgpt-shell)
   :init
   (setq chatgpt-shell-openai-key #'+chatgpt-shell-openai-key)
+  (setq chatgpt-shell-model-version "gpt-4o-mini")
   :config
-  (add-to-list 'chatgpt-shell-model-versions "gpt-4o-mini"))
+  (add-to-list 'chatgpt-shell-models
+               (chatgpt-shell-openai-make-model
+                :version "gpt-4o-mini"
+                :token-width 3)))
 #+end_src
 
 ** GitHub Copilot

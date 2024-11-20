@@ -2234,8 +2234,12 @@
     "as" 'chatgpt-shell)
   :init
   (setq chatgpt-shell-openai-key #'+chatgpt-shell-openai-key)
+  (setq chatgpt-shell-model-version "gpt-4o-mini")
   :config
-  (add-to-list 'chatgpt-shell-model-versions "gpt-4o-mini"))
+  (add-to-list 'chatgpt-shell-models
+               (chatgpt-shell-openai-make-model
+                :version "gpt-4o-mini"
+                :token-width 3)))
 
 (use-package copilot
   :vc ( :url "https://github.com/copilot-emacs/copilot.el"
