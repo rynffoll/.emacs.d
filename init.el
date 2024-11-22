@@ -1696,8 +1696,20 @@
 
 (use-package org-refile
   :ensure org
+  :preface
+  ;; https://github.com/progfolio/.emacs.d#refile
+  (defun +org-files-list ()
+    "Returns a list of the file names for currently open Org files"
+    (delq nil
+          (mapcar (lambda (buffer)
+                    (when-let* ((file-name (buffer-file-name buffer))
+                                (directory (file-name-directory file-name)))
+                      (unless (string-suffix-p "archives/" directory)
+                        file-name)))
+                  (org-buffer-list 'files t))))
   :init
-  (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
+  (setq org-refile-targets `((org-agenda-files  :maxlevel . 3)
+                             (+org-files-list :maxlevel . 3)))
   (setq org-refile-use-outline-path 'file)
   (setq org-outline-path-complete-in-steps nil)
   (setq org-refile-allow-creating-parent-nodes 'confirm)
