@@ -318,7 +318,6 @@
     "tt" 'load-theme))
 
 (use-package emacs
-  ;; :disabled
   :ensure nil
   :init
   (setq modus-themes-common-palette-overrides
@@ -326,20 +325,11 @@
           (fg-region unspecified)
           (bg-prose-block-delimiter bg-inactive)
           (fg-prose-block-delimiter fg-dim)
-          (bg-prose-block-contents bg-dim)))
-  :config
-  (require-theme 'modus-themes) ; `require-theme' is ONLY for the built-in Modus themes
-  (load-theme 'modus-operandi :no-confirm))
+          (bg-prose-block-contents bg-dim))))
 
-(use-package ef-themes
-  ;; :disabled
-  ;; :demand
-  :config
-  (load-theme 'ef-melissa-light :no-confirm))
+(use-package ef-themes)
 
 (use-package solarized-theme
-  ;; :disabled
-  ;; :demand
   :init
   (setq solarized-distinct-doc-face t)
   (setq solarized-use-variable-pitch nil)
@@ -349,19 +339,20 @@
   (setq solarized-height-plus-1 1.0)
   (setq solarized-height-plus-2 1.0)
   (setq solarized-height-plus-3 1.0)
-  (setq solarized-height-plus-4 1.0)
-  :config
-  (load-theme 'solarized-gruvbox-dark :no-confirm))
+  (setq solarized-height-plus-4 1.0))
 
 (use-package doom-themes
-  ;; :disabled
-  ;; :demand
+  :init
+  (setq doom-themes-enable-italic t)
   :config
-  (load-theme 'doom-earl-grey :no-confirm)
-  ;; (setq doom-themes-treemacs-theme "doom-atom")
-  ;; (setq doom-themes-treemacs-theme "doom-colors")
-  ;; (doom-themes-treemacs-config)
   (doom-themes-org-config))
+
+(setq +theme 'modus-operandi)
+;; (setq +theme 'ef-melissa-light)
+;; (setq +theme 'solarized-gruvbox-dark)
+;; (setq +theme 'doom-earl-grey)
+
+(load-theme +theme :no-confirm)
 
 (use-package frame
   :ensure nil
