@@ -74,9 +74,11 @@
 ;;                                      (name . "main")
 ;;                                      (explicit-name . t))))
 
-(add-to-list 'default-frame-alist '(font . "JetBrains Mono Medium 14"))
-;; (add-to-list 'default-frame-alist '(font . "Iosevka Medium 14"))
-;; (add-to-list 'default-frame-alist '(font . "Martian Mono Condensed 14"))
+;; (setq +font "JetBrains Mono:weight=medium:size=14")
+;; (setq +font "Iosevka Term:weight=medium:size=14")
+(setq +font "Iosevka Term:weight=medium:width=expanded:size=14") ;; Ioesevka Term Extended
+;; (setq +font "Martian Mono Condensed 14")
+(add-to-list 'default-frame-alist `(font . ,+font))
 
 (when (featurep 'ns)
   (setq ns-use-proxy-icon nil)
