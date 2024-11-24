@@ -8,6 +8,7 @@
   - [[#gc-tweaks][GC tweaks]]
   - [[#file-handler-tweaks][File handler tweaks]]
   - [[#ui][UI]]
+    - [[#font][Font]]
     - [[#macos][macOS]]
   - [[#disable-writing-customization-to-initel][Disable writing customization to ~init.el~]]
 - [[#initialization][Initialization]]
@@ -257,11 +258,16 @@
 ;;                                     (current-tab
 ;;                                      (name . "main")
 ;;                                      (explicit-name . t))))
+#+end_src
 
+*** Font
+#+begin_src emacs-lisp
 ;; (setq +font "JetBrains Mono:weight=medium:size=14")
 ;; (setq +font "Iosevka Term:weight=medium:size=14")
-(setq +font "Iosevka Term:weight=medium:width=expanded:size=14") ;; Ioesevka Term Extended
+;; (setq +font "Iosevka Term:weight=medium:width=expanded:size=14") ;; Ioesevka Term Extended
 ;; (setq +font "Martian Mono Condensed 14")
+(setq +font "Cascadia Code:size=16")
+
 (add-to-list 'default-frame-alist `(font . ,+font))
 #+end_src
 
@@ -582,9 +588,9 @@
 (use-package ligature
   :if (display-graphic-p)
   :config
+  ;; https://github.com/mickeynp/ligature.el/wiki
   (cond
    ((s-contains? "JetBrains Mono" +font)
-    ;; https://github.com/mickeynp/ligature.el/wiki#jetbrains-mono
     (ligature-set-ligatures
      'prog-mode
      '("--" "---" "==" "===" "!=" "!==" "=!="
@@ -601,14 +607,73 @@
        ":?" ":?>" "//" "///" "/*" "*/" "/=" "//=" "/==" "@_" "__" "???"
        "<:<" ";;;")))
    ((s-contains? "Iosevka" +font)
-    ;; https://github.com/mickeynp/ligature.el/wiki#iosevka
     (ligature-set-ligatures
      'prog-mode
      '("<---" "<--"  "<<-" "<-" "->" "-->" "--->" "<->" "<-->" "<--->" "<---->" "<!--"
        "<==" "<===" "<=" "=>" "=>>" "==>" "===>" ">=" "<=>" "<==>" "<===>" "<====>" "<!---"
        "<~~" "<~" "~>" "~~>" "::" ":::" "==" "!=" "===" "!=="
        ":=" ":-" ":+" "<*" "<*>" "*>" "<|" "<|>" "|>" "+:" "-:" "=:" "<******>" "++" "+++")))
-   (t))
+   ((s-matches? "\\(Cascadia\\|Fira Code\\)" +font)
+    (ligature-set-ligatures
+     'prog-mode
+     '(;; == === ==== => =| =>>=>=|=>==>> ==< =/=//=// =~
+       ;; =:= =!=
+       ("=" (rx (+ (or ">" "<" "|" "/" "~" ":" "!" "="))))
+       ;; ;; ;;;
+       (";" (rx (+ ";")))
+       ;; && &&&
+       ("&" (rx (+ "&")))
+       ;; !! !!! !. !: !!. != !== !~
+       ("!" (rx (+ (or "=" "!" "\." ":" "~"))))
+       ;; ?? ??? ?:  ?=  ?.
+       ("?" (rx (or ":" "=" "\." (+ "?"))))
+       ;; %% %%%
+       ("%" (rx (+ "%")))
+       ;; |> ||> |||> ||||> |] |} || ||| |-> ||-||
+       ;; |->>-||-<<-| |- |== ||=||
+       ;; |==>>==<<==<=>==//==/=!==:===>
+       ("|" (rx (+ (or ">" "<" "|" "/" ":" "!" "}" "\]"
+                       "-" "=" ))))
+       ;; \\ \\\ \/
+       ("\\" (rx (or "/" (+ "\\"))))
+       ;; ++ +++ ++++ +>
+       ("+" (rx (or ">" (+ "+"))))
+       ;; :: ::: :::: :> :< := :// ::=
+       (":" (rx (or ">" "<" "=" "//" ":=" (+ ":"))))
+       ;; // /// //// /\ /* /> /===:===!=//===>>==>==/
+       ("/" (rx (+ (or ">"  "<" "|" "/" "\\" "\*" ":" "!"
+                       "="))))
+       ;; .. ... .... .= .- .? ..= ..<
+       ("\." (rx (or "=" "-" "\?" "\.=" "\.<" (+ "\."))))
+       ;; -- --- ---- -~ -> ->> -| -|->-->>->--<<-|
+       ("-" (rx (+ (or ">" "<" "|" "~" "-"))))
+       ;; *> */ *)  ** *** ****
+       ("*" (rx (or ">" "/" ")" (+ "*"))))
+       ;; www wwww
+       ("w" (rx (+ "w")))
+       ;; <> <!-- <|> <: <~ <~> <~~ <+ <* <$ </  <+> <*>
+       ;; <$> </> <|  <||  <||| <|||| <- <-| <-<<-|-> <->>
+       ;; <<-> <= <=> <<==<<==>=|=>==/==//=!==:=>
+       ;; << <<< <<<<
+       ("<" (rx (+ (or "\+" "\*" "\$" "<" ">" ":" "~"  "!"
+                       "-"  "/" "|" "="))))
+       ;; >: >- >>- >--|-> >>-|-> >= >== >>== >=|=:=>>
+       ;; >> >>> >>>>
+       (">" (rx (+ (or ">" "<" "|" "/" ":" "=" "-"))))
+       ;; #: #= #! #( #? #[ #{ #_ #_( ## ### #####
+       ("#" (rx (or ":" "=" "!" "(" "\?" "\[" "{" "_(" "_"
+                    (+ "#"))))
+       ;; ~~ ~~~ ~=  ~-  ~@ ~> ~~>
+       ("~" (rx (or ">" "=" "-" "@" "~>" (+ "~"))))
+       ;; __ ___ ____ _|_ __|____|_
+       ("_" (rx (+ (or "_" "|"))))
+       ;; Fira code: 0xFF 0x12
+       ("0" (rx (and "x" (+ (in "A-F" "a-f" "0-9")))))
+       ;; Fira code:
+       "Fl"  "Tl"  "fi"  "fj"  "fl"  "ft"
+       ;; The few not covered by the regexps.
+       "{|"  "[|"  "]#"  "(*"  "}#"  "$>"  "^=")))
+   (t (message "No ligatures for %s" +font)))
   :hook
   (after-init-hook . global-ligature-mode))
 #+end_src
