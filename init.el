@@ -871,6 +871,12 @@
 
 (use-package files
   :ensure nil
+  :preface
+  (defun +find-file-in-dir (dir)
+    "Open a file starting in DIR."
+    (interactive "DDirectory: ")
+    (let ((default-directory (file-name-as-directory dir)))
+      (call-interactively #'find-file)))
   :general
   (+leader-def
     "." 'find-file
@@ -1690,16 +1696,18 @@
 (use-package org
   :ensure nil
   :preface
-  (defun +open-org-directory  () (interactive) (find-file org-directory))
+  (defun +find-file-in-org-directory ()
+    (interactive)
+    (+find-file-in-dir org-directory))
   (defun +open-org-inbox-file () (interactive) (find-file +org-inbox-file))
   (defun +open-org-todo-file  () (interactive) (find-file +org-todo-file))
   (defun +open-org-notes-file () (interactive) (find-file +org-notes-file))
   :general
   (+leader-def
-    "O." '(+open-org-directory  :wk "open org-directory")
-    "Oi" '(+open-org-inbox-file :wk "open inbox.org")
-    "Ot" '(+open-org-todo-file  :wk "open todo.org")
-    "On" '(+open-org-notes-file :wk "open notes.org"))
+    "O." '+find-file-in-org-directory
+    "Oi" '+open-org-inbox-file
+    "Ot" '+open-org-todo-file
+    "On" '+open-org-notes-file)
   :init
   (setq org-directory "~/Org")
   (setq +org-inbox-file (concat org-directory "/inbox.org"))
