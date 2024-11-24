@@ -156,10 +156,6 @@
   :hook
   (after-init-hook . global-evil-surround-mode))
 
-(use-package evil-matchit
-  :hook
-  (after-init-hook . global-evil-matchit-mode))
-
 (use-package evil-org
   :init
   (setq evil-org-key-theme '(todo textobjects insert navigation heading))
@@ -176,13 +172,6 @@
 (use-package evil-mc
   :hook
   (after-init-hook . global-evil-mc-mode))
-
-(use-package evil-traces
-  :disabled
-  :hook
-  (after-init-hook . evil-traces-mode)
-  :config
-  (evil-traces-use-diff-faces))
 
 (use-package which-key
   :ensure nil

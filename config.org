@@ -463,7 +463,9 @@
   (evil-mode t)
   (evil-ex-define-cmd "q" 'kill-this-buffer)
   (evil-ex-define-cmd "wq" '+save-and-kill-buffer))
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package evil-collection
   :demand
   :after evil
@@ -471,19 +473,21 @@
   (setq evil-collection-magit-want-horizontal-movement t)
   :config
   (evil-collection-init))
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package evil-commentary
   :hook
   (after-init-hook . evil-commentary-mode))
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package evil-surround
   :hook
   (after-init-hook . global-evil-surround-mode))
+#+end_src
 
-(use-package evil-matchit
-  :hook
-  (after-init-hook . global-evil-matchit-mode))
-
+#+begin_src emacs-lisp
 (use-package evil-org
   :init
   (setq evil-org-key-theme '(todo textobjects insert navigation heading))
@@ -496,17 +500,12 @@
   :after org-agenda
   :config
   (evil-org-agenda-set-keys))
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package evil-mc
   :hook
   (after-init-hook . global-evil-mc-mode))
-
-(use-package evil-traces
-  :disabled
-  :hook
-  (after-init-hook . evil-traces-mode)
-  :config
-  (evil-traces-use-diff-faces))
 #+end_src
 
 * Which-key
