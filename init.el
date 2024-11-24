@@ -2272,6 +2272,17 @@
   :hook
   (after-init-hook . envrc-global-mode))
 
+(use-package proced
+  :ensure nil
+  :general
+  (+leader-def
+    "op" 'proced))
+
+(use-package proced-narrow
+  :general
+  (proced-mode-map
+   "M-n" 'proced-narrow))
+
 (use-package gptel
   :preface
   (defun +gptel-send-back-evil-normal-state (&optional _result)

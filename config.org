@@ -155,6 +155,7 @@
   - [[#docker][Docker]]
   - [[#ansible][Ansible]]
   - [[#envrc][.env(rc)]]
+  - [[#proced][Proced]]
 - [[#ai-assistants][AI assistants]]
   - [[#chats][Chats]]
   - [[#github-copilot][GitHub Copilot]]
@@ -3086,6 +3087,20 @@ go install github.com/go-delve/delve/cmd/dlv@latest
   :if (executable-find "direnv")
   :hook
   (after-init-hook . envrc-global-mode))
+#+end_src
+
+** Proced
+#+begin_src emacs-lisp
+(use-package proced
+  :ensure nil
+  :general
+  (+leader-def
+    "op" 'proced))
+
+(use-package proced-narrow
+  :general
+  (proced-mode-map
+   "M-n" 'proced-narrow))
 #+end_src
 
 * AI assistants
