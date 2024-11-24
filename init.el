@@ -933,6 +933,7 @@
             "m" 'magit-project-status
             "b" 'consult-project-buffer)
   :init
+  (setq project-buffers-viewer 'project-list-buffers-ibuffer)
   (setq project-kill-buffers-display-buffer-list t)
   (setq project-switch-commands
         '((project-find-file "Find file")
