@@ -329,6 +329,8 @@
 
 (use-package ef-themes)
 
+(use-package standard-themes)
+
 (use-package solarized-theme
   :init
   (setq solarized-distinct-doc-face t)
