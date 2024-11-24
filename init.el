@@ -519,6 +519,11 @@
   :hook
   (after-init-hook . winum-mode))
 
+(use-package zoom
+  :general
+  (evil-window-map
+   "z" 'zoom-mode))
+
 (use-package shackle
   :disabled
   :init

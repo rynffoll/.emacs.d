@@ -48,6 +48,7 @@
   - [[#window][window]]
   - [[#winner][winner]]
   - [[#winum][winum]]
+  - [[#zoom][zoom]]
   - [[#pop-ups][Pop-ups]]
 - [[#buffers][Buffers]]
   - [[#common][Common]]
@@ -946,6 +947,14 @@ doom-modeline
   (setq winum-scope 'frame-local)
   :hook
   (after-init-hook . winum-mode))
+#+end_src
+
+** zoom
+#+begin_src emacs-lisp
+(use-package zoom
+  :general
+  (evil-window-map
+   "z" 'zoom-mode))
 #+end_src
 
 ** Pop-ups
