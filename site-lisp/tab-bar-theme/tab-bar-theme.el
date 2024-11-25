@@ -48,35 +48,40 @@
        ((t ( :inherit unspecified
              :background ,bg-inactive
              :foreground ,fg-inactive
-             :box (:line-width ,height :color ,bg-inactive  :style nil)))))
+             :box ,(tab-bar-theme--box-style height bg-inactive)))))
      `(tab-bar-tab
        ((t ( :inherit unspecified
              :background ,bg-active
              :foreground ,fg-active
              :overline t
-             :box (:line-width ,height :color ,bg-active :style nil)))))
+             :box ,(tab-bar-theme--box-style height bg-active)))))
      `(tab-bar-tab-inactive
        ((t ( :inherit unspecified
              :background ,bg-inactive
              :foreground ,fg-inactive
-             :box (:line-width ,height :color ,bg-inactive :style nil)))))
+             :box ,(tab-bar-theme--box-style height bg-inactive)))))
      `(tab-bar-tab-ungrouped
        ((t ( :inherit unspecified
              :background ,bg-inactive
              :foreground ,fg-inactive
-             :box (:line-width ,height :color ,bg-inactive :style nil)))))
+             :box ,(tab-bar-theme--box-style height bg-inactive)))))
      `(tab-bar-tab-group-inactive
        ((t ( :inherit unspecified
              :background ,bg-inactive
              :foreground ,fg-inactive
              :weight bold
-             :box (:line-width ,height :color ,bg-inactive :style nil)))))
+             :box ,(tab-bar-theme--box-style height bg-inactive)))))
      `(tab-bar-tab-group-current
        ((t ( :inherit unspecified
              :background ,bg-inactive
              :foreground ,fg-active
              :weight bold
-             :box (:line-width ,height :color ,bg-inactive :style nil))))))))
+             :box ,(tab-bar-theme--box-style height bg-inactive))))))))
+
+(defun tab-bar-theme--box-style (height color)
+  "Return box style for tab bar."
+  (when (> height 0)
+    `(:line-width ,height :style nil :color ,color)))
 
 ;;;###autoload
 (define-minor-mode tab-bar-theme-mode

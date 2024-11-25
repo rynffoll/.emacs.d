@@ -470,6 +470,8 @@
 (use-package tab-bar-theme
   :ensure nil
   :load-path "site-lisp/tab-bar-theme"
+  :init
+  (setq tab-bar-theme-height 2)
   :hook
   (after-init-hook . tab-bar-theme-mode))
 
