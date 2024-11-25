@@ -347,7 +347,8 @@
 
 (use-package doom-modeline
   :init
-  (setq doom-modeline-height 20)
+  ;; (setq doom-modeline-height 20)
+  (setq doom-modeline-height (+ (frame-char-height) 4)) ;; default
   (setq doom-modeline-bar-width 2)
   (setq doom-modeline-minor-modes t)
   (setq doom-modeline-buffer-file-name-style 'buffer-name)
@@ -1090,14 +1091,17 @@
   :custom-face
   (dirvish-hl-line ((t (:inherit hl-line))))
   :init
-  (setq dirvish-mode-line-height   20) ;; see `doom-modeline-height'
-  (setq dirvish-header-line-height 20) ;; see `doom-modeline-height'
+  ;; (setq dirvish-mode-line-height   20) ;; see `doom-modeline-height'
+  ;; (setq dirvish-header-line-height 20) ;; see `doom-modeline-height'
   ;; (setq dirvish-attributes '(vc-state)) ;; back to `diff-hl-dir-mode'
   (setq dirvish-attributes nil)
   (setq dirvish-path-separators '("  ~" "  " "/"))
   (setq dirvish-reuse-session nil)
   (setq dirvish-subtree-prefix "  ")
   :config
+  (with-eval-after-load 'doom-modeline
+    (setq dirvish-mode-line-height   doom-modeline-height)
+    (setq dirvish-header-line-height doom-modeline-height))
   (with-eval-after-load 'winum
     (add-to-list 'winum-assign-functions #'winum-assign-0-to-dirvish-side)
     ;; TODO: contribute to upstream
@@ -1108,7 +1112,8 @@
              (propertize (format " %s " num)
                          'face 'winum-face))))
     (setq dirvish-mode-line-format
-      '(:left (winum sort) :right (omit yank))))
+          '( :left  (winum sort)
+             :right (omit yank))))
   ;; https://github.com/doomemacs/doomemacs/blob/master/modules/emacs/dired/config.el#L109
   (advice-add 'dirvish-data-for-dir :before #'+dired--init-fringes)
   :hook
