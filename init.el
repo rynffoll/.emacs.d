@@ -460,6 +460,7 @@
   (+leader-def
     "TAB" '(:keymap tab-prefix-map :wk "tab-bar"))
   (tab-prefix-map
+   "TAB" 'tab-bar-switch-to-recent-tab
    "0" nil
    "1" '+tab-bar-select-tab-1
    "2" '+tab-bar-select-tab-2
