@@ -486,6 +486,7 @@
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-new-tab-choice "*scratch*")
   (setq tab-bar-tab-hints t)
+  (setq tab-bar-separator " ") ;; the same behavior in GUI and TUI
   :hook
   (after-init-hook . tab-bar-history-mode))
 
