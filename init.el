@@ -981,7 +981,8 @@
 (use-package dired
   :ensure nil
   :init
-  (setq dired-listing-switches "-lah --group-directories-first")
+  (setq dired-listing-switches
+        "-l --almost-all --human-readable --group-directories-first --no-group")
   (setq dired-auto-revert-buffer t)
   (setq dired-dwim-target t)
   (setq dired-recursive-copies 'always)
@@ -1001,16 +1002,17 @@
 (use-package dired-x
   :ensure nil
   :after dired
+  :defer nil
   :general
   (:keymaps 'dired-mode-map :states 'normal
             "M-." 'dired-omit-mode)
   :init
-  ;; (setq dired-omit-files (rx (seq bol ".")))
-  (setq dired-omit-files "^\\.\\.?$")
   (setq dired-omit-extensions nil)
   (setq dired-omit-verbose nil)
-  :hook
-  (dired-mode-hook . dired-omit-mode))
+  :config
+  ;; Make dired-omit-mode hide all "dotfiles"
+  (setq dired-omit-files
+        (concat dired-omit-files "\\|^\\..*$")))
 
 (use-package dired-subtree
   :preface
