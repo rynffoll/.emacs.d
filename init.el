@@ -723,7 +723,7 @@
   (after-init-hook . desktop-save-mode))
 
 (use-package easysession
-  ;; :disabled
+  :disabled
   :preface
   (defun +easysession-load-ask ()
     (interactive)

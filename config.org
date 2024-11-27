@@ -1187,7 +1187,7 @@ doom-modeline
 ** easysession
 #+begin_src emacs-lisp
 (use-package easysession
-  ;; :disabled
+  :disabled
   :preface
   (defun +easysession-load-ask ()
     (interactive)
