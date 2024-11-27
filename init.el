@@ -1782,7 +1782,9 @@
   (setq org-catch-invisible-edits 'smart)
 
   (setq org-fontify-whole-heading-line t)
-  (setq org-fontify-done-headline nil))
+  (setq org-fontify-done-headline nil)
+
+  (setq org-imenu-depth 4))
 
 (use-package org-archive
   :ensure org
