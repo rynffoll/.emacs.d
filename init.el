@@ -2320,8 +2320,9 @@
     (evil-normal-state))
   :general
   (+leader-def
-    "a." 'gptel-menu
-    "ac" 'gptel)
+    "ag" '(:ignore t :wk "gptel")
+    "ag." 'gptel-menu
+    "agc" 'gptel)
   :init
   (setq gptel-default-mode 'org-mode)
   (setq gptel-prompt-prefix-alist
@@ -2341,7 +2342,7 @@
         :rev :newest)
   :general
   (+leader-def
-    "a?" 'gptel-quick))
+    "ag?" 'gptel-quick))
 
 (use-package chatgpt-shell
   :preface
@@ -2349,7 +2350,9 @@
     (auth-source-pick-first-password :host "api.openai.com"))
   :general
   (+leader-def
-    "as" 'chatgpt-shell)
+    "as" '(:ignore t :wk "chatgpt-shell")
+    "as." 'chatgpt-shell-prompt-compose
+    "asc" 'chatgpt-shell)
   :init
   (setq chatgpt-shell-openai-key #'+chatgpt-shell-openai-key)
   (setq chatgpt-shell-model-version "gpt-4o-mini")
@@ -2368,9 +2371,9 @@
         :branch "main")
   :general
   (+leader-def
-    "aC" '(:ignore t :wk "copilot")
-    "aCm" 'copilot-mode
-    "aCD" 'copilot-diagnose)
+    "ac" '(:ignore t :wk "copilot")
+    "acm" 'copilot-mode
+    "acD" 'copilot-diagnose)
   (copilot-completion-map
    "TAB" 'copilot-accept-completion
    "C-TAB" 'copilot-accept-completion-by-word
@@ -2385,9 +2388,9 @@
 (use-package copilot-chat
   :general
   (+leader-def
-    "aCc" 'copilot-chat-display)
+    "acc" 'copilot-chat-display)
   (+local-leader-def :keymaps 'git-commit-mode-map
-    "Ci" 'copilot-chat-insert-commit-message)
+    "i" 'copilot-chat-insert-commit-message)
   :init
   (setq copilot-chat-frontend 'shell-maker))
 
