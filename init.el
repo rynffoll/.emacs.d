@@ -1121,7 +1121,7 @@
   ;; (setq dirvish-attributes '(vc-state)) ;; back to `diff-hl-dir-mode'
   (setq dirvish-attributes nil)
   (setq dirvish-path-separators '("  ~" "  " "/"))
-  (setq dirvish-reuse-session nil)
+  ;; (setq dirvish-reuse-session nil)
   (setq dirvish-subtree-prefix "  ")
   :config
   (with-eval-after-load 'doom-modeline
