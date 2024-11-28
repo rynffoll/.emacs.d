@@ -3191,7 +3191,8 @@ machine api.openai.com login apikey password TOKEN
   (+leader-def
     "as" '(:ignore t :wk "chatgpt-shell")
     "as." 'chatgpt-shell-prompt-compose
-    "asc" 'chatgpt-shell)
+    "asc" 'chatgpt-shell
+    "asq" 'chatgpt-shell-quick-insert)
   :init
   (setq chatgpt-shell-openai-key #'+chatgpt-shell-openai-key)
   (setq chatgpt-shell-model-version "gpt-4o-mini")
