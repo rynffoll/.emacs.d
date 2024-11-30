@@ -85,7 +85,7 @@
 (when (featurep 'ns)
   (setq ns-use-proxy-icon nil)
   (setq frame-title-format nil)
-  ;; (add-to-list 'default-frame-alist '(undecorated-round . t))
+  (add-to-list 'default-frame-alist '(undecorated-round . t))
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . dark)))
 

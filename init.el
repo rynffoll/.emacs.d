@@ -480,7 +480,8 @@
    "c" 'tab-close
    "C" 'tab-close-other)
   :init
-  (setq tab-bar-show 1)
+  ;; (setq tab-bar-show 1)
+  (setq tab-bar-show t)
   (setq tab-bar-format '(tab-bar-format-tabs-groups
                          tab-bar-separator))
   (setq tab-bar-close-button-show nil)
@@ -488,6 +489,7 @@
   (setq tab-bar-tab-hints t)
   (setq tab-bar-separator " ") ;; the same behavior in GUI and TUI
   :hook
+  (after-init-hook . tab-bar-mode)
   (after-init-hook . tab-bar-history-mode))
 
 (use-package tab-bar-theme

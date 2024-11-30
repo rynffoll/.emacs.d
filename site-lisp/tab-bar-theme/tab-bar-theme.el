@@ -53,7 +53,6 @@
        ((t ( :inherit unspecified
              :background ,bg-active
              :foreground ,fg-active
-             :overline t
              :box ,(tab-bar-theme--box-style height bg-active)))))
      `(tab-bar-tab-inactive
        ((t ( :inherit unspecified
