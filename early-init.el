@@ -91,4 +91,4 @@
 
 ;; (setq custom-file null-device)
 ;; Fix: Error in post-command-hook (vertico--exhibit): (error "Maximum buffer size exceeded")
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(setq custom-file (locate-user-emacs-file "custom.el"))

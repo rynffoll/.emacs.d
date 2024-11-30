@@ -948,7 +948,7 @@
     "er" 'iqa-reload-user-init-file)
   :init
   (setq iqa-find-file-function #'+iqa-find-file-project)
-  (setq iqa-user-init-file (concat user-emacs-directory "config.org")))
+  (setq iqa-user-init-file (locate-user-emacs-file "config.org")))
 
 (use-package cus-edit
   :ensure nil

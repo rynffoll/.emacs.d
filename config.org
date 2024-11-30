@@ -289,7 +289,7 @@
 #+begin_src emacs-lisp
 ;; (setq custom-file null-device)
 ;; Fix: Error in post-command-hook (vertico--exhibit): (error "Maximum buffer size exceeded")
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(setq custom-file (locate-user-emacs-file "custom.el"))
 #+end_src
 
 * Initialization
@@ -1442,7 +1442,7 @@ doom-modeline
     "er" 'iqa-reload-user-init-file)
   :init
   (setq iqa-find-file-function #'+iqa-find-file-project)
-  (setq iqa-user-init-file (concat user-emacs-directory "config.org")))
+  (setq iqa-user-init-file (locate-user-emacs-file "config.org")))
 #+end_src
 
 ** Customize
