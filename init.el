@@ -347,10 +347,7 @@
 
 (use-package doom-modeline
   :init
-  ;; (setq doom-modeline-height 20)
-  (setq doom-modeline-height (+ (frame-char-height) 4)) ;; default
   (setq doom-modeline-bar-width 2)
-  (setq doom-modeline-minor-modes t)
   (setq doom-modeline-buffer-file-name-style 'buffer-name)
   (setq doom-modeline-icon nil)
   (setq doom-modeline-modal-icon nil)
