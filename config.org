@@ -20,8 +20,9 @@
   - [[#gnu-elpa-keyring-update][gnu-elpa-keyring-update]]
 - [[#defaults-1][Defaults]]
   - [[#utf-8][UTF-8]]
-  - [[#calendar][Calendar]]
   - [[#compile][Compile]]
+  - [[#time][Time]]
+  - [[#calendar][Calendar]]
 - [[#gc][GC]]
 - [[#async][Async]]
 - [[#general][General]]
@@ -354,15 +355,6 @@
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 #+end_src
 
-** Calendar
-#+begin_src emacs-lisp
-(use-package calendar
-  :ensure nil
-  :init
-  (setq calendar-date-style 'iso)
-  (setq calendar-week-start-day 1))
-#+end_src
-
 ** Compile
 #+begin_src emacs-lisp
 (use-package compile
@@ -380,6 +372,33 @@
       (ansi-color-apply-on-region compilation-filter-start (point))))
   :hook
   (compilation-filter-hook . +ansi-color-apply-on-compilation-buffer))
+#+end_src
+
+** Time
+[[https://emacsredux.com/blog/2024/03/11/tracking-world-time-with-emacs/][Tracking World Time with Emacs]]
+#+begin_src emacs-lisp
+(use-package time
+  :ensure nil
+  :init
+  (setq world-clock-time-format "%a %d %b %R %z")
+  (setq world-clock-list
+        '(("America/Mexico_City" "Mexico/Mexico City")
+          ("UTC" "UTC")
+          ("Europe/Madrid" "Spain/Madrid")
+          ("Europe/Moscow" "Russia/Moscow")
+          ("Asia/Nicosia" "Cyprus/Nicosia")
+          ("Asia/Tbilisi" "Georgia/Tbilisi")
+          ("Asia/Yerevan" "Armenia/Yerevan")
+          ("Asia/Almaty" "Kazakhstan/Almaty"))))
+#+end_src
+
+** Calendar
+#+begin_src emacs-lisp
+(use-package calendar
+  :ensure nil
+  :init
+  (setq calendar-date-style 'iso)
+  (setq calendar-week-start-day 1))
 #+end_src
 
 * GC

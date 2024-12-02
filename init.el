@@ -39,12 +39,6 @@
   :init
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 
-(use-package calendar
-  :ensure nil
-  :init
-  (setq calendar-date-style 'iso)
-  (setq calendar-week-start-day 1))
-
 (use-package compile
   :ensure nil
   :init
@@ -58,6 +52,26 @@
       (ansi-color-apply-on-region compilation-filter-start (point))))
   :hook
   (compilation-filter-hook . +ansi-color-apply-on-compilation-buffer))
+
+(use-package time
+  :ensure nil
+  :init
+  (setq world-clock-time-format "%a %d %b %R %z")
+  (setq world-clock-list
+        '(("America/Mexico_City" "Mexico/Mexico City")
+          ("UTC" "UTC")
+          ("Europe/Madrid" "Spain/Madrid")
+          ("Europe/Moscow" "Russia/Moscow")
+          ("Asia/Nicosia" "Cyprus/Nicosia")
+          ("Asia/Tbilisi" "Georgia/Tbilisi")
+          ("Asia/Yerevan" "Armenia/Yerevan")
+          ("Asia/Almaty" "Kazakhstan/Almaty"))))
+
+(use-package calendar
+  :ensure nil
+  :init
+  (setq calendar-date-style 'iso)
+  (setq calendar-week-start-day 1))
 
 (use-package gcmh
   :hook
