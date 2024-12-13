@@ -1185,7 +1185,8 @@
   :ensure nil
   :general
   (+leader-def
-    "h" '(:keymap help-map :package help :wk "help")))
+    "h" '(:keymap help-map :package help :wk "help")
+    "hF" 'describe-face))
 
 (use-package helpful
   :general
