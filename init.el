@@ -999,6 +999,7 @@
   (setq dired-hide-details-hide-symlink-targets nil)
   (setq dired-mouse-drag-files t)
   (setq mouse-drag-and-drop-region-cross-program t)
+  (setq dired-free-space nil)
   :hook
   (dired-mode-hook . dired-hide-details-mode))
 
@@ -1064,6 +1065,27 @@
   :init
   (setq dgi-auto-hide-details-p nil))
 
+(use-package dired-sidebar
+  :general
+  (+leader-def
+    "0" 'dired-sidebar-jump-to-sidebar
+    "ft" 'dired-sidebar-toggle-sidebar)
+  :init
+  (setq dired-sidebar-theme 'none)
+  ;; (setq dired-sidebar-use-custom-modeline nil)
+  (setq dired-sidebar-use-custom-modeline t)
+  (setq dired-sidebar-mode-line-format nil) ;; hide mode-line
+  (setq dired-sidebar-no-delete-other-windows t)
+  (setq dired-sidebar-toggle-hidden-commands nil) ;; don't hide on `balance-windows'
+  ;; (setq dired-sidebar-window-fixed nil)
+  :config
+  (with-eval-after-load 'winum
+    (defun winum-assign-0-to-dired-sidebar ()
+      (when (and (eq major-mode 'dired-sidebar-mode)
+                 (eq (selected-window) (frame-first-window)))
+        0))
+    (add-to-list 'winum-assign-functions #'winum-assign-0-to-dired-sidebar)))
+
 ;; Back to `quelpa' because `package-vc' doesn't support keyword like `:files'
 (use-package quelpa-use-package
   :demand
@@ -1071,6 +1093,7 @@
   (setq quelpa-use-package-inhibit-loading-quelpa t))
 
 (use-package dirvish
+  :disabled
   ;; :vc (:url "https://github.com/hlissner/dirvish" :rev :newest)
   :ensure nil
   :quelpa (dirvish
@@ -1084,7 +1107,7 @@
                (eq (selected-window) (frame-first-window)))
       0))
   (defun +dired--init-fringes (dir buffer setup)
-    (when diff-hl-dired-mode
+    (when (bound-and-true-p diff-hl-dired-mode)
       (set-window-fringes nil 8 1)))
   :general
   (+leader-def
@@ -1694,16 +1717,19 @@
 (use-package diff-hl
   :init
   (setq diff-hl-draw-borders nil)
+  (setq diff-hl-update-async t)
   :hook
   (after-init-hook         . global-diff-hl-mode)
   (diff-hl-mode-hook       . diff-hl-flydiff-mode)
-  (magit-pre-refresh-hook  . diff-hl-magit-pre-refresh)
   (magit-post-refresh-hook . diff-hl-magit-post-refresh))
 
 (use-package diff-hl-dired
+  ;; :disabled
   :ensure diff-hl
+  :init
+  (setq diff-hl-dired-extra-indicators nil)
   :config
-  ;; FIXME: dirty hack to override bitmap functions
+  ;; FIXME: dirty hack to override bitmap functions (w/o icons inside)
   (defun diff-hl-dired-highlight-items (alist)
     "Highlight ALIST containing (FILE . TYPE) elements."
     (dolist (pair alist)
@@ -1721,9 +1747,10 @@
               (overlay-put o 'diff-hl-dired-type type)
               ))))))
   :hook
-  (dired-mode-hook         . diff-hl-dired-mode))
+  (dired-mode-hook . diff-hl-dired-mode))
 
 (use-package diff-hl-margin
+  ;; :disabled
   :ensure diff-hl
   :unless (display-graphic-p)
   :init
@@ -1732,7 +1759,7 @@
                                        (change . " ")
                                        (unknown . " ")))
   :hook
-  (after-init-hook         . diff-hl-margin-mode))
+  (after-init-hook . diff-hl-margin-mode))
 
 (use-package org
   :ensure nil
