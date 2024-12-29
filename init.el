@@ -46,12 +46,8 @@
 
 (use-package ansi-color
   :ensure nil
-  :preface
-  (defun +ansi-color-apply-on-compilation-buffer ()
-    (with-silent-modifications
-      (ansi-color-apply-on-region compilation-filter-start (point))))
   :hook
-  (compilation-filter-hook . +ansi-color-apply-on-compilation-buffer))
+  (compilation-filter-hook . ansi-color-compilation-filter))
 
 (use-package time
   :ensure nil
