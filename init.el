@@ -2375,7 +2375,11 @@
   :ensure nil
   :general
   (+leader-def
-    "op" 'proced))
+    "op" 'proced)
+  :init
+  (setq proced-enable-color-flag t)
+  (setq proced-auto-update-flag t)
+  (setopt proced-format 'medium))
 
 (use-package proced-narrow
   :general
