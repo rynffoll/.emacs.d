@@ -60,6 +60,7 @@
   - [[#desktop][desktop]]
   - [[#easysession][easysession]]
 - [[#completion][Completion]]
+  - [[#emacs][emacs]]
   - [[#consult][consult]]
   - [[#marginalia][marginalia]]
   - [[#vertico][vertico]]
@@ -1226,6 +1227,15 @@ doom-modeline
 #+end_src
 
 * Completion
+** emacs
+#+begin_src emacs-lisp
+(use-package emacs
+  :ensure nil
+  :init
+  (setq completion-ignore-case t)
+  (setq read-buffer-completion-ignore-case t))
+#+end_src
+
 ** consult
 #+begin_src emacs-lisp
 (use-package consult

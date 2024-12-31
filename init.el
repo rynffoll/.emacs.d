@@ -755,6 +755,12 @@
   :hook
   (easysession-after-load-hook . +easysession-restore-tab-bar))
 
+(use-package emacs
+  :ensure nil
+  :init
+  (setq completion-ignore-case t)
+  (setq read-buffer-completion-ignore-case t))
+
 (use-package consult
   :general
   ([remap apropos]                       'consult-apropos)
