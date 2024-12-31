@@ -158,6 +158,7 @@
   - [[#ansible][Ansible]]
   - [[#envrc][.env(rc)]]
   - [[#proced][Proced]]
+  - [[#recall][recall]]
 - [[#ai-assistants][AI assistants]]
   - [[#chats][Chats]]
     - [[#gptel][gptel]]
@@ -3223,11 +3224,25 @@ go install github.com/go-delve/delve/cmd/dlv@latest
   (setq proced-enable-color-flag t)
   (setq proced-auto-update-flag t)
   (setopt proced-format 'medium))
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package proced-narrow
   :general
   (proced-mode-map
    "M-n" 'proced-narrow))
+#+end_src
+
+** recall
+#+begin_src emacs-lisp
+(use-package recall
+  :general
+  (+leader-def
+    "or" 'recall-list)
+  :init
+  (setq recall-completing-read-fn #'recall-consult-completing-read)
+  :hook
+  (after-init-hook . recall-mode))
 #+end_src
 
 * AI assistants

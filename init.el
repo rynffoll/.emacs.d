@@ -2391,6 +2391,15 @@
   (proced-mode-map
    "M-n" 'proced-narrow))
 
+(use-package recall
+  :general
+  (+leader-def
+    "or" 'recall-list)
+  :init
+  (setq recall-completing-read-fn #'recall-consult-completing-read)
+  :hook
+  (after-init-hook . recall-mode))
+
 (use-package gptel
   :preface
   (defun +gptel-send-back-evil-normal-state (&optional _result)
