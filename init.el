@@ -981,9 +981,9 @@
   :general
   (+leader-def
     "p" '(:keymap project-prefix-map :package project :wk "project"))
-  (:keymaps 'project-prefix-map
-            "m" 'magit-project-status
-            "b" 'consult-project-buffer)
+  ( :keymaps 'project-prefix-map
+    "m" 'magit-project-status
+    "b" 'consult-project-buffer)
   :init
   (setq project-buffers-viewer 'project-list-buffers-ibuffer)
   (setq project-kill-buffers-display-buffer-list t)
@@ -991,7 +991,19 @@
         '((project-find-file "Find file")
           (project-find-regexp "Find regexp")
           (project-find-dir "Find directory")
-          (magit-project-status "Magit"))))
+          (magit-project-status "Magit")))
+  (setq project-vc-extra-root-markers '(".project")))
+
+(use-package project-vterm
+  :demand
+  :ensure nil
+  :load-path "site-lisp/project-vterm"
+  :general
+  ( :keymaps 'project-prefix-map
+    "t" 'project-vterm)
+  :config
+  (add-to-list 'project-switch-commands '(project-vterm "Vterm") t)
+  (add-to-list 'project-kill-buffer-conditions '(major-mode . vterm-mode)))
 
 (use-package dired
   :ensure nil
