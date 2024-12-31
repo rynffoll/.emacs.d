@@ -1105,6 +1105,8 @@
   (setq dired-sidebar-no-delete-other-windows t)
   (setq dired-sidebar-toggle-hidden-commands nil) ;; don't hide on `balance-windows'
   ;; (setq dired-sidebar-window-fixed nil)
+  (setq dired-sidebar-use-custom-font t)
+  (setq dired-sidebar-face '(:height 0.90))
   :config
   (with-eval-after-load 'winum
     (defun winum-assign-0-to-dired-sidebar ()
