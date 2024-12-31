@@ -1005,6 +1005,11 @@
   (add-to-list 'project-switch-commands '(project-vterm "Vterm") t)
   (add-to-list 'project-kill-buffer-conditions '(major-mode . vterm-mode)))
 
+(use-package disproject
+  :general
+  ( :keymaps 'project-prefix-map
+    "." 'disproject-dispatch))
+
 (use-package dired
   :ensure nil
   :init

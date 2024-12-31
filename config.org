@@ -1520,6 +1520,14 @@ doom-modeline
   (add-to-list 'project-kill-buffer-conditions '(major-mode . vterm-mode)))
 #+end_src
 
+[[https://github.com/aurtzy/disproject][disproject]]
+#+begin_src emacs-lisp
+(use-package disproject
+  :general
+  ( :keymaps 'project-prefix-map
+    "." 'disproject-dispatch))
+#+end_src
+
 * Dired
 #+begin_src emacs-lisp
 (use-package dired
