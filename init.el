@@ -991,7 +991,16 @@
   :ensure nil
   :init
   (setq dired-listing-switches
-        "-l --almost-all --human-readable --group-directories-first --no-group")
+        (concat
+         "-l "                        ;; long listing (dired requires this)
+         "--almost-all "              ;; show hidden files, but not . or ..
+         "--no-group "                ;; do not show group, only owner
+         "--classify "                ;; append indicator (one of */=>@|) to entries
+         "--human-readable "          ;; print sizes in human readable format
+         "--sort=version "            ;; sort by version number (netural order)
+         "--group-directories-first " ;; group directories first
+         "--time-style=long-iso"      ;; use ISO 8601 date format (YYYY-MM-DD HH:MM)
+         ))
   (setq dired-auto-revert-buffer t)
   (setq dired-dwim-target t)
   (setq dired-recursive-copies 'always)
@@ -1046,8 +1055,8 @@
     (if dired-hide-details-mode
         (diredfl-mode -1)
       (diredfl-mode +1)))
-  :custom-face
-  (diredfl-dir-name ((t (:bold t))))
+  ;; :custom-face
+  ;; (diredfl-dir-name ((t (:bold t))))
   :hook
   ;; (dired-hide-details-mode-hook . +toggle-diredfl-mode)
   (after-init-hook . diredfl-global-mode))
