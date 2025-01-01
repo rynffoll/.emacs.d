@@ -1988,19 +1988,17 @@
   :general
   (+leader-def
     "Od" 'deft)
-  (:keymaps 'deft-mode-map :states 'normal
-            "gr"  'deft-refresh)
+  ( :keymaps 'deft-mode-map :states 'normal
+    "gr" 'deft-refresh)
   :init
   (setq deft-directory (concat org-directory "/deft/"))
-  (setq deft-default-extension "org")
+  (setq deft-extensions '("org"))
   (setq deft-use-filter-string-for-filename t)
-  (setq deft-auto-save-interval -1) ;; disable
-  (setq deft-file-naming-rules
+  (setq deft-auto-save-interval 0) ;; disable
+  (setq deft-file-naming-rules ;; kebab-case
         '((noslash . "-")
           (nospace . "-")
-          (case-fn . downcase)))
-  :config
-  (deft-setup))
+          (case-fn . downcase))))
 
 (use-package treesit
   :ensure nil
