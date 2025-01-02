@@ -1027,7 +1027,6 @@
   (setq project-vc-extra-root-markers '(".project")))
 
 (use-package project-vterm
-  :demand
   :ensure nil
   :load-path "site-lisp/project-vterm"
   :general
@@ -2050,8 +2049,8 @@
    '((verb . t))))
 
 (use-package ob-chatgpt-shell
-  :autoload ob-chatgpt-shell-setup
-  :init
+  :commands (org-babel-execute:chatgpt-shell)
+  :config
   (ob-chatgpt-shell-setup))
 
 (use-package deft
@@ -2452,7 +2451,7 @@
   :init
   (setq proced-enable-color-flag t)
   (setq proced-auto-update-flag t)
-  (setopt proced-format 'medium))
+  (setq proced-format 'medium))
 
 (use-package proced-narrow
   :general

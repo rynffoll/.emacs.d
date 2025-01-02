@@ -1542,7 +1542,6 @@ doom-modeline
 
 #+begin_src emacs-lisp
 (use-package project-vterm
-  :demand
   :ensure nil
   :load-path "site-lisp/project-vterm"
   :general
@@ -2745,8 +2744,8 @@ Org Bullets
 *** chatgpt-shell
 #+begin_src emacs-lisp
 (use-package ob-chatgpt-shell
-  :autoload ob-chatgpt-shell-setup
-  :init
+  :commands (org-babel-execute:chatgpt-shell)
+  :config
   (ob-chatgpt-shell-setup))
 #+end_src
 
@@ -3295,7 +3294,7 @@ go install github.com/go-delve/delve/cmd/dlv@latest
   :init
   (setq proced-enable-color-flag t)
   (setq proced-auto-update-flag t)
-  (setopt proced-format 'medium))
+  (setq proced-format 'medium))
 #+end_src
 
 #+begin_src emacs-lisp
