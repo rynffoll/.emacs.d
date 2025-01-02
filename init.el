@@ -709,6 +709,7 @@
     (file-size-human-readable (buffer-size))))
 
 (use-package ibuffer-vc
+  :disabled ;; replaced by projection-ibuffer
   :preface
   (defun +setup-ibuffer-vc ()
     (ibuffer-vc-set-filter-groups-by-vc-root)
@@ -1040,6 +1041,44 @@
   :general
   ( :keymaps 'project-prefix-map
     "." 'disproject-dispatch))
+
+(use-package projection
+  :general
+  ( :keymaps 'project-prefix-map
+    "P" '(:keymap projection-map :package projection-map :wk "projection"))
+  :config
+  (put 'projection-commands-configure-project 'safe-local-variable #'stringp)
+  (put 'projection-commands-build-project     'safe-local-variable #'stringp)
+  (put 'projection-commands-test-project      'safe-local-variable #'stringp)
+  (put 'projection-commands-run-project       'safe-local-variable #'stringp)
+  (put 'projection-commands-package-project   'safe-local-variable #'stringp)
+  (put 'projection-commands-install-project   'safe-local-variable #'stringp)
+  :hook
+  (after-init-hook . global-projection-hook-mode))
+
+(use-package projection-ibuffer
+  :ensure projection
+  :after ibuffer
+  :demand t
+  :preface
+  (defun +projection-ibuffer-setup ()
+    (setq ibuffer-filter-groups (projection-ibuffer--filter-groups))
+    (unless (eq ibuffer-sorting-mode 'alphabetic)
+      (ibuffer-do-sort-by-alphabetic)))
+  :hook
+  (ibuffer-hook . +projection-ibuffer-setup))
+
+;; (use-package projection-multi
+;;   :general
+;;   ( :keymaps 'project-prefix-map
+;;     "RET" 'projection-multi-compile))
+
+;; (use-package projection-multi-embark
+;;   :after embark
+;;   :after projection-multi
+;;   :demand t
+;;   :config
+;;   (projection-multi-embark-setup-command-map))
 
 (use-package dired
   :ensure nil
