@@ -782,7 +782,14 @@
   :ensure nil
   :init
   (setq completion-ignore-case t)
-  (setq read-buffer-completion-ignore-case t))
+  (setq read-buffer-completion-ignore-case t)
+  (setq enable-recursive-minibuffers t)
+  (setq read-extended-command-predicate #'command-completion-default-include-p)
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  :hook
+  (minibuffer-setup-hook . cursor-intangible-mode))
 
 (use-package nerd-icons-completion
   :if +with-icons
@@ -837,10 +844,17 @@
    "C-j" 'vertico-next
    "C-k" 'vertico-previous)
   :init
-  (setq vertico-resize 'grow-only)
   (setq vertico-cycle t)
   :hook
   (after-init-hook . vertico-mode))
+
+(use-package vertico-directory
+  :ensure vertico
+  :general
+  (vertico-map
+   "DEL" 'vertico-directory-delete-char)
+  :hook
+  (rfn-eshadow-update-overlay-hook . vertico-directory-tidy))
 
 (use-package orderless
   :init

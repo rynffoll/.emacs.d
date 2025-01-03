@@ -3,7 +3,6 @@
 (setq default-directory "~/")
 
 (setq load-prefer-newer t)
-(setq enable-recursive-minibuffers t)
 (setq create-lockfiles nil)
 (setq ring-bell-function 'ignore)
 (setq delete-by-moving-to-trash t)
