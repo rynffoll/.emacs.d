@@ -79,6 +79,7 @@
 ;; (setq +font "Iosevka Term:weight=medium:width=expanded:size=14") ;; Ioesevka Term Extended
 ;; (setq +font "Martian Mono Condensed 14")
 (setq +font "Cascadia Code:size=16")
+;; (setq +font "Cascadia Code NF:size=16")
 
 (add-to-list 'default-frame-alist `(font . ,+font))
 

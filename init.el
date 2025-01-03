@@ -229,9 +229,6 @@
   :config
   (pixel-scroll-precision-mode))
 
-(when (eq window-system 'ns)
-  (set-fontset-font "fontset-default" 'unicode "Apple Color Emoji" nil 'prepend))
-
 (use-package ligature
   :if (display-graphic-p)
   :config
@@ -324,23 +321,15 @@
   :hook
   (after-init-hook . global-ligature-mode))
 
-(defvar +with-icons nil)
-
-(use-package all-the-icons
-  :disabled
-  :if (and +with-icons (display-graphic-p))
-  :autoload all-the-icons-octicon
-  :config
-  (unless (member "all-the-icons" (font-family-list))
-    (all-the-icons-install-fonts t)))
+(defvar +with-icons t)
 
 (use-package nerd-icons
-  :disabled (not +with-icons)
-  :if (and +with-icons (display-graphic-p))
+  :if +with-icons
   :init
-  (setq nerd-icons-color-icons nil)
+  (setq nerd-icons-color-icons t)
   :config
-  (unless (member "Symbols Nerd Font Mono" (font-family-list))
+  (when (and (display-graphic-p)
+             (not (member "Symbols Nerd Font Mono" (font-family-list))))
     (nerd-icons-install-fonts)))
 
 (use-package faces
@@ -357,14 +346,17 @@
 
 (use-package doom-modeline
   :init
-  (setq doom-modeline-bar-width 2)
+  ;; (setq doom-modeline-bar-width 2)
   (setq doom-modeline-buffer-file-name-style 'buffer-name)
-  (setq doom-modeline-icon nil)
-  (setq doom-modeline-modal-icon nil)
+  (setq doom-modeline-icon +with-icons)
+  ;; (setq doom-modeline-modal-icon t)
   (setq doom-modeline-buffer-encoding nil)
-  (setq doom-modeline-major-mode-icon nil)
-  (setq doom-modeline-buffer-modification-icon nil)
+  ;; (setq doom-modeline-major-mode-icon t)
+  ;; (setq doom-modeline-buffer-modification-icon t)
   (setq doom-modeline-workspace-name nil)
+  (setq doom-modeline-check-icon nil)
+  (setq doom-modeline-check-simple-format t)
+  (setq doom-modeline-always-show-macro-register t)
   :hook
   (after-init-hook . doom-modeline-mode))
 
@@ -719,8 +711,7 @@
   (ibuffer-hook . +setup-ibuffer-vc))
 
 (use-package nerd-icons-ibuffer
-  :disabled (not +with-icons)
-  :if (and +with-icons (display-graphic-p))
+  :if +with-icons
   :hook
   (ibuffer-mode-hook . nerd-icons-ibuffer-mode))
 
@@ -793,6 +784,12 @@
   (setq completion-ignore-case t)
   (setq read-buffer-completion-ignore-case t))
 
+(use-package nerd-icons-completion
+  :if +with-icons
+  :hook
+  (vertico-mode-hook    . nerd-icons-completion-mode)
+  (marginalia-mode-hook . nerd-icons-completion-marginalia-setup))
+
 (use-package consult
   :general
   ([remap apropos]                       'consult-apropos)
@@ -833,15 +830,6 @@
             "M-A" 'marginalia-cycle)
   :hook
   (after-init-hook . marginalia-mode))
-
-(use-package nerd-icons-completion
-  :disabled (not +with-icons)
-  :if (and +with-icons (display-graphic-p))
-  :after marginalia
-  :config
-  (nerd-icons-completion-mode)
-  :hook
-  ('marginalia-mode-hook . nerd-icons-completion-marginalia-setup))
 
 (use-package vertico
   :general
@@ -924,11 +912,9 @@
   (advice-add #'disable-theme :before #'+kind-icon-reset-cache))
 
 (use-package nerd-icons-corfu
-  :disabled (not +with-icons)
-  :if (and +with-icons (display-graphic-p))
+  :if +with-icons
   :after corfu
-  :demand
-  :config
+  :init
   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 (use-package cape
@@ -1126,38 +1112,31 @@
         (concat dired-omit-files "\\|^\\..*$")))
 
 (use-package dired-subtree
-  :preface
-  (defun +dired-subtree-revert ()
-    (call-interactively 'revert-buffer)
-    (recenter))
   :general
-  (:keymaps 'dired-mode-map :states 'normal
-            "TAB" 'dired-subtree-toggle)
+  ( :keymaps 'dired-mode-map :states 'normal
+    "TAB" 'dired-subtree-toggle)
   :init
-  (setq dired-subtree-use-backgrounds nil)
-  :config
-  (when +with-icons
-    ;; for treemacs-icons-dired
-    (advice-add #'dired-subtree-toggle :after #'+dired-subtree-revert)))
+  (setq dired-subtree-use-backgrounds nil))
 
 (use-package diredfl
-  ;; :disabled
-  :preface
-  (defun +toggle-diredfl-mode ()
-    (if dired-hide-details-mode
-        (diredfl-mode -1)
-      (diredfl-mode +1)))
   ;; :custom-face
   ;; (diredfl-dir-name ((t (:bold t))))
   :hook
-  ;; (dired-hide-details-mode-hook . +toggle-diredfl-mode)
-  (after-init-hook . diredfl-global-mode))
+  (dired-mode-hook . diredfl-mode))
 
 (use-package nerd-icons-dired
-  :disabled
-  :if (and +with-icons (display-graphic-p))
+  :disabled  ;; replaced by nerd-icons-multimodal
+  :if +with-icons
   :hook
   (dired-mode-hook . nerd-icons-dired-mode))
+
+(use-package nerd-icons-multimodal
+  :if +with-icons
+  :vc (:url "https://github.com/abougouffa/nerd-icons-multimodal" :rev :newest)
+  :hook
+  (dired-mode-hook   . nerd-icons-multimodal-mode)
+  (archive-mode-hook . nerd-icons-multimodal-mode)
+  (tar-mode-hook     . nerd-icons-multimodal-mode))
 
 (use-package dired-git-info
   :general
@@ -1180,7 +1159,7 @@
   (setq dired-sidebar-toggle-hidden-commands nil) ;; don't hide on `balance-windows'
   ;; (setq dired-sidebar-window-fixed nil)
   (setq dired-sidebar-use-custom-font t)
-  (setq dired-sidebar-face '(:height 0.90))
+  (setq dired-sidebar-face '(:height 0.9))
   :config
   (with-eval-after-load 'winum
     (defun winum-assign-0-to-dired-sidebar ()
@@ -1693,30 +1672,35 @@
   (treemacs-theme-setup))
 
 (use-package treemacs-fringe-indicator
+  :disabled
   :ensure treemacs
   :after treemacs
   :config
   (treemacs-fringe-indicator-mode -1))
 
 (use-package treemacs-evil
+  :disabled
   :after treemacs evil)
 
 (use-package treemacs-icons-dired
+  :disabled
   :if (and +with-icons (display-graphic-p))
   :hook
   (dired-mode-hook . treemacs-icons-dired-enable-once))
 
 (use-package treemacs-magit
+  :disabled
   :after treemacs magit)
 
 (use-package treemacs-tab-bar
+  :disabled
   :after treemacs tab-bar
   :config
   (treemacs-set-scope-type 'Tabs))
 
 (use-package treemacs-nerd-icons
-  :disabled (not +with-icons)
-  :if (and +with-icons (display-graphic-p))
+  :disabled
+  :if +with-icons
   :after treemacs
   :demand
   :config
