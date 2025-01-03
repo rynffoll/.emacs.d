@@ -1148,12 +1148,13 @@
   (dired-mode-hook . diredfl-mode))
 
 (use-package nerd-icons-dired
-  :disabled  ;; replaced by nerd-icons-multimodal
+  ;; :disabled  ;; replaced by nerd-icons-multimodal
   :if +with-icons
   :hook
   (dired-mode-hook . nerd-icons-dired-mode))
 
 (use-package nerd-icons-multimodal
+  :disabled ;; conflicts with dired-sidebar
   :if +with-icons
   :vc (:url "https://github.com/abougouffa/nerd-icons-multimodal" :rev :newest)
   :hook
@@ -1174,14 +1175,14 @@
     "0" 'dired-sidebar-jump-to-sidebar
     "ft" 'dired-sidebar-toggle-sidebar)
   :init
-  (setq dired-sidebar-theme 'none)
+  (setq dired-sidebar-theme (if +with-icons 'nerd-icons 'none))
   ;; (setq dired-sidebar-use-custom-modeline nil)
   (setq dired-sidebar-use-custom-modeline t)
   (setq dired-sidebar-mode-line-format nil) ;; hide mode-line
   (setq dired-sidebar-no-delete-other-windows t)
   (setq dired-sidebar-toggle-hidden-commands nil) ;; don't hide on `balance-windows'
   ;; (setq dired-sidebar-window-fixed nil)
-  (setq dired-sidebar-use-custom-font t)
+  (setq dired-sidebar-use-custom-font t) ;; to custom `dired-sidebar-face'
   (setq dired-sidebar-face '(:height 0.9))
   :config
   (with-eval-after-load 'winum
