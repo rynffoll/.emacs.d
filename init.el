@@ -1817,6 +1817,12 @@
   :hook
   (magit-mode-hook . magit-todos-mode))
 
+(use-package magit-file-icons
+  :if +with-icons
+  :after magit
+  :hook
+  (magit-mode-hook . magit-file-icons-mode))
+
 (use-package git-timemachine
   :general
   (+leader-def
