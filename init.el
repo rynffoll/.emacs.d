@@ -119,6 +119,10 @@
 (use-package evil
   :demand
   :preface
+  (defun +save-and-kill-buffer ()
+    (interactive)
+    (save-buffer)
+    (kill-buffer))
   (defun +disable-evil-cursor ()
     (setq-local evil-default-cursor    '(nil))
     (setq-local evil-motion-state-cursor nil)
@@ -150,6 +154,8 @@
   (setq evil-undo-system 'undo-redo)
   (setq evil-want-C-i-jump nil)
   :config
+  (evil-ex-define-cmd "q"  '+kill-buffer)
+  (evil-ex-define-cmd "wq" '+save-and-kill-buffer)
   (evil-mode t))
 
 (use-package evil-collection
