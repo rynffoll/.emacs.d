@@ -119,10 +119,6 @@
 (use-package evil
   :demand
   :preface
-  (defun +save-and-kill-buffer ()
-    (interactive)
-    (save-buffer)
-    (kill-current-buffer))
   (defun +disable-evil-cursor ()
     (setq-local evil-default-cursor '(nil)))
   :general
@@ -138,17 +134,18 @@
    ((t (:inherit diff-added :foreground unspecified :background unspecified :underline nil))))
   :init
   (setq evil-want-keybinding nil)
-  (setq evil-emacs-state-cursor 'hbar)
-  (setq evil-mode-line-format nil)
+  (setq evil-motion-state-cursor 'box)  ;; █
+  (setq evil-visual-state-cursor 'box)  ;; █
+  (setq evil-normal-state-cursor 'box)  ;; █
+  (setq evil-insert-state-cursor 'bar)  ;; ⎸
+  (setq evil-emacs-state-cursor  'hbar) ;; _
   (setq evil-symbol-word-search t)
   ;; (setq evil-move-beyond-eol nil)
   ;; (setq evil-move-cursor-back t)
   (setq evil-undo-system 'undo-redo)
   (setq evil-want-C-i-jump nil)
   :config
-  (evil-mode t)
-  (evil-ex-define-cmd "q" 'kill-current-buffer)
-  (evil-ex-define-cmd "wq" '+save-and-kill-buffer))
+  (evil-mode t))
 
 (use-package evil-collection
   :demand
