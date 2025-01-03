@@ -71,7 +71,7 @@
   - [[#encryption][Encryption]]
 - [[#projects][Projects]]
 - [[#dired][Dired]]
-- [[#dirvish][Dirvish]]
+- [[#obsolete-dirvish][OBSOLETE Dirvish]]
 - [[#tramp][Tramp]]
 - [[#environment-variables][Environment Variables]]
   - [[#path-from-users-shell][~$PATH~ from user's shell]]
@@ -102,7 +102,7 @@
 - [[#goto][Goto]]
   - [[#imenu][Imenu]]
   - [[#avy][Avy]]
-- [[#treemacs][Treemacs]]
+- [[#obsolete-treemacs][OBSOLETE Treemacs]]
 - [[#terminal][Terminal]]
   - [[#eshell][Eshell]]
   - [[#vterm][vterm]]
@@ -1702,7 +1702,8 @@ Install fonts
     (add-to-list 'winum-assign-functions #'winum-assign-0-to-dired-sidebar)))
 #+end_src
 
-* Dirvish
+* OBSOLETE Dirvish
+CLOSED: [2025-01-03 Fri 11:15]
 #+begin_src emacs-lisp
 ;; Back to `quelpa' because `package-vc' doesn't support keyword like `:files'
 (use-package quelpa-use-package
@@ -2266,7 +2267,8 @@ Install fonts
     "ol" 'link-hint-open-link))
 #+end_src
 
-* Treemacs
+* OBSOLETE Treemacs
+CLOSED: [2025-01-03 Fri 11:15]
 #+begin_src emacs-lisp
 (use-package treemacs
   :disabled
