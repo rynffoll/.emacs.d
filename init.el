@@ -856,6 +856,15 @@
   :hook
   (rfn-eshadow-update-overlay-hook . vertico-directory-tidy))
 
+(use-package vertico-posframe
+  :init
+  (setq vertico-posframe-poshandler #'posframe-poshandler-frame-center)
+  (setq vertico-posframe-parameters
+        '((left-fringe . 8)
+          (right-fringe . 8)))
+  :hook
+  (vertico-mode-hook . vertico-posframe-mode))
+
 (use-package orderless
   :init
   (setq completion-styles '(orderless))
