@@ -534,6 +534,17 @@ If you'd like to test a different font, evaluate the following block:
   (after-init-hook . global-evil-mc-mode))
 #+end_src
 
+[[https://github.com/7696122/evil-terminal-cursor-changer][evil-terminal-cursor-changer]]
+#+begin_src emacs-lisp
+(use-package evil-terminal-cursor-changer
+  :unless (display-graphic-p)
+  :init
+  (setq etcc-use-color t)
+  (setq etcc-use-blink nil)
+  :hook
+  (after-init-hook . evil-terminal-cursor-changer-activate))
+#+end_src
+
 * Which-key
 #+begin_src emacs-lisp
 (use-package which-key

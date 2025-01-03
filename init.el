@@ -180,6 +180,14 @@
   :hook
   (after-init-hook . global-evil-mc-mode))
 
+(use-package evil-terminal-cursor-changer
+  :unless (display-graphic-p)
+  :init
+  (setq etcc-use-color t)
+  (setq etcc-use-blink nil)
+  :hook
+  (after-init-hook . evil-terminal-cursor-changer-activate))
+
 (use-package which-key
   :ensure nil
   :hook
