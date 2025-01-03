@@ -2133,7 +2133,8 @@
     "F" '(:ignore t :wk "find")
     "Fd" 'eglot-find-declaration
     "Ft" 'eglot-find-typeDefinition
-    "Fr" 'eglot-find-references)
+    "Fr" 'eglot-find-references
+    "Fi" 'eglot-find-implementation)
   :init
   (setq eglot-autoshutdown t))
 
