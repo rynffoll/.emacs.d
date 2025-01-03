@@ -120,7 +120,12 @@
   :demand
   :preface
   (defun +disable-evil-cursor ()
-    (setq-local evil-default-cursor '(nil)))
+    (setq-local evil-default-cursor    '(nil))
+    (setq-local evil-motion-state-cursor nil)
+    (setq-local evil-visual-state-cursor nil)
+    (setq-local evil-normal-state-cursor nil)
+    (setq-local evil-insert-state-cursor nil)
+    (setq-local evil-emacs-state-cursor  nil))
   :general
   (evil-insert-state-map
    "C-k" nil)
