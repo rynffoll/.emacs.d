@@ -849,8 +849,8 @@
 
 (use-package marginalia
   :general
-  (:keymaps 'minibuffer-local-map
-            "M-A" 'marginalia-cycle)
+  ( :keymaps 'minibuffer-local-map
+    "M-A" 'marginalia-cycle)
   :hook
   (after-init-hook . marginalia-mode))
 
@@ -1142,11 +1142,10 @@
   :after dired
   :defer nil
   :general
-  (:keymaps 'dired-mode-map :states 'normal
-            "M-." 'dired-omit-mode)
+  ( :keymaps 'dired-mode-map :states 'normal
+    "M-." 'dired-omit-mode)
   :init
   (setq dired-omit-extensions nil)
-  (setq dired-omit-verbose nil)
   :config
   ;; Make dired-omit-mode hide all "dotfiles"
   (setq dired-omit-files
@@ -1182,8 +1181,8 @@
 
 (use-package dired-git-info
   :general
-  (:keymaps 'dired-mode-map :states 'normal
-            ")" 'dired-git-info-mode)
+  ( :keymaps 'dired-mode-map :states 'normal
+    ")" 'dired-git-info-mode)
   :init
   (setq dgi-auto-hide-details-p nil))
 
@@ -1239,38 +1238,38 @@
     "ft" 'dirvish-side
     "fd" 'drivish)
   ;; TODO: + evil-collection
-  (:keymaps 'dirvish-mode-map :states 'normal
-            "?"   'dirvish-dispatch
-            "q"   'dirvish-quit
-            "b"   'dirvish-quick-access
-            "f"   'dirvish-file-info-menu
-            "p"   'dirvish-yank
-            "S"   'dirvish-quicksort
-            "F"   'dirvish-layout-toggle
-            "z"   'dirvish-history-jump
-            "gh"  'dirvish-subtree-up
-            "gl"  'dirvish-subtree-toggle
-            "TAB" 'dirvish-subtree-toggle
-            "h"   'dired-up-directory
-            "l"   'dired-find-file
-            "[h"  'dirvish-history-go-backward
-            "]h"  'dirvish-history-go-forward
-            "[e"  'dirvish-emerge-next-group
-            "]e"  'dirvish-emerge-previous-group
-            "M-e" 'dirvish-emerge-menu
-            "M-n" 'dirvish-narrow
-            "M-m" 'dirvish-mark-menu
-            "M-s" 'dirvish-setup-menu
-            "y"    '(:ignore t :wk "yank")
-            "yl"   'dirvish-copy-file-true-path
-            "yn"   'dirvish-copy-file-name
-            "yp"   'dirvish-copy-file-path
-            "yr"   'dirvish-copy-remote-path
-            "yy"   'dired-do-copy
-            "s"    '(:ignore t :wk "symlinks")
-            "ss"   'dirvish-symlink
-            "sS"   'dirvish-relative-symlink
-            "sh"   'dirvish-hardlink)
+  ( :keymaps 'dirvish-mode-map :states 'normal
+    "?"   'dirvish-dispatch
+    "q"   'dirvish-quit
+    "b"   'dirvish-quick-access
+    "f"   'dirvish-file-info-menu
+    "p"   'dirvish-yank
+    "S"   'dirvish-quicksort
+    "F"   'dirvish-layout-toggle
+    "z"   'dirvish-history-jump
+    "gh"  'dirvish-subtree-up
+    "gl"  'dirvish-subtree-toggle
+    "TAB" 'dirvish-subtree-toggle
+    "h"   'dired-up-directory
+    "l"   'dired-find-file
+    "[h"  'dirvish-history-go-backward
+    "]h"  'dirvish-history-go-forward
+    "[e"  'dirvish-emerge-next-group
+    "]e"  'dirvish-emerge-previous-group
+    "M-e" 'dirvish-emerge-menu
+    "M-n" 'dirvish-narrow
+    "M-m" 'dirvish-mark-menu
+    "M-s" 'dirvish-setup-menu
+    "y"    '(:ignore t :wk "yank")
+    "yl"   'dirvish-copy-file-true-path
+    "yn"   'dirvish-copy-file-name
+    "yp"   'dirvish-copy-file-path
+    "yr"   'dirvish-copy-remote-path
+    "yy"   'dired-do-copy
+    "s"    '(:ignore t :wk "symlinks")
+    "ss"   'dirvish-symlink
+    "sS"   'dirvish-relative-symlink
+    "sh"   'dirvish-hardlink)
   :custom-face
   (dirvish-hl-line ((t (:inherit hl-line))))
   :init
@@ -1289,11 +1288,11 @@
     (add-to-list 'winum-assign-functions #'winum-assign-0-to-dirvish-side)
     ;; TODO: contribute to upstream
     (dirvish-define-mode-line winum
-      "A `winum-mode' indicator."
-      (and (bound-and-true-p winum-mode)
-           (let ((num (winum-get-number-string)))
-             (propertize (format " %s " num)
-                         'face 'winum-face))))
+                              "A `winum-mode' indicator."
+                              (and (bound-and-true-p winum-mode)
+                                   (let ((num (winum-get-number-string)))
+                                     (propertize (format " %s " num)
+                                                 'face 'winum-face))))
     (setq dirvish-mode-line-format
           '( :left  (winum sort)
              :right (omit yank))))
@@ -1794,6 +1793,7 @@
   (vterm-mode-hook . hide-mode-line-mode))
 
 (use-package eshell-toggle
+  :disabled
   :preface
   (defun +eshell-toggle-init-vterm (dir)
     (let ((default-directory dir))
@@ -2288,12 +2288,12 @@
 
 (use-package justl
   :general
-  (:keymaps 'justl-mode-map :states 'normal
-            "?" 'justl-help-popup
-            "e" 'justl-exec-recipe
-            "E" 'justl-exec-eshell
-            "w" 'justl--exec-recipe-with-args
-            "W" 'justl-no-exec-eshell)
+  ( :keymaps 'justl-mode-map :states 'normal
+    "?" 'justl-help-popup
+    "e" 'justl-exec-recipe
+    "E" 'justl-exec-eshell
+    "w" 'justl--exec-recipe-with-args
+    "W" 'justl-no-exec-eshell)
   (+local-leader-def :keymaps 'just-mode-map
     "e" '(:ignore t :wk "eval")
     "e." 'justl
@@ -2417,8 +2417,8 @@
   :if (display-graphic-p)
   :after xwidget
   :general
-  (:keymaps 'xwidget-webkit-mode-map :states 'normal
-            "f" 'xwwp-follow-link))
+  ( :keymaps 'xwidget-webkit-mode-map :states 'normal
+    "f" 'xwwp-follow-link))
 
 (use-package editorconfig
   :ensure nil
