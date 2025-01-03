@@ -1411,6 +1411,8 @@ Install fonts
   (corfu-mode-hook . corfu-history-mode))
 
 (use-package corfu-terminal
+  :if (< emacs-major-version 31)
+  :if (featurep 'tty-child-frames)
   :unless (display-graphic-p)
   :hook
   (corfu-mode-hook . corfu-terminal-mode))
@@ -1985,9 +1987,9 @@ CLOSED: [2025-01-03 Fri 11:15]
   (vundo-mode-hook . +disable-global-hl-line-mode)
   (vundo-mode-hook . +disable-evil-cursor)
   :custom-face
-  (vundo-highlight ((t (:inherit success :foreground unspecified))))
-  (vundo-last-saved ((t (:inherit error :foreground unspecified))))
-  (vundo-saved ((t (:inherit warning :foreground unspecified))))
+  (vundo-highlight  ((t (:inherit success :foreground unspecified))))
+  (vundo-last-saved ((t (:inherit error   :foreground unspecified))))
+  (vundo-saved      ((t (:inherit warning :foreground unspecified))))
   :config
   (setq vundo-compact-display t)
   (setq vundo-glyph-alist vundo-unicode-symbols))
@@ -2585,6 +2587,7 @@ CLOSED: [2025-01-03 Fri 11:15]
 
   (setq org-auto-align-tags nil)
   (setq org-tags-column 0)
+
   (setq org-ellipsis "…")
   ;; (setq org-ellipsis " ⌄ ")
   (setq org-pretty-entities t)
@@ -2845,6 +2848,7 @@ Install grammars
 ** LSP
 #+begin_src emacs-lisp
 (use-package eglot
+  :ensure nil
   :general
   (+local-leader-def :keymaps 'eglot-mode-map
     "=" 'eglot-format
@@ -2866,7 +2870,7 @@ Install grammars
   (setq eglot-autoshutdown t))
 #+end_src
 
-https://github.com/blahgeek/emacs-lsp-booster
+[[https://github.com/blahgeek/emacs-lsp-booster][emacs-lsp-booster]]
 #+begin_src sh :tangle no :results silent
 # TODO: elisp function for this using /tmp?
 # like vterm-module-compile

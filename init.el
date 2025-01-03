@@ -919,6 +919,8 @@
   (corfu-mode-hook . corfu-history-mode))
 
 (use-package corfu-terminal
+  :if (< emacs-major-version 31)
+  :if (featurep 'tty-child-frames)
   :unless (display-graphic-p)
   :hook
   (corfu-mode-hook . corfu-terminal-mode))
@@ -1409,9 +1411,9 @@
   (vundo-mode-hook . +disable-global-hl-line-mode)
   (vundo-mode-hook . +disable-evil-cursor)
   :custom-face
-  (vundo-highlight ((t (:inherit success :foreground unspecified))))
-  (vundo-last-saved ((t (:inherit error :foreground unspecified))))
-  (vundo-saved ((t (:inherit warning :foreground unspecified))))
+  (vundo-highlight  ((t (:inherit success :foreground unspecified))))
+  (vundo-last-saved ((t (:inherit error   :foreground unspecified))))
+  (vundo-saved      ((t (:inherit warning :foreground unspecified))))
   :config
   (setq vundo-compact-display t)
   (setq vundo-glyph-alist vundo-unicode-symbols))
@@ -1917,6 +1919,7 @@
 
   (setq org-auto-align-tags nil)
   (setq org-tags-column 0)
+
   (setq org-ellipsis "…")
   ;; (setq org-ellipsis " ⌄ ")
   (setq org-pretty-entities t)
@@ -2102,6 +2105,7 @@
   (after-init-hook . global-treesit-auto-mode))
 
 (use-package eglot
+  :ensure nil
   :general
   (+local-leader-def :keymaps 'eglot-mode-map
     "=" 'eglot-format
