@@ -2549,6 +2549,7 @@
    "C-k" 'copilot-previous-completion)
   :init
   (setq copilot-indent-offset-warning-disable t)
+  (setq copilot-max-char 1000000)
   :hook
   (prog-mode-hook . copilot-mode)
   (git-commit-mode-hook . copilot-mode))
