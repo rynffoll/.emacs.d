@@ -122,7 +122,7 @@
   (defun +save-and-kill-buffer ()
     (interactive)
     (save-buffer)
-    (kill-this-buffer))
+    (kill-current-buffer))
   (defun +disable-evil-cursor ()
     (setq-local evil-default-cursor '(nil)))
   :general
@@ -147,7 +147,7 @@
   (setq evil-want-C-i-jump nil)
   :config
   (evil-mode t)
-  (evil-ex-define-cmd "q" 'kill-this-buffer)
+  (evil-ex-define-cmd "q" 'kill-current-buffer)
   (evil-ex-define-cmd "wq" '+save-and-kill-buffer))
 
 (use-package evil-collection
