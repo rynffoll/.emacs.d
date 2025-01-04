@@ -877,6 +877,7 @@
   (rfn-eshadow-update-overlay-hook . vertico-directory-tidy))
 
 (use-package vertico-posframe
+  :disabled ;; by performance reasons (try again in emacs 31 with feature `tty-child-frames')
   :init
   (setq vertico-posframe-poshandler #'posframe-poshandler-frame-center)
   (setq vertico-posframe-parameters
