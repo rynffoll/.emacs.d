@@ -154,7 +154,7 @@
   (setq evil-undo-system 'undo-redo)
   (setq evil-want-C-i-jump nil)
   :config
-  (evil-ex-define-cmd "q"  '+kill-buffer)
+  (evil-ex-define-cmd "q"  'kill-current-buffer)
   (evil-ex-define-cmd "wq" '+save-and-kill-buffer)
   (evil-mode t))
 
@@ -642,13 +642,17 @@
   :preface
   (defun +switch-to-scratch  () (interactive) (switch-to-buffer "*scratch*"))
   (defun +switch-to-messages () (interactive) (switch-to-buffer "*Messages*"))
-  (defun +kill-buffer        () (interactive) (kill-buffer (current-buffer)))
   :general
   (+leader-def
-    "bk" '+kill-buffer
     "bs" '+switch-to-scratch
     "bm" '+switch-to-messages
     "bR" 'rename-buffer))
+
+(use-package simple
+  :ensure nil
+  :general
+  (+leader-def
+    "bk" 'kill-current-buffer))
 
 (use-package menu-bar
   :ensure nil
