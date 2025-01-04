@@ -642,7 +642,7 @@
   :preface
   (defun +switch-to-scratch  () (interactive) (switch-to-buffer "*scratch*"))
   (defun +switch-to-messages () (interactive) (switch-to-buffer "*Messages*"))
-  (defun +kill-buffer        () (interactive) (kill-buffer))
+  (defun +kill-buffer        () (interactive) (kill-buffer (current-buffer)))
   :general
   (+leader-def
     "bk" '+kill-buffer
