@@ -2033,7 +2033,7 @@
 (use-package org-faces
   :ensure org
   :custom-face
-  (org-tag              ((t (:inherit shadow))))
+  (org-tag              ((t (:inherit shadow :foreground unspecified :background unspecified :bold nil))))
   (org-ellipsis         ((t (:underline nil))))
   (org-block-begin-line ((t (:underline nil))))
   (org-block-end-line   ((t (:overline nil))))
