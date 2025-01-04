@@ -2197,9 +2197,7 @@
   :init
   (setq dape-key-prefix (kbd "C-x C-a"))
   (setq dape-inlay-hints t)
-  ;; (setq dape-buffer-window-arrangement 'right)
   (setq dape-buffer-window-arrangement 'gud)
-  (setq dape-info-hide-mode-line nil)
   (setq dape-breakpoint-margin-string "●")
   :config
   (dape-breakpoint-global-mode)
@@ -2207,10 +2205,11 @@
   (kill-emacs-hook . dape-breakpoint-save)
   (after-init-hook . dape-breakpoint-load))
 
+;; TODO: move to different section
 (use-package repeat
   :ensure nil
-  :config
-  (repeat-mode))
+  :hook
+  (after-init-hook . repeat-mode))
 
 (use-package highlight-defined
   :init
