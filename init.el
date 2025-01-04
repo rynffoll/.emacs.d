@@ -1164,8 +1164,8 @@
   (setq dired-subtree-use-backgrounds nil))
 
 (use-package diredfl
-  ;; :custom-face
-  ;; (diredfl-dir-name ((t (:bold t))))
+  :custom-face
+  (diredfl-dir-name ((t (:bold t))))
   :hook
   (dired-mode-hook . diredfl-mode))
 
