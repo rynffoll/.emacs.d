@@ -717,7 +717,7 @@ If you'd like to test a different font, evaluate the following block:
 
 ** Icons
 #+begin_src emacs-lisp
-(defvar +with-icons t)
+(defvar +with-icons nil) ;; too many conflicts with integration in various packages (dired, magit, etc.)
 #+end_src
 
 [[https://github.com/rainstormstudio/nerd-icons.el][nerd-icons]]

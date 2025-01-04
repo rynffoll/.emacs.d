@@ -337,7 +337,7 @@
   :hook
   (after-init-hook . global-ligature-mode))
 
-(defvar +with-icons t)
+(defvar +with-icons nil) ;; too many conflicts with integration in various packages (dired, magit, etc.)
 
 (use-package nerd-icons
   :if +with-icons
