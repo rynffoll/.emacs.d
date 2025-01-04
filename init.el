@@ -1792,7 +1792,9 @@
     "ot" '+vterm)
   :init
   (setq vterm-max-scrollback 10000)
-  (setq vterm-clear-scrollback-when-clearing t)
+  :config
+  ;; https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-1183650463
+  (advice-add #'vterm--redraw :around (lambda (fun &rest args) (let ((cursor-type cursor-type)) (apply fun args))))
   :hook
   (vterm-mode-hook . +disable-global-hl-line-mode)
   (vterm-mode-hook . hide-mode-line-mode))
