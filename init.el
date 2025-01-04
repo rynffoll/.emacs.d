@@ -1094,17 +1094,17 @@
   :hook
   (ibuffer-hook . +projection-ibuffer-setup))
 
-;; (use-package projection-multi
-;;   :general
-;;   ( :keymaps 'project-prefix-map
-;;     "RET" 'projection-multi-compile))
+(use-package projection-multi
+  :general
+  ( :keymaps 'project-prefix-map
+    "RET" 'projection-multi-compile))
 
-;; (use-package projection-multi-embark
-;;   :after embark
-;;   :after projection-multi
-;;   :demand t
-;;   :config
-;;   (projection-multi-embark-setup-command-map))
+(use-package projection-multi-embark
+  :after embark
+  :after projection-multi
+  :demand t
+  :config
+  (projection-multi-embark-setup-command-map))
 
 (use-package dired
   :ensure nil
