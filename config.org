@@ -1006,11 +1006,12 @@ Install fonts
 #+end_src
 
 ** Pop-ups
+[[https://depp.brause.cc/shackle/][shackle]]
 #+begin_src emacs-lisp
 (use-package shackle
-  :disabled
+  ;; :disabled
   :init
-  (setq shackle-default-size 0.3)
+  (setq shackle-default-size 0.4)
   (setq shackle-rules
         '((help-mode :align below :select t)
           (helpful-mode :align below)
@@ -1025,11 +1026,13 @@ Install fonts
           (compilation-mode :align below)
           ("\\*vc-git :.*" :regexp t :align below :ignore t :select t)
           ("\\*docker-compose .*\\*" :regexp t :align below)
-          (comint-mode :align below)))
+          (comint-mode :align below)
+          (go-test-mode :align below)))
   :hook
   (after-init-hook . shackle-mode))
 #+end_src
 
+[[https://github.com/karthink/popper][popper]]
 #+begin_src emacs-lisp
 (use-package popper
   :disabled

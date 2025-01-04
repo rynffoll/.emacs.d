@@ -568,9 +568,9 @@
    "z" 'zoom-mode))
 
 (use-package shackle
-  :disabled
+  ;; :disabled
   :init
-  (setq shackle-default-size 0.3)
+  (setq shackle-default-size 0.4)
   (setq shackle-rules
         '((help-mode :align below :select t)
           (helpful-mode :align below)
@@ -585,7 +585,8 @@
           (compilation-mode :align below)
           ("\\*vc-git :.*" :regexp t :align below :ignore t :select t)
           ("\\*docker-compose .*\\*" :regexp t :align below)
-          (comint-mode :align below)))
+          (comint-mode :align below)
+          (go-test-mode :align below)))
   :hook
   (after-init-hook . shackle-mode))
 
