@@ -1111,6 +1111,21 @@
   :config
   (projection-multi-embark-setup-command-map))
 
+(use-package project-butler
+  :after project
+  :demand
+  :general
+  ( :keymaps 'project-prefix-map
+    "K" 'project-butler-cleanup)
+  :config
+  (add-to-list
+   'project-butler-projects-list
+   `(,user-emacs-directory . ("" ("config.org"))))
+  (add-to-list
+   'project-butler-projects-list
+   `(,(file-name-as-directory org-directory)
+     . ("1|2" (,+org-notes-file ,+org-todo-file)))))
+
 (use-package dired
   :ensure nil
   :init
