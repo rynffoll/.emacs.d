@@ -2268,15 +2268,31 @@
 
 (use-package go-ts-mode
   :ensure nil
-  :mode "\\.go\\'"
+  :general
+  (+local-leader-def :keymaps 'go-ts-mode-map
+    "t"  '(:ignore t :wk "test"))
   :init
   (setq go-ts-mode-indent-offset 4)
   :hook
   (go-ts-mode-hook . eglot-ensure))
 
 (use-package go-mod-ts-mode
-  :ensure go-ts-mode
-  :mode "go\\.mod\\'")
+  :ensure go-ts-mode)
+
+(use-package go-gen-test
+  :general
+  (+local-leader-def :keymaps 'go-ts-mode-map
+    "tg" 'go-gen-test-dwim))
+
+(use-package gotest
+  :general
+  (+local-leader-def :keymaps 'go-ts-mode-map
+    "tf" 'go-test-current-file
+    "tt" 'go-test-current-test
+    "tp" 'go-test-current-project
+    "tb" 'go-test-current-benchmark
+    "tc" 'go-test-current-coverage
+    "tx" 'go-run))
 
 (use-package makefile-executor
   :general
