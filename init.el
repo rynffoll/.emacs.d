@@ -690,36 +690,38 @@
   (+leader-def
     "bl" 'list-buffers
     "bi" 'ibuffer)
-  :init
-  (setq ibuffer-formats
-        '((mark modified read-only locked
-                " " (name 18 18 :left :elide)
-                " " (size-h 9 -1 :right) ;; (size 9 -1 :right)
-                " " (mode 16 16 :left :elide) " " filename-and-process)
-          (mark " " (name 16 -1) " " filename)))
-  :config
-  (define-ibuffer-column size-h
-    ( :name "Size"
-      :inline t
-      :header-mouse-map ibuffer-size-header-map
-      :summarizer
-      (lambda (column-strings)
-        (let ((total 0))
-          (dolist (string column-strings)
-            (setq total
-                  ;; like, ewww ...
-                  ;; (+ (float (string-to-number string))
-                  ;;    total)
-                  (+
-                   (let ((number (float (string-to-number string))))
-                     (cond
-                      ((string-match-p "k" string) (* number 1024))
-                      ((string-match-p "M" string) (* number 1024 1024))
-                      ((string-match-p "G" string) (* number 1024 1024 1024))
-                      (t number)))
-                   total)))
-          (file-size-human-readable total))))
-    (file-size-human-readable (buffer-size))))
+  ;; replaced by nerd-icons-ibuffer
+  ;; :init
+  ;; (setq ibuffer-formats
+  ;;       '((mark modified read-only locked
+  ;;               " " (name 18 18 :left :elide)
+  ;;               " " (size-h 9 -1 :right) ;; (size 9 -1 :right)
+  ;;               " " (mode 16 16 :left :elide) " " filename-and-process)
+  ;;         (mark " " (name 16 -1) " " filename)))
+  ;; :config
+  ;; (define-ibuffer-column size-h
+  ;;   ( :name "Size"
+  ;;     :inline t
+  ;;     :header-mouse-map ibuffer-size-header-map
+  ;;     :summarizer
+  ;;     (lambda (column-strings)
+  ;;       (let ((total 0))
+  ;;         (dolist (string column-strings)
+  ;;           (setq total
+  ;;                 ;; like, ewww ...
+  ;;                 ;; (+ (float (string-to-number string))
+  ;;                 ;;    total)
+  ;;                 (+
+  ;;                  (let ((number (float (string-to-number string))))
+  ;;                    (cond
+  ;;                     ((string-match-p "k" string) (* number 1024))
+  ;;                     ((string-match-p "M" string) (* number 1024 1024))
+  ;;                     ((string-match-p "G" string) (* number 1024 1024 1024))
+  ;;                     (t number)))
+  ;;                  total)))
+  ;;         (file-size-human-readable total))))
+  ;;   (file-size-human-readable (buffer-size)))
+  )
 
 (use-package ibuffer-vc
   :disabled ;; replaced by projection-ibuffer
@@ -731,8 +733,11 @@
   :hook
   (ibuffer-hook . +setup-ibuffer-vc))
 
+;; not only icons, but also other customizations (e.g. human-readable size, colors, etc.)
 (use-package nerd-icons-ibuffer
-  :if +with-icons
+  ;; :if +with-icons
+  :init
+  (setq nerd-icons-ibuffer-icon +with-icons)
   :hook
   (ibuffer-mode-hook . nerd-icons-ibuffer-mode))
 
