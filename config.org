@@ -117,6 +117,7 @@
   - [[#common-1][Common]]
   - [[#archive][Archive]]
   - [[#refile][Refile]]
+  - [[#link][Link]]
   - [[#code-blocks][Code Blocks]]
   - [[#lists][Lists]]
   - [[#agenda][Agenda]]
@@ -2741,6 +2742,24 @@ CLOSED: [2025-01-03 Fri 11:15]
   (setq org-outline-path-complete-in-steps nil)
   (setq org-refile-allow-creating-parent-nodes 'confirm)
   (setq org-refile-use-cache t))
+#+end_src
+
+** Link
+#+begin_src emacs-lisp
+(use-package org-link
+  :ensure org
+  :preface
+  ;; source: https://gist.github.com/kim366/8abe978cc295b027df636b218862758e
+  (defun +org-link-get-title (link &optional description)
+    (cond
+     ((string-match-p "^http" link)
+      (with-temp-buffer
+        (url-insert-file-contents link)
+        (goto-char (point-min))
+        (search-forward-regexp (rx "<title>" (group (*? anything)) "</title>"))
+        (match-string 1)))))
+  :init
+  (setq org-link-make-description-function #'+org-link-get-title))
 #+end_src
 
 ** Code Blocks

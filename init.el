@@ -2052,6 +2052,21 @@
   (setq org-refile-allow-creating-parent-nodes 'confirm)
   (setq org-refile-use-cache t))
 
+(use-package org-link
+  :ensure org
+  :preface
+  ;; source: https://gist.github.com/kim366/8abe978cc295b027df636b218862758e
+  (defun +org-link-get-title (link &optional description)
+    (cond
+     ((string-match-p "^http" link)
+      (with-temp-buffer
+        (url-insert-file-contents link)
+        (goto-char (point-min))
+        (search-forward-regexp (rx "<title>" (group (*? anything)) "</title>"))
+        (match-string 1)))))
+  :init
+  (setq org-link-make-description-function #'+org-link-get-title))
+
 (use-package org-src
   :ensure org
   :init
