@@ -992,6 +992,31 @@
   :hook
   (embark-collect-mode-hook . consult-preview-at-point-mode))
 
+(use-package tempel
+  :preface
+  (defun tempel-setup-capf ()
+    ;; Add the Tempel Capf to `completion-at-point-functions'.
+    ;; `tempel-expand' only triggers on exact matches. Alternatively use
+    ;; `tempel-complete' if you want to see all matches, but then you
+    ;; should also configure `tempel-trigger-prefix', such that Tempel
+    ;; does not trigger too often when you don't expect it. NOTE: We add
+    ;; `tempel-expand' *before* the main programming mode Capf, such
+    ;; that it will be tried first.
+    (setq-local completion-at-point-functions
+                (cons #'tempel-expand
+                      completion-at-point-functions)))
+  :general
+  (+leader-def
+    "it" 'tempel-insert)
+  ( :keymaps 'tempel-map
+    "TAB" 'tempel-next)
+  :hook
+  (conf-mode-hook . tempel-setup-capf)
+  (prog-mode-hook . tempel-setup-capf)
+  (text-mode-hook . tempel-setup-capf))
+
+(use-package tempel-collection)
+
 (use-package files
   :ensure nil
   :preface
@@ -1365,8 +1390,9 @@
   :ensure nil
   :general
   (+leader-def
-    "h" '(:keymap help-map :package help :wk "help")
-    "hF" 'describe-face))
+    "h" '(:keymap help-map :package help :wk "help"))
+  (help-map
+   "F" 'describe-face))
 
 (use-package helpful
   :general
