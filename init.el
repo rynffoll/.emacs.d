@@ -2373,11 +2373,16 @@
   :general
   (+local-leader-def :keymaps 'go-ts-mode-map
     "tf" 'go-test-current-file
-    "tt" 'go-test-current-test
+    "tT" 'go-test-current-test
     "tp" 'go-test-current-project
     "tb" 'go-test-current-benchmark
     "tc" 'go-test-current-coverage
     "tx" 'go-run))
+
+(use-package gotest-ts
+  :general
+  (+local-leader-def :keymaps 'go-ts-mode-map
+    "tt" 'gotest-ts-run-dwim))
 
 (use-package go-playground)
 
