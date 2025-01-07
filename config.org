@@ -64,6 +64,7 @@
   - [[#orderless][orderless]]
   - [[#corfu][corfu]]
   - [[#cape][cape]]
+  - [[#embark][embark]]
 - [[#files][Files]]
   - [[#macos-1][macOS]]
   - [[#quick-access-to-init-files][Quick access to init files]]
@@ -1473,6 +1474,28 @@ Install fonts
   (add-to-list 'completion-at-point-functions #'cape-file) ;; Complete file name.
   (add-to-list 'completion-at-point-functions #'cape-elisp-block) ;; Complete Elisp in Org or Markdown code block.
   )
+#+end_src
+
+** embark
+- [[https://github.com/oantolin/embark]]
+
+#+begin_src emacs-lisp
+(use-package embark
+  :general
+  ("C-;" #'embark-act)
+  (help-map
+   "B" #'embark-bindings)
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command)
+  :config
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
+
+(use-package embark-consult
+  :hook
+  (embark-collect-mode-hook . consult-preview-at-point-mode))
 #+end_src
 
 * Files

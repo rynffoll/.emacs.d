@@ -975,6 +975,23 @@
   (add-to-list 'completion-at-point-functions #'cape-elisp-block) ;; Complete Elisp in Org or Markdown code block.
   )
 
+(use-package embark
+  :general
+  ("C-;" #'embark-act)
+  (help-map
+   "B" #'embark-bindings)
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command)
+  :config
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
+
+(use-package embark-consult
+  :hook
+  (embark-collect-mode-hook . consult-preview-at-point-mode))
+
 (use-package files
   :ensure nil
   :preface
