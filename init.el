@@ -937,7 +937,7 @@
 
 (use-package corfu-terminal
   :if (< emacs-major-version 31)
-  :if (featurep 'tty-child-frames)
+  :unless (featurep 'tty-child-frames)
   :unless (display-graphic-p)
   :hook
   (corfu-mode-hook . corfu-terminal-mode))
