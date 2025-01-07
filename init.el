@@ -2374,6 +2374,8 @@
     "tc" 'go-test-current-coverage
     "tx" 'go-run))
 
+(use-package go-playground)
+
 (use-package makefile-executor
   :general
   (+local-leader-def :keymaps 'makefile-mode-map

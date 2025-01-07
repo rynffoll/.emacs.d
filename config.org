@@ -3192,6 +3192,10 @@ go install github.com/go-delve/delve/cmd/dlv@latest
     "tx" 'go-run))
 #+end_src
 
+#+begin_src emacs-lisp
+(use-package go-playground)
+#+end_src
+
 ** Makefile
 #+begin_src emacs-lisp
 (use-package makefile-executor
