@@ -2106,6 +2106,7 @@
         '((?A . (:inherit (bold error)))
           (?B . (:inherit (bold warning)))
           (?C . (:inherit (bold success)))))
+  ;; TODO: simplify
   (setq org-todo-keyword-faces
         '(("STARTED"   . (:inherit (bold font-lock-constant-face org-todo)))
           ("NEXT"      . (:inherit (bold font-lock-constant-face org-todo)))
@@ -2115,6 +2116,7 @@
           ("CANCELLED" . (:inherit (bold shadow org-todo))))))
 
 (use-package org-bullets
+  :disabled
   :init
   (setq org-bullets-bullet-list '("•"))
   (setq org-bullets--keywords
@@ -2133,6 +2135,22 @@
                 nil)))))
   :hook
   (org-mode-hook . org-bullets-mode))
+
+(use-package org-modern
+  :disabled
+  :init
+  (setq org-modern-progress nil)
+  (setq org-modern-tag nil)
+  (setq org-modern-checkbox nil)
+  (setq org-modern-keyword nil)
+  (setq org-modern-todo nil)
+  (setq org-modern-priority nil)
+  (setq org-modern-list nil)
+  (setq org-modern-table-horizontal 0.1)
+  (setq org-modern-table-vertical 2)
+  :hook
+  (org-mode-hook . org-modern-mode)
+  (org-agenda-finalize-hook . org-modern-agenda))
 
 (use-package toc-org
   :init
