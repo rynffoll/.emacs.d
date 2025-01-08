@@ -373,6 +373,7 @@
   (setq doom-modeline-check-icon nil)
   (setq doom-modeline-check-simple-format t)
   (setq doom-modeline-always-show-macro-register t)
+  (setq doom-modeline-support-imenu t)
   :hook
   (after-init-hook . doom-modeline-mode))
 
@@ -1196,6 +1197,7 @@
   (setq dired-mouse-drag-files t)
   (setq mouse-drag-and-drop-region-cross-program t)
   (setq dired-free-space nil)
+  (setq dired-hide-details-hide-absolute-location t) ;; emacs 31
   :hook
   (dired-mode-hook . dired-hide-details-mode))
 
