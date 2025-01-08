@@ -2698,6 +2698,7 @@
   :init
   (setq copilot-indent-offset-warning-disable t)
   (setq copilot-max-char 1000000)
+  (setq copilot-max-char-warning-disable t)
   :hook
   (prog-mode-hook . copilot-mode)
   (git-commit-mode-hook . copilot-mode))
