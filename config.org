@@ -2,7 +2,6 @@
 #+property: header-args:emacs-lisp :tangle init.el
 * Table of Contents :TOC:
 - [[#early-initialization][Early Initialization]]
-  - [[#enable-lexical-scope][Enable lexical scope]]
   - [[#defaults][Defaults]]
   - [[#disable-early-package-initialization][Disable early package initialization]]
   - [[#gc-tweaks][GC tweaks]]
@@ -12,7 +11,6 @@
     - [[#macos][macOS]]
   - [[#disable-writing-customization-to-initel][Disable writing customization to ~init.el~]]
 - [[#initialization][Initialization]]
-  - [[#enable-lexical-scope-1][Enable lexical scope]]
 - [[#personal-info][Personal Info]]
 - [[#package-manager][Package Manager]]
   - [[#initialize][Initialize]]
@@ -173,9 +171,8 @@
 :header-args:emacs-lisp: :tangle early-init.el
 :END:
 
-** Enable lexical scope
 #+begin_src emacs-lisp
-;;; -*- lexical-binding: t; no-byte-compile: t -*-
+;;; early-init.el --- Early Initialization -*- lexical-binding: t; no-byte-compile: t -*-
 #+end_src
 
 ** Defaults
@@ -301,9 +298,8 @@ If you'd like to test a different font, evaluate the following block:
 #+end_src
 
 * Initialization
-** Enable lexical scope
 #+begin_src emacs-lisp
-;;; -*- lexical-binding: t; -*-
+;;; init.el --- Initialization -*- lexical-binding: t; no-byte-compile: t -*-
 #+end_src
 
 * Personal Info

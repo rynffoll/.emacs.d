@@ -1,4 +1,4 @@
-;;; -*- lexical-binding: t; no-byte-compile: t -*-
+;;; early-init.el --- Early Initialization -*- lexical-binding: t; no-byte-compile: t -*-
 
 (setq default-directory "~/")
 

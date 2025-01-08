@@ -1,4 +1,4 @@
-;;; -*- lexical-binding: t; -*-
+;;; init.el --- Initialization -*- lexical-binding: t; no-byte-compile: t -*-
 
 (setq user-full-name "Ruslan Kamashev"
       user-login-name "rynffoll"
