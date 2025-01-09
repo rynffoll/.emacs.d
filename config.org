@@ -248,8 +248,8 @@
 (tool-bar-mode -1)
 
 (add-to-list 'default-frame-alist '(left . 0.5))
-(add-to-list 'default-frame-alist '(top . 0.5))
-(add-to-list 'default-frame-alist '(width . 0.75))
+(add-to-list 'default-frame-alist '(top  . 0.5))
+(add-to-list 'default-frame-alist '(width  . 0.75))
 (add-to-list 'default-frame-alist '(height . 0.9))
 
 ;; (add-to-list 'default-frame-alist '(menu-bar-lines . 0))
@@ -923,12 +923,17 @@ Install fonts
   :init
   ;; (setq tab-bar-show 1)
   (setq tab-bar-show t)
-  (setq tab-bar-format '(tab-bar-format-tabs-groups
-                         tab-bar-separator))
+  ;; (setq tab-bar-format '(tab-bar-format-tabs-groups
+  ;;                        tab-bar-separator))
+  (setq tab-bar-format '(tab-bar-format-menu-bar
+                         tab-bar-format-tabs-groups
+                         tab-bar-separator
+                         tab-bar-format-add-tab))
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-new-tab-choice "*scratch*")
   (setq tab-bar-tab-hints t)
-  (setq tab-bar-separator " ") ;; the same behavior in GUI and TUI
+  ;; (setq tab-bar-separator " ") ;; the same behavior in GUI and TUI
+  (setq tab-bar-separator (propertize "│" 'face '(vertical-border)))
   :hook
   (after-init-hook . tab-bar-mode)
   (after-init-hook . tab-bar-history-mode))
