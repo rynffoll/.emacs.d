@@ -1938,7 +1938,7 @@
   (setq diff-hl-update-async t)
   :hook
   (after-init-hook         . global-diff-hl-mode)
-  (diff-hl-mode-hook       . diff-hl-flydiff-mode)
+  ;; (diff-hl-mode-hook       . diff-hl-flydiff-mode) ;; disabled by perf issues
   (magit-post-refresh-hook . diff-hl-magit-post-refresh))
 
 (use-package diff-hl-dired
