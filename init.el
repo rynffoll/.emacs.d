@@ -772,11 +772,11 @@
   (after-init-hook . recentf-mode))
 
 (use-package desktop
-  :disabled
+  ;; :disabled
   :ensure nil
   :general
   (+leader-def
-    "Ss" 'desktop-save
+    "Ss" 'desktop-save-in-desktop-dir
     "Sr" 'desktop-read)
   :init
   (setq desktop-path `(,user-emacs-directory))
