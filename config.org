@@ -111,6 +111,7 @@
   - [[#magit][Magit]]
   - [[#git-stuff][Git stuff]]
   - [[#highlight-diff][Highlight diff]]
+  - [[#git-link][git-link]]
 - [[#org][Org]]
   - [[#common-1][Common]]
   - [[#archive][Archive]]
@@ -2655,6 +2656,14 @@ CLOSED: [2025-01-03 Fri 11:15]
                                        (unknown . " ")))
   :hook
   (after-init-hook . diff-hl-margin-mode))
+#+end_src
+
+** git-link
+#+begin_src emacs-lisp
+(use-package git-link
+  :general
+  (+leader-def
+    "gL" 'git-link-dispatch))
 #+end_src
 
 * Org

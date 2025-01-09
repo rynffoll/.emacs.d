@@ -1979,6 +1979,11 @@
   :hook
   (after-init-hook . diff-hl-margin-mode))
 
+(use-package git-link
+  :general
+  (+leader-def
+    "gL" 'git-link-dispatch))
+
 (use-package org
   :ensure nil
   :preface
