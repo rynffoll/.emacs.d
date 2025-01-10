@@ -821,7 +821,16 @@
   (setq completion-ignore-case t)
   (setq read-buffer-completion-ignore-case t)
   (setq enable-recursive-minibuffers t)
+
+  ;; Emacs 30 and newer: Disable Ispell completion function.
+  ;; Try `cape-dict' as an alternative.
+  (setq text-mode-ispell-word-completion nil)
+
+  ;; Hide commands in M-x which do not apply to the current mode.  Corfu
+  ;; commands are hidden, since they are not used via M-x. This setting is
+  ;; useful beyond Corfu.
   (setq read-extended-command-predicate #'command-completion-default-include-p)
+
   ;; Do not allow the cursor in the minibuffer prompt
   (setq minibuffer-prompt-properties
         '(read-only t cursor-intangible t face minibuffer-prompt))
