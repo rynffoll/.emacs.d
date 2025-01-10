@@ -2281,6 +2281,10 @@
   (+local-leader-def :keymaps 'eglot-mode-map
     "Fs" 'consult-eglot-symbols))
 
+(use-package consult-eglot-embark
+  :config
+  (consult-eglot-embark-mode))
+
 (use-package flycheck-eglot
   :demand
   :after flycheck eglot

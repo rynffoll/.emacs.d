@@ -3062,6 +3062,10 @@ cargo install +-path .
   :general
   (+local-leader-def :keymaps 'eglot-mode-map
     "Fs" 'consult-eglot-symbols))
+
+(use-package consult-eglot-embark
+  :config
+  (consult-eglot-embark-mode))
 #+end_src
 
 #+begin_src emacs-lisp
