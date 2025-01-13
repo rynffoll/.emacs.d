@@ -1882,7 +1882,8 @@
   (advice-add #'vterm--redraw :around (lambda (fun &rest args) (let ((cursor-type cursor-type)) (apply fun args))))
   :hook
   (vterm-mode-hook . +disable-global-hl-line-mode)
-  (vterm-mode-hook . hide-mode-line-mode))
+  ;; (vterm-mode-hook . hide-mode-line-mode)
+  )
 
 (use-package eshell-toggle
   :disabled
