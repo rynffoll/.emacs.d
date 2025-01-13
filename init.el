@@ -2534,7 +2534,12 @@
   :ensure nil
   :hook
   (yaml-ts-mode-hook . flycheck-mode)
-  (yaml-ts-mode-hook . highlight-indent-guides-mode))
+  ;; (yaml-ts-mode-hook . highlight-indent-guides-mode) ;; brakes scrolling
+  )
+
+(use-package yaml-pro
+  :hook
+  (yaml-ts-mode-hook . yaml-pro-ts-mode))
 
 (use-package lua-mode
   :init

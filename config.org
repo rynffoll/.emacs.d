@@ -3386,7 +3386,14 @@ go install github.com/go-delve/delve/cmd/dlv@latest
   :ensure nil
   :hook
   (yaml-ts-mode-hook . flycheck-mode)
-  (yaml-ts-mode-hook . highlight-indent-guides-mode))
+  ;; (yaml-ts-mode-hook . highlight-indent-guides-mode) ;; brakes scrolling
+  )
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package yaml-pro
+  :hook
+  (yaml-ts-mode-hook . yaml-pro-ts-mode))
 #+end_src
 
 ** Lua
