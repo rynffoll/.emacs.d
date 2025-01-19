@@ -1943,10 +1943,10 @@
     "gl" '+magit-status
     "gL" 'magit-log-buffer-file)
   :init
-  (setq magit-clone-default-directory "~/Projects/")
+  (setq magit-clone-default-directory "~/Projects/src/")
   (setq magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
   (setq magit-repository-directories `((,user-emacs-directory . 0)
-                                       (,magit-clone-default-directory . 1)))
+                                       ("~/Projects/" . 2)))
   (setq magit-diff-refine-hunk t))
 
 (use-package magit-todos
