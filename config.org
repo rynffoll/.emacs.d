@@ -96,6 +96,9 @@
 - [[#search][Search]]
 - [[#folding][Folding]]
 - [[#spell-checking][Spell Checking]]
+  - [[#obsolete-ispell][OBSOLETE ispell]]
+  - [[#obsolete-flyspell][OBSOLETE flyspell]]
+  - [[#jinx][jinx]]
 - [[#syntax-checking][Syntax Checking]]
   - [[#flycheck][flycheck]]
   - [[#flymake][flymake]]
@@ -2275,8 +2278,11 @@ CLOSED: [2025-01-03 Fri 11:15]
 #+end_src
 
 * Spell Checking
+** OBSOLETE ispell
+CLOSED: [2025-01-19 Sun 19:24]
 #+begin_src emacs-lisp
 (use-package ispell
+  :disabled
   :if (executable-find "hunspell")
   :ensure nil
   :after flyspell
@@ -2291,8 +2297,13 @@ CLOSED: [2025-01-03 Fri 11:15]
   ;; before ispell-hunspell-add-multi-dic will work
   (ispell-set-spellchecker-params)
   (ispell-hunspell-add-multi-dic "ru_RU,en_US"))
+#+end_src
 
+** OBSOLETE flyspell
+CLOSED: [2025-01-19 Sun 19:24]
+#+begin_src emacs-lisp
 (use-package flyspell
+  :disabled
   :general
   (+leader-def
     "ts" 'flyspell-mode)
@@ -2312,11 +2323,30 @@ CLOSED: [2025-01-03 Fri 11:15]
   ;; (org-mode-hook . flyspell-mode)
   ;; (prog-mode-hook . flyspell-prog-mode)
   (git-commit-mode-hook . flyspell-mode))
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package flyspell-correct
+  :disabled
   :general
   (flyspell-mode-map
    "C-;" 'flyspell-correct-wrapper))
+#+end_src
+
+** jinx
+#+begin_src emacs-lisp
+(use-package jinx
+  :general
+  (+leader-def
+    "ts" 'jinx-mode)
+  ([remap ispell-word] 'jinx-correct)
+  :init
+  (setq jinx-languages "ru en")
+  :hook
+  (text-mode-hook       . jinx-mode)
+  (org-mode-hook        . jinx-mode)
+  (prog-mode-hook       . jinx-mode)
+  (git-commit-mode-hook . jinx-mode))
 #+end_src
 
 * Syntax Checking

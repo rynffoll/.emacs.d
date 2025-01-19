@@ -1646,6 +1646,7 @@
   (yaml-ts-mode-hook . outline-indent-minor-mode))
 
 (use-package ispell
+  :disabled
   :if (executable-find "hunspell")
   :ensure nil
   :after flyspell
@@ -1662,6 +1663,7 @@
   (ispell-hunspell-add-multi-dic "ru_RU,en_US"))
 
 (use-package flyspell
+  :disabled
   :general
   (+leader-def
     "ts" 'flyspell-mode)
@@ -1683,9 +1685,23 @@
   (git-commit-mode-hook . flyspell-mode))
 
 (use-package flyspell-correct
+  :disabled
   :general
   (flyspell-mode-map
    "C-;" 'flyspell-correct-wrapper))
+
+(use-package jinx
+  :general
+  (+leader-def
+    "ts" 'jinx-mode)
+  ([remap ispell-word] 'jinx-correct)
+  :init
+  (setq jinx-languages "ru en")
+  :hook
+  (text-mode-hook       . jinx-mode)
+  (org-mode-hook        . jinx-mode)
+  (prog-mode-hook       . jinx-mode)
+  (git-commit-mode-hook . jinx-mode))
 
 (use-package flycheck
   ;; :disabled
