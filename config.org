@@ -31,7 +31,7 @@
   - [[#mouse-support][Mouse support]]
   - [[#misc][Misc]]
 - [[#ui-1][UI]]
-  - [[#smooth-scrolling][Smooth scrolling]]
+  - [[#scroll][Scroll]]
   - [[#ligatures][Ligatures]]
   - [[#icons][Icons]]
   - [[#mode-line][Mode Line]]
@@ -611,12 +611,25 @@ If you'd like to test a different font, evaluate the following block:
 #+end_src
 
 * UI
-** Smooth scrolling
+** Scroll
 #+begin_src emacs-lisp
 (use-package pixel-scroll
+  :disabled
   :ensure nil
-  :config
-  (pixel-scroll-precision-mode))
+  :hook
+  (after-init-hook . pixel-scroll-precision-mode))
+#+end_src
+
+[[https://github.com/jdtsmith/ultra-scroll][GitHub - jdtsmith/ultra-scroll: scroll Emacs like lightning]]
+#+begin_src emacs-lisp
+(use-package ultra-scroll
+  :if (display-graphic-p)
+  :vc (:url "https://github.com/jdtsmith/ultra-scroll" :rev :newest)
+  :init
+  (setq scroll-conservatively 101) ;; important!
+  (setq scroll-margin 0)
+  :hook
+  (after-init-hook . ultra-scroll-mode))
 #+end_src
 
 ** Ligatures

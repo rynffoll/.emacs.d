@@ -241,9 +241,19 @@
     (add-hook 'window-configuration-change-hook #'+update-window-divider)))
 
 (use-package pixel-scroll
+  :disabled
   :ensure nil
-  :config
-  (pixel-scroll-precision-mode))
+  :hook
+  (after-init-hook . pixel-scroll-precision-mode))
+
+(use-package ultra-scroll
+  :if (display-graphic-p)
+  :vc (:url "https://github.com/jdtsmith/ultra-scroll" :rev :newest)
+  :init
+  (setq scroll-conservatively 101) ;; important!
+  (setq scroll-margin 0)
+  :hook
+  (after-init-hook . ultra-scroll-mode))
 
 (use-package ligature
   :if (display-graphic-p)
