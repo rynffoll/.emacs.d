@@ -2678,7 +2678,7 @@
     "op" 'proced)
   :init
   (setq proced-enable-color-flag t)
-  (setq proced-auto-update-flag t)
+  ;; (setq proced-auto-update-flag t)
   (setq proced-format 'medium))
 
 (use-package proced-narrow
