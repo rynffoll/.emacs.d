@@ -2786,9 +2786,13 @@
     "tf" 'focus-mode))
 
 (use-package olivetti
+  ;; :custom-face
+  ;; (olivetti-fringe ((t (:background "unspecified-bg"))))
   :general
   (+leader-def
-    "to" 'olivetti-mode))
+    "tz" 'olivetti-mode)
+  :init
+  (setq olivetti-body-width 0.6))
 
 (use-package crux
   :general
