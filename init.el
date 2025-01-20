@@ -406,7 +406,8 @@
           (fg-region unspecified)
           (bg-prose-block-delimiter bg-inactive)
           (fg-prose-block-delimiter fg-dim)
-          (bg-prose-block-contents bg-dim))))
+          (bg-prose-block-contents bg-dim)
+          (fringe unspecified))))
 
 (use-package ef-themes)
 
