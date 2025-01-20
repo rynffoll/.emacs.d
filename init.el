@@ -2813,4 +2813,12 @@
 
 (use-package show-font)
 
+(use-package disk-usage)
+
+(use-package memory-usage)
+
+(use-package list-environment)
+
+(use-package daemons)
+
 (add-to-list 'load-path (concat user-emacs-directory "site-lisp"))
