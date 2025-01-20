@@ -1702,7 +1702,7 @@
     "ts" 'jinx-mode)
   ([remap ispell-word] 'jinx-correct)
   :init
-  (setq jinx-languages "ru en")
+  (setq jinx-languages "ru en es")
   :hook
   (text-mode-hook       . jinx-mode)
   (org-mode-hook        . jinx-mode)
