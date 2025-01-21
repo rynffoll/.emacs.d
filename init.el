@@ -201,6 +201,9 @@
 
 (use-package which-key
   :ensure nil
+  :init
+  (setq which-key-popup-type 'minibuffer)
+  (setq which-key-dont-use-unicode nil)
   :hook
   (after-init-hook . which-key-mode))
 
