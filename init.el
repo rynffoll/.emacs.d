@@ -1063,8 +1063,7 @@
       (call-interactively #'find-file)))
   :general
   (+leader-def
-    "." 'find-file
-    "ff" 'find-file
+    "."  'find-file
     "br" 'revert-buffer
     "eR" 'restart-emacs)
   :init
@@ -1213,7 +1212,8 @@
          "-l "                        ;; long listing (dired requires this)
          "--almost-all "              ;; show hidden files, but not . or ..
          "--no-group "                ;; do not show group, only owner
-         "--classify "                ;; append indicator (one of */=>@|) to entries
+         ;; conflict w/ `dired-sidebar-follow-file'
+         ;; "--classify "                ;; append indicator (one of */=>@|) to entries
          "--human-readable "          ;; print sizes in human readable format
          "--sort=version "            ;; sort by version number (netural order)
          "--group-directories-first " ;; group directories first
@@ -1287,10 +1287,17 @@
   (setq dgi-auto-hide-details-p nil))
 
 (use-package dired-sidebar
+  :preface
+  (defun +dired-sidebar-follow-file ()
+    (interactive)
+    (if (dired-sidebar-showing-sidebar-p)
+        (dired-sidebar-follow-file)
+      (dired-sidebar-jump-to-sidebar)))
   :general
   (+leader-def
     "0" 'dired-sidebar-jump-to-sidebar
-    "ft" 'dired-sidebar-toggle-sidebar)
+    "ft" 'dired-sidebar-toggle-sidebar
+    "ff" '+dired-sidebar-follow-file)
   :init
   (setq dired-sidebar-theme (if +with-icons 'nerd-icons 'none))
   ;; (setq dired-sidebar-use-custom-modeline nil)
