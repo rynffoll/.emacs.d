@@ -371,11 +371,6 @@
   (after-init-hook . minions-mode))
 
 (use-package doom-modeline
-  :custom-face
-  (doom-modeline-evil-emacs-state  ((t (:inverse-video t))))
-  (doom-modeline-evil-insert-state ((t (:inverse-video t))))
-  (doom-modeline-evil-normal-state ((t (:inverse-video nil))))
-  (doom-modeline-evil-visual-state ((t (:inverse-video t))))
   :init
   ;; (setq doom-modeline-bar-width 2)
   (setq doom-modeline-buffer-file-name-style 'buffer-name)
