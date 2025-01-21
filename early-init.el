@@ -79,7 +79,8 @@
 ;; (setq +font "Martian Mono Condensed 14")
 ;; (setq +font "Cascadia Code:size=16")
 ;; (setq +font "Cascadia Code NF:size=16")
-(setq +font "Iosevka:size=16")
+;; (setq +font "Iosevka:size=16")
+(setq +font "Iosevka Term:size=16")
 
 (add-to-list 'default-frame-alist `(font . ,+font))
 
