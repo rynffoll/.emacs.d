@@ -109,7 +109,7 @@
 - [[#terminal][Terminal]]
   - [[#eshell][Eshell]]
   - [[#vterm][vterm]]
-  - [[#quick-access-to-shell][Quick access to shell]]
+  - [[#obsolete-quick-access-to-shell][OBSOLETE Quick access to shell]]
 - [[#git][Git]]
   - [[#magit][Magit]]
   - [[#git-stuff][Git stuff]]
@@ -2602,7 +2602,8 @@ CLOSED: [2025-01-03 Fri 11:15]
   )
 #+end_src
 
-** Quick access to shell
+** OBSOLETE Quick access to shell
+CLOSED: [2025-01-20 Mon 22:26]
 #+begin_src emacs-lisp
 (use-package eshell-toggle
   :disabled
