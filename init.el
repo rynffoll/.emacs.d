@@ -2122,7 +2122,7 @@
       (with-temp-buffer
         (url-insert-file-contents link)
         (goto-char (point-min))
-        (search-forward-regexp (rx "<title>" (group (*? anything)) "</title>"))
+        (search-forward-regexp (rx "<title" (* (not (any ">"))) ">" (group (*? anything)) "</title>"))
         (match-string 1)))))
   :init
   (setq org-link-make-description-function #'+org-link-get-title))
