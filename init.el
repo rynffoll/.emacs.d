@@ -1312,6 +1312,7 @@
   ;; (setq dired-sidebar-window-fixed nil)
   (setq dired-sidebar-use-custom-font t) ;; to custom `dired-sidebar-face'
   (setq dired-sidebar-face '(:height 0.9))
+  (setq dired-sidebar-refresh-on-project-switch nil)
   :config
   (with-eval-after-load 'winum
     (defun winum-assign-0-to-dired-sidebar ()
