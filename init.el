@@ -1290,6 +1290,7 @@
   (setq dgi-auto-hide-details-p nil))
 
 (use-package dired-sidebar
+  :autoload dired-sidebar-showing-sidebar-p
   :preface
   (defun +dired-sidebar-follow-file ()
     (interactive)

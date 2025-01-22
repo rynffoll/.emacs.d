@@ -1852,6 +1852,7 @@ Install fonts
 [[https://github.com/jojojames/dired-sidebar][dired-sidebar]]
 #+begin_src emacs-lisp
 (use-package dired-sidebar
+  :autoload dired-sidebar-showing-sidebar-p
   :preface
   (defun +dired-sidebar-follow-file ()
     (interactive)
