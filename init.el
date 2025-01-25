@@ -2588,9 +2588,6 @@
   :hook
   (lua-mode-hook . eglot-ensure))
 
-(use-package sh-script
-  :ensure nil)
-
 (use-package executable
   :ensure nil
   :hook
@@ -2599,6 +2596,8 @@
 (use-package flymake-shellcheck
   :hook
   (sh-mode-hook . flymake-shellcheck-load))
+
+(use-package fish-mode)
 
 (use-package vimrc-mode)
 

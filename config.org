@@ -3468,17 +3468,20 @@ go install github.com/go-delve/delve/cmd/dlv@latest
 
 ** Shell
 #+begin_src emacs-lisp
-(use-package sh-script
-  :ensure nil)
-
 (use-package executable
   :ensure nil
   :hook
   (after-save-hook . executable-make-buffer-file-executable-if-script-p))
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package flymake-shellcheck
   :hook
   (sh-mode-hook . flymake-shellcheck-load))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package fish-mode)
 #+end_src
 
 ** Vimrc
