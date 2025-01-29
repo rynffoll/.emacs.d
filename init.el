@@ -2073,7 +2073,7 @@
   ;; (setq org-ellipsis " ⌄ ")
   (setq org-pretty-entities t)
   ;; (setq org-hide-emphasis-markers nil)
-  ;; (setq org-use-sub-superscripts '{})
+  (setq org-use-sub-superscripts '{}) ;; allow _ and ^ characters to sub/super-script strings but only when string is wrapped in braces
 
   (setq org-use-fast-todo-selection 'expert)
   (setq org-todo-keywords '((sequence
