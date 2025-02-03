@@ -737,8 +737,12 @@ If you'd like to test a different font, evaluate the following block:
 #+end_src
 
 ** Icons
+Disabled due to the following issues:
+- too many conflicts with integration in various packages (dired, magit, etc.).
+- redraw issues over mosh
+
 #+begin_src emacs-lisp
-(defvar +with-icons t) ;; too many conflicts with integration in various packages (dired, magit, etc.)
+(defvar +with-icons nil)
 #+end_src
 
 [[https://github.com/rainstormstudio/nerd-icons.el][nerd-icons]]
