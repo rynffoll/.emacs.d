@@ -1973,17 +1973,16 @@
                                        ("~/Projects/" . 2)))
   (setq magit-diff-refine-hunk t))
 
+(use-package magit
+  :if +with-icons
+  :init
+  (setq magit-format-file-function #'magit-format-file-nerd-icons))
+
 (use-package magit-todos
   :init
   (setq magit-todos-keyword-suffix (rx (optional "(" (1+ (not (any ")"))) ")" ":")))
   :hook
   (magit-mode-hook . magit-todos-mode))
-
-(use-package magit-file-icons
-  :if +with-icons
-  :after magit
-  :hook
-  (magit-mode-hook . magit-file-icons-mode))
 
 (use-package git-timemachine
   :general

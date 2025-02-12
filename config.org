@@ -2662,6 +2662,11 @@ CLOSED: [2025-01-20 Mon 22:26]
   (setq magit-repository-directories `((,user-emacs-directory . 0)
                                        ("~/Projects/" . 2)))
   (setq magit-diff-refine-hunk t))
+
+(use-package magit
+  :if +with-icons
+  :init
+  (setq magit-format-file-function #'magit-format-file-nerd-icons))
 #+end_src
 
 [[https://github.com/alphapapa/magit-todos][magit-todos]]
@@ -2671,15 +2676,6 @@ CLOSED: [2025-01-20 Mon 22:26]
   (setq magit-todos-keyword-suffix (rx (optional "(" (1+ (not (any ")"))) ")" ":")))
   :hook
   (magit-mode-hook . magit-todos-mode))
-#+end_src
-
-[[https://github.com/gekoke/magit-file-icons][magit-file-icons]]
-#+begin_src emacs-lisp
-(use-package magit-file-icons
-  :if +with-icons
-  :after magit
-  :hook
-  (magit-mode-hook . magit-file-icons-mode))
 #+end_src
 
 ** Git stuff
