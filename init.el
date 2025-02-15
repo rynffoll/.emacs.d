@@ -2266,6 +2266,16 @@
   :config
   (ob-chatgpt-shell-setup))
 
+(use-package org-crypt
+  :ensure org
+  :init
+  (setq org-tags-exclude-from-inheritance '("crypt"))
+  ;; GPG key to use for encryption
+  ;; Either the Key ID or set to nil to use symmetric encryption.
+  (setq org-crypt-key nil)
+  :config
+  (org-crypt-use-before-save-magic))
+
 (use-package deft
   :general
   (+leader-def

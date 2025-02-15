@@ -131,6 +131,7 @@
     - [[#verb][Verb]]
     - [[#chatgpt-shell][chatgpt-shell]]
     - [[#tests][tests]]
+  - [[#org-crypt][org-crypt]]
 - [[#notes][Notes]]
 - [[#languages][Languages]]
   - [[#tree-sitter][Tree-sitter]]
@@ -3035,6 +3036,20 @@ get https://github.com/status
 
 #+begin_src chatgpt-shell :results silent
 Hello World!
+#+end_src
+
+** org-crypt
+[[https://orgmode.org/worg/org-tutorials/encrypting-files.html][Encrypting org Files.]]
+#+begin_src emacs-lisp
+(use-package org-crypt
+  :ensure org
+  :init
+  (setq org-tags-exclude-from-inheritance '("crypt"))
+  ;; GPG key to use for encryption
+  ;; Either the Key ID or set to nil to use symmetric encryption.
+  (setq org-crypt-key nil)
+  :config
+  (org-crypt-use-before-save-magic))
 #+end_src
 
 * Notes
