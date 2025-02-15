@@ -2100,7 +2100,7 @@
 
   (setq org-startup-with-inline-images t)
 
-  (setq org-catch-invisible-edits 'smart)
+  (setq org-fold-catch-invisible-edits 'smart)
 
   (setq org-fontify-whole-heading-line t)
   (setq org-fontify-done-headline nil)
