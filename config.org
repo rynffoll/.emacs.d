@@ -117,7 +117,7 @@
   - [[#git-link][git-link]]
 - [[#org][Org]]
   - [[#common-1][Common]]
-  - [[#archive][Archive]]
+  - [[#org-archive][org-archive]]
   - [[#refile][Refile]]
   - [[#link][Link]]
   - [[#code-blocks][Code Blocks]]
@@ -2780,8 +2780,6 @@ CLOSED: [2025-01-20 Mon 22:26]
   (setq org-agenda-inhibit-startup t)
   (setq org-agenda-skip-unavailable-files t)
 
-  (setq org-archive-location (concat org-directory "/archive.org::datetree/"))
-
   (setq org-auto-align-tags nil)
   (setq org-tags-column 0)
 
@@ -2815,11 +2813,12 @@ CLOSED: [2025-01-20 Mon 22:26]
   (setq org-imenu-depth 4))
 #+end_src
 
-** Archive
+** org-archive
 #+begin_src emacs-lisp
 (use-package org-archive
   :ensure org
   :init
+  (setq org-archive-location (concat org-directory "/archive.org::datetree/"))
   (setq org-archive-file-header-format nil))
 #+end_src
 

@@ -2068,8 +2068,6 @@
   (setq org-agenda-inhibit-startup t)
   (setq org-agenda-skip-unavailable-files t)
 
-  (setq org-archive-location (concat org-directory "/archive.org::datetree/"))
-
   (setq org-auto-align-tags nil)
   (setq org-tags-column 0)
 
@@ -2105,6 +2103,7 @@
 (use-package org-archive
   :ensure org
   :init
+  (setq org-archive-location (concat org-directory "/archive.org::datetree/"))
   (setq org-archive-file-header-format nil))
 
 (use-package org-refile
