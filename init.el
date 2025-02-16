@@ -396,8 +396,8 @@
   (+leader-def
     "tt" 'load-theme))
 
-(use-package emacs
-  :ensure nil
+(use-package modus-themes
+  ;; :ensure nil
   :init
   (setq modus-themes-common-palette-overrides
         '(;; (bg-region bg-cyan-intense)

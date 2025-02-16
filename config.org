@@ -810,8 +810,8 @@ Install fonts
 
 [[https://protesilaos.com/emacs/modus-themes][modus-themes]]
 #+begin_src emacs-lisp
-(use-package emacs
-  :ensure nil
+(use-package modus-themes
+  ;; :ensure nil
   :init
   (setq modus-themes-common-palette-overrides
         '(;; (bg-region bg-cyan-intense)
