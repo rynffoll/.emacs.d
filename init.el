@@ -1190,6 +1190,9 @@
   (setq mouse-drag-and-drop-region-cross-program t)
   (setq dired-free-space nil)
   (setq dired-hide-details-hide-absolute-location t) ;; emacs 31
+  :config
+  (when (eq system-type 'darwin)
+    (setq insert-directory-program "gls"))
   :hook
   (dired-mode-hook . dired-hide-details-mode))
 
