@@ -132,6 +132,7 @@
     - [[#chatgpt-shell][chatgpt-shell]]
     - [[#tests][tests]]
   - [[#org-crypt][org-crypt]]
+  - [[#org-appear][org-appear]]
 - [[#notes][Notes]]
 - [[#languages][Languages]]
   - [[#tree-sitter][Tree-sitter]]
@@ -2788,7 +2789,7 @@ CLOSED: [2025-01-20 Mon 22:26]
   (setq org-ellipsis "…")
   ;; (setq org-ellipsis " ⌄ ")
   (setq org-pretty-entities t)
-  ;; (setq org-hide-emphasis-markers nil)
+  (setq org-hide-emphasis-markers t)
   (setq org-use-sub-superscripts '{}) ;; allow _ and ^ characters to sub/super-script strings but only when string is wrapped in braces
 
   (setq org-use-fast-todo-selection 'expert)
@@ -3050,6 +3051,13 @@ Hello World!
   (setq org-crypt-key nil)
   :config
   (org-crypt-use-before-save-magic))
+#+end_src
+
+** org-appear
+#+begin_src emacs-lisp
+(use-package org-appear
+  :hook
+  (org-mode-hook . org-appear-mode))
 #+end_src
 
 * Notes

@@ -2081,7 +2081,7 @@
   (setq org-ellipsis "…")
   ;; (setq org-ellipsis " ⌄ ")
   (setq org-pretty-entities t)
-  ;; (setq org-hide-emphasis-markers nil)
+  (setq org-hide-emphasis-markers t)
   (setq org-use-sub-superscripts '{}) ;; allow _ and ^ characters to sub/super-script strings but only when string is wrapped in braces
 
   (setq org-use-fast-todo-selection 'expert)
@@ -2275,6 +2275,10 @@
   (setq org-crypt-key nil)
   :config
   (org-crypt-use-before-save-magic))
+
+(use-package org-appear
+  :hook
+  (org-mode-hook . org-appear-mode))
 
 (use-package deft
   :general
