@@ -2193,12 +2193,16 @@ CLOSED: [2025-01-03 Fri 11:15]
 #+begin_src emacs-lisp
 (use-package paren
   :ensure nil
+  :init
+  (setq show-paren-when-point-inside-paren t)
+  (setq show-paren-when-point-in-periphery t)
   :hook
   (after-init-hook . show-paren-mode))
 #+end_src
 
 #+begin_src emacs-lisp
 (use-package highlight-parentheses
+  :disabled
   :hook
   (prog-mode-hook . highlight-parentheses-mode)
   (cider-repl-mode-hook . highlight-parentheses-mode)

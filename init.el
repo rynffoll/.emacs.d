@@ -1566,10 +1566,14 @@
 
 (use-package paren
   :ensure nil
+  :init
+  (setq show-paren-when-point-inside-paren t)
+  (setq show-paren-when-point-in-periphery t)
   :hook
   (after-init-hook . show-paren-mode))
 
 (use-package highlight-parentheses
+  :disabled
   :hook
   (prog-mode-hook . highlight-parentheses-mode)
   (cider-repl-mode-hook . highlight-parentheses-mode)
