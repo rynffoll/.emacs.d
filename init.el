@@ -512,17 +512,17 @@
   :init
   ;; (setq tab-bar-show 1)
   (setq tab-bar-show t)
-  ;; (setq tab-bar-format '(tab-bar-format-tabs-groups
-  ;;                        tab-bar-separator))
-  (setq tab-bar-format '(tab-bar-format-menu-bar
-                         tab-bar-format-tabs-groups
-                         tab-bar-separator
-                         tab-bar-format-add-tab))
+  (setq tab-bar-format '(tab-bar-format-tabs-groups
+                         tab-bar-separator))
+  ;; (setq tab-bar-format '(tab-bar-format-menu-bar
+  ;;                        tab-bar-format-tabs-groups
+  ;;                        tab-bar-separator
+  ;;                        tab-bar-format-add-tab))
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-new-tab-choice "*scratch*")
   (setq tab-bar-tab-hints t)
-  ;; (setq tab-bar-separator " ") ;; the same behavior in GUI and TUI
-  (setq tab-bar-separator (propertize "│" 'face '(vertical-border)))
+  (setq tab-bar-separator " ") ;; the same behavior in GUI and TUI
+  ;; (setq tab-bar-separator (propertize "│" 'face '(vertical-border)))
   :hook
   (after-init-hook . tab-bar-mode)
   (after-init-hook . tab-bar-history-mode))
