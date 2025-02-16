@@ -710,37 +710,8 @@
   (+leader-def
     "bl" 'list-buffers
     "bi" 'ibuffer)
-  ;; replaced by nerd-icons-ibuffer
-  ;; :init
-  ;; (setq ibuffer-formats
-  ;;       '((mark modified read-only locked
-  ;;               " " (name 18 18 :left :elide)
-  ;;               " " (size-h 9 -1 :right) ;; (size 9 -1 :right)
-  ;;               " " (mode 16 16 :left :elide) " " filename-and-process)
-  ;;         (mark " " (name 16 -1) " " filename)))
-  ;; :config
-  ;; (define-ibuffer-column size-h
-  ;;   ( :name "Size"
-  ;;     :inline t
-  ;;     :header-mouse-map ibuffer-size-header-map
-  ;;     :summarizer
-  ;;     (lambda (column-strings)
-  ;;       (let ((total 0))
-  ;;         (dolist (string column-strings)
-  ;;           (setq total
-  ;;                 ;; like, ewww ...
-  ;;                 ;; (+ (float (string-to-number string))
-  ;;                 ;;    total)
-  ;;                 (+
-  ;;                  (let ((number (float (string-to-number string))))
-  ;;                    (cond
-  ;;                     ((string-match-p "k" string) (* number 1024))
-  ;;                     ((string-match-p "M" string) (* number 1024 1024))
-  ;;                     ((string-match-p "G" string) (* number 1024 1024 1024))
-  ;;                     (t number)))
-  ;;                  total)))
-  ;;         (file-size-human-readable total))))
-  ;;   (file-size-human-readable (buffer-size)))
+  :init
+  (setq ibuffer-human-readable-size t) ;; emacs 31
   )
 
 (use-package ibuffer-vc
@@ -1079,13 +1050,6 @@
   (setq auto-revert-check-vc-info t)
   :hook
   (after-init-hook . global-auto-revert-mode))
-
-(use-package files
-  :if (eq system-type 'darwin)
-  :ensure nil
-  :init
-  (setq insert-directory-program "gls")
-  (setq trash-directory "~/.Trash/emacs"))
 
 (use-package iqa
   :preface
@@ -1483,9 +1447,9 @@
   (+leader-def
     ":" 'execute-extended-command
     "tT" 'toggle-truncate-lines)
-  :init
-  (setq backward-delete-char-untabify-method 'hungry)
-  (setq async-shell-command-buffer 'new-buffer)
+  ;; :init ;; TODO: back to defaults
+  ;; (setq backward-delete-char-untabify-method 'hungry)
+  ;; (setq async-shell-command-buffer 'new-buffer)
   :hook
   (after-init-hook . column-number-mode))
 
@@ -1500,17 +1464,13 @@
   (after-init-hook . global-so-long-mode))
 
 (use-package hungry-delete
-  :preface
-  (defun +disable-hungry-delete-mode ()
-    (hungry-delete-mode -1))
   :hook
-  (after-init-hook . global-hungry-delete-mode)
-  (minibuffer-setup-hook . +disable-hungry-delete-mode))
+  (after-init-hook . global-hungry-delete-mode))
 
 (use-package elec-pair
   :ensure nil
-  :init
-  (setq electric-pair-inhibit-predicate #'electric-pair-conservative-inhibit)
+  ;; :init ;; TODO: back to defaults
+  ;; (setq electric-pair-inhibit-predicate #'electric-pair-conservative-inhibit)
   :hook
   (after-init-hook . electric-pair-mode))
 
@@ -1665,8 +1625,9 @@
 
 (use-package outline
   :ensure nil
-  :init
-  (setq outline-blank-line t))
+  ;; :init ;; TODO: back to defaults
+  ;; (setq outline-blank-line t)
+  )
 
 (use-package hideshow
   :ensure nil
