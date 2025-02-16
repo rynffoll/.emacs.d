@@ -2423,7 +2423,7 @@ CLOSED: [2025-01-19 Sun 19:24]
   :hook
   (text-mode-hook       . jinx-mode)
   (org-mode-hook        . jinx-mode)
-  (prog-mode-hook       . jinx-mode)
+  ;; (prog-mode-hook       . jinx-mode)
   (git-commit-mode-hook . jinx-mode))
 #+end_src
 

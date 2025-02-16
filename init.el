@@ -1696,7 +1696,7 @@
   :hook
   (text-mode-hook       . jinx-mode)
   (org-mode-hook        . jinx-mode)
-  (prog-mode-hook       . jinx-mode)
+  ;; (prog-mode-hook       . jinx-mode)
   (git-commit-mode-hook . jinx-mode))
 
 (use-package flycheck
