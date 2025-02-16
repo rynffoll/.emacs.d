@@ -90,8 +90,8 @@
   - [[#colorize-color-names][Colorize color names]]
   - [[#highlight-special-symbols][Highlight special symbols]]
   - [[#highlight-symbols][Highlight symbols]]
-  - [[#highlight-identifiers][Highlight identifiers]]
-  - [[#prism][Prism]]
+  - [[#obsolete-highlight-identifiers][OBSOLETE Highlight identifiers]]
+  - [[#obsolete-prism][OBSOLETE Prism]]
 - [[#line-numbers][Line Numbers]]
 - [[#search][Search]]
 - [[#folding][Folding]]
@@ -2061,14 +2061,18 @@ CLOSED: [2025-01-03 Fri 11:15]
   :init
   (setq-default tab-width 4)
   (setq-default indent-tabs-mode nil))
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package delsel
   :ensure nil
   :general
   ("C-c C-g" 'minibuffer-keyboard-quit)
   :hook
   (after-init-hook . delete-selection-mode))
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package simple
   :ensure nil
   :general
@@ -2080,17 +2084,23 @@ CLOSED: [2025-01-03 Fri 11:15]
   (setq async-shell-command-buffer 'new-buffer)
   :hook
   (after-init-hook . column-number-mode))
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package prog-mode
   :ensure nil
   :hook
   (after-init-hook . global-prettify-symbols-mode))
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package so-long
   :ensure nil
   :hook
   (after-init-hook . global-so-long-mode))
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package hungry-delete
   :preface
   (defun +disable-hungry-delete-mode ()
@@ -2098,6 +2108,15 @@ CLOSED: [2025-01-03 Fri 11:15]
   :hook
   (after-init-hook . global-hungry-delete-mode)
   (minibuffer-setup-hook . +disable-hungry-delete-mode))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package elec-pair
+  :ensure nil
+  :init
+  (setq electric-pair-inhibit-predicate #'electric-pair-conservative-inhibit)
+  :hook
+  (after-init-hook . electric-pair-mode))
 #+end_src
 
 * Ediff
@@ -2176,18 +2195,17 @@ CLOSED: [2025-01-03 Fri 11:15]
   :ensure nil
   :hook
   (after-init-hook . show-paren-mode))
+#+end_src
 
-(use-package elec-pair
-  :ensure nil
-  :hook
-  (after-init-hook . electric-pair-mode))
-
+#+begin_src emacs-lisp
 (use-package highlight-parentheses
   :hook
   (prog-mode-hook . highlight-parentheses-mode)
   (cider-repl-mode-hook . highlight-parentheses-mode)
   (minibuffer-setup-hook . highlight-parentheses-minibuffer-setup))
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package paren-face
   :hook
   (after-init-hook . global-paren-face-mode))
@@ -2196,11 +2214,19 @@ CLOSED: [2025-01-03 Fri 11:15]
 ** Colorize color names
 #+begin_src emacs-lisp
 (use-package rainbow-mode
+  :disabled
   :general
   (+leader-def
     "tr" 'rainbow-mode)
   :hook
   (css-mode-hook . rainbow-mode))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package colorful-mode
+  :general
+  (+leader-def
+    "tc" 'colorful-mode))
 #+end_src
 
 ** Highlight special symbols
@@ -2210,11 +2236,15 @@ CLOSED: [2025-01-03 Fri 11:15]
   :general
   (+leader-def
     "tw" 'whitespace-mode))
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package page-break-lines
   :hook
   (after-init-hook . global-page-break-lines-mode))
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package highlight-indent-guides
   :general
   (+leader-def
@@ -2233,7 +2263,9 @@ CLOSED: [2025-01-03 Fri 11:15]
                                 ("FIXME" . hl-todo)))
   :hook
   (after-init-hook . global-hl-todo-mode))
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package hi-lock
   :ensure nil
   :general
@@ -2246,17 +2278,21 @@ CLOSED: [2025-01-03 Fri 11:15]
     "/hu" 'unhighlight-regexp))
 #+end_src
 
-** Highlight identifiers
+** OBSOLETE Highlight identifiers
+CLOSED: [2025-02-16 Sun 15:48]
 #+begin_src emacs-lisp
 (use-package color-identifiers-mode
+  :disabled
   :general
   (+leader-def
     "tc" 'color-identifiers-mode))
 #+end_src
 
-** Prism
+** OBSOLETE Prism
+CLOSED: [2025-02-16 Sun 15:48]
 #+begin_src emacs-lisp
 (use-package prism
+  :disabled
   :general
   (+leader-def
     "tp" 'prism-mode))

@@ -1507,6 +1507,13 @@
   (after-init-hook . global-hungry-delete-mode)
   (minibuffer-setup-hook . +disable-hungry-delete-mode))
 
+(use-package elec-pair
+  :ensure nil
+  :init
+  (setq electric-pair-inhibit-predicate #'electric-pair-conservative-inhibit)
+  :hook
+  (after-init-hook . electric-pair-mode))
+
 (use-package ediff
   :ensure nil
   :init
@@ -1562,11 +1569,6 @@
   :hook
   (after-init-hook . show-paren-mode))
 
-(use-package elec-pair
-  :ensure nil
-  :hook
-  (after-init-hook . electric-pair-mode))
-
 (use-package highlight-parentheses
   :hook
   (prog-mode-hook . highlight-parentheses-mode)
@@ -1578,11 +1580,17 @@
   (after-init-hook . global-paren-face-mode))
 
 (use-package rainbow-mode
+  :disabled
   :general
   (+leader-def
     "tr" 'rainbow-mode)
   :hook
   (css-mode-hook . rainbow-mode))
+
+(use-package colorful-mode
+  :general
+  (+leader-def
+    "tc" 'colorful-mode))
 
 (use-package whitespace
   :ensure nil
@@ -1622,11 +1630,13 @@
     "/hu" 'unhighlight-regexp))
 
 (use-package color-identifiers-mode
+  :disabled
   :general
   (+leader-def
     "tc" 'color-identifiers-mode))
 
 (use-package prism
+  :disabled
   :general
   (+leader-def
     "tp" 'prism-mode))
