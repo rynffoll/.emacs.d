@@ -2644,6 +2644,7 @@ CLOSED: [2025-01-03 Fri 11:15]
   (+leader-def
     "ot" '+vterm)
   :init
+  (setq vterm-shell "/opt/homebrew/bin/fish")
   (setq vterm-max-scrollback 10000)
   (setq vterm-set-bold-hightbright t)
   :config

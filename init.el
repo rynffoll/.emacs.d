@@ -1930,6 +1930,7 @@
   (+leader-def
     "ot" '+vterm)
   :init
+  (setq vterm-shell "/opt/homebrew/bin/fish")
   (setq vterm-max-scrollback 10000)
   (setq vterm-set-bold-hightbright t)
   :config
