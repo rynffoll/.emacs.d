@@ -921,10 +921,6 @@ Install fonts
   (defun +tab-bar-select-tab-7 () (interactive) (tab-bar-select-tab 7))
   (defun +tab-bar-select-tab-8 () (interactive) (tab-bar-select-tab 8))
   (defun +tab-bar-select-tab-9 () (interactive) (tab-bar-switch-to-last-tab))
-  (defun +kill-buffer-and-tab ()
-    (interactive)
-    (kill-buffer)
-    (tab-bar-close-tab))
   :general
   (+leader-def
     "TAB" '(:keymap tab-prefix-map :wk "tab-bar"))
@@ -947,8 +943,7 @@ Install fonts
    ">" 'tab-bar-move-tab
    "<" 'tab-bar-move-tab-backward
    "c" 'tab-close
-   "C" 'tab-close-other
-   "K" '+kill-buffer-and-tab)
+   "C" 'tab-close-other)
   :init
   ;; (setq tab-bar-show 1)
   (setq tab-bar-show t)
@@ -966,7 +961,9 @@ Install fonts
   :hook
   (after-init-hook . tab-bar-mode)
   (after-init-hook . tab-bar-history-mode))
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package tab-bar-theme
   :ensure nil
   :load-path "site-lisp/tab-bar-theme"
@@ -974,7 +971,9 @@ Install fonts
   (setq tab-bar-theme-height 5)
   :hook
   (after-init-hook . tab-bar-theme-mode))
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package project-tab-groups
   :hook
   (after-init-hook . project-tab-groups-mode))

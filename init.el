@@ -486,10 +486,6 @@
   (defun +tab-bar-select-tab-7 () (interactive) (tab-bar-select-tab 7))
   (defun +tab-bar-select-tab-8 () (interactive) (tab-bar-select-tab 8))
   (defun +tab-bar-select-tab-9 () (interactive) (tab-bar-switch-to-last-tab))
-  (defun +kill-buffer-and-tab ()
-    (interactive)
-    (kill-buffer)
-    (tab-bar-close-tab))
   :general
   (+leader-def
     "TAB" '(:keymap tab-prefix-map :wk "tab-bar"))
@@ -512,8 +508,7 @@
    ">" 'tab-bar-move-tab
    "<" 'tab-bar-move-tab-backward
    "c" 'tab-close
-   "C" 'tab-close-other
-   "K" '+kill-buffer-and-tab)
+   "C" 'tab-close-other)
   :init
   ;; (setq tab-bar-show 1)
   (setq tab-bar-show t)
