@@ -2383,6 +2383,7 @@
 (use-package package-lint)
 
 (use-package flycheck-package
+  :disabled ;; broken after flycheck update
   :after flycheck
   :demand
   :config
