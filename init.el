@@ -2811,8 +2811,6 @@
 
 (use-package try)
 
-(use-package password-generator)
-
 (use-package string-inflection)
 
 (use-package show-font)
