@@ -1295,6 +1295,7 @@
 
 ;; Back to `quelpa' because `package-vc' doesn't support keyword like `:files'
 (use-package quelpa-use-package
+  :disabled
   :demand
   :init
   (setq quelpa-use-package-inhibit-loading-quelpa t))

@@ -1905,6 +1905,7 @@ CLOSED: [2025-01-03 Fri 11:15]
 #+begin_src emacs-lisp
 ;; Back to `quelpa' because `package-vc' doesn't support keyword like `:files'
 (use-package quelpa-use-package
+  :disabled
   :demand
   :init
   (setq quelpa-use-package-inhibit-loading-quelpa t))
