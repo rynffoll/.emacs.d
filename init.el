@@ -2370,11 +2370,6 @@
   :hook
   (emacs-lisp-mode-hook . highlight-quoted-mode))
 
-(use-package erefactor
-  :general
-  (+local-leader-def :keymaps 'emacs-lisp-mode-map
-    "R" '(:keymap erefactor-map :wk "refactor")))
-
 (use-package eros
   :custom-face
   (eros-result-overlay-face ((t (:inherit shadow :box t))))

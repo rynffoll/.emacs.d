@@ -3276,22 +3276,23 @@ cargo install +-path .
   (setq highlight-defined-face-use-itself t)
   :hook
   (emacs-lisp-mode-hook . highlight-defined-mode))
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package highlight-quoted
   :hook
   (emacs-lisp-mode-hook . highlight-quoted-mode))
+#+end_src
 
-(use-package erefactor
-  :general
-  (+local-leader-def :keymaps 'emacs-lisp-mode-map
-    "R" '(:keymap erefactor-map :wk "refactor")))
-
+#+begin_src emacs-lisp
 (use-package eros
   :custom-face
   (eros-result-overlay-face ((t (:inherit shadow :box t))))
   :hook
   (emacs-lisp-mode-hook . eros-mode))
+#+end_src
 
+#+begin_src emacs-lisp
 (use-package package-lint)
 
 (use-package flycheck-package
